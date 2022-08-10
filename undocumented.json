@@ -9,203 +9,203 @@
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 301,
+      "line": 305,
       "symbol": "Bugsnag.+addFeatureFlagWithName:variant:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 304,
+      "line": 308,
       "symbol": "Bugsnag.+addFeatureFlagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 307,
+      "line": 311,
       "symbol": "Bugsnag.+addFeatureFlags:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 310,
+      "line": 314,
       "symbol": "Bugsnag.+clearFeatureFlagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 313,
+      "line": 317,
       "symbol": "Bugsnag.+clearFeatureFlags",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 78,
+      "line": 72,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeNone",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 79,
+      "line": 73,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeState",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 80,
+      "line": 74,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeUser",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 81,
+      "line": 75,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeLog",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 82,
+      "line": 76,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeNavigation",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 83,
+      "line": 77,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeRequest",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 84,
+      "line": 78,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeProcess",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 85,
+      "line": 79,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeError",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 86,
+      "line": 80,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeAll",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 128,
+      "line": 123,
       "symbol": "BSGBreadcrumbSink",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.protocol",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 130,
+      "line": 125,
       "symbol": "BSGBreadcrumbSink.-leaveBreadcrumbWithMessage:metadata:andType:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagConfiguration.h",
-      "line": 314,
+      "line": 311,
       "symbol": "BugsnagConfiguration.appType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagEndpointConfiguration.h",
-      "line": 30,
+      "line": 33,
       "symbol": "BugsnagEndpointConfiguration.-initWithNotify:sessions:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagError.h",
-      "line": 17,
+      "line": 19,
       "symbol": "BSGErrorType.BSGErrorTypeCocoa",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagError.h",
-      "line": 18,
+      "line": 20,
       "symbol": "BSGErrorType.BSGErrorTypeC",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagError.h",
-      "line": 19,
+      "line": 21,
       "symbol": "BSGErrorType.BSGErrorTypeReactNativeJs",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagEvent.h",
-      "line": 29,
+      "line": 30,
       "symbol": "BSGSeverity.BSGSeverityError",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagEvent.h",
-      "line": 30,
+      "line": 31,
       "symbol": "BSGSeverity.BSGSeverityWarning",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagEvent.h",
-      "line": 31,
+      "line": 32,
       "symbol": "BSGSeverity.BSGSeverityInfo",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h",
-      "line": 13,
+      "line": 16,
       "symbol": "BugsnagFeatureFlag",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h",
-      "line": 15,
+      "line": 18,
       "symbol": "BugsnagFeatureFlag.+flagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h",
-      "line": 17,
+      "line": 20,
       "symbol": "BugsnagFeatureFlag.+flagWithName:variant:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h",
-      "line": 19,
+      "line": 22,
       "symbol": "BugsnagFeatureFlag.name",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h",
-      "line": 21,
+      "line": 24,
       "symbol": "BugsnagFeatureFlag.variant",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
@@ -254,91 +254,91 @@
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagSession.h",
-      "line": 22,
+      "line": 24,
       "symbol": "BugsnagSession.id",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagSession.h",
-      "line": 24,
+      "line": 26,
       "symbol": "BugsnagSession.startedAt",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagSession.h",
-      "line": 26,
+      "line": 28,
       "symbol": "BugsnagSession.app",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagSession.h",
-      "line": 28,
+      "line": 30,
       "symbol": "BugsnagSession.device",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagStackframe.h",
-      "line": 13,
+      "line": 15,
       "symbol": "BugsnagStackframeType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagStackframe.h",
-      "line": 15,
+      "line": 17,
       "symbol": "BugsnagStackframeTypeCocoa",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.constant",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagThread.h",
-      "line": 11,
+      "line": 13,
       "symbol": "BSGThreadType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagThread.h",
-      "line": 11,
+      "line": 13,
       "symbol": "BSGThreadType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagThread.h",
-      "line": 12,
+      "line": 14,
       "symbol": "BSGThreadType.BSGThreadTypeCocoa",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagThread.h",
-      "line": 13,
+      "line": 15,
       "symbol": "BSGThreadType.BSGThreadTypeReactNativeJs",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagUser.h",
-      "line": 16,
+      "line": 19,
       "symbol": "BugsnagUser.id",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagUser.h",
-      "line": 18,
+      "line": 21,
       "symbol": "BugsnagUser.name",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagUser.h",
-      "line": 20,
+      "line": 23,
       "symbol": "BugsnagUser.email",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
