@@ -1,5 +1,5 @@
 //
-//  BSGStorageMigratorTests.m
+//  BSGStorageMigratorV0V1Tests.m
 //  Bugsnag-iOSTests
 //
 //  Created by Karl Stenerud on 07.01.21.
@@ -12,11 +12,11 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 
-@interface BSGStorageMigratorTests : XCTestCase
+@interface BSGStorageMigratorV0V1Tests : XCTestCase
 
 @end
 
-@implementation BSGStorageMigratorTests
+@implementation BSGStorageMigratorV0V1Tests
 
 - (NSString *)getCachesDir {
     NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);

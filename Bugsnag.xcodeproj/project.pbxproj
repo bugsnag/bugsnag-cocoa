@@ -844,7 +844,7 @@
 		CB28F0BC282A4817003AB200 /* report-react-native-promise-rejection.json in Resources */ = {isa = PBXBuildFile; fileRef = 01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */; };
 		CB28F0BD282A4817003AB200 /* report.json in Resources */ = {isa = PBXBuildFile; fileRef = 008966B72486D43500DC48C2 /* report.json */; };
 		CB28F0BE282A4818003AB200 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
-		CB28F0BF282A4842003AB200 /* BSGStorageMigratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */; };
+		CB28F0BF282A4842003AB200 /* BSGStorageMigratorV0V1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m */; };
 		CB28F0C2282A4857003AB200 /* BSGUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DE903B26CEAF9E00455213 /* BSGUtilsTests.m */; };
 		CB28F0C4282A488B003AB200 /* BugsnagApiClientTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */; };
 		CB28F0C5282A49D5003AB200 /* URLSessionMock.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E8765D256684E700F4B70A /* URLSessionMock.m */; };
@@ -910,7 +910,7 @@
 		CB4C83BF280FFB0600E7E2BD /* BSGDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = CB4C83BD280FFA4800E7E2BD /* BSGDefines.h */; };
 		CB4C83C0280FFB0600E7E2BD /* BSGDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = CB4C83BD280FFA4800E7E2BD /* BSGDefines.h */; };
 		CB4C83C1280FFB0700E7E2BD /* BSGDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = CB4C83BD280FFA4800E7E2BD /* BSGDefines.h */; };
-		CB6419AB25A73E8C00613D25 /* BSGStorageMigratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */; };
+		CB6419AB25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m */; };
 		CB6419B425A7419400613D25 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
 		CB6419B525A7419400613D25 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
 		CB6419B625A7419400613D25 /* v0_files in Resources */ = {isa = PBXBuildFile; fileRef = CB6419B325A7419400613D25 /* v0_files */; };
@@ -1113,8 +1113,8 @@
 		CBCF77AB250142E0004AF22A /* BSGJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCF77AA250142E0004AF22A /* BSGJSONSerializationTests.m */; };
 		CBCF77AC250142E0004AF22A /* BSGJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCF77AA250142E0004AF22A /* BSGJSONSerializationTests.m */; };
 		CBCF77AD250142E0004AF22A /* BSGJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCF77AA250142E0004AF22A /* BSGJSONSerializationTests.m */; };
-		CBDD6D0725AC3EFF00A2E12B /* BSGStorageMigratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */; };
-		CBDD6D0F25AC3EFF00A2E12B /* BSGStorageMigratorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */; };
+		CBDD6D0725AC3EFF00A2E12B /* BSGStorageMigratorV0V1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m */; };
+		CBDD6D0F25AC3EFF00A2E12B /* BSGStorageMigratorV0V1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB6419AA25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m */; };
 		CBE9062A25A34DAB0045B965 /* BSGStorageMigratorV0V1.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE9062825A34DAB0045B965 /* BSGStorageMigratorV0V1.h */; };
 		CBE9062B25A34DAB0045B965 /* BSGStorageMigratorV0V1.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE9062825A34DAB0045B965 /* BSGStorageMigratorV0V1.h */; };
 		CBE9062C25A34DAB0045B965 /* BSGStorageMigratorV0V1.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE9062825A34DAB0045B965 /* BSGStorageMigratorV0V1.h */; };
@@ -1663,7 +1663,7 @@
 		CB37449B284756C100A3955E /* stb_sprintf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_sprintf.h; sourceTree = "<group>"; };
 		CB37449F28475EA800A3955E /* BSG_KSCrashStringConversionTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSG_KSCrashStringConversionTest.m; sourceTree = "<group>"; };
 		CB4C83BD280FFA4800E7E2BD /* BSGDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGDefines.h; sourceTree = "<group>"; };
-		CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGStorageMigratorTests.m; sourceTree = "<group>"; };
+		CB6419AA25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGStorageMigratorV0V1Tests.m; sourceTree = "<group>"; };
 		CB6419B325A7419400613D25 /* v0_files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = v0_files; sourceTree = "<group>"; };
 		CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagApiClientTest.m; sourceTree = "<group>"; };
 		CBA22499251E429C00B87416 /* TestSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestSupport.h; sourceTree = "<group>"; };
@@ -2039,7 +2039,7 @@
 				008966C82486D43600DC48C2 /* BSGOutOfMemoryTests.m */,
 				0130DEF82880203A00E5953F /* BSGRunContextTests.m */,
 				01F9FCB528929336005EDD8C /* BSGSerializationTests.m */,
-				CB6419AA25A73E8C00613D25 /* BSGStorageMigratorTests.m */,
+				CB6419AA25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m */,
 				017DCF9A287422BB000ECB22 /* BSGTelemetryTests.m */,
 				01DE903B26CEAF9E00455213 /* BSGUtilsTests.m */,
 				CB9103632502320A00E9D1E2 /* BugsnagApiClientTest.m */,
@@ -3262,7 +3262,7 @@
 				CB9103642502320A00E9D1E2 /* BugsnagApiClientTest.m in Sources */,
 				008967602486D43700DC48C2 /* BugsnagBreadcrumbsTest.m in Sources */,
 				01B74E9C27903326004B9765 /* BSG_KSFileTests.m in Sources */,
-				CB6419AB25A73E8C00613D25 /* BSGStorageMigratorTests.m in Sources */,
+				CB6419AB25A73E8C00613D25 /* BSGStorageMigratorV0V1Tests.m in Sources */,
 				E701FAA72490EF77008D842F /* ClientApiValidationTest.m in Sources */,
 				008967362486D43700DC48C2 /* BugsnagMetadataTests.m in Sources */,
 				008967992486D43700DC48C2 /* FileBasedTestCase.m in Sources */,
@@ -3391,7 +3391,7 @@
 				0089672B2486D43700DC48C2 /* BugsnagStacktraceTest.m in Sources */,
 				008966F22486D43700DC48C2 /* BugsnagMetadataRedactionTest.m in Sources */,
 				01ABD87A2786DF9A009A5CA2 /* BSG_KSCrashReportTests.m in Sources */,
-				CBDD6D0725AC3EFF00A2E12B /* BSGStorageMigratorTests.m in Sources */,
+				CBDD6D0725AC3EFF00A2E12B /* BSGStorageMigratorV0V1Tests.m in Sources */,
 				008967372486D43700DC48C2 /* BugsnagMetadataTests.m in Sources */,
 				008967822486D43700DC48C2 /* KSSystemInfo_Tests.m in Sources */,
 				008967612486D43700DC48C2 /* BugsnagBreadcrumbsTest.m in Sources */,
@@ -3543,7 +3543,7 @@
 				008967922486D43700DC48C2 /* KSJSONCodec_Tests.m in Sources */,
 				008967742486D43700DC48C2 /* KSSysCtl_Tests.m in Sources */,
 				010F80C428645B4200D6569E /* BSGDefinesTests.m in Sources */,
-				CBDD6D0F25AC3EFF00A2E12B /* BSGStorageMigratorTests.m in Sources */,
+				CBDD6D0F25AC3EFF00A2E12B /* BSGStorageMigratorV0V1Tests.m in Sources */,
 				008967502486D43700DC48C2 /* BugsnagPluginTest.m in Sources */,
 				008967142486D43700DC48C2 /* BugsnagEventTests.m in Sources */,
 				0089675C2486D43700DC48C2 /* BugsnagEnabledBreadcrumbTest.m in Sources */,
@@ -3868,7 +3868,7 @@
 				CB28F0E1282A4BEF003AB200 /* BugsnagPluginTest.m in Sources */,
 				CB28F11F282A7C97003AB200 /* BugsnagSwiftPublicAPITests.swift in Sources */,
 				CB28F0C7282A49EF003AB200 /* NSUserDefaultsStub.m in Sources */,
-				CB28F0BF282A4842003AB200 /* BSGStorageMigratorTests.m in Sources */,
+				CB28F0BF282A4842003AB200 /* BSGStorageMigratorV0V1Tests.m in Sources */,
 				CB28F0AB28294D4F003AB200 /* KSLogger_Tests.m in Sources */,
 				CB28F126282A7DB0003AB200 /* ClientApiValidationTest.m in Sources */,
 				CB28F0A328294D4F003AB200 /* KSCrashIdentifierTests.m in Sources */,
