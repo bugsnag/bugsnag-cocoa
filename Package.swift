@@ -37,7 +37,6 @@ let package = Package(
                 .headerSearchPath("Payload"),
                 .headerSearchPath("Plugins"),
                 .headerSearchPath("Storage"),
-                .unsafeFlags(["-fvisibility=hidden"]),
             ],
             linkerSettings: [
                 .linkedLibrary("z"),

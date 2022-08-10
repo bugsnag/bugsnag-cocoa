@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 6.22.1 (2022-08-10)
+
+### Bug fixes
+
+* Fix Swift Package Manager build error due to use of `unsafeFlags`.
+
 ## 6.22.0 (2022-08-10)
 
 ### Enhancements
