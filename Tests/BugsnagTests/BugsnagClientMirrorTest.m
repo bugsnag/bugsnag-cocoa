@@ -140,7 +140,6 @@
             @"client @16@0:8",
             @"getContext @16@0:8",
             @"instance @16@0:8",
-            @"leaveBreadcrumbWithBlock: v24@0:8@?16",
             @"purge v16@0:8",
             @"start @16@0:8",
             @"startWithApiKey: @24@0:8@16",
