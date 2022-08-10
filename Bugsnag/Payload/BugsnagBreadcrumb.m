@@ -28,8 +28,7 @@
 #import "BSGKeys.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
-#import "Bugsnag.h"
-#import "BugsnagLogger.h"
+#import "BugsnagCollections.h"
 
 typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
 
@@ -145,23 +144,17 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
 }
 
 + (instancetype)breadcrumbFromDict:(NSDictionary *)dict {
-    BOOL isValidCrumb = [dict[BSGKeyType] isKindOfClass:[NSString class]]
-        && [dict[BSGKeyTimestamp] isKindOfClass:[NSString class]]
-        && [BSG_RFC3339DateTool isLikelyDateString:dict[BSGKeyTimestamp]]
-        && (
-            [dict[BSGKeyMetadata] isKindOfClass:[NSDictionary class]]
-            || [dict[@"metadata"] isKindOfClass:[NSDictionary class]] // react-native uses lowercase key
-            )
-        // Accept legacy 'name' value if provided.
-        && ([dict[BSGKeyMessage] isKindOfClass:[NSString class]]
-            || [dict[BSGKeyName] isKindOfClass:[NSString class]]);
-    if (isValidCrumb) {
-        return [self breadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-            crumb.message = dict[BSGKeyMessage] ?: dict[BSGKeyName];
-            crumb.metadata = dict[BSGKeyMetadata] ?: dict[@"metadata"];
-            crumb.timestampString = dict[BSGKeyTimestamp];
-            crumb.type = BSGBreadcrumbTypeFromString(dict[BSGKeyType]);
-        }];
+    NSDictionary *metadata = BSGDeserializeDict(dict[BSGKeyMetadata] ?: dict[@"metadata"] /* react-native uses lowercase key */);
+    NSString *message = BSGDeserializeString(dict[BSGKeyMessage] ?: dict[BSGKeyName] /* Accept legacy 'name' value */);
+    NSString *timestamp = BSGDeserializeString(dict[BSGKeyTimestamp]); 
+    NSString *type = BSGDeserializeString(dict[BSGKeyType]);
+    if (timestamp && type && message) {
+        BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb new];
+        crumb.message = message;
+        crumb.metadata = metadata ?: @{};
+        crumb.timestampString = timestamp;
+        crumb.type = BSGBreadcrumbTypeFromString(type);
+        return [crumb isValid] ? crumb : nil;
     }
     return nil;
 }
