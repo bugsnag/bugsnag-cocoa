@@ -383,33 +383,21 @@ static NSUserDefaults *userDefaults;
 
 // MARK: - User Persistence
 
-@synthesize persistUser = _persistUser;
-
-- (BOOL)persistUser {
-    @synchronized (self) {
-        return _persistUser;
-    }
-}
-
 - (void)setPersistUser:(BOOL)persistUser {
-    @synchronized (self) {
-        _persistUser = persistUser;
-        if (persistUser) {
-            [self persistUserData];
-        }
-        else {
-            [self deletePersistedUserData];
-        }
+    _persistUser = persistUser;
+    if (persistUser) {
+        [self persistUserData];
+    }
+    else {
+        [self deletePersistedUserData];
     }
 }
 
 - (BugsnagUser *)getPersistedUserData {
-    @synchronized(self) {
-        NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
-        NSString *name = [userDefaults objectForKey:kBugsnagUserName];
-        NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
-        return [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
-    }
+    NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
+    NSString *name = [userDefaults objectForKey:kBugsnagUserName];
+    NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
+    return [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
 }
 
 /**
@@ -417,31 +405,29 @@ static NSUserDefaults *userDefaults;
  * 'storing' nil values deletes them.
  */
 - (void)persistUserData {
-    @synchronized(self) {
-        if (self.user) {
-            // Email
-            if (self.user.email) {
-                [userDefaults setObject:self.user.email forKey:kBugsnagUserEmailAddress];
-            }
-            else {
-                [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
-            }
-
-            // Name
-            if (self.user.name) {
-                [userDefaults setObject:self.user.name forKey:kBugsnagUserName];
-            }
-            else {
-                [userDefaults removeObjectForKey:kBugsnagUserName];
-            }
-
-            // UserId
-            if (self.user.id) {
-                [userDefaults setObject:self.user.id forKey:kBugsnagUserUserId];
-            }
-            else {
-                [userDefaults removeObjectForKey:kBugsnagUserUserId];
-            }
+    if (self.user) {
+        // Email
+        if (self.user.email) {
+            [userDefaults setObject:self.user.email forKey:kBugsnagUserEmailAddress];
+        }
+        else {
+            [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
+        }
+        
+        // Name
+        if (self.user.name) {
+            [userDefaults setObject:self.user.name forKey:kBugsnagUserName];
+        }
+        else {
+            [userDefaults removeObjectForKey:kBugsnagUserName];
+        }
+        
+        // UserId
+        if (self.user.id) {
+            [userDefaults setObject:self.user.id forKey:kBugsnagUserUserId];
+        }
+        else {
+            [userDefaults removeObjectForKey:kBugsnagUserUserId];
         }
     }
 }
@@ -450,22 +436,14 @@ static NSUserDefaults *userDefaults;
  * Delete any persisted user data
  */
 -(void)deletePersistedUserData {
-    @synchronized(self) {
-        [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
-        [userDefaults removeObjectForKey:kBugsnagUserName];
-        [userDefaults removeObjectForKey:kBugsnagUserUserId];
-    }
+    [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
+    [userDefaults removeObjectForKey:kBugsnagUserName];
+    [userDefaults removeObjectForKey:kBugsnagUserUserId];
 }
 
 // -----------------------------------------------------------------------------
 // MARK: - Properties: Getters and Setters
 // -----------------------------------------------------------------------------
-
-- (void)setSendThreads:(BSGThreadSendPolicy)sendThreads {
-#if BSG_HAVE_MACH_THREADS
-    _sendThreads = sendThreads;
-#endif
-}
 
 - (void)setAppHangThresholdMillis:(NSUInteger)appHangThresholdMillis {
     if (appHangThresholdMillis >= 250) {
@@ -478,34 +456,22 @@ static NSUserDefaults *userDefaults;
 }
 
 - (void)setMaxPersistedEvents:(NSUInteger)maxPersistedEvents {
-    @synchronized (self) {
-        if (maxPersistedEvents >= 1) {
-            _maxPersistedEvents = maxPersistedEvents;
-        } else {
-            bsg_log_err(@"Invalid configuration value detected. Option maxPersistedEvents "
-                        "should be a non-zero integer. Supplied value is %lu",
-                        (unsigned long) maxPersistedEvents);
-        }
+    if (maxPersistedEvents >= 1) {
+        _maxPersistedEvents = maxPersistedEvents;
+    } else {
+        bsg_log_err(@"Invalid configuration value detected. Option maxPersistedEvents "
+                    "should be a non-zero integer. Supplied value is %lu",
+                    (unsigned long)maxPersistedEvents);
     }
 }
 
 - (void)setMaxPersistedSessions:(NSUInteger)maxPersistedSessions {
-    @synchronized (self) {
-        if (maxPersistedSessions >= 1) {
-            _maxPersistedSessions = maxPersistedSessions;
-        } else {
-            bsg_log_err(@"Invalid configuration value detected. Option maxPersistedSessions "
-                        "should be a non-zero integer. Supplied value is %lu",
-                        (unsigned long) maxPersistedSessions);
-        }
-    }
-}
-
-@synthesize maxBreadcrumbs = _maxBreadcrumbs;
-
-- (NSUInteger)maxBreadcrumbs {
-    @synchronized (self) {
-        return _maxBreadcrumbs;
+    if (maxPersistedSessions >= 1) {
+        _maxPersistedSessions = maxPersistedSessions;
+    } else {
+        bsg_log_err(@"Invalid configuration value detected. Option maxPersistedSessions "
+                    "should be a non-zero integer. Supplied value is %lu",
+                    (unsigned long)maxPersistedSessions);
     }
 }
 
@@ -519,9 +485,7 @@ static NSUserDefaults *userDefaults;
                     (unsigned long)newValue);
         return;
     }
-    @synchronized (self) {
-        _maxBreadcrumbs = newValue;
-    }
+    _maxBreadcrumbs = newValue;
 }
 
 - (NSURL *)notifyURL {
@@ -579,22 +543,6 @@ static NSUserDefaults *userDefaults;
             return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser) != 0;
     }
     return NO;
-}
-
-// MARK: - enabledBreadcrumbTypes
-
-@synthesize enabledBreadcrumbTypes = _enabledBreadcrumbTypes;
-
-- (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
-    @synchronized (self) {
-        return _enabledBreadcrumbTypes;
-    }
-}
-
-- (void)setEnabledBreadcrumbTypes:(BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
-    @synchronized (self) {
-        _enabledBreadcrumbTypes = enabledBreadcrumbTypes;
-    }
 }
 
 // MARK: -
