@@ -281,6 +281,7 @@ steps:
         --os=macos
         --os-version=12
         --app=macOSTestApp
+        --fail-fast
         --order=random
 
   - label: 'macOS 10.13 E2E tests'
