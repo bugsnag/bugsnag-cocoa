@@ -40,22 +40,11 @@ const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 
 static const int BSGApiKeyLength = 32;
 
-// User info persistence keys
-static NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
-static NSString * const kBugsnagUserName = @"BugsnagUserName";
-static NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
-
 // =============================================================================
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
 @implementation BugsnagConfiguration
-
-static NSUserDefaults *userDefaults;
-
-+ (void)initialize {
-    userDefaults = NSUserDefaults.standardUserDefaults;
-}
 
 + (instancetype _Nonnull)loadConfig {
     NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
@@ -140,14 +129,6 @@ static NSUserDefaults *userDefaults;
     return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
-+ (void)setUserDefaults:(NSUserDefaults *)newValue {
-    userDefaults = newValue;
-}
-
-+ (NSUserDefaults *)userDefaults {
-    return userDefaults;
-}
-
 // -----------------------------------------------------------------------------
 // MARK: - Initializers
 // -----------------------------------------------------------------------------
@@ -203,7 +184,7 @@ static NSUserDefaults *userDefaults;
     // the heuristic when killing/restarting an app in Xcode or similar.
     _persistUser = YES;
     // persistUser isn't settable until post-init.
-    _user = [self getPersistedUserData];
+    _user = BSGGetPersistedUser();
 
     if ([NSURLSession class]) {
         _session = [NSURLSession
@@ -280,13 +261,11 @@ static NSUserDefaults *userDefaults;
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
 }
 
-- (void)setUser:(NSString *_Nullable)userId
-      withEmail:(NSString *_Nullable)email
-        andName:(NSString *_Nullable)name {
-    self.user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
-
+- (void)setUser:(NSString *)userId withEmail:(NSString *)email andName:(NSString *)name {
+    BugsnagUser *user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email]; 
+    self.user = user;
     if (self.persistUser) {
-        [self persistUserData];
+        BSGSetPersistedUser(user);
     }
 }
 
@@ -385,60 +364,7 @@ static NSUserDefaults *userDefaults;
 
 - (void)setPersistUser:(BOOL)persistUser {
     _persistUser = persistUser;
-    if (persistUser) {
-        [self persistUserData];
-    }
-    else {
-        [self deletePersistedUserData];
-    }
-}
-
-- (BugsnagUser *)getPersistedUserData {
-    NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
-    NSString *name = [userDefaults objectForKey:kBugsnagUserName];
-    NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
-    return [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
-}
-
-/**
- * Store user data in a secure location (i.e. the keychain) that persists between application runs
- * 'storing' nil values deletes them.
- */
-- (void)persistUserData {
-    if (self.user) {
-        // Email
-        if (self.user.email) {
-            [userDefaults setObject:self.user.email forKey:kBugsnagUserEmailAddress];
-        }
-        else {
-            [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
-        }
-        
-        // Name
-        if (self.user.name) {
-            [userDefaults setObject:self.user.name forKey:kBugsnagUserName];
-        }
-        else {
-            [userDefaults removeObjectForKey:kBugsnagUserName];
-        }
-        
-        // UserId
-        if (self.user.id) {
-            [userDefaults setObject:self.user.id forKey:kBugsnagUserUserId];
-        }
-        else {
-            [userDefaults removeObjectForKey:kBugsnagUserUserId];
-        }
-    }
-}
-
-/**
- * Delete any persisted user data
- */
--(void)deletePersistedUserData {
-    [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
-    [userDefaults removeObjectForKey:kBugsnagUserName];
-    [userDefaults removeObjectForKey:kBugsnagUserUserId];
+    BSGSetPersistedUser(persistUser ? self.user : nil);
 }
 
 // -----------------------------------------------------------------------------

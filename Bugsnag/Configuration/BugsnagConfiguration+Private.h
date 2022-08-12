@@ -22,9 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Properties
 
-/// The user defaults database to use for persistence of user information.
-@property (class, nonatomic) NSUserDefaults *userDefaults;
-
 @property (readonly, nonatomic) NSDictionary<NSString *, id> *dictionaryRepresentation;
 
 @property (nonatomic) BSGFeatureFlagStore *featureFlagStore;
@@ -53,8 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Methods
 
 + (BOOL)isValidApiKey:(NSString *)apiKey;
-
-- (void)deletePersistedUserData;
 
 - (BOOL)shouldDiscardErrorClass:(NSString *)errorClass;
 
