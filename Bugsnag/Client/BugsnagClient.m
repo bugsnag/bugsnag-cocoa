@@ -173,8 +173,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
 @implementation BugsnagClient
 
-@dynamic user; // This computed property should not have a backing ivar
-
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration {
     if ((self = [super init])) {
         // Take a shallow copy of the configuration
@@ -504,20 +502,21 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // MARK: - User
 // =============================================================================
 
-- (BugsnagUser *_Nonnull)user
-{
-    return self.configuration.user;
+@dynamic user;
+
+- (BugsnagUser *)user {
+    @synchronized (self.configuration) {
+        return self.configuration.user;
+    }
 }
 
-- (void)setUser:(NSString *_Nullable)userId
-      withEmail:(NSString *_Nullable)email
-        andName:(NSString *_Nullable)name
-{
-    [self.configuration setUser:userId withEmail:email andName:name];
-    NSDictionary *userJson = [self.user toJson];
-    [self.state addMetadata:userJson toSection:BSGKeyUser];
-    if (self.observer) {
-        self.observer(BSGClientObserverUpdateUser, self.user);
+- (void)setUser:(NSString *)userId withEmail:(NSString *)email andName:(NSString *)name {
+    @synchronized (self.configuration) {
+        [self.configuration setUser:userId withEmail:email andName:name];
+        [self.state addMetadata:[self.configuration.user toJson] toSection:BSGKeyUser];
+        if (self.observer) {
+            self.observer(BSGClientObserverUpdateUser, self.user);
+        }
     }
 }
 
