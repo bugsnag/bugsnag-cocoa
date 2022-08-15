@@ -16,7 +16,7 @@ end
 
 Then(/^on (iOS|macOS|watchOS) ([0-9.]+) and later, (.+)/) do |platform, version, step_text|
   raise 'Maze.config.os_version is not defined' if Maze.config.os_version.nil?
-  step(step_text) if platform_matches?(platform) && Gem::Version.new(version) >= Gem::Version.new(Maze.config.os_version)
+  step(step_text) if platform_matches?(platform) && Gem::Version.new(Maze.config.os_version) >= Gem::Version.new(version)
 end
 
 Then(/^on !(iOS|macOS|watchOS), (.+)/) do |platform, step_text|
