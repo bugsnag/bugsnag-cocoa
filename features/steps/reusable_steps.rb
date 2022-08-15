@@ -6,24 +6,21 @@ When('I ignore invalid {word}') do |type|
   Maze.config.captured_invalid_requests.delete(type.to_sym)
 end
 
-Then(/^on (iOS|macOS|watchOS), (.+)/) do |platform, step_text|
-  step(step_text) if platform.downcase == Maze::Helper.get_current_platform
+def platform_matches?(platform)
+  Maze::Helper.get_current_platform == platform.downcase
 end
 
-Then(/^on (\w+) ([0-9.]+) and later, (.+)/) do |test_platform, test_version, step_text|
-  actual_platform = Maze::Helper.get_current_platform
-  unless %w[ios macos].include? actual_platform
-    raise "Unexpected platform #{actual_platform}, this step can only handle ios and macos"
-  end
+Then(/^on (iOS|macOS|watchOS), (.+)/) do |platform, step_text|
+  step(step_text) if platform_matches?(platform)
+end
 
-  actual_version = Maze.config.os_version
-  next unless test_platform.downcase == actual_platform && actual_version >= test_version.to_f
-
-  step(step_text)
+Then(/^on (iOS|macOS|watchOS) ([0-9.]+) and later, (.+)/) do |platform, version, step_text|
+  raise 'Maze.config.os_version is not defined' if Maze.config.os_version.nil?
+  step(step_text) if platform_matches?(platform) && Gem::Version.new(Maze.config.os_version) >= Gem::Version.new(version)
 end
 
 Then(/^on !(iOS|macOS|watchOS), (.+)/) do |platform, step_text|
-  step(step_text) unless platform.downcase == Maze::Helper.get_current_platform
+  step(step_text) unless platform_matches?(platform)
 end
 
 Then('the event {string} equals one of:') do |field, possible_values|
