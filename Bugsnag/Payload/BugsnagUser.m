@@ -49,3 +49,23 @@
 }
 
 @end
+
+// MARK: - User Persistence
+
+static NSString * const BugsnagUserEmailAddressKey = @"BugsnagUserEmailAddress";
+static NSString * const BugsnagUserIdKey           = @"BugsnagUserUserId";
+static NSString * const BugsnagUserNameKey         = @"BugsnagUserName";
+
+BugsnagUser * BSGGetPersistedUser(void) {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return [[BugsnagUser alloc] initWithId:[userDefaults stringForKey:BugsnagUserIdKey]
+                                      name:[userDefaults stringForKey:BugsnagUserNameKey]
+                              emailAddress:[userDefaults stringForKey:BugsnagUserEmailAddressKey]];
+}
+
+void BSGSetPersistedUser(BugsnagUser *user) {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:user.email forKey:BugsnagUserEmailAddressKey];
+    [userDefaults setObject:user.id forKey:BugsnagUserIdKey];
+    [userDefaults setObject:user.name forKey:BugsnagUserNameKey];
+}

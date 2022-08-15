@@ -23,4 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+BugsnagUser * BSGGetPersistedUser(void);
+
+void BSGSetPersistedUser(BugsnagUser *_Nullable user);
+
 NS_ASSUME_NONNULL_END

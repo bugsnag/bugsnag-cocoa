@@ -40,22 +40,11 @@ const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 
 static const int BSGApiKeyLength = 32;
 
-// User info persistence keys
-static NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
-static NSString * const kBugsnagUserName = @"BugsnagUserName";
-static NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
-
 // =============================================================================
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
 @implementation BugsnagConfiguration
-
-static NSUserDefaults *userDefaults;
-
-+ (void)initialize {
-    userDefaults = NSUserDefaults.standardUserDefaults;
-}
 
 + (instancetype _Nonnull)loadConfig {
     NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
@@ -140,14 +129,6 @@ static NSUserDefaults *userDefaults;
     return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
-+ (void)setUserDefaults:(NSUserDefaults *)newValue {
-    userDefaults = newValue;
-}
-
-+ (NSUserDefaults *)userDefaults {
-    return userDefaults;
-}
-
 // -----------------------------------------------------------------------------
 // MARK: - Initializers
 // -----------------------------------------------------------------------------
@@ -203,7 +184,7 @@ static NSUserDefaults *userDefaults;
     // the heuristic when killing/restarting an app in Xcode or similar.
     _persistUser = YES;
     // persistUser isn't settable until post-init.
-    _user = [self getPersistedUserData];
+    _user = BSGGetPersistedUser();
 
     if ([NSURLSession class]) {
         _session = [NSURLSession
@@ -280,13 +261,11 @@ static NSUserDefaults *userDefaults;
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
 }
 
-- (void)setUser:(NSString *_Nullable)userId
-      withEmail:(NSString *_Nullable)email
-        andName:(NSString *_Nullable)name {
-    self.user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
-
+- (void)setUser:(NSString *)userId withEmail:(NSString *)email andName:(NSString *)name {
+    BugsnagUser *user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email]; 
+    self.user = user;
     if (self.persistUser) {
-        [self persistUserData];
+        BSGSetPersistedUser(user);
     }
 }
 
@@ -383,89 +362,14 @@ static NSUserDefaults *userDefaults;
 
 // MARK: - User Persistence
 
-@synthesize persistUser = _persistUser;
-
-- (BOOL)persistUser {
-    @synchronized (self) {
-        return _persistUser;
-    }
-}
-
 - (void)setPersistUser:(BOOL)persistUser {
-    @synchronized (self) {
-        _persistUser = persistUser;
-        if (persistUser) {
-            [self persistUserData];
-        }
-        else {
-            [self deletePersistedUserData];
-        }
-    }
-}
-
-- (BugsnagUser *)getPersistedUserData {
-    @synchronized(self) {
-        NSString *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
-        NSString *name = [userDefaults objectForKey:kBugsnagUserName];
-        NSString *userId = [userDefaults objectForKey:kBugsnagUserUserId];
-        return [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
-    }
-}
-
-/**
- * Store user data in a secure location (i.e. the keychain) that persists between application runs
- * 'storing' nil values deletes them.
- */
-- (void)persistUserData {
-    @synchronized(self) {
-        if (self.user) {
-            // Email
-            if (self.user.email) {
-                [userDefaults setObject:self.user.email forKey:kBugsnagUserEmailAddress];
-            }
-            else {
-                [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
-            }
-
-            // Name
-            if (self.user.name) {
-                [userDefaults setObject:self.user.name forKey:kBugsnagUserName];
-            }
-            else {
-                [userDefaults removeObjectForKey:kBugsnagUserName];
-            }
-
-            // UserId
-            if (self.user.id) {
-                [userDefaults setObject:self.user.id forKey:kBugsnagUserUserId];
-            }
-            else {
-                [userDefaults removeObjectForKey:kBugsnagUserUserId];
-            }
-        }
-    }
-}
-
-/**
- * Delete any persisted user data
- */
--(void)deletePersistedUserData {
-    @synchronized(self) {
-        [userDefaults removeObjectForKey:kBugsnagUserEmailAddress];
-        [userDefaults removeObjectForKey:kBugsnagUserName];
-        [userDefaults removeObjectForKey:kBugsnagUserUserId];
-    }
+    _persistUser = persistUser;
+    BSGSetPersistedUser(persistUser ? self.user : nil);
 }
 
 // -----------------------------------------------------------------------------
 // MARK: - Properties: Getters and Setters
 // -----------------------------------------------------------------------------
-
-- (void)setSendThreads:(BSGThreadSendPolicy)sendThreads {
-#if BSG_HAVE_MACH_THREADS
-    _sendThreads = sendThreads;
-#endif
-}
 
 - (void)setAppHangThresholdMillis:(NSUInteger)appHangThresholdMillis {
     if (appHangThresholdMillis >= 250) {
@@ -478,34 +382,22 @@ static NSUserDefaults *userDefaults;
 }
 
 - (void)setMaxPersistedEvents:(NSUInteger)maxPersistedEvents {
-    @synchronized (self) {
-        if (maxPersistedEvents >= 1) {
-            _maxPersistedEvents = maxPersistedEvents;
-        } else {
-            bsg_log_err(@"Invalid configuration value detected. Option maxPersistedEvents "
-                        "should be a non-zero integer. Supplied value is %lu",
-                        (unsigned long) maxPersistedEvents);
-        }
+    if (maxPersistedEvents >= 1) {
+        _maxPersistedEvents = maxPersistedEvents;
+    } else {
+        bsg_log_err(@"Invalid configuration value detected. Option maxPersistedEvents "
+                    "should be a non-zero integer. Supplied value is %lu",
+                    (unsigned long)maxPersistedEvents);
     }
 }
 
 - (void)setMaxPersistedSessions:(NSUInteger)maxPersistedSessions {
-    @synchronized (self) {
-        if (maxPersistedSessions >= 1) {
-            _maxPersistedSessions = maxPersistedSessions;
-        } else {
-            bsg_log_err(@"Invalid configuration value detected. Option maxPersistedSessions "
-                        "should be a non-zero integer. Supplied value is %lu",
-                        (unsigned long) maxPersistedSessions);
-        }
-    }
-}
-
-@synthesize maxBreadcrumbs = _maxBreadcrumbs;
-
-- (NSUInteger)maxBreadcrumbs {
-    @synchronized (self) {
-        return _maxBreadcrumbs;
+    if (maxPersistedSessions >= 1) {
+        _maxPersistedSessions = maxPersistedSessions;
+    } else {
+        bsg_log_err(@"Invalid configuration value detected. Option maxPersistedSessions "
+                    "should be a non-zero integer. Supplied value is %lu",
+                    (unsigned long)maxPersistedSessions);
     }
 }
 
@@ -519,9 +411,7 @@ static NSUserDefaults *userDefaults;
                     (unsigned long)newValue);
         return;
     }
-    @synchronized (self) {
-        _maxBreadcrumbs = newValue;
-    }
+    _maxBreadcrumbs = newValue;
 }
 
 - (NSURL *)notifyURL {
@@ -579,22 +469,6 @@ static NSUserDefaults *userDefaults;
             return (self.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeUser) != 0;
     }
     return NO;
-}
-
-// MARK: - enabledBreadcrumbTypes
-
-@synthesize enabledBreadcrumbTypes = _enabledBreadcrumbTypes;
-
-- (BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
-    @synchronized (self) {
-        return _enabledBreadcrumbTypes;
-    }
-}
-
-- (void)setEnabledBreadcrumbTypes:(BSGEnabledBreadcrumbType)enabledBreadcrumbTypes {
-    @synchronized (self) {
-        _enabledBreadcrumbTypes = enabledBreadcrumbTypes;
-    }
 }
 
 // MARK: -

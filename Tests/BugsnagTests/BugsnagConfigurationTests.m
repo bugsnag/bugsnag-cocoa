@@ -4,16 +4,16 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSCrashType.h"
-#import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
+
 #import "BSGCrashSentry.h"
+#import "BugsnagClient+Private.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
-#import <TargetConditionals.h>
+#import "BugsnagUser+Private.h"
 
 // =============================================================================
 // MARK: - Tests
@@ -23,6 +23,11 @@
 @end
 
 @implementation BugsnagConfigurationTests
+
+- (void)tearDown {
+    [super tearDown];
+    [self deletePersistedUserData];
+}
 
 // =============================================================================
 // MARK: - Session-related
@@ -353,16 +358,16 @@
 // MARK: - User persistence tests
 // =============================================================================
 
-NSString * const kBugsnagUserEmailAddress = @"BugsnagUserEmailAddress";
-NSString * const kBugsnagUserName = @"BugsnagUserName";
-NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
-
 // Helper
 - (void)getName:(NSString **)name email:(NSString **)email id:(NSString **  )id {
-    NSUserDefaults *userDefaults = BugsnagConfiguration.userDefaults;
-    *email = [userDefaults objectForKey:kBugsnagUserEmailAddress];
-    *id = [userDefaults objectForKey:kBugsnagUserUserId];
-    *name = [userDefaults objectForKey:kBugsnagUserName];
+    BugsnagUser *user = BSGGetPersistedUser();
+    *email = user.email;
+    *id = user.id;
+    *name = user.name;
+}
+
+- (void)deletePersistedUserData {
+    BSGSetPersistedUser(nil);
 }
 
 - (void)testUserPersistence {
@@ -377,7 +382,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertTrue(config.persistUser);
 
     // Start with no persisted user data
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
     [self getName:&userDefaultName email:&userDefaultEmail id:&userDefaultUserId];
     XCTAssertNil(userDefaultEmail);
     XCTAssertNil(userDefaultName);
@@ -399,7 +404,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     XCTAssertEqualObjects(config2.user.id, userId);
 
     // Check that values we know to have been persisted are actuallty deleted.
-    [config2 deletePersistedUserData];
+    [self deletePersistedUserData];
     [self getName:&userDefaultName email:&userDefaultEmail id:&userDefaultUserId];
     XCTAssertNil(userDefaultEmail);
     XCTAssertNil(userDefaultName);
@@ -414,10 +419,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.persistUser = false;
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
 
     // Should be no persisted data, and should not persist between invocations
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
     [self getName:&userDefaultName email:&userDefaultEmail id:&userDefaultUserId];
     XCTAssertNil(userDefaultEmail);
     XCTAssertNil(userDefaultName);
@@ -444,10 +449,10 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue(config.persistUser);
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
 
     // Should be no persisted data
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
     [self getName:&userDefaultName email:&userDefaultEmail id:&userDefaultUserId];
     XCTAssertNil(userDefaultEmail);
     XCTAssertNil(userDefaultName);
@@ -480,7 +485,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
     
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue(config.persistUser);
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
 
     [config setUser:nil withEmail:nil andName:nil];
 
@@ -505,7 +510,7 @@ NSString * const kBugsnagUserUserId = @"BugsnagUserUserId";
 
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertTrue(config.persistUser);
-    [config deletePersistedUserData];
+    [self deletePersistedUserData];
 
     // Should be no persisted data
     [self getName:&userDefaultName email:&userDefaultEmail id:&userDefaultUserId];
