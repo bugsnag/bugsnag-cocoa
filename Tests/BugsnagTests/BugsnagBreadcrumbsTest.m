@@ -49,6 +49,18 @@ static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
     return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
 }
 
+static BugsnagBreadcrumb * WithBlock(void (^ block)(BugsnagBreadcrumb *breadcrumb)) {
+    BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb new];
+    block(breadcrumb);
+    return breadcrumb;
+}
+
+static BugsnagBreadcrumb * WithMessage(NSString *message) {
+    return WithBlock(^(BugsnagBreadcrumb *breadcrumb) {
+        breadcrumb.message = message;
+    });
+}
+
 @interface BugsnagBreadcrumbsTest : XCTestCase
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
 @end
@@ -70,9 +82,9 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagBreadcrumbs *crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [crumbs removeAllBreadcrumbs];
-    [crumbs addBreadcrumb:@"Launch app"];
-    [crumbs addBreadcrumb:@"Tap button"];
-    [crumbs addBreadcrumb:@"Close tutorial"];
+    [crumbs addBreadcrumb:WithMessage(@"Launch app")];
+    [crumbs addBreadcrumb:WithMessage(@"Tap button")];
+    [crumbs addBreadcrumb:WithMessage(@"Close tutorial")];
     self.crumbs = crumbs;
 }
 
@@ -92,10 +104,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     config.maxBreadcrumbs = 3;
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [self.crumbs removeAllBreadcrumbs];
-    [self.crumbs addBreadcrumb:@"Crumb 1"];
-    [self.crumbs addBreadcrumb:@"Crumb 2"];
-    [self.crumbs addBreadcrumb:@"Crumb 3"];
-    [self.crumbs addBreadcrumb:@"Clear notifications"];
+    [self.crumbs addBreadcrumb:WithMessage(@"Crumb 1")];
+    [self.crumbs addBreadcrumb:WithMessage(@"Crumb 2")];
+    [self.crumbs addBreadcrumb:WithMessage(@"Crumb 3")];
+    [self.crumbs addBreadcrumb:WithMessage(@"Clear notifications")];
     awaitBreadcrumbSync(self.crumbs);
     NSArray<BugsnagBreadcrumb *> *breadcrumbs = self.crumbs.breadcrumbs;
     XCTAssertEqual(breadcrumbs.count, 3);
@@ -112,11 +124,11 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     [config addOnBreadcrumbBlock:crumbBlock];
 
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"message";
         crumb.metadata = @{@123 : @"would raise exception"};
-    }];
+    })];
     awaitBreadcrumbSync(self.crumbs);
 }
 
@@ -125,7 +137,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     config.maxBreadcrumbs = 0;
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [self.crumbs removeAllBreadcrumbs];
-    [self.crumbs addBreadcrumb:@"Clear notifications"];
+    [self.crumbs addBreadcrumb:WithMessage(@"Clear notifications")];
     XCTAssertEqual(self.crumbs.breadcrumbs.count, 0);
 }
 
@@ -152,11 +164,11 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagBreadcrumbs *crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [crumbs removeAllBreadcrumbs];
-    [crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    [crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"Rotated Menu";
         crumb.metadata = @{@"direction" : @"right"};
-    }];
+    })];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [crumbs arrayValue];
     XCTAssertEqualObjects(value[0][@"metaData"][@"direction"], @"right");
@@ -180,11 +192,11 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testPersistentCrumbCustom {
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *crumb) {
         crumb.message = @"Initiate sequence";
         crumb.metadata = @{ @"captain": @"Bob"};
         crumb.type = BSGBreadcrumbTypeState;
-    }];
+    })];
     awaitBreadcrumbSync(self.crumbs);
     NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.crumbs cachedBreadcrumbs];
     XCTAssertEqual(breadcrumbs.count, 4);
@@ -198,37 +210,37 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [self.crumbs removeAllBreadcrumbs];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeUser;
         crumb.message = @"user";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeLog;
         crumb.message = @"log";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeError;
         crumb.message = @"error";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeProcess;
         crumb.message = @"process";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeRequest;
         crumb.message = @"request";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeNavigation;
         crumb.message = @"navigation";
-    }];
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    })];
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.message = @"manual";
-    }];
+    })];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
     XCTAssertEqual(8, value.count);
@@ -246,7 +258,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [self.crumbs removeAllBreadcrumbs];
-    [self.crumbs addBreadcrumb:@"this is a test"];
+    [self.crumbs addBreadcrumb:WithMessage(@"this is a test")];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
     XCTAssertEqual(1, value.count);
@@ -263,10 +275,10 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
     [self.crumbs removeAllBreadcrumbs];
     // Don't discard this
-    [self.crumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumb) {
+    [self.crumbs addBreadcrumb:WithBlock(^(BugsnagBreadcrumb *_Nonnull crumb) {
         crumb.type = BSGBreadcrumbTypeState;
         crumb.message = @"state";
-    }];
+    })];
     awaitBreadcrumbSync(self.crumbs);
     NSArray *value = [self.crumbs arrayValue];
     XCTAssertEqual(1, value.count);
@@ -288,9 +300,9 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 
 - (void)testBreadcrumbsBeforeDate {
     [self.crumbs removeAllBreadcrumbs];
-    [self.crumbs addBreadcrumb:@"Crumb 1"];
-    [self.crumbs addBreadcrumb:@"Crumb 2"];
-    [self.crumbs addBreadcrumb:@"Crumb 3"];
+    [self.crumbs addBreadcrumb:WithMessage(@"Crumb 1")];
+    [self.crumbs addBreadcrumb:WithMessage(@"Crumb 2")];
+    [self.crumbs addBreadcrumb:WithMessage(@"Crumb 3")];
     XCTAssertEqual([self.crumbs breadcrumbsBeforeDate:[NSDate date]].count, 3);
     XCTAssertEqual([self.crumbs breadcrumbsBeforeDate:[NSDate distantPast]].count, 0);
 }
@@ -476,9 +488,9 @@ static void * executeBlock(void *ptr) {
     // breadcrumb data is precomputed and not written to disk.
     //
     NSData *breadcrumbData = [NSJSONSerialization dataWithJSONObject:
-                              [[BugsnagBreadcrumb breadcrumbWithBlock:^(BugsnagBreadcrumb *breadcrumb) {
+                              [WithBlock(^(BugsnagBreadcrumb *breadcrumb) {
         breadcrumb.message = @"Lorem ipsum";
-    }] objectValue] options:0 error:nil];
+    }) objectValue] options:0 error:nil];
     
     __block BOOL isFinished = NO;
     

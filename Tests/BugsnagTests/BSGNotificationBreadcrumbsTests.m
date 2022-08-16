@@ -135,11 +135,10 @@
 #pragma mark BSGBreadcrumbSink
 
 - (void)leaveBreadcrumbWithMessage:(NSString *)message metadata:(NSDictionary *)metadata andType:(BSGBreadcrumbType)type {
-    self.breadcrumb = [BugsnagBreadcrumb breadcrumbWithBlock:^(BugsnagBreadcrumb *breadcrumb) {
-        breadcrumb.message = message;
-        breadcrumb.metadata = metadata;
-        breadcrumb.type = type;
-    }];
+    self.breadcrumb = [BugsnagBreadcrumb new];
+    self.breadcrumb.message = message;
+    self.breadcrumb.metadata = metadata;
+    self.breadcrumb.type = type;
 }
 
 #define TEST(__NAME__, __TYPE__, __MESSAGE__, __METADATA__) do { \

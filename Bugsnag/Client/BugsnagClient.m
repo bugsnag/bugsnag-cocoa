@@ -475,9 +475,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // =============================================================================
 
 - (void)leaveBreadcrumbWithMessage:(NSString *_Nonnull)message {
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *breadcrumb) {
-        breadcrumb.message = message;
-    }];
+    [self leaveBreadcrumbWithMessage:message metadata:nil andType:BSGBreadcrumbTypeManual];
 }
 
 - (void)leaveBreadcrumbForNotificationName:(NSString *_Nonnull)notificationName {
@@ -491,11 +489,14 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (JSONMetadata != metadata && metadata) {
         bsg_log_warn("Breadcrumb metadata is not a valid JSON object: %@", metadata);
     }
-    [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-        crumbs.message = message;
-        crumbs.metadata = JSONMetadata;
-        crumbs.type = type;
-    }];
+    
+    BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb new];
+    breadcrumb.message = message;
+    breadcrumb.metadata = JSONMetadata ?: @{};
+    breadcrumb.type = type;
+    [self.breadcrumbs addBreadcrumb:breadcrumb];
+    
+    BSGRunContextUpdateTimestamp();
 }
 
 // =============================================================================
@@ -780,11 +781,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                       andMetadata:metadata];
 }
 
-- (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block {
-    [self.breadcrumbs addBreadcrumbWithBlock:block];
-    BSGRunContextUpdateTimestamp();
-}
-
 /**
  * A convenience safe-wrapper for conditionally recording automatic breadcrumbs
  * based on the configuration.
@@ -798,11 +794,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                     andMetadata:(NSDictionary *)metadata
 {
     if ([[self configuration] shouldRecordBreadcrumbType:breadcrumbType]) {
-        [self addBreadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull breadcrumb) {
-            breadcrumb.metadata = metadata ?: @{};
-            breadcrumb.type = breadcrumbType;
-            breadcrumb.message = message;
-        }];
+        [self leaveBreadcrumbWithMessage:message metadata:metadata andType:breadcrumbType];
     }
 }
 

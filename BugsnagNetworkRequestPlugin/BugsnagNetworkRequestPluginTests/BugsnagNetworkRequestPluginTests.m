@@ -65,11 +65,10 @@ static NSData *mock_nextData;
 - (void)leaveBreadcrumbWithMessage:(nonnull NSString *)message
                           metadata:(nullable NSDictionary *)metadata
                            andType:(BSGBreadcrumbType)type {
-    BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb breadcrumbWithBlock:^(BugsnagBreadcrumb *_Nonnull crumbs) {
-        crumbs.message = message;
-        crumbs.metadata = metadata ?: @{};
-        crumbs.type = type;
-    }];
+    BugsnagBreadcrumb *crumb = [BugsnagBreadcrumb new];
+    crumb.message = message;
+    crumb.metadata = metadata ?: @{};
+    crumb.type = type;
     [self.breadcrumbs addObject:crumb];
 }
 

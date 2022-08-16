@@ -12,10 +12,6 @@
 @class BugsnagConfiguration;
 typedef struct BSG_KSCrashReportWriter BSG_KSCrashReportWriter;
 
-typedef void (^BSGBreadcrumbConfiguration)(BugsnagBreadcrumb *_Nonnull);
-
-#pragma mark -
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagBreadcrumbs : NSObject
@@ -28,16 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSArray<BugsnagBreadcrumb *> *breadcrumbs;
 
 /**
- * Store a new breadcrumb with a provided message.
+ * Store a new breadcrumb.
  */
-- (void)addBreadcrumb:(NSString *)breadcrumbMessage;
-
-/**
- *  Store a new breadcrumb configured via block.
- *
- *  @param block configuration block
- */
-- (void)addBreadcrumbWithBlock:(BSGBreadcrumbConfiguration)block;
+- (void)addBreadcrumb:(BugsnagBreadcrumb *)breadcrumb;
 
 /**
  * Store a new serialized breadcrumb.
