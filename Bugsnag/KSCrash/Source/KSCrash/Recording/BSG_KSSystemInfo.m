@@ -26,22 +26,23 @@
 
 #import "BSG_KSSystemInfo.h"
 
+#import "BSGDefines.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGRunContext.h"
+#import "BSGUIKit.h"
+#import "BSGUtils.h"
 #import "BSG_Jailbreak.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_KSFileUtils.h"
-#import "BSG_KSJSONCodecObjC.h"
-#import "BSG_KSLogger.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSMachHeaders.h"
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BugsnagCollections.h"
-#import "BSGDefines.h"
-#import "BSGUIKit.h"
+#import "BugsnagLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
 #import <mach-o/dyld.h>
@@ -481,26 +482,17 @@ static NSDictionary * bsg_systemversion() {
 @end
 
 char *bsg_kssysteminfo_toJSON(void) {
-    NSError *error;
     NSMutableDictionary *systemInfo = [[BSG_KSSystemInfo systemInfo] mutableCopy];
 
     // Make sure the jailbroken status didn't get patched out.
     systemInfo[@BSG_KSSystemField_Jailbroken] = @(is_jailbroken());
 
-    NSMutableData *jsonData =
-        (NSMutableData *)[BSG_KSJSONCodec encode:systemInfo
-                                         options:BSG_KSJSONEncodeOptionSorted
-                                           error:&error];
-    if (error != nil) {
-        bsg_log_err(@"Could not serialize system info: %@", error);
-        return NULL;
+    NSData *data = BSGJSONDataFromDictionary(systemInfo, NULL);
+    if (!data) {
+        bsg_log_err(@"Could not serialize system info. "
+                    "Crash reports will be missing vital data.");
     }
-    if (![jsonData isKindOfClass:[NSMutableData class]]) {
-        jsonData = [NSMutableData dataWithData:jsonData];
-    }
-
-    [jsonData appendBytes:"\0" length:1];
-    return strdup([jsonData bytes]);
+    return BSGCStringWithData(data);
 }
 
 char *bsg_kssysteminfo_copyProcessName(void) {
