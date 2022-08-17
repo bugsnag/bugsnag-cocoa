@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a crash when using `BugsnagNetworkRequestPlugin` with `GTMSessionFetcher`.
+  [#1465](https://github.com/bugsnag/bugsnag-cocoa/pull/1465)
+
 * Fix a regression introduced in 6.18.0 that caused incorrect C++ exception
   stacktraces to be reported when Bugsnag is linked dynamically.
   [#1463](https://github.com/bugsnag/bugsnag-cocoa/pull/1463)
