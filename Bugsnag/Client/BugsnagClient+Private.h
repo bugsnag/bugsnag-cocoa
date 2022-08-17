@@ -89,13 +89,11 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @property (strong, nonatomic) BugsnagSystemState *systemState;
 
-@property (nonatomic) BugsnagUser *user;
+@property (readonly, atomic) BugsnagUser *user;
 
 @property (nullable, nonatomic) BSGClientObserver observer; // Used in BugsnagReactNative
 
 #pragma mark Methods
-
-- (void)addBreadcrumbWithBlock:(void (^)(BugsnagBreadcrumb *))block;
 
 - (void)addRuntimeVersionInfo:(NSString *)info withKey:(NSString *)key;
 

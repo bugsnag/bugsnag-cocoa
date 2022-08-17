@@ -155,13 +155,6 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
-+ (void)leaveBreadcrumbWithBlock:
-    (void (^_Nonnull)(BugsnagBreadcrumb *_Nonnull))block {
-    if ([self bugsnagStarted]) {
-        [self.client addBreadcrumbWithBlock:block];
-    }
-}
-
 + (void)leaveBreadcrumbForNotificationName:
     (NSString *_Nonnull)notificationName {
     if ([self bugsnagStarted]) {

@@ -27,7 +27,6 @@
 - (void)setUp {
     [super setUp];
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    [self.configuration deletePersistedUserData];
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:nil];
 }
 

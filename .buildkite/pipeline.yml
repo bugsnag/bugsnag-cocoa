@@ -235,7 +235,7 @@ steps:
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "--exclude=features/[h-z].*.feature$"
+          - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 24
     concurrency_group: browserstack-app
@@ -264,7 +264,7 @@ steps:
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "--exclude=features/[a-g].*.feature$"
+          - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 24
     concurrency_group: browserstack-app
@@ -293,7 +293,8 @@ steps:
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--capabilities={\"browserstack.networkLogs\":\"true\"}"
-          - "--exclude=features/[h-z].*.feature$"
+          - "--fail-fast"
+          - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 24
     concurrency_group: browserstack-app
@@ -321,7 +322,8 @@ steps:
           - "--farm=bs"
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
-          - "--exclude=features/[a-g].*.feature$"
+          - "--fail-fast"
+          - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 24
     concurrency_group: browserstack-app
@@ -392,6 +394,7 @@ steps:
         --os=macos
         --os-version=12
         --app=macOSTestApp
+        --fail-fast
         --order=random
 
   - label: 'macOS 12 stress test'

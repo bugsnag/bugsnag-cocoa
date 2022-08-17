@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -o nounset
+set -euo pipefail
 
 xcresult=$(date '+BugsnagTests-%Y-%m-%d-%H-%M-%S.xcresult')
 
@@ -22,6 +22,9 @@ rm -rf DerivedData
 
 
 echo "--- Test"
+
+xcrun simctl shutdown all
+xcrun simctl erase all
 
 make test XCODEBUILD_EXTRA_ARGS="-resultBundlePath $xcresult" "$@" || die
 
