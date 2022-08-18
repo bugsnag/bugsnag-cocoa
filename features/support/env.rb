@@ -37,11 +37,8 @@ BeforeAll do
     Maze.config.capabilities_option = JSON.dump(capabilities)
   end
 
-  # Additional require MacOS configuration
   if Maze.config.os == 'macos'
-    # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
-    # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
-    `defaults write com.apple.CrashReporter UseUNC 1`
+    disable_unexpectedly_quit_dialog
 
     fixture_dir = 'features/fixtures/macos/output'
     zip_name = "#{Maze.config.app}.zip"
@@ -53,6 +50,31 @@ BeforeAll do
       system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
     end
   end
+end
+
+AfterAll do
+  $after_all_blocks.each(&:call) unless $after_all_blocks.nil?
+end
+
+# Disables the "macOSTestApp quit unexpectedly" dialog to prevent focus being stolen from the fixture.
+def disable_unexpectedly_quit_dialog
+  if Maze.config.os_version.floor == 11
+    # com.apple.CrashReporter defaults seem to be ignored on macOS 11
+    # Note: unloading com.apple.ReportCrash disables creation of crash reports in ~/Library/Logs/DiagnosticReports
+    `/bin/launchctl unload /System/Library/LaunchAgents/com.apple.ReportCrash.plist`
+    after_all do
+      `/bin/launchctl load /System/Library/LaunchAgents/com.apple.ReportCrash.plist`
+    end
+  else
+    # Use Notification Center instead of showing dialog.
+    `defaults write com.apple.CrashReporter UseUNC 1`
+  end
+end
+
+# There is no "Maze.hooks.after_all"
+def after_all(&block)
+  $after_all_blocks = [] if $after_all_blocks.nil?
+  $after_all_blocks << block
 end
 
 def skip_below(os, version)
