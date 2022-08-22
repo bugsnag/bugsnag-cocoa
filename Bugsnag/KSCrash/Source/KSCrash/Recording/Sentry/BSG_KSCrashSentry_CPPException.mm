@@ -43,19 +43,6 @@
 #define STACKTRACE_BUFFER_LENGTH 30
 #define DESCRIPTION_BUFFER_LENGTH 1000
 
-// Compiler hints for "if" statements
-#define unlikely_if(x) if (__builtin_expect(x, 0))
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-// Internal NSException recorder
-bool bsg_kscrashsentry_isNSExceptionHandlerInstalled(void);
-void bsg_recordException(NSException *exception);
-#ifdef __cplusplus
-}
-#endif
-
 // ============================================================================
 #pragma mark - Globals -
 // ============================================================================
@@ -81,28 +68,50 @@ static BSG_KSCrash_SentryContext *bsg_g_context;
 #pragma mark - Callbacks -
 // ============================================================================
 
-typedef void (*cxa_throw_type)(void *, std::type_info *, void (*)(void *));
-
-extern "C" {
-void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
-                 void (*dest)(void *)) __attribute__((weak));
-
-void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
-                 void (*dest)(void *)) {
+static void CPPExceptionBacktrace(void) {
     if (bsg_g_captureNextStackTrace) {
         bsg_g_stackTraceCount =
             backtrace((void **)bsg_g_stackTrace,
                       sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
     }
+}
 
-    static cxa_throw_type orig_cxa_throw = NULL;
-    unlikely_if(orig_cxa_throw == NULL) {
-        orig_cxa_throw = (cxa_throw_type)dlsym(RTLD_NEXT, "__cxa_throw");
+#if defined(BSG_BUILD_DYLIB) && BSG_BUILD_DYLIB
+
+static _LIBCXXABI_NORETURN
+void bsg_cxa_throw(void *thrown_exception, std::type_info *tinfo,
+                   void (*dest)(void *)) {
+    CPPExceptionBacktrace();
+    __cxxabiv1::__cxa_throw(thrown_exception, tinfo, dest);
+}
+
+struct dyld_interpose_tuple {
+    const void *replacement;
+    const void *replacee;
+};
+
+static struct dyld_interpose_tuple interpose
+__attribute__ ((section ("__DATA,__interpose")))
+__attribute__ ((used)) = {
+    (const void *)(uintptr_t)&__cxxabiv1::__cxa_throw,
+    (const void *)(uintptr_t)&bsg_cxa_throw
+};
+
+#else
+
+void __cxxabiv1::__cxa_throw(void *thrown_exception, std::type_info *tinfo,
+                             void (*dest)(void *)) {
+    CPPExceptionBacktrace();
+
+    static _LIBCXXABI_NORETURN
+    void (* orig_cxa_throw)(void *, std::type_info *, void (*)(void *));
+    if (__builtin_expect(!orig_cxa_throw, false)) {
+        orig_cxa_throw = (typeof(orig_cxa_throw))dlsym(RTLD_NEXT, "__cxa_throw");
     }
     orig_cxa_throw(thrown_exception, tinfo, dest);
-    __builtin_unreachable();
 }
-}
+
+#endif
 
 static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Trapped c++ exception");
