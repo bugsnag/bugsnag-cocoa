@@ -118,19 +118,33 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
         load_cmd = (const void *)(uintptr_t)load_cmd + load_cmd->cmdsize;
     }
     
+    if (!linkedit) {
+        BSG_KSLOG_INFO(SEG_LINKEDIT " not found for %s", image->name);
+        return;
+    }
+    
+    const uintptr_t linkedit_addr = linkedit->vmaddr + slide;
+    
     // The layout of segments in memory differs depending on whether the image is in the dyld cache.
     // Subtracting __LINKEDIT's fileoff converts a *file* offset into an offset relative to __LINKEDIT
     // that lets us compute the data's address in memory regardless of layout.
-#define get_linkedit_data(__dataoff__) (const void *)(linkedit->vmaddr + slide - linkedit->fileoff + (__dataoff__))
+#define get_linkedit_data(__dataoff__, __size__) ({ \
+    if (__dataoff__ < linkedit->fileoff) { \
+        BSG_KSLOG_DEBUG(#__dataoff__ " < linkedit->fileoff"); \
+        return; } \
+    if (__dataoff__ + __size__ > linkedit->fileoff + linkedit->filesize) { \
+        BSG_KSLOG_DEBUG(#__dataoff__ " + " #__size__ " > linkedit->fileoff + linkedit->filesize"); \
+        return; } \
+    (const void *)(__dataoff__ - linkedit->fileoff + linkedit_addr); })
     
     // Search functions starts data for a function that contains the address
-    if (function_starts && linkedit && function_starts->dataoff > linkedit->fileoff) {
+    if (function_starts) {
         // Function starts are stored as a series of LEB128 encoded deltas
         // Starting with delta from start of __TEXT
         uintptr_t addr = (uintptr_t)image->imageVmAddr + slide;
         uintptr_t func_start = addr;
         struct leb128_uintptr_context context = {0};
-        const uint8_t *data = get_linkedit_data(function_starts->dataoff);
+        const uint8_t *data = get_linkedit_data(function_starts->dataoff, function_starts->datasize);
         for (uint32_t i = 0; i < function_starts->datasize; i++) {
             uintptr_t delta = 0;
             if (leb128_uintptr_decode(&context, data[i], &delta) && delta) {
@@ -166,9 +180,9 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
     }
     
     // Find the best symbol that matches function_address.
-    if (result->function_address && symtab && symtab->symoff > linkedit->fileoff) {
-        const nlist_t *syms = get_linkedit_data(symtab->symoff);
-        const char *strings = get_linkedit_data(symtab->stroff);
+    if (result->function_address && symtab) {
+        const nlist_t *syms = get_linkedit_data(symtab->symoff, symtab->nsyms * sizeof(nlist_t));
+        const char *strings = get_linkedit_data(symtab->stroff, symtab->strsize);
         const uintptr_t symbol_address = (uintptr_t)result->function_address - slide;
         nlist_t best = {{0}};
         // Scan the whole symtab because there can be > 1 symbol with the same n_value.
