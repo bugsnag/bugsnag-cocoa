@@ -30,9 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readwrite, nonatomic) BOOL errorReportingThread;
 
-+ (NSDictionary *)enhanceThreadInfo:(NSDictionary *)thread
-                              depth:(NSUInteger)depth
-                          errorType:(nullable NSString *)errorType;
++ (NSDictionary *)enhanceThreadInfo:(NSDictionary *)thread;
 
 #if BSG_HAVE_MACH_THREADS
 + (nullable instancetype)mainThread;
@@ -40,10 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSMutableArray *)serializeThreads:(nullable NSArray<BugsnagThread *> *)threads;
 
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(nullable NSString *)errorType;
++ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads binaryImages:(NSArray *)binaryImages;
 
 - (NSDictionary *)toDictionary;
 

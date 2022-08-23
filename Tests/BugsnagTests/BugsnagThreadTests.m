@@ -98,35 +98,28 @@
     NSDictionary *dict = @{
             @"backtrace": @{
                     @"contents": @[
-                            @{},
-                            @{},
-                            @{},
+                            @{@"instruction_addr": @304},
+                            @{@"instruction_addr": @204},
+                            @{@"instruction_addr": @104}
                     ]
             },
-            @"crashed": @NO
+            @"registers": @{
+                @"basic": @{
+#if TARGET_CPU_ARM || TARGET_CPU_ARM64
+                    @"pc": @304,
+                    @"lr": @204
+#elif TARGET_CPU_X86
+                    @"eip": @304
+#elif TARGET_CPU_X86_64
+                    @"rip": @304
+#else
+#error Unsupported CPU architecture
+#endif
+                }
+            }
     };
-    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict depth:0 errorType:nil];
+    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict];
     XCTAssertEqual(dict, thread);
-}
-
-/**
- * Dictionary info enhanced if an error reporting thread
- */
-- (void)testThreadEnhancementCrashed {
-    NSDictionary *dict = @{
-            @"backtrace": @{
-                    @"contents": @[
-                            @{},
-                            @{},
-                            @{},
-                    ]
-            },
-            @"crashed": @YES
-    };
-    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict depth:0 errorType:nil];
-    XCTAssertNotEqual(dict, thread);
-    NSArray *trace = thread[@"backtrace"][@"contents"];
-    XCTAssertEqual(3, [trace count]);
 }
 
 /**
@@ -136,74 +129,44 @@
     NSDictionary *dict = @{
             @"backtrace": @{
                     @"contents": @[
-                            @{},
-                            @{},
-                            @{}
-                    ]
-            },
-            @"crashed": @YES
-    };
-    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict depth:0 errorType:@"signal"];
-    XCTAssertNotEqual(dict, thread);
-    NSArray *trace = thread[@"backtrace"][@"contents"];
-    XCTAssertEqual(3, [trace count]);
-
-    XCTAssertEqual(1, [trace[0] count]);
-    XCTAssertTrue(trace[0][@"isPC"]);
-    XCTAssertEqual(1, [trace[1] count]);
-    XCTAssertTrue(trace[1][@"isLR"]);
-    XCTAssertEqual(0, [trace[2] count]);
-}
-
-/**
- * Frames enhanced with lc/pr info, wrong error type
- */
-- (void)testThreadEnhancementWrongErrorType {
-    NSDictionary *dict = @{
-            @"backtrace": @{
-                    @"contents": @[
-                            @{},
-                            @{},
-                            @{}
-                    ]
-            },
-            @"crashed": @YES
-    };
-    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict depth:0 errorType:@"NSException"];
-    XCTAssertNotEqual(dict, thread);
-    NSArray *trace = thread[@"backtrace"][@"contents"];
-    XCTAssertEqual(3, [trace count]);
-
-    XCTAssertEqual(1, [trace[0] count]);
-    XCTAssertTrue(trace[0][@"isPC"]);
-    XCTAssertEqual(0, [trace[1] count]);
-    XCTAssertEqual(0, [trace[2] count]);
-}
-
-/**
- * Frames not enhanced with lc/pr info in stack overflow
- */
-- (void)testThreadEnhancementStackoverflow {
-    NSDictionary *dict = @{
-            @"backtrace": @{
-                    @"contents": @[
-                            @{},
-                            @{},
-                            @{}
+                            @{@"instruction_addr": @304},
+                            @{@"instruction_addr": @204},
+                            @{@"instruction_addr": @104}
                     ]
             },
             @"crashed": @YES,
-            @"stack": @{
-                    @"overflow": @YES
+            @"registers": @{
+                @"basic": @{
+#if TARGET_CPU_ARM || TARGET_CPU_ARM64
+                    @"pc": @304,
+                    @"lr": @204
+#elif TARGET_CPU_X86
+                    @"eip": @304
+#elif TARGET_CPU_X86_64
+                    @"rip": @304
+#else
+#error Unsupported CPU architecture
+#endif
+                }
             }
     };
-    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict depth:0 errorType:@"signal"];
+    NSDictionary *thread = [BugsnagThread enhanceThreadInfo:dict];
     XCTAssertNotEqual(dict, thread);
     NSArray *trace = thread[@"backtrace"][@"contents"];
     XCTAssertEqual(3, [trace count]);
-    XCTAssertEqual(0, [trace[0] count]);
-    XCTAssertEqual(0, [trace[1] count]);
-    XCTAssertEqual(0, [trace[2] count]);
+
+    XCTAssertEqualObjects(trace[0][@"isPC"], @YES);
+    XCTAssertEqualObjects(trace[0][@"isLR"], nil);
+
+    XCTAssertEqualObjects(trace[1][@"isPC"], nil);
+#if TARGET_CPU_ARM || TARGET_CPU_ARM64
+    XCTAssertEqualObjects(trace[1][@"isLR"], @YES);
+#else
+    XCTAssertEqualObjects(trace[1][@"isLR"], nil);
+#endif
+
+    XCTAssertEqualObjects(trace[2][@"isPC"], nil);
+    XCTAssertEqualObjects(trace[2][@"isLR"], nil);
 }
 
 - (void)testStacktraceOverride {

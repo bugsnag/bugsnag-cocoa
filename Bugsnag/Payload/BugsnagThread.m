@@ -150,14 +150,11 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
 /**
  * Deerializes Bugsnag Threads from a KSCrash report
  */
-+ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads
-                                         binaryImages:(NSArray *)binaryImages
-                                                depth:(NSUInteger)depth
-                                            errorType:(NSString *)errorType {
++ (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads binaryImages:(NSArray *)binaryImages {
     NSMutableArray *bugsnagThreads = [NSMutableArray new];
 
     for (NSDictionary *thread in threads) {
-        NSDictionary *threadInfo = [self enhanceThreadInfo:thread depth:depth errorType:errorType];
+        NSDictionary *threadInfo = [self enhanceThreadInfo:thread];
         BugsnagThread *obj = [[BugsnagThread alloc] initWithThread:threadInfo binaryImages:binaryImages];
         [bugsnagThreads addObject:obj];
     }
@@ -165,42 +162,39 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
 }
 
 /**
- * Enhances the thread information recorded by KSCrash. Specifically, this will trim the error reporting thread frames
- * by the `depth` configured, and add information to each frame indicating whether they
- * are within the program counter/link register.
- *
- * The error reporting thread is the thread on which the error occurred, and is given more
- * prominence in the Bugsnag Dashboard - therefore we enhance it with extra info.
- *
- * @param thread the captured thread
- * @param depth the 'depth'. This is equivalent to the number of frames which should be discarded from a report,
- * and is configurable by the user.
- * @param errorType the type of error as recorded by KSCrash (e.g. mach, signal)
- * @return the enhanced thread information
+ * Adds isPC and isLR values to a KSCrashReport thread dictionary.
  */
-+ (NSDictionary *)enhanceThreadInfo:(NSDictionary *)thread
-                              depth:(NSUInteger)depth
-                          errorType:(NSString *)errorType {
++ (NSDictionary *)enhanceThreadInfo:(NSDictionary *)thread {
     NSArray *backtrace = thread[@"backtrace"][@"contents"];
     BOOL isReportingThread = [thread[@"crashed"] boolValue];
 
     if (isReportingThread) {
-        BOOL stackOverflow = [thread[@"stack"][@"overflow"] boolValue];
-        NSUInteger seen = 0;
+        NSDictionary *registers = thread[@ BSG_KSCrashField_Registers][@ BSG_KSCrashField_Basic];
+#if TARGET_CPU_ARM || TARGET_CPU_ARM64
+        NSNumber *pc = registers[@"pc"];
+        NSNumber *lr = registers[@"lr"];
+#elif TARGET_CPU_X86
+        NSNumber *pc = registers[@"eip"];
+        NSNumber *lr = nil;
+#elif TARGET_CPU_X86_64
+        NSNumber *pc = registers[@"rip"];
+        NSNumber *lr = nil;
+#else
+#error Unsupported CPU architecture
+#endif
+
         NSMutableArray *stacktrace = [NSMutableArray array];
 
         for (NSDictionary *frame in backtrace) {
             NSMutableDictionary *mutableFrame = [frame mutableCopy];
-            if (seen++ >= depth) {
-                // Mark the frame so we know where it came from
-                if (seen == 1 && !stackOverflow) {
-                    mutableFrame[BSGKeyIsPC] = @YES;
-                }
-                if (seen == 2 && !stackOverflow && [@[BSGKeySignal, BSGKeyMach] containsObject:errorType]) {
-                    mutableFrame[BSGKeyIsLR] = @YES;
-                }
-                [stacktrace addObject:mutableFrame];
+            NSNumber *instructionAddress = frame[@ BSG_KSCrashField_InstructionAddr]; 
+            if ([instructionAddress isEqual:pc]) {
+                mutableFrame[BSGKeyIsPC] = @YES;
             }
+            if ([instructionAddress isEqual:lr]) {
+                mutableFrame[BSGKeyIsLR] = @YES;
+            }
+            [stacktrace addObject:mutableFrame];
         }
         NSMutableDictionary *mutableBacktrace = [thread[@"backtrace"] mutableCopy];
         mutableBacktrace[@"contents"] = stacktrace;

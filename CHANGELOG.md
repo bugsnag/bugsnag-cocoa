@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix accuracy of `isLR` and `isPC` stack frame values.
+  [#1470](https://github.com/bugsnag/bugsnag-cocoa/pull/1470)
+
 ## 6.22.2 (2022-08-17)
 
 ### Bug fixes

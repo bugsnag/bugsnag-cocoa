@@ -238,7 +238,6 @@
     NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];
     XCTAssertEqual(stackframes.count, callStackSymbols.count, @"All valid stack frame strings should be parsed");
-    XCTAssertTrue(stackframes.firstObject.isPc, @"The first stack frame should have isPc set to true");
     BOOL __block didSeeMain = NO;
     [stackframes enumerateObjectsUsingBlock:^(BugsnagStackframe *stackframe, NSUInteger idx, BOOL *stop) {
         XCTAssertNotNil(stackframe.frameAddress);

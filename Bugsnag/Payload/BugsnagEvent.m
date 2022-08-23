@@ -314,7 +314,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     // generate threads/error info
     NSArray *binaryImages = event[@"binary_images"];
     NSArray *threadDict = [event valueForKeyPath:@"crash.threads"];
-    NSArray<BugsnagThread *> *threads = [BugsnagThread threadsFromArray:threadDict binaryImages:binaryImages depth:depth errorType:errorType];
+    NSArray<BugsnagThread *> *threads = [BugsnagThread threadsFromArray:threadDict binaryImages:binaryImages];
 
     BugsnagThread *errorReportingThread = nil;
     for (BugsnagThread *thread in threads) {

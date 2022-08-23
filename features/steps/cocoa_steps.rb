@@ -2,6 +2,11 @@ Then('I wait for the fixture to process the response') do
   sleep 2
 end
 
+Then(/^on (arm|x86), (.+)/) do |step_arch, step_text|
+  binary_arch = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.app.binaryArch')
+  step(step_text) if binary_arch.start_with? step_arch
+end
+
 Then('the error payload field {string} is equal for error {int} and error {int}') do |key, index_a, index_b|
   Maze.check.true(request_fields_are_equal(key, index_a, index_b))
 end

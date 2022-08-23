@@ -43,7 +43,7 @@ BUGSNAG_EXTERN
 @property (strong, nullable, nonatomic) NSNumber *frameAddress;
 
 /**
- * The VM address of the Mach-O file
+ * The Mach-O file's desired base virtual memory address
  */
 @property (strong, nullable, nonatomic) NSNumber *machoVmAddress;
 
@@ -53,17 +53,17 @@ BUGSNAG_EXTERN
 @property (strong, nullable, nonatomic) NSNumber *symbolAddress;
 
 /**
- * The load address of the Mach-O file
+ * The address at which the Mach-O file is mapped into memory
  */
 @property (strong, nullable, nonatomic) NSNumber *machoLoadAddress;
 
 /**
- * Whether the frame was within the program counter
+ * True if `frameAddress` is equal to the value of the program counter register.
  */
 @property (nonatomic) BOOL isPc;
 
 /**
- * Whether the frame was within the link register
+ * True if `frameAddress` is equal to the value of the link register.
  */
 @property (nonatomic) BOOL isLr;
 
