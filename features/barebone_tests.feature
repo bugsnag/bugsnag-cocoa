@@ -113,6 +113,8 @@ Feature: Barebone tests
     And the error payload field "events.0.device.model" matches the test device model
     And the error payload field "events.0.device.totalMemory" is an integer
     And the error payload field "events.0.threads" is an array with 0 elements
+    And the "isPC" of stack frame 0 is null
+    And the "isLR" of stack frame 0 is null
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
@@ -143,6 +145,8 @@ Feature: Barebone tests
     And the exception "errorClass" matches "SwiftNativeNSError"
     And the exception "message" equals "The data couldn’t be read because it isn’t in the correct format."
     And the exception "type" equals "cocoa"
+    And the "isPC" of stack frame 0 is null
+    And the "isLR" of stack frame 0 is null
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
@@ -235,6 +239,8 @@ Feature: Barebone tests
     And on !watchOS, the error payload field "events.0.threads" is a non-empty array
     And on !watchOS, the error payload field "events.0.threads.1" is not null
     And the stacktrace is valid for the event
+    And the "isPC" of stack frame 0 is null
+    And the "isLR" of stack frame 0 is null
 
   @skip_macos
   Scenario: Barebone test: Out Of Memory
