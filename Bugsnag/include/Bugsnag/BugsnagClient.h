@@ -41,7 +41,7 @@
  * Use the static access provided by the Bugsnag class instead.
  */
 BUGSNAG_EXTERN
-@interface BugsnagClient : NSObject<BSGBreadcrumbSink, BugsnagFeatureFlagStore, BugsnagMetadataStore>
+@interface BugsnagClient : NSObject<BugsnagFeatureFlagStore, BugsnagMetadataStore>
 
 /**
  * Initializes the client with the provided configuration.
