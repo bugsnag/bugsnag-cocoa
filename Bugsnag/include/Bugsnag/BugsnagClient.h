@@ -121,6 +121,14 @@ BUGSNAG_EXTERN
                            andType:(BSGBreadcrumbType)type
 NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
 
+/**
+ * Leave a "breadcrumb" log message representing a completed network request.
+ */
+- (void)leaveNetworkRequestBreadcrumbForTask:(nonnull NSURLSessionTask *)task
+                                     metrics:(nonnull NSURLSessionTaskMetrics *)metrics
+API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0))
+NS_SWIFT_NAME(leaveNetworkRequestBreadcrumb(task:metrics:));
+
 // =============================================================================
 // MARK: - Session
 // =============================================================================

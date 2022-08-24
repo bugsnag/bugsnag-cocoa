@@ -37,6 +37,7 @@
 #import "BSGInternalErrorReporter.h"
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
+#import "BSGNetworkBreadcrumb.h"
 #import "BSGNotificationBreadcrumbs.h"
 #import "BSGRunContext.h"
 #import "BSGSerialization.h"
@@ -496,6 +497,19 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     breadcrumb.type = type;
     [self.breadcrumbs addBreadcrumb:breadcrumb];
     
+    BSGRunContextUpdateTimestamp();
+}
+
+- (void)leaveNetworkRequestBreadcrumbForTask:(NSURLSessionTask *)task
+                                     metrics:(NSURLSessionTaskMetrics *)metrics {
+    if (!(self.configuration.enabledBreadcrumbTypes & BSGEnabledBreadcrumbTypeRequest)) {
+        return;
+    }
+    BugsnagBreadcrumb *breadcrumb = BSGNetworkBreadcrumbWithTaskMetrics(task, metrics);
+    if (!breadcrumb) {
+        return;
+    }
+    [self.breadcrumbs addBreadcrumb:breadcrumb];
     BSGRunContextUpdateTimestamp();
 }
 

@@ -173,6 +173,13 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     }
 }
 
++ (void)leaveNetworkRequestBreadcrumbForTask:(NSURLSessionTask *)task
+                                     metrics:(NSURLSessionTaskMetrics *)metrics {
+    if ([self bugsnagStarted]) {
+        [self.client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
+    }
+}
+
 + (NSArray<BugsnagBreadcrumb *> *_Nonnull)breadcrumbs {
     if ([self bugsnagStarted]) {
         return self.client.breadcrumbs.breadcrumbs ?: @[];

@@ -1,23 +1,23 @@
 //
-//  BSGURLSessionTracingDelegateTests.m
-//  BugsnagNetworkRequestPlugin
+//  BSGNetworkBreadcrumbTests.m
+//  Bugsnag
 //
 //  Created by Nick Dowell on 22/09/2021.
 //
 
-#import "BSGURLSessionTracingDelegate.h"
+#import "BSGNetworkBreadcrumb.h"
 
 #import <XCTest/XCTest.h>
 
-@interface BSGURLSessionTracingDelegateTests : XCTestCase
+@interface BSGNetworkBreadcrumbTests : XCTestCase
 
 @end
 
-@implementation BSGURLSessionTracingDelegateTests
+@implementation BSGNetworkBreadcrumbTests
 
 - (void)testUrlParamsForQueryItems {
 #define TEST(url, expected) \
-XCTAssertEqualObjects([BSGURLSessionTracingDelegate urlParamsForQueryItems:[NSURLComponents componentsWithString:url].queryItems], expected)
+XCTAssertEqualObjects(BSGURLParamsForQueryItems([NSURLComponents componentsWithString:url].queryItems), expected)
     
     TEST(@"http://example.com", nil);
     
@@ -48,7 +48,7 @@ XCTAssertEqualObjects([BSGURLSessionTracingDelegate urlParamsForQueryItems:[NSUR
 
 - (void)testURLStringWithoutQueryForComponents {
 #define TEST(url, expected) \
-XCTAssertEqualObjects([BSGURLSessionTracingDelegate URLStringWithoutQueryForComponents:[NSURLComponents componentsWithString:url]], expected)
+XCTAssertEqualObjects(BSGURLStringForComponents([NSURLComponents componentsWithString:url]), expected)
     
     TEST(@"http://example.com",
          @"http://example.com");

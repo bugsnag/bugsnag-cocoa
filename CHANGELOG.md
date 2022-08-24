@@ -3,6 +3,12 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Add `leaveNetworkRequestBreadcrumbForTask:metrics:` to simplify leaving network
+  request breadcrumbs without overriding (swizzling) `NSURLSession` methods.
+  [#1472](https://github.com/bugsnag/bugsnag-cocoa/pull/1472)
+
 ### Bug fixes
 
 * Fix accuracy of `isLR` and `isPC` stack frame values.
