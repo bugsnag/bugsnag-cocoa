@@ -8,18 +8,6 @@
 
 #import "BSGNetworkBreadcrumb.h"
 
-NSString * BSGNetworkBreadcrumbMessageForResponse(NSHTTPURLResponse *response) {
-    if (response) {
-        if (100 <= response.statusCode && response.statusCode < 400) {
-            return @"NSURLSession request succeeded";
-        }
-        if (400 <= response.statusCode && response.statusCode < 500) {
-            return @"NSURLSession request failed";
-        }
-    }
-    return @"NSURLSession request error";
-}
-
 BugsnagBreadcrumb * BSGNetworkBreadcrumbWithTaskMetrics(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) {
     NSURLRequest *request = task.originalRequest ? task.originalRequest : task.currentRequest;
     if (!request) {
@@ -44,16 +32,24 @@ BugsnagBreadcrumb * BSGNetworkBreadcrumbWithTaskMetrics(NSURLSessionTask *task, 
         metadata[@"requestContentLength"] = @(request.HTTPBody.length);
     }
 
+    NSString *message = @"NSURLSession request error";
+
     // Note: Cannot use metrics transaction response because it will be nil if a custom NSURLProtocol is present.
     // Note: If there was an error, task.response will be nil, and the following values will be set accordingly.
-    NSHTTPURLResponse *response = [task.response isKindOfClass:[NSHTTPURLResponse class]] ? (NSHTTPURLResponse *)task.response : nil;
-    if (response) {
+    if ([task.response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSInteger statusCode = ((NSHTTPURLResponse *)task.response).statusCode;
+        if (100 <= statusCode && statusCode < 400) {
+            message = @"NSURLSession request succeeded";
+        }
+        if (400 <= statusCode && statusCode < 500) {
+            message = @"NSURLSession request failed";
+        }
         metadata[@"responseContentLength"] = @(task.countOfBytesReceived);
-        metadata[@"status"] = @(response.statusCode);
+        metadata[@"status"] = @(statusCode);
     }
 
     BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb new];
-    breadcrumb.message = BSGNetworkBreadcrumbMessageForResponse(response);
+    breadcrumb.message = message;
     breadcrumb.metadata = metadata;
     breadcrumb.type = BSGBreadcrumbTypeRequest;
     return breadcrumb;
