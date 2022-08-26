@@ -34,10 +34,11 @@ BugsnagBreadcrumb * BSGNetworkBreadcrumbWithTaskMetrics(NSURLSessionTask *task, 
 
     NSString *message = @"NSURLSession request error";
 
-    // Note: Cannot use metrics transaction response because it will be nil if a custom NSURLProtocol is present.
-    // Note: If there was an error, task.response will be nil, and the following values will be set accordingly.
-    if ([task.response isKindOfClass:[NSHTTPURLResponse class]]) {
-        NSInteger statusCode = ((NSHTTPURLResponse *)task.response).statusCode;
+    // NSURLSessionTaskTransactionMetrics.response is nil when a custom NSURLProtocol is used. 
+    // If there was an error, task.response will be nil.
+    NSURLResponse *response = task.response; 
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
         if (100 <= statusCode && statusCode < 400) {
             message = @"NSURLSession request succeeded";
         }
