@@ -350,8 +350,6 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --os-version=10.13
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -369,8 +367,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --os-version=10.15
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -392,8 +388,6 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --os-version=12
-        --app=macOSTestApp
         --fail-fast
         --order=random
 

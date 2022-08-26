@@ -8,19 +8,6 @@ BeforeAll do
     'MAZE_RUNNER' => 'TRUE'
   }
 
-  # MallocScribble results in intermittent crashes in CFNetwork on macOS 10.13
-  if Maze.config.os == 'macos' && Maze.config.os_version > 10.13
-    $logger.info 'Enabling MallocScribble'
-    env = {
-      'MallocCheckHeapAbort' => 'TRUE',
-      'MallocCheckHeapStart' => '1000',
-      'MallocErrorAbort' => 'TRUE',
-      'MallocGuardEdges' => 'TRUE',
-      'MallocScribble' => 'TRUE'
-    }
-    $app_env.merge!(env)
-  end
-
   Maze.config.receive_no_requests_wait = 15
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
@@ -38,17 +25,12 @@ BeforeAll do
   end
 
   if Maze.config.os == 'macos'
+    Maze.config.os_version ||= `sw_vers -productVersion`.to_f
+
+    # MallocScribble results in intermittent crashes in CFNetwork on macOS 10.13
+    enable_malloc_scribble if Maze.config.os_version > 10.13
+
     disable_unexpectedly_quit_dialog
-
-    fixture_dir = 'features/fixtures/macos/output'
-    zip_name = "#{Maze.config.app}.zip"
-    app_name = "#{Maze.config.app}.app"
-    app_path = "#{fixture_dir}/#{app_name}"
-    zip_path = "#{fixture_dir}/#{zip_name}"
-
-    unless File.exist?(app_path) || !File.exist?(zip_path)
-      system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
-    end
   end
 end
 
@@ -65,6 +47,18 @@ def disable_unexpectedly_quit_dialog
     # Use Notification Center instead of showing dialog.
     `defaults write com.apple.CrashReporter UseUNC 1`
   end
+end
+
+def enable_malloc_scribble
+  $logger.info 'Enabling MallocScribble'
+  env = {
+    'MallocCheckHeapAbort' => 'TRUE',
+    'MallocCheckHeapStart' => '1000',
+    'MallocErrorAbort' => 'TRUE',
+    'MallocGuardEdges' => 'TRUE',
+    'MallocScribble' => 'TRUE'
+  }
+  $app_env.merge! env
 end
 
 def skip_below(os, version)
