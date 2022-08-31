@@ -156,9 +156,9 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @property (nullable, retain, nonatomic) BugsnagBreadcrumbs *breadcrumbStore;
 
-@property (readonly, nonatomic) BSGFeatureFlagStore *featureFlagStore;
-
 @property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
+
+@property (strong, nonatomic) BugsnagSessionTracker *sessionTracker;
 
 @end
 
@@ -442,6 +442,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return [self.sessionTracker resumeSession];
 }
 
+- (BugsnagSession *)session {
+    return self.sessionTracker.runningSession;
+}
+
+- (void)updateSession:(BugsnagSession * (^)(BugsnagSession *session))block {
+    self.sessionTracker.currentSession =  block(self.sessionTracker.currentSession);
+    BSGSessionUpdateRunContext(self.sessionTracker.runningSession);
+}
+
 // =============================================================================
 // MARK: - Connectivity Listener
 // =============================================================================
@@ -511,8 +520,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // =============================================================================
 // MARK: - User
 // =============================================================================
-
-@dynamic user;
 
 - (BugsnagUser *)user {
     @synchronized (self.configuration) {
@@ -922,51 +929,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 // MARK: - methods used by React Native
-
-- (NSDictionary *)collectAppWithState {
-    return [[self generateAppWithState:[BSG_KSSystemInfo systemInfo]] toDict];
-}
-
-- (NSDictionary *)collectDeviceWithState {
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
-    return [device toDictionary];
-}
-
-- (NSArray *)collectBreadcrumbs {
-    NSMutableArray *data = [NSMutableArray new];
-
-    for (BugsnagBreadcrumb *crumb in [self breadcrumbs]) {
-        NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
-        if (!crumbData) {
-            continue;
-        }
-        // JSON is serialized as 'name', we want as 'message' when passing to RN
-        crumbData[@"message"] = crumbData[@"name"];
-        crumbData[@"name"] = nil;
-        crumbData[@"metadata"] = crumbData[@"metaData"];
-        crumbData[@"metaData"] = nil;
-        [data addObject: crumbData];
-    }
-    return data;
-}
-
-- (NSArray *)collectThreads:(BOOL)unhandled {
-#if BSG_HAVE_MACH_THREADS
-    // discard the following
-    // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
-    // 2. [BugsnagClient collectThreads:]
-    NSUInteger depth = 2;
-    NSArray<NSNumber *> *callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
-    BSGThreadSendPolicy sendThreads = self.configuration.sendThreads;
-    BOOL recordAllThreads = sendThreads == BSGThreadSendPolicyAlways
-            || (unhandled && sendThreads == BSGThreadSendPolicyUnhandledOnly);
-    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
-    return [BugsnagThread serializeThreads:threads];
-#else
-    return @[];
-#endif
-}
 
 - (void)addRuntimeVersionInfo:(NSString *)info
                       withKey:(NSString *)key {

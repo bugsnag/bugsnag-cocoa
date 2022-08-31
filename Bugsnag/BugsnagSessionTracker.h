@@ -42,18 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startNewSessionIfAutoCaptureEnabled;
 
 /**
- Update the details of the current session to account for externally reported
- session information. Current session details are included in subsequent crash
- reports.
- Used in BugsnagUnity
- */
-- (void)registerExistingSession:(NSString *)sessionId
-                      startedAt:(NSDate *)startedAt
-                           user:(BugsnagUser *)user
-                   handledCount:(NSUInteger)handledCount
-                 unhandledCount:(NSUInteger)unhandledCount;
-
-/**
  Handle the app foregrounding event. If more than 30s has elapsed since being
  sent to the background, records a new session if session auto-capture is
  enabled.

@@ -267,7 +267,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 
 - (void)testStartingBugsnagTwiceLogsAWarningAndIgnoresNewConfiguration {
     [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    BugsnagConfiguration *initialConfig = [Bugsnag configuration];
+    BugsnagConfiguration *initialConfig = Bugsnag.client.configuration;
 
     // Create a new Configuration object and modify some arbitrary properties
     // These updates should all be ignored as Bugsnag has been started already
@@ -280,7 +280,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 
     [Bugsnag startWithConfiguration:updatedConfig];
 
-    BugsnagConfiguration *configAfter = [Bugsnag configuration];
+    BugsnagConfiguration *configAfter = Bugsnag.client.configuration;
 
     [self assertEqualConfiguration:initialConfig withActual:configAfter];
 }

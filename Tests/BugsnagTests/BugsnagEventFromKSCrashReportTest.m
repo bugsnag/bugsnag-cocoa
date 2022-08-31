@@ -29,7 +29,7 @@
                                 options:0
                                 error:nil];
     // required due to BugsnagEvent using global singleton
-    [Bugsnag configuration].bundleVersion = @"3";
+    Bugsnag.client.configuration.bundleVersion = @"3";
     self.event = [[BugsnagEvent alloc] initWithKSReport:dictionary];
 }
 

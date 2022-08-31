@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagStackframe.h>
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,25 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Constructs a stackframe object from a KSCrashReport backtrace dictionary.
 + (nullable instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages;
 
-/// Constructs a stackframe object from a JSON object (typically loaded from disk.)
-+ (instancetype)frameFromJson:(NSDictionary<NSString *, id> *)json;
-
-/// Populates the method and symbolAddress via `dladdr()` if this object was created from a backtrace or callstack.
-/// This can be a slow operation, so should be performed on a background thread.
-- (void)symbolicateIfNeeded;
-
-/// Returns a JSON compatible representation of the stackframe.
-- (NSDictionary *)toDictionary;
-
 @property (nonatomic) BOOL needsSymbolication;
-
-// MARK: - Properties for Flutter, React Native, or Unity notifiers.
-
-@property (copy, nullable, nonatomic) NSString *codeIdentifier;
-@property (strong, nullable, nonatomic) NSNumber *columnNumber;
-@property (copy, nullable, nonatomic) NSString *file;
-@property (strong, nullable, nonatomic) NSNumber *inProject;
-@property (strong, nullable, nonatomic) NSNumber *lineNumber;
 
 @end
 

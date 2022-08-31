@@ -12,6 +12,7 @@
 #import "BSGJSONSerialization.h"
 #import "BSGUtils.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 
 

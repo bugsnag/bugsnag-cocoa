@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagMetadata.h>
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,13 +16,7 @@ typedef void (^ BSGMetadataObserver)(BugsnagMetadata *);
 
 #pragma mark Properties
 
-@property (readonly, nonatomic) NSMutableDictionary *dictionary;
-
 @property (nullable, nonatomic) BSGMetadataObserver observer;
-
-#pragma mark Methods
-
-- (NSDictionary *)toDictionary;
 
 @end
 

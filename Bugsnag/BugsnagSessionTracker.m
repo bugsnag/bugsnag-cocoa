@@ -201,25 +201,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     }
 }
 
-- (void)registerExistingSession:(NSString *)sessionId
-                      startedAt:(NSDate *)startedAt
-                           user:(BugsnagUser *)user
-                   handledCount:(NSUInteger)handledCount
-                 unhandledCount:(NSUInteger)unhandledCount {
-    if (sessionId == nil || startedAt == nil) {
-        self.currentSession = nil;
-    } else {
-        self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
-                                                       startedAt:startedAt
-                                                            user:user
-                                                             app:[BugsnagApp new]
-                                                          device:[BugsnagDevice new]];
-        self.currentSession.handledCount = handledCount;
-        self.currentSession.unhandledCount = unhandledCount;
-    }
-    BSGSessionUpdateRunContext(self.currentSession);
-}
-
 #pragma mark - Handling events
 
 - (void)handleAppBackgroundEvent {

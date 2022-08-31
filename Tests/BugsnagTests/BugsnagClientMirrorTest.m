@@ -32,6 +32,7 @@
             @".cxx_destruct v16@0:8",
             @"addAutoBreadcrumbForEvent: v24@0:8@16",
             @"addAutoBreadcrumbOfType:withMessage:andMetadata: v40@0:8Q16@24@32",
+            @"addRuntimeVersionInfo:withKey: v32@0:8@16@24",
             @"appHangDetectedAtDate:withThreads:systemInfo: v40@0:8@16@24@32",
             @"appHangDetector @16@0:8",
             @"appHangEnded v16@0:8",
@@ -45,13 +46,8 @@
             @"automaticBreadcrumbTableItemEvents @16@0:8",
             @"breadcrumbStore @16@0:8",
             @"codeBundleId @16@0:8",
-            @"collectAppWithState @16@0:8",
-            @"collectBreadcrumbs @16@0:8",
-            @"collectDeviceWithState @16@0:8",
-            @"collectDeviceWithState @16@0:8",
-            @"collectThreads: @20@0:8B16",
-            @"collectThreads: @20@0:8c16",
             @"computeDidCrashLastLaunch v16@0:8",
+            @"configuration @16@0:8",
             @"context @16@0:8",
             @"dealloc v16@0:8",
             @"deserializeJson: @24@0:8*16",
@@ -74,6 +70,7 @@
             @"metadataChanged: v24@0:8@16",
             @"notificationBreadcrumbs @16@0:8",
             @"notifier @16@0:8",
+            @"notifyInternal:block: v32@0:8@16@?24",
             @"notifyErrorOrException:block: v32@0:8@16@?24",
             @"observer @?16@0:8",
             @"orientationDidChange: v24@0:8@16",
@@ -85,6 +82,7 @@
             @"sendBreadcrumbForTableViewNotification: v24@0:8@16",
             @"sendLaunchCrashSynchronously v16@0:8",
             @"serializeBreadcrumbs v16@0:8",
+            @"session @16@0:8",
             @"sessionTracker @16@0:8",
             @"setAppCrashedLastLaunch: v20@0:8B16",
             @"setAppDidCrashLastLaunch: v20@0:8B16",
@@ -126,9 +124,7 @@
             @"stateEventBlocks @16@0:8",
             @"systemState @16@0:8",
             @"thermalStateDidChange: v24@0:8@16",
-            @"unsubscribeFromNotifications: v24@0:8@16",
-            @"updateAutomaticBreadcrumbDetectionSettings v16@0:8",
-            @"workspaceBreadcrumbStateEvents @16@0:8",
+            @"updateSession: v24@0:8@?16",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
@@ -138,12 +134,10 @@
             @"bugsnagStarted c16@0:8",
             @"client @16@0:8",
             @"getContext @16@0:8",
-            @"instance @16@0:8",
             @"purge v16@0:8",
             @"start @16@0:8",
             @"startWithApiKey: @24@0:8@16",
             @"startWithConfiguration: @24@0:8@16",
-            @"updateCodeBundleId: v24@0:8@16",
     ]];
 }
 
