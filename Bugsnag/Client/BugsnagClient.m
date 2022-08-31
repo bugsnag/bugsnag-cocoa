@@ -154,6 +154,8 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @property (weak, nonatomic) NSTimer *appLaunchTimer;
 
+@property (nullable, retain, nonatomic) BugsnagBreadcrumbs *breadcrumbStore;
+
 @property (readonly, nonatomic) BSGFeatureFlagStore *featureFlagStore;
 
 @property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
@@ -205,7 +207,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
-        self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
+        _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
         // Start with a copy of the configuration metadata
         self.metadata = [[_configuration metadata] copy];
@@ -249,7 +251,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     bsg_g_bugsnag_data.configJSON = BSGCStringWithData(configData);
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
-    [self.breadcrumbs removeAllBreadcrumbs];
+    [self.breadcrumbStore removeAllBreadcrumbs];
 
 #if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
@@ -497,9 +499,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     breadcrumb.message = message;
     breadcrumb.metadata = JSONMetadata ?: @{};
     breadcrumb.type = type;
-    [self.breadcrumbs addBreadcrumb:breadcrumb];
+    [self.breadcrumbStore addBreadcrumb:breadcrumb];
     
     BSGRunContextUpdateTimestamp();
+}
+
+- (NSArray<BugsnagBreadcrumb *> *)breadcrumbs {
+    return self.breadcrumbStore.breadcrumbs ?: @[];
 }
 
 // =============================================================================
@@ -688,7 +694,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                handledState:handledState
                                                        user:[self.user withId]
                                                    metadata:metadata
-                                                breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
+                                                breadcrumbs:[self breadcrumbs]
                                                      errors:@[error]
                                                     threads:threads
                                                     session:nil /* the session's event counts have not yet been incremented! */];
@@ -930,7 +936,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (NSArray *)collectBreadcrumbs {
     NSMutableArray *data = [NSMutableArray new];
 
-    for (BugsnagBreadcrumb *crumb in self.breadcrumbs.breadcrumbs) {
+    for (BugsnagBreadcrumb *crumb in [self breadcrumbs]) {
         NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
         if (!crumbData) {
             continue;
@@ -1027,7 +1033,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
     device.time = date;
 
-    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs breadcrumbsBeforeDate:date];
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbStore breadcrumbsBeforeDate:date];
 
     BugsnagMetadata *metadata = [self.metadata copy];
 
@@ -1191,7 +1197,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                          handledState:handledState
                                  user:user
                              metadata:metadata
-                          breadcrumbs:[self.breadcrumbs cachedBreadcrumbs] ?: @[]
+                          breadcrumbs:[self.breadcrumbStore cachedBreadcrumbs] ?: @[]
                                errors:@[error]
                               threads:@[]
                               session:session];

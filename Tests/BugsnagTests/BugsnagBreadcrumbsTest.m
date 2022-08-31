@@ -370,16 +370,16 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     [client leaveBreadcrumbWithMessage:@"state message" metadata:md2 andType:BSGBreadcrumbTypeState];
     [client leaveBreadcrumbWithMessage:@"user message" metadata:md1 andType:BSGBreadcrumbTypeUser];
 
-    NSDictionary *bc0 = [client.breadcrumbs arrayValue][0];
-    NSDictionary *bc1 = [client.breadcrumbs arrayValue][1];
-    NSDictionary *bc2 = [client.breadcrumbs arrayValue][2];
-    NSDictionary *bc3 = [client.breadcrumbs arrayValue][3];
-    NSDictionary *bc4 = [client.breadcrumbs arrayValue][4];
-    NSDictionary *bc5 = [client.breadcrumbs arrayValue][5];
-    NSDictionary *bc6 = [client.breadcrumbs arrayValue][6];
-    NSDictionary *bc7 = [client.breadcrumbs arrayValue][7];
+    NSDictionary *bc0 = [client.breadcrumbs[0] objectValue];
+    NSDictionary *bc1 = [client.breadcrumbs[1] objectValue];
+    NSDictionary *bc2 = [client.breadcrumbs[2] objectValue];
+    NSDictionary *bc3 = [client.breadcrumbs[3] objectValue];
+    NSDictionary *bc4 = [client.breadcrumbs[4] objectValue];
+    NSDictionary *bc5 = [client.breadcrumbs[5] objectValue];
+    NSDictionary *bc6 = [client.breadcrumbs[6] objectValue];
+    NSDictionary *bc7 = [client.breadcrumbs[7] objectValue];
 
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 8);
+    XCTAssertEqual(client.breadcrumbs.count, 8);
 
     XCTAssertEqualObjects(bc0[@"type"], @"state");
     XCTAssertEqualObjects(bc0[@"name"], @"Bugsnag loaded");
@@ -416,9 +416,9 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(bc7[@"type"], @"user");
 
     [client leaveBreadcrumbWithMessage:@"Invalid metadata" metadata:@{@"date": [NSDate distantFuture]} andType:BSGBreadcrumbTypeUser];
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 9, @"Invalid metadata should not prevent a breadcrumb being left");
-    XCTAssertEqualObjects(client.breadcrumbs.breadcrumbs[8].message, @"Invalid metadata");
-    XCTAssertEqualObjects(client.breadcrumbs.breadcrumbs[8].metadata.allKeys, @[@"date"]);
+    XCTAssertEqual(client.breadcrumbs.count, 9, @"Invalid metadata should not prevent a breadcrumb being left");
+    XCTAssertEqualObjects(client.breadcrumbs[8].message, @"Invalid metadata");
+    XCTAssertEqualObjects(client.breadcrumbs[8].metadata.allKeys, @[@"date"]);
 }
 
 /**
@@ -436,8 +436,8 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     [client leaveBreadcrumbWithMessage:@"message1"];
     [client leaveBreadcrumbWithMessage:@"message2" metadata:nil andType:BSGBreadcrumbTypeUser];
     
-    NSDictionary *bc1 = [client.breadcrumbs arrayValue][1];
-    NSDictionary *bc2 = [client.breadcrumbs arrayValue][2];
+    NSDictionary *bc1 = [client.breadcrumbs[1] objectValue];
+    NSDictionary *bc2 = [client.breadcrumbs[2] objectValue];
 
     XCTAssertEqualObjects(bc1[@"name"], @"message1");
     XCTAssertEqualObjects(bc2[@"name"], @"message2");

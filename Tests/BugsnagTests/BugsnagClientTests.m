@@ -81,7 +81,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     // Check that we can change it
     [client notify:ex];
 
-    NSDictionary *breadcrumb = [client.breadcrumbs.breadcrumbs.lastObject objectValue];
+    NSDictionary *breadcrumb = [client.breadcrumbs.lastObject objectValue];
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
 
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
@@ -294,11 +294,11 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0);
+    XCTAssertEqual(client.breadcrumbs.count, 0);
 
     // small breadcrumb can be left without issue
     [client leaveBreadcrumbWithMessage:@"Hello World"];
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 1);
+    XCTAssertEqual(client.breadcrumbs.count, 1);
 
     // large breadcrumb is also left without issue
     __block NSUInteger crumbSize = 0;
@@ -316,7 +316,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
                               metadata:largeMetadata
                                andType:BSGBreadcrumbTypeManual];
     XCTAssertTrue(crumbSize > 4096); // previous 4kb limit
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 2);
+    XCTAssertEqual(client.breadcrumbs.count, 2);
     XCTAssertNotNil(crumb);
     XCTAssertEqualObjects(@"Hello World", crumb.message);
     XCTAssertEqualObjects(largeMetadata, crumb.metadata);

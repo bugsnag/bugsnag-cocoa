@@ -43,8 +43,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @property (nullable, nonatomic) BugsnagEvent *appHangEvent;
 
-@property (nullable, retain, nonatomic) BugsnagBreadcrumbs *breadcrumbs;
-
 @property (nullable, nonatomic) NSString *codeBundleId;
 
 @property (retain, nonatomic) BugsnagConfiguration *configuration;
