@@ -235,7 +235,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
         BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
     } else {
-        bsg_log_debug(@"Internal error reporting was disable in config");
+        bsg_log_debug(@"Internal error reporting was disabled in config");
     }
 
     NSDictionary *usage = BSGTelemetryCreateUsage(self.configuration);
