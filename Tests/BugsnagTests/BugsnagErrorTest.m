@@ -111,9 +111,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     NSArray *binaryImages = event[@"binary_images"];
     NSArray *threadDict = [event valueForKeyPath:@"crash.threads"];
     NSArray<BugsnagThread *> *threads = [BugsnagThread threadsFromArray:threadDict
-                                                           binaryImages:binaryImages
-                                                                  depth:0
-                                                              errorType:@"user"];
+                                                           binaryImages:binaryImages];
     for (BugsnagThread *thread in threads) {
         if (thread.errorReportingThread) {
             return thread;

@@ -8,19 +8,6 @@ BeforeAll do
     'MAZE_RUNNER' => 'TRUE'
   }
 
-  # MallocScribble results in intermittent crashes in CFNetwork on macOS 10.13
-  if Maze.config.os == 'macos' && Maze.config.os_version > 10.13
-    $logger.info 'Enabling MallocScribble'
-    env = {
-      'MallocCheckHeapAbort' => 'TRUE',
-      'MallocCheckHeapStart' => '1000',
-      'MallocErrorAbort' => 'TRUE',
-      'MallocGuardEdges' => 'TRUE',
-      'MallocScribble' => 'TRUE'
-    }
-    $app_env.merge!(env)
-  end
-
   Maze.config.receive_no_requests_wait = 15
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
@@ -37,22 +24,41 @@ BeforeAll do
     Maze.config.capabilities_option = JSON.dump(capabilities)
   end
 
-  # Additional require MacOS configuration
   if Maze.config.os == 'macos'
-    # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
-    # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
-    `defaults write com.apple.CrashReporter UseUNC 1`
+    Maze.config.os_version ||= `sw_vers -productVersion`.to_f
 
-    fixture_dir = 'features/fixtures/macos/output'
-    zip_name = "#{Maze.config.app}.zip"
-    app_name = "#{Maze.config.app}.app"
-    app_path = "#{fixture_dir}/#{app_name}"
-    zip_path = "#{fixture_dir}/#{zip_name}"
+    # MallocScribble results in intermittent crashes in CFNetwork on macOS 10.13
+    enable_malloc_scribble if Maze.config.os_version > 10.13
 
-    unless File.exist?(app_path) || !File.exist?(zip_path)
-      system("cd #{fixture_dir} && unzip -q #{zip_name}", exception: true)
-    end
+    disable_unexpectedly_quit_dialog
   end
+end
+
+# Disables the "macOSTestApp quit unexpectedly" dialog to prevent focus being stolen from the fixture.
+def disable_unexpectedly_quit_dialog
+  if Maze.config.os_version.floor == 11
+    # com.apple.CrashReporter defaults seem to be ignored on macOS 11
+    # Note: unloading com.apple.ReportCrash disables creation of crash reports in ~/Library/Logs/DiagnosticReports
+    `/bin/launchctl unload /System/Library/LaunchAgents/com.apple.ReportCrash.plist`
+    at_exit do
+      `/bin/launchctl load /System/Library/LaunchAgents/com.apple.ReportCrash.plist`
+    end
+  else
+    # Use Notification Center instead of showing dialog.
+    `defaults write com.apple.CrashReporter UseUNC 1`
+  end
+end
+
+def enable_malloc_scribble
+  $logger.info 'Enabling MallocScribble'
+  env = {
+    'MallocCheckHeapAbort' => 'TRUE',
+    'MallocCheckHeapStart' => '1000',
+    'MallocErrorAbort' => 'TRUE',
+    'MallocGuardEdges' => 'TRUE',
+    'MallocScribble' => 'TRUE'
+  }
+  $app_env.merge! env
 end
 
 def skip_below(os, version)
