@@ -214,18 +214,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (void)start {
-    if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
-        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
-    } else {
-        bsg_log_debug(@"Internal error reporting was disable in config");
-    }
-
     // Called here instead of in init so that a bad config will only throw an exception
     // from the start method.
     [self.configuration validate];
 
+    // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
+
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
+
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     // add metadata about app/device
@@ -234,6 +231,12 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 
     [self computeDidCrashLastLaunch];
+
+    if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
+        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    } else {
+        bsg_log_debug(@"Internal error reporting was disable in config");
+    }
 
     NSDictionary *usage = BSGTelemetryCreateUsage(self.configuration);
     if (usage) {
