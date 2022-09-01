@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix a crash that could occur when reporting internal errors during `+[Bugsnag start]`.
+  [#1474](https://github.com/bugsnag/bugsnag-cocoa/pull/1474)
+
 * Fix accuracy of `isLR` and `isPC` stack frame values.
   [#1470](https://github.com/bugsnag/bugsnag-cocoa/pull/1470)
 
