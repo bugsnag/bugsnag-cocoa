@@ -132,28 +132,6 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
                                  @"A missing apiKey should cause [BugsnagClient start] to throw an exception.");
 }
 
-- (void)testInternalErrorBeforeStart {
-    BSGInternalErrorReporter.sharedInstance = nil;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-    bsg_runContext = NULL;
-#pragma clang diagnostic pop 
-    
-    __block BOOL didPerformBlock = NO;
-    
-    [BSGInternalErrorReporter performBlock:^(BSGInternalErrorReporter *reporter) {
-        XCTAssertNotEqual(bsg_runContext, NULL);
-        
-        NSException *exception = [NSException exceptionWithName:NSInternalInconsistencyException reason:nil userInfo:nil];
-        [reporter reportException:exception diagnostics:nil groupingHash:nil];
-        didPerformBlock = YES;
-    }];
-    
-    [[[BugsnagClient alloc] initWithConfiguration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]] start];
-    
-    XCTAssertTrue(didPerformBlock);
-}
-
 - (void)testInvalidApiKey {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"INVALID-API-KEY"];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
