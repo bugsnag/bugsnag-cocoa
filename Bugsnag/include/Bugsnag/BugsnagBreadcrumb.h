@@ -120,6 +120,9 @@ BUGSNAG_EXTERN
 
 #pragma mark -
 
+/// Internal protocol, not for public use.
+/// Will be removed from public headers in next major release.
+/// :nodoc:
 @protocol BSGBreadcrumbSink <NSObject>
 
 - (void)leaveBreadcrumbWithMessage:(nonnull NSString *)message metadata:(nullable NSDictionary *)metadata andType:(BSGBreadcrumbType)type
