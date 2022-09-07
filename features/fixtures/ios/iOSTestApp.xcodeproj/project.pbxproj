@@ -64,6 +64,7 @@
 		017BA42428A1558A00CB985E /* OversizedBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */; };
 		017DCFA028743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */; };
 		01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */; };
+		0184DBE028C63F51006AF50B /* CouldNotCreateDirectoryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184DBDF28C63F50006AF50B /* CouldNotCreateDirectoryScenario.swift */; };
 		01AF6A53258A112F00FFC803 /* BareboneTestHandledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AF6A52258A112F00FFC803 /* BareboneTestHandledScenario.swift */; };
 		01AFCFCB282CE9F700D48D45 /* OldSessionScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AFCFCA282CE9F700D48D45 /* OldSessionScenario.m */; };
 		01B6BB7525D5748800FC4DE6 /* LastRunInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */; };
@@ -256,6 +257,7 @@
 		017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedBreadcrumbsScenario.swift; sourceTree = "<group>"; };
 		017DCF9F28743FB5000ECB22 /* TelemetryUsageDisabledScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryUsageDisabledScenario.swift; sourceTree = "<group>"; };
 		01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvalidCrashReportScenario.m; sourceTree = "<group>"; };
+		0184DBDF28C63F50006AF50B /* CouldNotCreateDirectoryScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouldNotCreateDirectoryScenario.swift; sourceTree = "<group>"; };
 		01AF6A52258A112F00FFC803 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
 		01AFCFCA282CE9F700D48D45 /* OldSessionScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldSessionScenario.m; sourceTree = "<group>"; };
 		01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenario.swift; sourceTree = "<group>"; };
@@ -500,6 +502,7 @@
 				E7F6087B244F0A3A00F1532A /* BugsnagHooks.h */,
 				F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */,
 				01DCB82A27985D2C0048640A /* ConcurrentCrashesScenario.mm */,
+				0184DBDF28C63F50006AF50B /* CouldNotCreateDirectoryScenario.swift */,
 				01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */,
 				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
 				8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */,
@@ -877,6 +880,7 @@
 				E700EE72247D79FF008CFFB6 /* SIGBUSScenario.m in Sources */,
 				E7767F11221C21D90006648C /* StoppedSessionScenario.swift in Sources */,
 				F4295D19B9E67F5786011698 /* OverwriteLinkRegisterScenario.m in Sources */,
+				0184DBE028C63F51006AF50B /* CouldNotCreateDirectoryScenario.swift in Sources */,
 				F42959124DB949EEF1420957 /* ReadOnlyPageScenario.m in Sources */,
 				F4295B75B2244F442D84D9CA /* StackOverflowScenario.m in Sources */,
 				010BAB1B2833CF810003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift in Sources */,
