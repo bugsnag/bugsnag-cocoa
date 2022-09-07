@@ -9,6 +9,7 @@
 #import "BSGEventUploadObjectOperation.h"
 
 #import "BugsnagEvent+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 
 @implementation BSGEventUploadObjectOperation

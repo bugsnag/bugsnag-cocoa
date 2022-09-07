@@ -177,7 +177,7 @@
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
     XCTAssertEqual([[config onBreadcrumbBlocks] count], 1);
-    NSDictionary *crumb = [client.breadcrumbs.breadcrumbs.firstObject objectValue];
+    NSDictionary *crumb = [client.breadcrumbs.firstObject objectValue];
     XCTAssertEqualObjects(@"Foo", crumb[@"name"]);
 }
 
@@ -194,10 +194,14 @@
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
     [client start];
 
+    // Not always zero - breadcrumbs from previous tests can appear due to async behaviour
+    NSUInteger countBefore = client.breadcrumbs.count;
+
     // Call onbreadcrumb blocks
-    XCTAssertEqual([client.breadcrumbs.breadcrumbs count], 0);
     [client leaveBreadcrumbWithMessage:@"Hello"];
-    XCTAssertEqual([client.breadcrumbs.breadcrumbs count], 0);
+    NSArray *breadcrumbs = client.breadcrumbs;
+    XCTAssertEqual(breadcrumbs.count, countBefore, @"Expected %lu breadcrumbs, got %@",
+                   (unsigned long)countBefore, [breadcrumbs valueForKeyPath:@"objectValue"]);
 }
 
 @end

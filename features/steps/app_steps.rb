@@ -141,11 +141,10 @@ def run_macos_app
     Process.kill 'KILL', $fixture_pid
     Process.waitpid $fixture_pid
   end
-  $fixture_pid = Process.spawn(
-    $app_env,
-    'features/fixtures/macos/output/macOSTestApp.app/Contents/MacOS/macOSTestApp',
-    %i[err out] => '/dev/null'
-  )
+  dir = 'features/fixtures/macos/output'
+  exe = "#{dir}/macOSTestApp.app/Contents/MacOS/macOSTestApp"
+  system("unzip -qd #{dir} #{dir}/macOSTestApp.zip", exception: true) unless File.exist? exe
+  $fixture_pid = Process.spawn($app_env, exe, %i[err out] => '/dev/null')
 end
 
 def run_watchos_app

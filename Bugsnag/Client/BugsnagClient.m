@@ -155,9 +155,11 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @property (weak, nonatomic) NSTimer *appLaunchTimer;
 
-@property (readonly, nonatomic) BSGFeatureFlagStore *featureFlagStore;
+@property (nullable, retain, nonatomic) BugsnagBreadcrumbs *breadcrumbStore;
 
 @property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
+
+@property (strong, nonatomic) BugsnagSessionTracker *sessionTracker;
 
 @end
 
@@ -206,7 +208,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
-        self.breadcrumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
+        _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
 
         // Start with a copy of the configuration metadata
         self.metadata = [[_configuration metadata] copy];
@@ -215,18 +217,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (void)start {
-    if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
-        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
-    } else {
-        bsg_log_debug(@"Internal error reporting was disable in config");
-    }
-
     // Called here instead of in init so that a bad config will only throw an exception
     // from the start method.
     [self.configuration validate];
 
+    // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
+
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
+
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     // add metadata about app/device
@@ -235,6 +234,12 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 
     [self computeDidCrashLastLaunch];
+
+    if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
+        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    } else {
+        bsg_log_debug(@"Internal error reporting was disabled in config");
+    }
 
     NSDictionary *usage = BSGTelemetryCreateUsage(self.configuration);
     if (usage) {
@@ -247,7 +252,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     bsg_g_bugsnag_data.configJSON = BSGCStringWithData(configData);
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
-    [self.breadcrumbs removeAllBreadcrumbs];
+    [self.breadcrumbStore removeAllBreadcrumbs];
 
 #if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
@@ -438,6 +443,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return [self.sessionTracker resumeSession];
 }
 
+- (BugsnagSession *)session {
+    return self.sessionTracker.runningSession;
+}
+
+- (void)updateSession:(BugsnagSession * (^)(BugsnagSession *session))block {
+    self.sessionTracker.currentSession =  block(self.sessionTracker.currentSession);
+    BSGSessionUpdateRunContext(self.sessionTracker.runningSession);
+}
+
 // =============================================================================
 // MARK: - Connectivity Listener
 // =============================================================================
@@ -495,7 +509,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     breadcrumb.message = message;
     breadcrumb.metadata = JSONMetadata ?: @{};
     breadcrumb.type = type;
-    [self.breadcrumbs addBreadcrumb:breadcrumb];
+    [self.breadcrumbStore addBreadcrumb:breadcrumb];
     
     BSGRunContextUpdateTimestamp();
 }
@@ -509,15 +523,17 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (!breadcrumb) {
         return;
     }
-    [self.breadcrumbs addBreadcrumb:breadcrumb];
+    [self.breadcrumbStore addBreadcrumb:breadcrumb];
     BSGRunContextUpdateTimestamp();
+}
+
+- (NSArray<BugsnagBreadcrumb *> *)breadcrumbs {
+    return self.breadcrumbStore.breadcrumbs ?: @[];
 }
 
 // =============================================================================
 // MARK: - User
 // =============================================================================
-
-@dynamic user;
 
 - (BugsnagUser *)user {
     @synchronized (self.configuration) {
@@ -699,7 +715,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                handledState:handledState
                                                        user:[self.user withId]
                                                    metadata:metadata
-                                                breadcrumbs:self.breadcrumbs.breadcrumbs ?: @[]
+                                                breadcrumbs:[self breadcrumbs]
                                                      errors:@[error]
                                                     threads:threads
                                                     session:nil /* the session's event counts have not yet been incremented! */];
@@ -928,51 +944,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 // MARK: - methods used by React Native
 
-- (NSDictionary *)collectAppWithState {
-    return [[self generateAppWithState:[BSG_KSSystemInfo systemInfo]] toDict];
-}
-
-- (NSDictionary *)collectDeviceWithState {
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
-    BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
-    return [device toDictionary];
-}
-
-- (NSArray *)collectBreadcrumbs {
-    NSMutableArray *data = [NSMutableArray new];
-
-    for (BugsnagBreadcrumb *crumb in self.breadcrumbs.breadcrumbs) {
-        NSMutableDictionary *crumbData = [[crumb objectValue] mutableCopy];
-        if (!crumbData) {
-            continue;
-        }
-        // JSON is serialized as 'name', we want as 'message' when passing to RN
-        crumbData[@"message"] = crumbData[@"name"];
-        crumbData[@"name"] = nil;
-        crumbData[@"metadata"] = crumbData[@"metaData"];
-        crumbData[@"metaData"] = nil;
-        [data addObject: crumbData];
-    }
-    return data;
-}
-
-- (NSArray *)collectThreads:(BOOL)unhandled {
-#if BSG_HAVE_MACH_THREADS
-    // discard the following
-    // 1. [BugsnagReactNative getPayloadInfo:resolve:reject:]
-    // 2. [BugsnagClient collectThreads:]
-    NSUInteger depth = 2;
-    NSArray<NSNumber *> *callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
-    BSGThreadSendPolicy sendThreads = self.configuration.sendThreads;
-    BOOL recordAllThreads = sendThreads == BSGThreadSendPolicyAlways
-            || (unhandled && sendThreads == BSGThreadSendPolicyUnhandledOnly);
-    NSArray<BugsnagThread *> *threads = [BugsnagThread allThreads:recordAllThreads callStackReturnAddresses:callStack];
-    return [BugsnagThread serializeThreads:threads];
-#else
-    return @[];
-#endif
-}
-
 - (void)addRuntimeVersionInfo:(NSString *)info
                       withKey:(NSString *)key {
     [self.sessionTracker addRuntimeVersionInfo:info
@@ -1038,7 +1009,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
     device.time = date;
 
-    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbs breadcrumbsBeforeDate:date];
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.breadcrumbStore breadcrumbsBeforeDate:date];
 
     BugsnagMetadata *metadata = [self.metadata copy];
 
@@ -1202,7 +1173,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                          handledState:handledState
                                  user:user
                              metadata:metadata
-                          breadcrumbs:[self.breadcrumbs cachedBreadcrumbs] ?: @[]
+                          breadcrumbs:[self.breadcrumbStore cachedBreadcrumbs] ?: @[]
                                errors:@[error]
                               threads:@[]
                               session:session];

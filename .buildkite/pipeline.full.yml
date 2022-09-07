@@ -257,8 +257,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --os-version=11.0
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -279,8 +277,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --os-version=12
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -298,8 +294,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --os-version=10.13
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -317,8 +311,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --os-version=10.14
-        --app=macOSTestApp
         --fail-fast
         --order=random
 

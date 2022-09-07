@@ -6,7 +6,9 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
+#import "BSGInternalErrorReporter.h"
 #import "BSGKeys.h"
+#import "BSGRunContext.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagBreadcrumbs.h"
@@ -79,7 +81,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     // Check that we can change it
     [client notify:ex];
 
-    NSDictionary *breadcrumb = [client.breadcrumbs.breadcrumbs.lastObject objectValue];
+    NSDictionary *breadcrumb = [client.breadcrumbs.lastObject objectValue];
     NSDictionary *metadata = [breadcrumb valueForKey:@"metaData"];
 
     XCTAssertEqualObjects([breadcrumb valueForKey:@"type"], @"error");
@@ -128,6 +130,28 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 #pragma clang diagnostic pop
     XCTAssertThrowsSpecificNamed([client start], NSException, NSInvalidArgumentException,
                                  @"A missing apiKey should cause [BugsnagClient start] to throw an exception.");
+}
+
+- (void)testInternalErrorBeforeStart {
+    BSGInternalErrorReporter.sharedInstance = nil;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    bsg_runContext = NULL;
+#pragma clang diagnostic pop 
+    
+    __block BOOL didPerformBlock = NO;
+    
+    [BSGInternalErrorReporter performBlock:^(BSGInternalErrorReporter *reporter) {
+        XCTAssertNotEqual(bsg_runContext, NULL);
+        
+        NSException *exception = [NSException exceptionWithName:NSInternalInconsistencyException reason:nil userInfo:nil];
+        [reporter reportException:exception diagnostics:nil groupingHash:nil];
+        didPerformBlock = YES;
+    }];
+    
+    [[[BugsnagClient alloc] initWithConfiguration:[[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1]] start];
+    
+    XCTAssertTrue(didPerformBlock);
 }
 
 - (void)testInvalidApiKey {
@@ -243,7 +267,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 
 - (void)testStartingBugsnagTwiceLogsAWarningAndIgnoresNewConfiguration {
     [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    BugsnagConfiguration *initialConfig = [Bugsnag configuration];
+    BugsnagConfiguration *initialConfig = Bugsnag.client.configuration;
 
     // Create a new Configuration object and modify some arbitrary properties
     // These updates should all be ignored as Bugsnag has been started already
@@ -256,7 +280,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
 
     [Bugsnag startWithConfiguration:updatedConfig];
 
-    BugsnagConfiguration *configAfter = [Bugsnag configuration];
+    BugsnagConfiguration *configAfter = Bugsnag.client.configuration;
 
     [self assertEqualConfiguration:initialConfig withActual:configAfter];
 }
@@ -270,11 +294,11 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
 
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 0);
+    XCTAssertEqual(client.breadcrumbs.count, 0);
 
     // small breadcrumb can be left without issue
     [client leaveBreadcrumbWithMessage:@"Hello World"];
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 1);
+    XCTAssertEqual(client.breadcrumbs.count, 1);
 
     // large breadcrumb is also left without issue
     __block NSUInteger crumbSize = 0;
@@ -292,7 +316,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
                               metadata:largeMetadata
                                andType:BSGBreadcrumbTypeManual];
     XCTAssertTrue(crumbSize > 4096); // previous 4kb limit
-    XCTAssertEqual(client.breadcrumbs.breadcrumbs.count, 2);
+    XCTAssertEqual(client.breadcrumbs.count, 2);
     XCTAssertNotNil(crumb);
     XCTAssertEqualObjects(@"Hello World", crumb.message);
     XCTAssertEqualObjects(largeMetadata, crumb.metadata);

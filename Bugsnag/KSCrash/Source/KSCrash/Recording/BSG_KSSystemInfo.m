@@ -42,6 +42,7 @@
 #import "BSG_KSSysCtl.h"
 #import "BSG_KSSystemInfoC.h"
 #import "BugsnagCollections.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
@@ -497,4 +498,12 @@ char *bsg_kssysteminfo_toJSON(void) {
 
 char *bsg_kssysteminfo_copyProcessName(void) {
     return strdup([[NSProcessInfo processInfo].processName UTF8String]);
+}
+
+NSString * BSGGetDefaultDeviceId(void) {
+    return [BSG_KSSystemInfo deviceAndAppHash];
+}
+
+NSDictionary * BSGGetSystemInfo(void) {
+    return [BSG_KSSystemInfo systemInfo];
 }

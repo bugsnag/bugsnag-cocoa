@@ -140,7 +140,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=9.0 DEVICE=iPhone\ 5s XCODEBUILD_EXTRA_ARGS=-skip-testing:BugsnagNetworkRequestPlugin-iOSTests
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=9.0 DEVICE=iPhone\ 5s
     artifact_paths:
       - logs/*
 
@@ -185,7 +185,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=9.2 XCODEBUILD_EXTRA_ARGS=-skip-testing:BugsnagNetworkRequestPlugin-tvOSTests
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=9.2
     artifact_paths:
       - logs/*
 
@@ -350,8 +350,6 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --os-version=10.13
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -369,8 +367,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --os-version=10.15
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
@@ -392,8 +388,6 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --os-version=12
-        --app=macOSTestApp
         --fail-fast
         --order=random
 
