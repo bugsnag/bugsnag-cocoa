@@ -16,6 +16,7 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
 

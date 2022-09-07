@@ -6,14 +6,11 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagBreadcrumb.h>
-#import <Bugsnag/BugsnagDefines.h>
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagBreadcrumb ()
-
-+ (nullable instancetype)breadcrumbFromDict:(NSDictionary *)dict;
 
 - (BOOL)isValid;
 
@@ -23,8 +20,5 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy, nullable, nonatomic) NSString *timestampString;
 
 @end
-
-BUGSNAG_EXTERN NSString * BSGBreadcrumbTypeValue(BSGBreadcrumbType type);
-BUGSNAG_EXTERN BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString * _Nullable value);
 
 NS_ASSUME_NONNULL_END

@@ -6,9 +6,7 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagDeviceWithState.h>
-
-#import "BSGDefines.h"
+#import "BugsnagInternals.h"
 
 struct BSGRunContext;
 
@@ -25,8 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Methods
 
 - (void)appendRuntimeInfo:(NSDictionary *)info;
-
-- (NSDictionary *)toDictionary;
 
 @end
 
