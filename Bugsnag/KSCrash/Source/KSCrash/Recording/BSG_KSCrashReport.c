@@ -74,9 +74,6 @@ typedef ucontext_t SignalUserContext;
  */
 #define BSG_kStackOverflowThreshold 200
 
-/** The minimum length for a valid string. */
-#define BSG_kMinStringLength 4
-
 typedef struct {
     char *data;
     size_t allocated_size;
@@ -295,29 +292,6 @@ int bsg_kscrw_i_addJSONData(const char *const data, const size_t length,
 // ============================================================================
 #pragma mark - Utility -
 // ============================================================================
-
-/** Check if a memory address points to a valid null terminated UTF-8 string.
- *
- * @param address The address to check.
- *
- * @return true if the address points to a string.
- */
-bool bsg_kscrw_i_isValidString(const void *const address) {
-    if (!address) {
-        return false;
-    }
-
-    char buffer[500];
-    if ((uintptr_t)address + sizeof(buffer) < (uintptr_t)address) {
-        // Wrapped around the address range.
-        return false;
-    }
-    if (bsg_ksmachcopyMem(address, buffer, sizeof(buffer)) != KERN_SUCCESS) {
-        return false;
-    }
-    return bsg_ksstring_isNullTerminatedUTF8String(buffer, BSG_kMinStringLength,
-                                                   sizeof(buffer));
-}
 
 #if BSG_HAVE_MACH_THREADS
 /** Get all parts of the machine state required for a dump.

@@ -151,35 +151,6 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(result != KERN_SUCCESS, @"");
 }
 
-- (void) testCopyMaxPossibleMem
-{
-    char buff[1000];
-    char buff2[5] = {1,2,3,4,5};
-    
-    size_t copied = bsg_ksmachcopyMaxPossibleMem(buff2, buff, sizeof(buff));
-    XCTAssertTrue(copied >= 5, @"");
-    int memCmpResult = memcmp(buff, buff2, sizeof(buff2));
-    XCTAssertEqual(memCmpResult, 0, @"");
-}
-
-- (void) testCopyMaxPossibleMemNull
-{
-    char buff[1000];
-    char* buff2 = NULL;
-    
-    size_t copied = bsg_ksmachcopyMaxPossibleMem(buff2, buff, sizeof(buff));
-    XCTAssertTrue(copied == 0, @"");
-}
-
-- (void) testCopyMaxPossibleMemBad
-{
-    char buff[1000];
-    char* buff2 = (char*)-1;
-    
-    size_t copied = bsg_ksmachcopyMaxPossibleMem(buff2, buff, sizeof(buff));
-    XCTAssertTrue(copied == 0, @"");
-}
-
 - (void) testTimeDifferenceInSeconds
 {
     uint64_t startTime = mach_absolute_time();

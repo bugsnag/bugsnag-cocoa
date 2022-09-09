@@ -93,7 +93,6 @@ void bsg_kscrash_init(void) {
     if (!bsg_g_initialised) {
         bsg_g_initialised = true;
         bsg_g_crashReportContext.config.handlingCrashTypes = BSG_KSCrashTypeProductionSafe;
-        bsg_ksmach_init();
     }
 }
 
@@ -166,12 +165,6 @@ void bsg_kscrash_setCrashNotifyCallback(
     const BSG_KSReportWriteCallback onCrashNotify) {
     BSG_KSLOG_TRACE("Set onCrashNotify to %p", onCrashNotify);
     crashContext()->config.onCrashNotify = onCrashNotify;
-}
-
-void bsg_kscrash_setReportWhenDebuggerIsAttached(
-    bool reportWhenDebuggerIsAttached) {
-    crashContext()->crash.reportWhenDebuggerIsAttached =
-        reportWhenDebuggerIsAttached;
 }
 
 void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled) {

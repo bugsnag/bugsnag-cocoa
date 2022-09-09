@@ -59,7 +59,7 @@
         @{@"method": @"yes()"}
     ];
     BugsnagStacktrace *stacktrace = [BugsnagStacktrace stacktraceFromJson:json];
-    XCTAssertEqualObjects([stacktrace toArray], json);
+    XCTAssertEqualObjects([stacktrace.trace valueForKeyPath:NSStringFromSelector(@selector(toDictionary))], json);
 }
 
 @end
