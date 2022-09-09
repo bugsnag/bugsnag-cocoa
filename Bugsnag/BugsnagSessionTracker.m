@@ -112,11 +112,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 #endif
 }
 
-- (void)setCodeBundleId:(NSString *)codeBundleId {
-    _codeBundleId = codeBundleId;
-    self.sessionUploader.codeBundleId = codeBundleId;
-}
-
 #pragma mark - Creating and sending a new session
 
 - (void)pauseSession {

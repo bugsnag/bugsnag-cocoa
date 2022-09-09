@@ -194,11 +194,6 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     return self;
 }
 
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<BugsnagStackframe: %p { %@ %p %@ }>", (void *)self,
-            self.machoFile.lastPathComponent, (void *)self.frameAddress.unsignedLongLongValue, self.method];
-}
-
 - (void)symbolicateIfNeeded {
     if (!self.needsSymbolication) {
         return;

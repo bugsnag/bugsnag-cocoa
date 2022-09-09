@@ -22,8 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)uploadSession:(BugsnagSession *)session;
 
-@property (copy, nonatomic) NSString *codeBundleId;
-
 @property (nonatomic) BugsnagNotifier *notifier;
 
 @end

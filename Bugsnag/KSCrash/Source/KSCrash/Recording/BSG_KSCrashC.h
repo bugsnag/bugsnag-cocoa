@@ -106,13 +106,6 @@ void bsg_kscrash_reinstall(const char *const crashReportFilePath,
 void bsg_kscrash_setCrashNotifyCallback(
     const BSG_KSReportWriteCallback onCrashNotify);
 
-/** If YES, user reported exceptions even if a debugger is attached
- *
- * Default: NO
- */
-void bsg_kscrash_setReportWhenDebuggerIsAttached(
-    bool reportWhenDebuggerIsAttached);
-
 void bsg_kscrash_setThreadTracingEnabled(bool threadTracingEnabled);
 
 /**

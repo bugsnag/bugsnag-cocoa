@@ -22,6 +22,4 @@
 
 @property (nonatomic) NSMutableArray<BugsnagStackframe *> *trace;
 
-- (NSArray *)toArray;
-
 @end

@@ -46,12 +46,4 @@
     return self;
 }
 
-- (NSArray *)toArray {
-    NSMutableArray *array = [NSMutableArray new];
-    for (BugsnagStackframe *frame in self.trace) {
-        [array addObject:[frame toDictionary]];
-    }
-    return array;
-}
-
 @end
