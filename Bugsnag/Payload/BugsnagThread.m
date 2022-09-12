@@ -68,6 +68,7 @@ NSString *BSGSerializeThreadType(BSGThreadType type) {
     return type == BSGThreadTypeCocoa ? @"cocoa" : @"reactnativejs";
 }
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagThread
 
 + (instancetype)threadFromJson:(NSDictionary *)json {

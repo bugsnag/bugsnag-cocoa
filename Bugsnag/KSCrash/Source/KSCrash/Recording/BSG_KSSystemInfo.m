@@ -109,6 +109,7 @@ static NSDictionary * bsg_systemversion() {
 }
 #endif
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSG_KSSystemInfo
 
 // ============================================================================

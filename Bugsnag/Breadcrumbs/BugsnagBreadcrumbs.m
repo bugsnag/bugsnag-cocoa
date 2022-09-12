@@ -47,6 +47,7 @@ static atomic_bool g_writing_crash_report;
 
 #pragma mark -
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagBreadcrumbs
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config {

@@ -10,6 +10,7 @@
 
 #import <Bugsnag/BugsnagConfiguration.h>
 
+#import "BSGDefines.h"
 #import "BSGKeys.h"
 
 #define SYSTEMSTATE_KEY_APP @"app"
@@ -19,6 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagSystemState : NSObject
 
 @property(readonly,nonatomic) NSDictionary *lastLaunchState;

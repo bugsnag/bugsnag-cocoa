@@ -29,6 +29,17 @@
 // Capabilities dependent upon previously defined capabilities
 #define BSG_HAVE_APP_HANG_DETECTION           (BSG_HAVE_MACH_THREADS)
 
+// Causes methods to have no associated Objective-C metadata and use C function calling convention.
+// See https://reviews.llvm.org/D69991
+// Overridden when building for unit testing to make private interfaces accessible. 
+#ifndef BSG_OBJC_DIRECT_MEMBERS
+#if __has_attribute(objc_direct_members)
+#define BSG_OBJC_DIRECT_MEMBERS __attribute__((objc_direct_members))
+#else
+#define BSG_OBJC_DIRECT_MEMBERS
+#endif
+#endif
+
 // Reference: http://iphonedevwiki.net/index.php/CoreFoundation.framework
 #define kCFCoreFoundationVersionNumber_iOS_12_0 1556.00
 

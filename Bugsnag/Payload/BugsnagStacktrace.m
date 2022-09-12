@@ -11,6 +11,7 @@
 #import "BSGKeys.h"
 #import "BugsnagStackframe+Private.h"
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagStacktrace
 
 + (instancetype)stacktraceFromJson:(NSArray<NSDictionary *> *)json {

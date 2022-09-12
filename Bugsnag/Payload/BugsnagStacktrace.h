@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BSGDefines.h"
+
 @class BugsnagStackframe;
 
 /**
  * Representation of a stacktrace in a bugsnag error report
  */
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagStacktrace : NSObject
 
 - (instancetype)initWithTrace:(NSArray<NSDictionary *> *)trace

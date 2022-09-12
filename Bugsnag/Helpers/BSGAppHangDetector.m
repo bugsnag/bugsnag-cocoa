@@ -20,6 +20,8 @@
 #import "BugsnagLogger.h"
 #import "BugsnagThread+Private.h"
 
+
+BSG_OBJC_DIRECT_MEMBERS
 @interface BSGAppHangDetector ()
 
 @property (weak, nonatomic) id<BSGAppHangDetectorDelegate> delegate;
@@ -27,11 +29,14 @@
 @property (atomic) dispatch_time_t processingDeadline;
 @property (nonatomic) dispatch_semaphore_t processingStarted;
 @property (nonatomic) dispatch_semaphore_t processingFinished;
-@property (weak, nonatomic) NSThread *thread;
+@property (nonatomic) BOOL shouldStop;
 
 @end
 
 
+static void * DetectAppHangs(void *object);
+
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGAppHangDetector
 
 - (void)startWithDelegate:(id<BSGAppHangDetectorDelegate>)delegate {
@@ -109,15 +114,14 @@
     
     CFRunLoopAddObserver(CFRunLoopGetMain(), self.observer, kCFRunLoopCommonModes);
     
-    [NSThread detachNewThreadSelector:@selector(detectAppHangs) toTarget:self withObject:nil];
+    pthread_t thread;
+    pthread_create(&thread, NULL, DetectAppHangs, (__bridge void *)(self));
 }
 
 - (void)detectAppHangs {
     NSThread.currentThread.name = @"com.bugsnag.app-hang-detector";
     
-    self.thread = NSThread.currentThread;
-    
-    while (!NSThread.currentThread.isCancelled) {
+    while (!self.shouldStop) {
         if (dispatch_semaphore_wait(self.processingStarted, DISPATCH_TIME_FOREVER) != 0) {
             bsg_log_err(@"BSGAppHangDetector: dispatch_semaphore_wait failed unexpectedly");
             return;
@@ -194,7 +198,7 @@
 }
 
 - (void)stop {
-    [self.thread cancel];
+    self.shouldStop = YES;
     self.processingDeadline = DISPATCH_TIME_FOREVER;
     dispatch_semaphore_signal(self.processingStarted);
     dispatch_semaphore_signal(self.processingFinished);
@@ -205,5 +209,10 @@
 }
 
 @end
+
+static void * DetectAppHangs(void *object) {
+    [(__bridge BSGAppHangDetector *)object detectAppHangs];
+    return NULL;
+}
 
 #endif

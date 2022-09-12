@@ -6,6 +6,7 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
+#import "BSGDefines.h"
 #import "BugsnagInternals.h"
 
 @class BSGAppHangDetector;
@@ -21,6 +22,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagClient ()
 
 #pragma mark Properties

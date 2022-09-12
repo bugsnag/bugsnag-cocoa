@@ -8,10 +8,13 @@
 
 #import "BugsnagInternals.h"
 
+#import "BSGDefines.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^ BSGMetadataObserver)(BugsnagMetadata *);
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagMetadata () <NSCopying>
 
 #pragma mark Properties

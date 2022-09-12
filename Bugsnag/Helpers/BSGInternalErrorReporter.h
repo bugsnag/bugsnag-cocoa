@@ -35,6 +35,7 @@ NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
 
 // MARK: -
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BSGInternalErrorReporter : NSObject
 
 @property (class, nullable, nonatomic) BSGInternalErrorReporter *sharedInstance;
@@ -45,18 +46,6 @@ NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
 - (instancetype)initWithDataSource:(id<BSGInternalErrorReporterDataSource>)dataSource NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
-
-/// Reports an error to Bugsnag's internal bugsnag-cocoa project dashboard.
-/// @param errorClass The class of error which occurred. This field is used to group the errors together so should not contain any contextual
-/// information that would prevent correct grouping. This would ordinarily be the Exception name when dealing with an exception.
-/// @param context The context to associate with this event. Errors are grouped by errorClass:context
-/// @param message The error message associated with the error. Usually this will contain some information about this specific instance of the error
-/// and is not used to group the errors.
-/// @param diagnostics JSON compatible information to include in the `BugsnagDiagnostics` metadata section.
-- (void)reportErrorWithClass:(NSString *)errorClass
-                     context:(nullable NSString *)context
-                     message:(nullable NSString *)message
-                 diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics;
 
 - (void)reportException:(NSException *)exception
             diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics
@@ -78,6 +67,22 @@ NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
 - (nullable BugsnagEvent *)eventWithRecrashReport:(NSDictionary *)recrashReport;
 
 - (nullable NSURLRequest *)requestForEvent:(BugsnagEvent *)event error:(NSError * __autoreleasing *)errorPtr;
+
+@end
+
+@interface BSGInternalErrorReporter (/* not objc_direct */)
+
+/// Reports an error to Bugsnag's internal bugsnag-cocoa project dashboard.
+/// @param errorClass The class of error which occurred. This field is used to group the errors together so should not contain any contextual
+/// information that would prevent correct grouping. This would ordinarily be the Exception name when dealing with an exception.
+/// @param context The context to associate with this event. Errors are grouped by errorClass:context
+/// @param message The error message associated with the error. Usually this will contain some information about this specific instance of the error
+/// and is not used to group the errors.
+/// @param diagnostics JSON compatible information to include in the `BugsnagDiagnostics` metadata section.
+- (void)reportErrorWithClass:(NSString *)errorClass
+                     context:(nullable NSString *)context
+                     message:(nullable NSString *)message
+                 diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics;
 
 @end
 

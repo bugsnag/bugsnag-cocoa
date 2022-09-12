@@ -19,13 +19,33 @@
 #define BSG_HAVE_TABLE_VIEW    (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV)
 #define BSG_HAVE_TEXT_CONTROL  (TARGET_OS_OSX || TARGET_OS_IOS                )
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BSGNotificationBreadcrumbs ()
 
 @property (nonatomic) NSDictionary<NSNotificationName, NSString *> *notificationNameMap;
 
 @end
 
+@interface BSGNotificationBreadcrumbs (/* not objc_direct */)
 
+- (void)addBreadcrumbForNotification:(NSNotification *)notification;
+
+- (void)addBreadcrumbForControlNotification:(NSNotification *)notification;
+
+- (void)addBreadcrumbForMenuItemNotification:(NSNotification *)notification;
+
+- (void)addBreadcrumbForTableViewNotification:(NSNotification *)notification;
+
+#if TARGET_OS_IOS
+- (void)orientationDidChange:(NSNotification *)notification;
+#endif
+
+- (void)thermalStateDidChange:(NSNotification *)notification API_AVAILABLE(ios(11.0), tvos(11.0));
+
+@end
+
+
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGNotificationBreadcrumbs
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration

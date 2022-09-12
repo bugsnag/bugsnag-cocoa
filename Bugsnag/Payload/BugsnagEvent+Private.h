@@ -6,11 +6,13 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
+#import "BSGDefines.h"
 #import "BSGFeatureFlagStore.h"
 #import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagEvent ()
 
 @property (copy, nonatomic) NSString *codeBundleId;

@@ -27,6 +27,7 @@
  */
 static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagSessionTracker ()
 @property (strong, nonatomic) BugsnagConfiguration *config;
 @property (weak, nonatomic) BugsnagClient *client;
@@ -34,6 +35,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 @property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 @end
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagSessionTracker
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(BugsnagClient *)client {

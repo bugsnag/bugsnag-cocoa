@@ -45,6 +45,7 @@ static const int BSGApiKeyLength = 32;
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagConfiguration
 
 + (instancetype _Nonnull)loadConfig {
