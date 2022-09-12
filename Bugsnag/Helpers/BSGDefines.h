@@ -33,7 +33,7 @@
 // See https://reviews.llvm.org/D69991
 // Overridden when building for unit testing to make private interfaces accessible. 
 #ifndef BSG_OBJC_DIRECT_MEMBERS
-#if __has_attribute(objc_direct_members)
+#if __has_attribute(objc_direct_members) && (__clang_major__ > 11)
 #define BSG_OBJC_DIRECT_MEMBERS __attribute__((objc_direct_members))
 #else
 #define BSG_OBJC_DIRECT_MEMBERS
