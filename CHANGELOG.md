@@ -1,13 +1,15 @@
 Changelog
 =========
 
-## 6.22.3 (2022-09-01)
+## TBD
 
 ### Enhancements
 
 * Add `leaveNetworkRequestBreadcrumbForTask:metrics:` to simplify leaving network
   request breadcrumbs without overriding (swizzling) `NSURLSession` methods.
   [#1472](https://github.com/bugsnag/bugsnag-cocoa/pull/1472)
+
+## 6.22.3 (2022-09-01)
 
 ### Bug fixes
 
