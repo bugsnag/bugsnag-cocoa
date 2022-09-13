@@ -22,7 +22,8 @@
 #import "BugsnagHandledState.h"
 #import "BugsnagNotifier.h"
 
-typedef NSMutableArray<BugsnagFeatureFlag *> BSGFeatureFlagStore;
+@interface BSGFeatureFlagStore : NSObject <NSCopying>
+@end
 
 NS_ASSUME_NONNULL_BEGIN
 
