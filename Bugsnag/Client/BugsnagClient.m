@@ -149,6 +149,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 // MARK: -
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagClient () <BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
@@ -163,6 +164,14 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @end
 
+@interface BugsnagClient (/* not objc_direct */)
+
+- (void)appLaunchTimerFired:(NSTimer *)timer;
+
+- (void)applicationWillTerminate:(NSNotification *)notification;
+
+@end
+
 #if BSG_HAVE_APP_HANG_DETECTION
 @interface BugsnagClient () <BSGAppHangDetectorDelegate>
 @end
@@ -174,6 +183,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 __attribute__((annotate("oclint:suppress[long class]")))
 __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagClient
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration {

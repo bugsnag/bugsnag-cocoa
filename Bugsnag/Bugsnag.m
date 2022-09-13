@@ -35,6 +35,7 @@
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation Bugsnag
 
 + (BugsnagClient *_Nonnull)start {

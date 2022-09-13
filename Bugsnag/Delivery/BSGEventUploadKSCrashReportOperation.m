@@ -51,6 +51,7 @@ static NSArray * CrashReportKeys(NSData *data, NSError *error) {
 }
 
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGEventUploadKSCrashReportOperation
 
 - (BugsnagEvent *)loadEventAndReturnError:(NSError * __autoreleasing *)errorPtr {

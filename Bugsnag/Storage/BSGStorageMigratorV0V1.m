@@ -11,6 +11,7 @@
 #import "BSGFileLocations.h"
 #import "BugsnagLogger.h"
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGStorageMigratorV0V1
 
 static void RemoveItem(NSFileManager *fileManager, NSString *path) {

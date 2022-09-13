@@ -15,6 +15,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagSessionTracker : NSObject
 
 /**
@@ -42,21 +43,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startNewSessionIfAutoCaptureEnabled;
 
 /**
- Handle the app foregrounding event. If more than 30s has elapsed since being
- sent to the background, records a new session if session auto-capture is
- enabled.
- Must be called from the main thread.
- */
-- (void)handleAppForegroundEvent;
-
-/**
- Handle the app backgrounding event. Tracks time between foreground and
- background to determine when to automatically record a session.
- Must be called from the main thread.
- */
-- (void)handleAppBackgroundEvent;
-
-/**
  Handle some variation of Bugsnag.notify() being called.
  Increments the number of handled or unhandled errors recorded for the current session, if
  a session exists.
@@ -76,6 +62,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addRuntimeVersionInfo:(NSString *)info
                       withKey:(NSString *)key;
+
+@end
+
+@interface BugsnagSessionTracker (/* not objc_direct */)
+
+/**
+ Handle the app foregrounding event. If more than 30s has elapsed since being
+ sent to the background, records a new session if session auto-capture is
+ enabled.
+ Must be called from the main thread.
+ */
+- (void)handleAppForegroundEvent;
+
+/**
+ Handle the app backgrounding event. Tracks time between foreground and
+ background to determine when to automatically record a session.
+ Must be called from the main thread.
+ */
+- (void)handleAppBackgroundEvent;
 
 @end
 

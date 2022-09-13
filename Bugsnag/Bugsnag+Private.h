@@ -8,15 +8,16 @@
 
 #import <Bugsnag/Bugsnag.h>
 
+#import "BSGDefines.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface Bugsnag ()
 
 #pragma mark Methods
 
 + (void)purge;
-
-+ (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock)block;
 
 @end
 

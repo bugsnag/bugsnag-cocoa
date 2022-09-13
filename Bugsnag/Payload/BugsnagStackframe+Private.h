@@ -6,10 +6,12 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
+#import "BSGDefines.h"
 #import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagStackframe ()
 
 + (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length;

@@ -15,6 +15,7 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagUser+Private.h"
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagSession
 
 - (instancetype)initWithId:(NSString *)sessionId
@@ -33,7 +34,7 @@
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    BugsnagSession *session = [[[self class] allocWithZone:zone]
+    BugsnagSession *session = [[BugsnagSession allocWithZone:zone]
                                initWithId:self.id
                                startedAt:self.startedAt
                                user:self.user

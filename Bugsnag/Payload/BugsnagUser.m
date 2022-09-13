@@ -10,6 +10,7 @@
 
 #import "BSG_KSSystemInfo.h"
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagUser
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {

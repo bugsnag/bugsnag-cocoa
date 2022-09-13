@@ -79,6 +79,7 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
     return diagnosis ?: reason ?: @"";
 }
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagError
 
 @dynamic type;

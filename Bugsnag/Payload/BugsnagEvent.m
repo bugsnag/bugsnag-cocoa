@@ -127,6 +127,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 // MARK: -
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagEvent
 
 /**

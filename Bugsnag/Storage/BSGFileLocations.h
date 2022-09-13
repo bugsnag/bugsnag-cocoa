@@ -8,8 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BSGDefines.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BSGFileLocations : NSObject
 
 @property (readonly, nonatomic) NSString *breadcrumbs;
