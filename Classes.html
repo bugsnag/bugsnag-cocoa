@@ -17,7 +17,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Bugsnag 6.22.3 Docs</a></p>
+        <p><a href="index.html">Bugsnag 6.23.0 Docs</a></p>
         <p class="header-right"><a href="https://github.com/bugsnag/bugsnag-cocoa"><img src="img/gh.png" alt="GitHub"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fbugsnag.github.io%2Fbugsnag-cocoa%2Fdocsets%2FBugsnag.xml"><img src="img/dash.png" alt="Dash"/>Install in Dash</a></p>
         <div class="header-right">
@@ -137,9 +137,6 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/BSGBreadcrumbSink.html">BSGBreadcrumbSink</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Protocols/BugsnagClassLevelMetadataStore.html">BugsnagClassLevelMetadataStore</a>
               </li>
               <li class="nav-group-task">
@@ -237,7 +234,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/Bugsnag.h#L51-L378">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/Bugsnag.h#L51-L386">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -275,7 +272,7 @@ can be accessed and amended if necessary.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagApp.h#L18-L60">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagApp.h#L18-L60">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -313,7 +310,7 @@ can be accessed and amended if necessary.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagAppWithState.h#L19-L42">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagAppWithState.h#L19-L42">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -349,7 +346,7 @@ can be accessed and amended if necessary.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h#L95-L119">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h#L95-L119">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -378,18 +375,18 @@ can be accessed and amended if necessary.</p>
                         <div class="language">
                           <p class="aside-title">Objective-C</p>
                           <pre class="highlight objective_c"><code>
-<span class="k">@interface</span> <span class="nc">BugsnagClient</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="Protocols/BSGBreadcrumbSink.html">BSGBreadcrumbSink</a></span><span class="p">,</span> <span class="n"><a href="Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a></span><span class="p">,</span>
-                                     <span class="n"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
+<span class="k">@interface</span> <span class="nc">BugsnagClient</span>
+    <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n"><a href="Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a></span><span class="p">,</span> <span class="n"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span><span class="o">&gt;</span></code></pre>
 
                         </div>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagClient</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/BSGBreadcrumbSink.html">BSGBreadcrumbSink</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">class</span> <span class="kt">BugsnagClient</span> <span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagFeatureFlagStore.html">BugsnagFeatureFlagStore</a></span><span class="p">,</span> <span class="kt"><a href="Protocols/BugsnagMetadataStore.html">BugsnagMetadataStore</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagClient.h#L44-L291">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagClient.h#L44-L306">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -427,7 +424,7 @@ can be accessed and amended if necessary.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L149-L500">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagConfiguration.h#L149-L500">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -465,7 +462,7 @@ found on this class. These values can be accessed and amended if necessary.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagDevice.h#L18-L71">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagDevice.h#L18-L71">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -503,7 +500,7 @@ found on this class. These values can be accessed and amended if necessary.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagDeviceWithState.h#L19-L41">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagDeviceWithState.h#L19-L41">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -542,7 +539,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagEndpointConfiguration.h#L21-L36">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagEndpointConfiguration.h#L21-L36">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -579,7 +576,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagError.h#L28-L50">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagError.h#L28-L50">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -616,7 +613,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagErrorTypes.h#L17-L77">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagErrorTypes.h#L17-L77">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -654,7 +651,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagEvent.h#L39-L136">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagEvent.h#L39-L136">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -700,7 +697,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h#L16-L26">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagFeatureFlag.h#L16-L26">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -737,7 +734,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagLastRunInfo.h#L19-L40">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagLastRunInfo.h#L19-L40">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -774,7 +771,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagSession.h#L22-L50">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagSession.h#L22-L50">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -811,7 +808,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagStackframe.h#L23-L92">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagStackframe.h#L23-L92">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -848,7 +845,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagThread.h#L24-L57">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagThread.h#L24-L57">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -885,7 +882,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.22.3/Bugsnag/include/Bugsnag/BugsnagUser.h#L17-L25">Show on GitHub</a>
+                        <a href="https://github.com/bugsnag/bugsnag-cocoa/tree/v6.23.0/Bugsnag/include/Bugsnag/BugsnagUser.h#L17-L25">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -895,7 +892,7 @@ override this if you are using Bugsnag Enterprise to point to your own Bugsnag e
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-09-01)</p>
+          <p>&copy; 2022 <a class="link" href="https://www.bugsnag.com" target="_blank" rel="external noopener">Bugsnag Inc</a>. All rights reserved. (Last updated: 2022-09-14)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

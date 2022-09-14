@@ -9,35 +9,35 @@
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 305,
+      "line": 313,
       "symbol": "Bugsnag.+addFeatureFlagWithName:variant:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 308,
+      "line": 316,
       "symbol": "Bugsnag.+addFeatureFlagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 311,
+      "line": 319,
       "symbol": "Bugsnag.+addFeatureFlags:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 314,
+      "line": 322,
       "symbol": "Bugsnag.+clearFeatureFlagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 317,
+      "line": 325,
       "symbol": "Bugsnag.+clearFeatureFlags",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
@@ -103,20 +103,6 @@
       "line": 80,
       "symbol": "BSGEnabledBreadcrumbType.BSGEnabledBreadcrumbTypeAll",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 123,
-      "symbol": "BSGBreadcrumbSink",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagBreadcrumb.h",
-      "line": 125,
-      "symbol": "BSGBreadcrumbSink.-leaveBreadcrumbWithMessage:metadata:andType:",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.instance",
       "warning": "undocumented"
     },
     {
