@@ -760,7 +760,7 @@ BSG_OBJC_DIRECT_MEMBERS
 // MARK: - <BugsnagFeatureFlagStore>
 
 - (NSArray<BugsnagFeatureFlag *> *)featureFlags {
-    return [self.featureFlagStore copy];
+    return self.featureFlagStore.allFlags;
 }
 
 - (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {

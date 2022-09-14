@@ -7,6 +7,7 @@
 //
 
 #import "BugsnagInternals.h"
+#import "BSGDefines.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,5 +20,25 @@ void BSGFeatureFlagStoreClear(BSGFeatureFlagStore *store, NSString *_Nullable na
 NSArray<NSDictionary *> * BSGFeatureFlagStoreToJSON(BSGFeatureFlagStore *store);
 
 BSGFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id _Nullable json);
+
+
+BSG_OBJC_DIRECT_MEMBERS
+@interface BSGFeatureFlagStore ()
+
+@property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> * allFlags;
+
++ (nonnull BSGFeatureFlagStore *) fromJSON:(nonnull id)json;
+
+- (NSUInteger) count;
+
+- (void) addFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant;
+
+- (void) addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags;
+
+- (void) clear:(nullable NSString *)name;
+
+- (nonnull NSArray<NSDictionary *> *) toJSON;
+
+@end
 
 NS_ASSUME_NONNULL_END
