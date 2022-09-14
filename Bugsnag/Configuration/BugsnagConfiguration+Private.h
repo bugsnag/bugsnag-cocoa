@@ -6,14 +6,14 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagConfiguration.h>
-
-#import "BSGFeatureFlagStore.h"
+#import "BSGDefines.h"
+#import "BugsnagInternals.h"
 
 @class BugsnagNotifier;
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagConfiguration ()
 
 #pragma mark Initializers
@@ -28,16 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (copy, nonatomic) BugsnagMetadata *metadata;
 
-@property (nullable, nonatomic) BugsnagNotifier *notifier;
-
 @property (readonly, nullable, nonatomic) NSURL *notifyURL;
-
-@property (nonatomic) NSMutableArray<BugsnagOnBreadcrumbBlock> *onBreadcrumbBlocks;
-
-@property (nonatomic) NSMutableArray<BugsnagOnSendErrorBlock> *onSendBlocks;
-
-/// Hooks for modifying sessions before they are sent to Bugsnag. Intended for internal use only by React Native/Unity.
-@property (nonatomic) NSMutableArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 @property (nonatomic) NSMutableSet *plugins;
 
@@ -59,6 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Logs a warning message if the API key is not in the expected format.
 - (void)validate;
 
+@end
+
+@interface BugsnagConfiguration (/* not objc_direct */) <NSCopying>
 @end
 
 NS_ASSUME_NONNULL_END

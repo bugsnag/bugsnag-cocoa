@@ -9,8 +9,10 @@
 #import "BSGEventUploadObjectOperation.h"
 
 #import "BugsnagEvent+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGEventUploadObjectOperation
 
 - (instancetype)initWithEvent:(BugsnagEvent *)event delegate:(id<BSGEventUploadOperationDelegate>)delegate {

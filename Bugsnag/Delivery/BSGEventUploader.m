@@ -16,6 +16,7 @@
 #import "BSGUtils.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 
 
@@ -38,6 +39,7 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 
 // MARK: -
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGEventUploader
 
 @synthesize configuration = _configuration;

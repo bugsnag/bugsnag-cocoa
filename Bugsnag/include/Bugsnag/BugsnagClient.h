@@ -41,7 +41,7 @@
  * Use the static access provided by the Bugsnag class instead.
  */
 BUGSNAG_EXTERN
-@interface BugsnagClient : NSObject<BSGBreadcrumbSink, BugsnagFeatureFlagStore, BugsnagMetadataStore>
+@interface BugsnagClient : NSObject<BugsnagFeatureFlagStore, BugsnagMetadataStore>
 
 /**
  * Initializes the client with the provided configuration.
@@ -120,6 +120,21 @@ BUGSNAG_EXTERN
                           metadata:(NSDictionary *_Nullable)metadata
                            andType:(BSGBreadcrumbType)type
 NS_SWIFT_NAME(leaveBreadcrumb(_:metadata:type:));
+
+/**
+ * Leave a "breadcrumb" log message representing a completed network request.
+ */
+- (void)leaveNetworkRequestBreadcrumbForTask:(nonnull NSURLSessionTask *)task
+                                     metrics:(nonnull NSURLSessionTaskMetrics *)metrics
+API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0))
+NS_SWIFT_NAME(leaveNetworkRequestBreadcrumb(task:metrics:));
+
+/**
+ * Returns the current buffer of breadcrumbs that will be sent with captured events. This
+ * ordered list represents the most recent breadcrumbs to be captured up to the limit
+ * set in `BugsnagConfiguration.maxBreadcrumbs`
+ */
+- (nonnull NSArray<BugsnagBreadcrumb *> *)breadcrumbs;
 
 // =============================================================================
 // MARK: - Session

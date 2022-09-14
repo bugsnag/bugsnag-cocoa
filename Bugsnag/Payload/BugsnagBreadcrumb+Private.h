@@ -6,25 +6,19 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagBreadcrumb.h>
-#import <Bugsnag/BugsnagDefines.h>
+#import "BSGDefines.h"
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagBreadcrumb ()
 
-+ (nullable instancetype)breadcrumbFromDict:(NSDictionary *)dict;
-
 - (BOOL)isValid;
-
-- (nullable NSDictionary *)objectValue;
 
 /// String representation of `timestamp` used to avoid unnecessary date <--> string conversions
 @property (copy, nullable, nonatomic) NSString *timestampString;
 
 @end
-
-BUGSNAG_EXTERN NSString * BSGBreadcrumbTypeValue(BSGBreadcrumbType type);
-BUGSNAG_EXTERN BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString * _Nullable value);
 
 NS_ASSUME_NONNULL_END

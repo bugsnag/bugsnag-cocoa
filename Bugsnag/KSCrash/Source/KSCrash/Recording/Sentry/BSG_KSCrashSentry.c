@@ -92,17 +92,9 @@ bsg_kscrashsentry_installWithContext(BSG_KSCrash_SentryContext *context,
                                      BSG_KSCrashType crashTypes,
                                      void (*onCrash)(void *)) {
     if (bsg_ksmachisBeingTraced()) {
-        if (context->reportWhenDebuggerIsAttached) {
-            BSG_KSLOG_WARN("App is running in a debugger. Crash "
-                           "handling is enabled via configuration.");
-            BSG_KSLOG_INFO(
-                "Installing handlers with context %p, crash types 0x%x.",
-                context, crashTypes);
-        } else {
-            BSG_KSLOG_WARN("App is running in a debugger. Only handled "
-                           "events will be sent to Bugsnag.");
-            crashTypes = 0;
-        }
+        BSG_KSLOG_WARN("App is running in a debugger. "
+                       "Only handled events will be sent to Bugsnag.");
+        crashTypes = 0;
     } else {
         BSG_KSLOG_DEBUG(
             "Installing handlers with context %p, crash types 0x%x.", context,
@@ -206,7 +198,6 @@ void bsg_kscrashsentry_resumeThreads(void) {
 void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
     void (*onCrash)(void *) = context->onCrash;
     bool threadTracingEnabled = context->threadTracingEnabled;
-    bool reportWhenDebuggerIsAttached = context->reportWhenDebuggerIsAttached;
     thread_t reservedThreads[BSG_KSCrashReservedThreadTypeCount];
     memcpy(reservedThreads, context->reservedThreads, sizeof(reservedThreads));
 
@@ -214,7 +205,6 @@ void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
     context->onCrash = onCrash;
 
     context->threadTracingEnabled = threadTracingEnabled;
-    context->reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
     memcpy(context->reservedThreads, reservedThreads, sizeof(reservedThreads));
 }
 

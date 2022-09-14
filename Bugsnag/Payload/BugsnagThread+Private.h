@@ -6,11 +6,12 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagThread.h>
 #import "BSGDefines.h"
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagThread ()
 
 - (instancetype)initWithId:(nullable NSString *)identifier
@@ -22,10 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithThread:(NSDictionary *)thread binaryImages:(NSArray *)binaryImages;
 
-+ (NSArray<BugsnagThread *> *)allThreads:(BOOL)allThreads callStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses;
-
-+ (instancetype)threadFromJson:(NSDictionary *)json;
-
 @property (readonly, nullable, nonatomic) NSString *crashInfoMessage;
 
 @property (readwrite, nonatomic) BOOL errorReportingThread;
@@ -35,8 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 #if BSG_HAVE_MACH_THREADS
 + (nullable instancetype)mainThread;
 #endif
-
-+ (NSMutableArray *)serializeThreads:(nullable NSArray<BugsnagThread *> *)threads;
 
 + (NSMutableArray<BugsnagThread *> *)threadsFromArray:(NSArray *)threads binaryImages:(NSArray *)binaryImages;
 

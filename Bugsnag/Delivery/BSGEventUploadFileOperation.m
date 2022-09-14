@@ -12,9 +12,11 @@
 #import "BSGJSONSerialization.h"
 #import "BSGUtils.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGEventUploadFileOperation
 
 - (instancetype)initWithFile:(NSString *)file delegate:(id<BSGEventUploadOperationDelegate>)delegate {

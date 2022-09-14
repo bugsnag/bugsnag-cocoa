@@ -39,8 +39,6 @@
 
 // Avoiding static functions due to linker issues.
 
-static pthread_t bsg_g_topThread;
-
 // ============================================================================
 #pragma mark - General Information -
 // ============================================================================
@@ -154,72 +152,10 @@ bool bsg_ksmachfillState(const thread_t thread, const thread_state_t state,
 }
 #endif
 
-void bsg_ksmach_init(void) {
-    static volatile sig_atomic_t initialized = 0;
-    if (!initialized) {
-        kern_return_t kr;
-        const task_t thisTask = mach_task_self();
-        thread_act_array_t threads;
-        mach_msg_type_number_t numThreads;
-
-        if ((kr = task_threads(thisTask, &threads, &numThreads)) !=
-            KERN_SUCCESS) {
-            BSG_KSLOG_ERROR("task_threads: %s", mach_error_string(kr));
-#if !BSG_KSLOG_PRINTS_AT_LEVEL(BSG_KSLogger_Level_Error)
-            (void)kr;
-#endif
-            return;
-        }
-
-        bsg_g_topThread = pthread_from_mach_thread_np(threads[0]);
-
-        for (mach_msg_type_number_t i = 0; i < numThreads; i++) {
-            mach_port_deallocate(thisTask, threads[i]);
-        }
-        vm_deallocate(thisTask, (vm_address_t)threads,
-                      sizeof(thread_t) * numThreads);
-        
-        initialized = true;
-    }
-}
-
 thread_t bsg_ksmachthread_self() {
     thread_t thread_self = mach_thread_self();
     mach_port_deallocate(mach_task_self(), thread_self);
     return thread_self;
-}
-
-thread_t bsg_ksmachmachThreadFromPThread(const pthread_t pthread) {
-    const internal_pthread_t threadStruct = (internal_pthread_t)pthread;
-    thread_t machThread = 0;
-    if (bsg_ksmachcopyMem(&threadStruct->kernel_thread, &machThread,
-                          sizeof(machThread)) != KERN_SUCCESS) {
-        BSG_KSLOG_TRACE("Could not copy mach thread from %u",
-                        threadStruct->kernel_thread);
-        return 0;
-    }
-    return machThread;
-}
-
-pthread_t bsg_ksmachpthreadFromMachThread(const thread_t thread) {
-    internal_pthread_t threadStruct = (internal_pthread_t)bsg_g_topThread;
-    thread_t machThread = 0;
-
-    for (int i = 0; i < 50; i++) {
-        if (bsg_ksmachcopyMem(&threadStruct->kernel_thread, &machThread,
-                              sizeof(machThread)) != KERN_SUCCESS) {
-            break;
-        }
-        if (machThread == thread) {
-            return (pthread_t)threadStruct;
-        }
-
-        if (bsg_ksmachcopyMem(&threadStruct->plist.tqe_next, &threadStruct,
-                              sizeof(threadStruct)) != KERN_SUCCESS) {
-            break;
-        }
-    }
-    return 0;
 }
 
 bool bsg_ksmachgetThreadName(const thread_t thread, char *const buffer,
@@ -440,44 +376,6 @@ kern_return_t bsg_ksmachcopyMem(const void *const src, void *const dst,
     return vm_read_overwrite(mach_task_self(), (vm_address_t)src,
                              (vm_size_t)numBytes, (vm_address_t)dst,
                              &bytesCopied);
-}
-
-size_t bsg_ksmachcopyMaxPossibleMem(const void *const src, void *const dst,
-                                    const size_t numBytes) {
-    const uint8_t *pSrc = src;
-    const uint8_t *pSrcMax = (const uint8_t *)src + numBytes;
-    const uint8_t *pSrcEnd = (const uint8_t *)src + numBytes;
-    uint8_t *pDst = dst;
-
-    size_t bytesCopied = 0;
-
-    // Short-circuit if no memory is readable
-    if (bsg_ksmachcopyMem(src, dst, 1) != KERN_SUCCESS) {
-        return 0;
-    } else if (numBytes <= 1) {
-        return numBytes;
-    }
-
-    for (;;) {
-        ssize_t copyLength = pSrcEnd - pSrc;
-        if (copyLength <= 0) {
-            break;
-        }
-
-        if (bsg_ksmachcopyMem(pSrc, pDst, (size_t)copyLength) == KERN_SUCCESS) {
-            bytesCopied += (size_t)copyLength;
-            pSrc += copyLength;
-            pDst += copyLength;
-            pSrcEnd = pSrc + (pSrcMax - pSrc) / 2;
-        } else {
-            if (copyLength <= 1) {
-                break;
-            }
-            pSrcMax = pSrcEnd;
-            pSrcEnd = pSrc + copyLength / 2;
-        }
-    }
-    return bytesCopied;
 }
 
 double bsg_ksmachtimeDifferenceInSeconds(const uint64_t endTime,

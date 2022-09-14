@@ -21,6 +21,7 @@
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagNotifier.h"
@@ -52,6 +53,7 @@ static NSString * DeviceId(void);
 
 // MARK: -
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BSGInternalErrorReporter ()
 
 @property (weak, nullable, nonatomic) id<BSGInternalErrorReporterDataSource> dataSource;
@@ -60,6 +62,7 @@ static NSString * DeviceId(void);
 @end
 
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BSGInternalErrorReporter
 
 static BSGInternalErrorReporter *sharedInstance_;

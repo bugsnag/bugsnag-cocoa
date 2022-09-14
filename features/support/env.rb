@@ -91,20 +91,11 @@ Maze.hooks.before do |_scenario|
   Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
 
   $started_at = Time.now
-
-  if Maze.config.os == 'ios' && Maze.config.farm == :local
-    begin
-      $logger_pid = Process.spawn(
-        'idevicesyslog', '-u', Maze.config.device_id, '-m', 'iOSTestApp',
-        %i[err out] => File.open('device.log', 'w')
-      )
-    rescue Errno::ENOENT
-      p 'Install libimobiledevice to capture iOS device logs'
-    end
-  end
 end
 
 Maze.hooks.after do |scenario|
+  next unless ENV['STRESS_TEST'].nil?
+
   folder1 = File.join(Dir.pwd, 'maze_output')
   folder2 = scenario.failed? ? 'failed' : 'passed'
   folder3 = scenario.name.gsub(/[:"& ]/, "_").gsub(/_+/, "_")
@@ -113,7 +104,7 @@ Maze.hooks.after do |scenario|
 
   FileUtils.makedirs(path)
 
-  case Maze.config.os
+  case Maze::Helper.get_current_platform
   when 'macos'
     if $fixture_pid # will be nil if scenario was skipped
       Process.kill 'KILL', $fixture_pid
@@ -130,17 +121,17 @@ Maze.hooks.after do |scenario|
       FileUtils.mv '/tmp/kscrash.log', path
     end
   when 'ios'
-    if $logger_pid
-      Process.kill 'TERM', $logger_pid
-      Process.waitpid $logger_pid
-      $logger_pid = nil
-      FileUtils.mv 'device.log', path
+    # get_log can be slow (1 or 2 seconds) on device farms
+    if scenario.failed? || Maze.config.farm == :local
+      File.open(File.join(path, 'syslog.log'), 'wb') do |file|
+        Maze.driver.get_log('syslog').each { |entry| file.puts entry.message }
+      end
     end
     begin
       data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
       File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
     rescue StandardError
-      p "Maze.driver.pull_file failed: #{$ERROR_INFO}"
+      puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"
     end
   end
 end

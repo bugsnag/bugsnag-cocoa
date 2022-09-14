@@ -8,9 +8,9 @@
 
 #import <XCTest/XCTest.h>
 
-#import "Bugsnag+Private.h"
-#import "BugsnagClient+Private.h"
+#import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagTestConstants.h"
 
 @interface BugsnagClientPayloadInfoTest : XCTestCase
@@ -27,7 +27,7 @@
 - (void)testAppInfo {
     BugsnagClient *client = [Bugsnag client];
     client.codeBundleId = @"f00123";
-    NSDictionary *app = [client collectAppWithState];
+    NSDictionary *app = [[client generateAppWithState:BSGGetSystemInfo()] toDict];
     XCTAssertNotNil(app);
     
     XCTAssertEqualObjects(app[@"codeBundleId"], @"f00123");
@@ -46,7 +46,7 @@
 
 - (void)testDeviceInfo {
     BugsnagClient *client = [Bugsnag client];
-    NSDictionary *device = [client collectDeviceWithState];
+    NSDictionary *device = [[client generateDeviceWithState:BSGGetSystemInfo()] toDictionary];
     XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertNotNil(device[@"freeMemory"]);
     XCTAssertNotNil(device[@"id"]);
@@ -68,20 +68,6 @@
         XCTAssertNotNil(device[@"modelNumber"]);
     }
 #endif
-}
-
-- (void)testBreadcrumbInfo {
-    BugsnagClient *client = [Bugsnag client];
-    [client leaveBreadcrumbWithMessage:@"Hello World"];
-    NSArray *breadcrumbs = [client collectBreadcrumbs];
-    XCTAssertNotNil(breadcrumbs);
-    XCTAssertTrue([breadcrumbs count] > 0);
-
-    for (NSDictionary *crumb in breadcrumbs) {
-        XCTAssertNotNil(crumb[@"message"]);
-        XCTAssertNotNil(crumb[@"type"]);
-        XCTAssertNotNil(crumb[@"timestamp"]);
-    }
 }
 
 @end

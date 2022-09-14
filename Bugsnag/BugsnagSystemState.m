@@ -106,6 +106,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
     return dictionary;
 }
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagSystemState ()
 
 @property(readwrite,atomic) NSDictionary *currentLaunchState;
@@ -114,6 +115,7 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
 
 @end
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagSystemState
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config {

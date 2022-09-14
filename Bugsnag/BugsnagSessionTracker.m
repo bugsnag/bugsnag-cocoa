@@ -27,6 +27,7 @@
  */
 static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagSessionTracker ()
 @property (strong, nonatomic) BugsnagConfiguration *config;
 @property (weak, nonatomic) BugsnagClient *client;
@@ -34,6 +35,7 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
 @property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 @end
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagSessionTracker
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config client:(BugsnagClient *)client {
@@ -110,11 +112,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
                    name:UIApplicationDidEnterBackgroundNotification
                  object:nil];
 #endif
-}
-
-- (void)setCodeBundleId:(NSString *)codeBundleId {
-    _codeBundleId = codeBundleId;
-    self.sessionUploader.codeBundleId = codeBundleId;
 }
 
 #pragma mark - Creating and sending a new session
@@ -199,25 +196,6 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
     if (info != nil && key != nil) {
         self.extraRuntimeInfo[key] = info;
     }
-}
-
-- (void)registerExistingSession:(NSString *)sessionId
-                      startedAt:(NSDate *)startedAt
-                           user:(BugsnagUser *)user
-                   handledCount:(NSUInteger)handledCount
-                 unhandledCount:(NSUInteger)unhandledCount {
-    if (sessionId == nil || startedAt == nil) {
-        self.currentSession = nil;
-    } else {
-        self.currentSession = [[BugsnagSession alloc] initWithId:sessionId
-                                                       startedAt:startedAt
-                                                            user:user
-                                                             app:[BugsnagApp new]
-                                                          device:[BugsnagDevice new]];
-        self.currentSession.handledCount = handledCount;
-        self.currentSession.unhandledCount = unhandledCount;
-    }
-    BSGSessionUpdateRunContext(self.currentSession);
 }
 
 #pragma mark - Handling events

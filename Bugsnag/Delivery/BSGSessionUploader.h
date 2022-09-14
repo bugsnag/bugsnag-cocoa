@@ -7,12 +7,15 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BSGDefines.h"
+
 @class BugsnagConfiguration;
 @class BugsnagNotifier;
 @class BugsnagSession;
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BSGSessionUploader : NSObject
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier;
@@ -21,8 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)processStoredSessions;
 
 - (void)uploadSession:(BugsnagSession *)session;
-
-@property (copy, nonatomic) NSString *codeBundleId;
 
 @property (nonatomic) BugsnagNotifier *notifier;
 

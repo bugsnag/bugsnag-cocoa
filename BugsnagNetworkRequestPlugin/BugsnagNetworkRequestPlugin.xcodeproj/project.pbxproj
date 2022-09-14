@@ -10,9 +10,6 @@
 		016113862716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		016113872716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		016113882716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
-		0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
-		0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
-		0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		01DC33A52733FC9A005B2BDD /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DC33A42733FC9A005B2BDD /* AppDelegate.m */; };
 		01DC33AE2733FC9A005B2BDD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01DC33AC2733FC9A005B2BDD /* Main.storyboard */; };
 		01DC33B02733FC9B005B2BDD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01DC33AF2733FC9B005B2BDD /* Assets.xcassets */; };
@@ -32,7 +29,6 @@
 		CB3B7FA2283270E900CAD67A /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
 		CB3B7FA3283270EC00CAD67A /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB3B7FA4283270EF00CAD67A /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
-		CB3B7FA5283270FC00CAD67A /* BSGURLSessionTracingDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */; };
 		CB3B7FA62832710000CAD67A /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		CB3B7FA72832710300CAD67A /* BugsnagNetworkRequestPluginTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */; };
 		CB3B7FA82832746000CAD67A /* BugsnagNetworkRequestPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -142,7 +138,6 @@
 
 /* Begin PBXFileReference section */
 		016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingProxyTests.m; sourceTree = "<group>"; };
-		0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionTracingDelegateTests.m; sourceTree = "<group>"; };
 		01DC33A12733FC9A005B2BDD /* BugsnagNetworkRequestPluginTestHost-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "BugsnagNetworkRequestPluginTestHost-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01DC33A32733FC9A005B2BDD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		01DC33A42733FC9A005B2BDD /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -326,7 +321,6 @@
 		CB487A6626D7B109004F6B87 /* BugsnagNetworkRequestPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				0196AA0F26FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m */,
 				016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */,
 				CB487A6726D7B109004F6B87 /* BugsnagNetworkRequestPluginTests.m */,
 				CB487A6926D7B109004F6B87 /* Info.plist */,
@@ -767,7 +761,6 @@
 			files = (
 				CB3B7FA72832710300CAD67A /* BugsnagNetworkRequestPluginTests.m in Sources */,
 				CB3B7FA62832710000CAD67A /* BSGURLSessionTracingProxyTests.m in Sources */,
-				CB3B7FA5283270FC00CAD67A /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,7 +781,6 @@
 			files = (
 				016113862716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */,
 				CB487AC226D7B9DB004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
-				0196AA1026FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -809,7 +801,6 @@
 			files = (
 				016113872716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */,
 				CB487AC326D7B9DC004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
-				0196AA1126FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,7 +821,6 @@
 			files = (
 				016113882716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */,
 				CB487AC426D7B9DD004F6B87 /* BugsnagNetworkRequestPluginTests.m in Sources */,
-				0196AA1226FB395E008E54FC /* BSGURLSessionTracingDelegateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

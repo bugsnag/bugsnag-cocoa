@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+#import "BSGDefines.h"
+
 @class BugsnagBreadcrumb;
 @class BugsnagConfiguration;
 typedef struct BSG_KSCrashReportWriter BSG_KSCrashReportWriter;
 
 NS_ASSUME_NONNULL_BEGIN
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagBreadcrumbs : NSObject
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)config;

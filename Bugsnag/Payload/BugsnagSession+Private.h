@@ -6,15 +6,15 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <Bugsnag/BugsnagSession.h>
-
 #import "BSGDefines.h"
 #import "BSG_KSCrashReportWriter.h"
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class BugsnagUser;
 
+BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagSession () <NSCopying>
 
 #pragma mark Initializers
@@ -27,11 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark Properties
 
-@property (nonatomic) NSUInteger handledCount;
-
 @property (getter=isStopped, nonatomic) BOOL stopped;
-
-@property (nonatomic) NSUInteger unhandledCount;
 
 @property (readwrite, nonnull, nonatomic) BugsnagUser *user;
 

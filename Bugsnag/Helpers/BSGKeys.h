@@ -111,6 +111,4 @@ static BSGKey const BSGKeyVariant                   = @"variant";
 static BSGKey const BSGKeyVersion                   = @"version";
 static BSGKey const BSGKeyWarning                   = @"warning";
 
-#define BSGKeyHwCputype "hw.cputype"
-#define BSGKeyHwCpusubtype "hw.cpusubtype"
 #define BSGKeyDefaultMacName "en0"

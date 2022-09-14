@@ -27,6 +27,8 @@
 #import "BugsnagConfiguration+Private.h"
 
 #import "BSGConfigurationBuilder.h"
+#import "BSGDefines.h"
+#import "BSGFeatureFlagStore.h"
 #import "BSGKeys.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagEndpointConfiguration.h"
@@ -34,7 +36,6 @@
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagUser+Private.h"
-#import "BSGDefines.h"
 
 const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 
@@ -44,6 +45,7 @@ static const int BSGApiKeyLength = 32;
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
+BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagConfiguration
 
 + (instancetype _Nonnull)loadConfig {
