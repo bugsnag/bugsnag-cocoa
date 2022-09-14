@@ -116,28 +116,6 @@ BSG_OBJC_DIRECT_MEMBERS
 #pragma mark - Utility -
 // ============================================================================
 
-/** Get a sysctl value as an NSNumber.
- *
- * @param name The sysctl name.
- *
- * @return The result of the sysctl call.
- */
-+ (NSNumber *)int32Sysctl:(NSString *)name {
-    return @(bsg_kssysctl_int32ForName(
-            [name cStringUsingEncoding:NSUTF8StringEncoding]));
-}
-
-/** Get a sysctl value as an NSNumber.
- *
- * @param name The sysctl name.
- *
- * @return The result of the sysctl call.
- */
-+ (NSNumber *)int64Sysctl:(NSString *)name {
-    return @(bsg_kssysctl_int64ForName([name
-            cStringUsingEncoding:NSUTF8StringEncoding]));
-}
-
 /** Get a sysctl value as an NSString.
  *
  * @param name The sysctl name.
@@ -165,65 +143,26 @@ BSG_OBJC_DIRECT_MEMBERS
     return str;
 }
 
-/** Get a sysctl value as an NSDate.
- *
- * @param name The sysctl name.
- *
- * @return The result of the sysctl call.
- */
-+ (NSDate *)dateSysctl:(NSString *)name {
-    NSDate *result = nil;
-
-    struct timeval value = bsg_kssysctl_timevalForName(
-        [name cStringUsingEncoding:NSUTF8StringEncoding]);
-    if (!(value.tv_sec == 0 && value.tv_usec == 0)) {
-        result =
-            [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)value.tv_sec];
-    }
-
-    return result;
-}
-
-/** Convert raw UUID bytes to a human-readable string.
- *
- * @param uuidBytes The UUID bytes (must be 16 bytes long).
- *
- * @return The human readable form of the UUID.
- */
-+ (NSString *)uuidBytesToString:(const uint8_t *)uuidBytes {
-    CFUUIDRef uuidRef =
-        CFUUIDCreateFromUUIDBytes(NULL, *((const CFUUIDBytes *)uuidBytes));
-    NSString *str =
-        (__bridge_transfer NSString *)CFUUIDCreateString(NULL, uuidRef);
-    CFRelease(uuidRef);
-
-    return str;
-}
-
 /** Get this application's UUID.
  *
  * @return The UUID.
  */
 + (NSString *)appUUID {
     BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
-    return (image && image->uuid) ? [self uuidBytesToString:image->uuid] : nil;
+    if (image && image->uuid) {
+        return [[[NSUUID alloc] initWithUUIDBytes:image->uuid] UUIDString];
+    }
+    return nil;
 }
 
 + (NSString *)deviceAndAppHash {
-    NSMutableData *data = nil;
-
 #if BSG_HAVE_UIDEVICE
-    if ([[UIDEVICE currentDevice]
-            respondsToSelector:@selector(identifierForVendor)]) {
-        data = [NSMutableData dataWithLength:16];
-        [[UIDEVICE currentDevice].identifierForVendor
-            getUUIDBytes:data.mutableBytes];
-    } else
+    NSMutableData *data = [NSMutableData dataWithLength:16];
+    [[UIDEVICE currentDevice].identifierForVendor getUUIDBytes:data.mutableBytes];
+#else
+    NSMutableData *data = [NSMutableData dataWithLength:6];
+    bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, [data mutableBytes]);
 #endif
-    {
-        data = [NSMutableData dataWithLength:6];
-        bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, [data mutableBytes]);
-    }
 
     // Append some device-specific data.
     [data appendData:(NSData * _Nonnull)[[self stringSysctl:@"hw.machine"]
@@ -301,8 +240,8 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (NSString *)currentCPUArch {
     NSString *result =
-        [self CPUArchForCPUType:bsg_kssysctl_int32ForName(BSGKeyHwCputype)
-                        subType:bsg_kssysctl_int32ForName(BSGKeyHwCpusubtype)];
+        [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
+                        subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
 
     return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
 }
