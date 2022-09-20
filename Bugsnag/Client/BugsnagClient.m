@@ -275,7 +275,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if BSG_HAVE_APPKIT
+#if TARGET_OS_OSX
                    name:NSApplicationWillTerminateNotification
 #else
                    name:UIApplicationWillTerminateNotification

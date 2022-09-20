@@ -6,8 +6,6 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGDefines.h"
-
 #if __has_include(<UIKit/UIKit.h>)
 
 #import <UIKit/UIKit.h>
