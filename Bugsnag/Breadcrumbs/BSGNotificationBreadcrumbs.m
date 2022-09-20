@@ -8,16 +8,13 @@
 
 #import "BSGNotificationBreadcrumbs.h"
 
+#import "BSGAppKit.h"
+#import "BSGDefines.h"
+#import "BSGKeys.h"
+#import "BSGUIKit.h"
+#import "BSGUtils.h"
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BSGKeys.h"
-#import "BSGUtils.h"
-#import "BSGDefines.h"
-#import "BSGAppKit.h"
-#import "BSGUIKit.h"
-
-#define BSG_HAVE_TABLE_VIEW    (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV)
-#define BSG_HAVE_TEXT_CONTROL  (TARGET_OS_OSX || TARGET_OS_IOS                )
 
 BSG_OBJC_DIRECT_MEMBERS
 @interface BSGNotificationBreadcrumbs ()
@@ -170,20 +167,20 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 - (NSArray<NSNotificationName> *)automaticBreadcrumbControlEvents {
-#if !BSG_HAVE_TEXT_CONTROL
-    return nil;
-#elif BSG_HAVE_APPKIT
-    return @[
-        NSControlTextDidBeginEditingNotification,
-        NSControlTextDidEndEditingNotification
-    ];
-#else
+#if TARGET_OS_IOS
     return @[
         UITextFieldTextDidBeginEditingNotification,
         UITextFieldTextDidEndEditingNotification,
         UITextViewTextDidBeginEditingNotification,
         UITextViewTextDidEndEditingNotification
     ];
+#elif TARGET_OS_OSX
+    return @[
+        NSControlTextDidBeginEditingNotification,
+        NSControlTextDidEndEditingNotification
+    ];
+#else
+    return nil;
 #endif
 }
 
@@ -321,8 +318,6 @@ static NSString *nullStringIfBlank(NSString *str) {
 #endif
 
 - (BOOL)tryAddWindowNotification:(NSNotification *)notification {
-#if BSG_HAVE_WINDOW
-
 #if TARGET_OS_IOS || TARGET_OS_TV
     if ([notification.name hasPrefix:@"UIWindow"] && [notification.object isKindOfClass:UIWINDOW]) {
         UIWindow *window = notification.object;
@@ -365,7 +360,6 @@ static NSString *nullStringIfBlank(NSString *str) {
     }
 #endif
 
-#endif
     return NO;
 }
 
@@ -380,8 +374,6 @@ static NSString *nullStringIfBlank(NSString *str) {
 }
 
 - (void)addBreadcrumbForTableViewNotification:(__unused NSNotification *)notification {
-#if BSG_HAVE_TABLE_VIEW
-
 #if TARGET_OS_IOS || TARGET_OS_TV
     NSIndexPath *indexPath = ((UITableView *)notification.object).indexPathForSelectedRow;
     [self addBreadcrumbWithType:BSGBreadcrumbTypeNavigation forNotificationName:notification.name metadata:
@@ -390,8 +382,6 @@ static NSString *nullStringIfBlank(NSString *str) {
     NSTableView *tableView = notification.object;
     [self addBreadcrumbWithType:BSGBreadcrumbTypeNavigation forNotificationName:notification.name metadata:
      tableView ? @{@"selectedRow" : @(tableView.selectedRow), @"selectedColumn" : @(tableView.selectedColumn)} : nil];
-#endif
-
 #endif
 }
 

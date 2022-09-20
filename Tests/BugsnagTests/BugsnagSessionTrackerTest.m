@@ -155,9 +155,9 @@
 - (void)testStartInBackground {
     [self.sessionTracker startWithNotificationCenter:NSNotificationCenter.defaultCenter isInForeground:NO];
     XCTAssertNil(self.sessionTracker.runningSession, @"There should be no running session after starting tracker in background");
-#if BSG_HAVE_WATCHKIT
+#if TARGET_OS_WATCH
     [NSNotificationCenter.defaultCenter postNotificationName:WKApplicationDidBecomeActiveNotification object:nil];
-#elif BSG_HAVE_APPKIT
+#elif TARGET_OS_OSX
     [NSNotificationCenter.defaultCenter postNotificationName:NSApplicationDidBecomeActiveNotification object:nil];
 #else
     [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
