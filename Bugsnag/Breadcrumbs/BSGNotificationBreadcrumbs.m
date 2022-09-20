@@ -188,12 +188,12 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 - (NSArray<NSNotificationName> *)automaticBreadcrumbTableItemEvents {
-#if !BSG_HAVE_TABLE_VIEW
-    return @[];
-#elif BSG_HAVE_APPKIT
-    return @[ NSTableViewSelectionDidChangeNotification ];
+#if TARGET_OS_IOS || TARGET_OS_TV
+    return @[UITableViewSelectionDidChangeNotification];
+#elif TARGET_OS_OSX
+    return @[NSTableViewSelectionDidChangeNotification];
 #else
-    return @[ UITableViewSelectionDidChangeNotification ];
+    return @[];
 #endif
 }
 

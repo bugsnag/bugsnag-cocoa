@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix a crash on Mac Catalyst when user interacts with help menu.
+  [#1484](https://github.com/bugsnag/bugsnag-cocoa/issues/1484)
+  [#1485](https://github.com/bugsnag/bugsnag-cocoa/pull/1485)
+
 ## 6.23.0 (2022-09-14)
 
 ### Enhancements
