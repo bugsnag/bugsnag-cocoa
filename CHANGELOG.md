@@ -1,13 +1,16 @@
 Changelog
 =========
 
-## TBD
+## 6.23.1 (2022-09-21)
 
 ### Bug fixes
 
 * Fix a crash on Mac Catalyst when user interacts with help menu.
   [#1484](https://github.com/bugsnag/bugsnag-cocoa/issues/1484)
   [#1485](https://github.com/bugsnag/bugsnag-cocoa/pull/1485)
+
+* Fix feature flag ordering and insertion performance.
+  [#1481](https://github.com/bugsnag/bugsnag-cocoa/pull/1481)
 
 ## 6.23.0 (2022-09-14)
 
