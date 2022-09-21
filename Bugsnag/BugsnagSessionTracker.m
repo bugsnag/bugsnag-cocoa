@@ -66,7 +66,7 @@ BSG_OBJC_DIRECT_MEMBERS
         bsg_log_debug(@"Not starting session because app is not in the foreground");
     }
 
-#if BSG_HAVE_APPKIT
+#if TARGET_OS_OSX
     [notificationCenter addObserver:self
                selector:@selector(handleAppForegroundEvent)
                    name:NSApplicationWillBecomeActiveNotification
@@ -81,7 +81,7 @@ BSG_OBJC_DIRECT_MEMBERS
                selector:@selector(handleAppBackgroundEvent)
                    name:NSApplicationDidResignActiveNotification
                  object:nil];
-#elif BSG_HAVE_WATCHKIT
+#elif TARGET_OS_WATCH
     [notificationCenter addObserver:self
                selector:@selector(handleAppForegroundEvent)
                    name:WKApplicationWillEnterForegroundNotification

@@ -195,7 +195,7 @@ BSG_OBJC_DIRECT_MEMBERS
             [_configuration setUser:[BSG_KSSystemInfo deviceAndAppHash] withEmail:_configuration.user.email andName:_configuration.user.name];
         }
 
-        _featureFlagStore = [configuration.featureFlagStore mutableCopy];
+        _featureFlagStore = [configuration.featureFlagStore copy];
         
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{
             BSGKeyClient: @{
@@ -275,7 +275,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
     [center addObserver:self
                selector:@selector(applicationWillTerminate:)
-#if BSG_HAVE_APPKIT
+#if TARGET_OS_OSX
                    name:NSApplicationWillTerminateNotification
 #else
                    name:UIApplicationWillTerminateNotification
@@ -762,7 +762,7 @@ BSG_OBJC_DIRECT_MEMBERS
     // App hang events will already contain feature flags
     if (!event.featureFlagStore.count) {
         @synchronized (self.featureFlagStore) {
-            event.featureFlagStore = [self.featureFlagStore mutableCopy];
+            event.featureFlagStore = [self.featureFlagStore copy];
         }
     }
 
@@ -976,7 +976,7 @@ BSG_OBJC_DIRECT_MEMBERS
         };
         
         @synchronized (self.featureFlagStore) {
-            for (BugsnagFeatureFlag *flag in self.featureFlagStore) {
+            for (BugsnagFeatureFlag *flag in self.featureFlagStore.allFlags) {
                 observer(BSGClientObserverAddFeatureFlag, flag);
             }
         }
@@ -1040,7 +1040,7 @@ BSG_OBJC_DIRECT_MEMBERS
     self.appHangEvent.context = self.context;
 
     @synchronized (self.featureFlagStore) {
-        self.appHangEvent.featureFlagStore = [self.featureFlagStore mutableCopy];
+        self.appHangEvent.featureFlagStore = [self.featureFlagStore copy];
     }
     
     [self.appHangEvent symbolicateIfNeeded];

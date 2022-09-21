@@ -26,12 +26,12 @@
 
 #import "BSG_KSCrash.h"
 
-#import "BSG_KSCrashC.h"
-#import "BSG_KSCrashIdentifier.h"
-#import "BSGDefines.h"
 #import "BSGAppKit.h"
+#import "BSGDefines.h"
 #import "BSGUIKit.h"
 #import "BSGWatchKit.h"
+#import "BSG_KSCrashC.h"
+#import "BSG_KSCrashIdentifier.h"
 
 // ============================================================================
 #pragma mark - Constants -
@@ -71,7 +71,7 @@
     free(recrashReportPath);
     
     NSNotificationCenter *nCenter = [NSNotificationCenter defaultCenter];
-#if BSG_HAVE_APPKIT
+#if TARGET_OS_OSX
     // MacOS "active" serves the same purpose as "foreground" in iOS
     [nCenter addObserver:self
                 selector:@selector(applicationDidEnterBackground)
@@ -81,7 +81,7 @@
                 selector:@selector(applicationWillEnterForeground)
                     name:NSApplicationDidBecomeActiveNotification
                   object:nil];
-#elif BSG_HAVE_WATCHKIT
+#elif TARGET_OS_WATCH
     [nCenter addObserver:self
                 selector:@selector(applicationDidBecomeActive)
                     name:WKApplicationDidBecomeActiveNotification

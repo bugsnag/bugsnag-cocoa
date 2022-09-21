@@ -6,8 +6,6 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#include "BSGDefines.h"
-
 #if __has_include(<AppKit/AppKit.h>)
 
 #import <AppKit/AppKit.h>

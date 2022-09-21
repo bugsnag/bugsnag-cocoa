@@ -11,7 +11,6 @@
 #include <TargetConditionals.h>
 
 // Capabilities dependent upon system defines and files
-#define BSG_HAVE_APPKIT                       __has_include(<AppKit/AppKit.h>)
 #define BSG_HAVE_BATTERY                      (                 TARGET_OS_IOS                 || TARGET_OS_WATCH)
 #define BSG_HAVE_MACH_EXCEPTIONS              (TARGET_OS_OSX || TARGET_OS_IOS                                   )
 #define BSG_HAVE_MACH_THREADS                 (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
@@ -22,8 +21,6 @@
 #define BSG_HAVE_SIGALTSTACK                  (TARGET_OS_OSX || TARGET_OS_IOS                                   )
 #define BSG_HAVE_SYSCALL                      (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
 #define BSG_HAVE_UIDEVICE                     __has_include(<UIKit/UIDevice.h>)
-#define BSG_HAVE_UIKIT                        __has_include(<UIKit/UIKit.h>)
-#define BSG_HAVE_WATCHKIT                     __has_include(<WatchKit/WatchKit.h>)
 #define BSG_HAVE_WINDOW                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
 
 // Capabilities dependent upon previously defined capabilities
