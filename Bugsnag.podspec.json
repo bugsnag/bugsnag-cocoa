@@ -51,11 +51,15 @@
     "watchos": "6.3"
   },
   "source_files": [
-    "Bugsnag/{**/,}*.{m,h,mm,c}"
+    "Bugsnag/{**/,}*.{m,h,mm,c,swift}"
   ],
   "requires_arc": true,
   "prefix_header_file": false,
   "public_header_files": [
     "Bugsnag/include/Bugsnag/*.h"
+  ],
+  "swift_versions": [
+    4.2,
+    5
   ]
 }

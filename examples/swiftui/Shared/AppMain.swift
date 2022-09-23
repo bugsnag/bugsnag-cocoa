@@ -31,6 +31,7 @@ struct AppMain: App {
          You can find your API key in your Bugsnag dashboard under the settings menu.
          */
         Bugsnag.start()
+        BugsnagSwift.start()
         
         /**
         Bugsnag behavior can be configured through the plist and/or further extended in code by creating a BugsnagConfiguration object and passing it to [Bugsnag startWithConfiguration].

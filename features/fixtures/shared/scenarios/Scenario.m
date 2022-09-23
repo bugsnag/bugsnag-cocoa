@@ -4,6 +4,8 @@
 //
 #import "Scenario.h"
 
+#import <Bugsnag/Bugsnag-Swift.h>
+
 #import <objc/runtime.h>
 
 #if TARGET_OS_IOS
@@ -46,6 +48,7 @@ static char ksLogPath[PATH_MAX];
 }
 
 + (void)load {
+    [BugsnagSwift start];
     [[NSNotificationCenter defaultCenter] addObserverForName:nil object:nil queue:nil usingBlock:^(NSNotification *notification) {
         for (NSString *prefix in @[@"NSAutomaticFocusRingChanged",
                                    @"NSBundleDidLoadNotification",

@@ -1077,7 +1077,7 @@
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
-					../../../Bugsnag/include,
+					"${BUILT_PRODUCTS_DIR}/include",
 					../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
@@ -1118,7 +1118,7 @@
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
-					../../../Bugsnag/include,
+					"${BUILT_PRODUCTS_DIR}/include",
 					../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;

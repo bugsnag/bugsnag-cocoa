@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import <Bugsnag/Bugsnag.h>
+@import Bugsnag;
 
 /**
  * To enable network breadcrumbs, import the plugin and then add to your config (see configuration section further down).
@@ -29,6 +29,7 @@
      You can find your API key in your Bugsnag dashboard under the settings menu.
      */
     [Bugsnag start];
+    [BugsnagSwift start];
     
     /**
      Bugsnag behavior can be configured through the plist and/or further extended in code by creating a BugsnagConfiguration object and passing it to [Bugsnag startWithConfiguration].

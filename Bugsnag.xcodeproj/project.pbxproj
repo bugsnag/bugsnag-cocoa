@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -567,6 +567,15 @@
 		0126F7BF25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0126F7BA25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m */; };
 		0126F7C025DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0126F7BA25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m */; };
 		0126F7C125DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0126F7BA25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m */; };
+		012FFE5028DD9221009670DB /* BugsnagSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012FFE4F28DD9221009670DB /* BugsnagSwift.swift */; };
+		012FFE5128DD9222009670DB /* BugsnagSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012FFE4F28DD9221009670DB /* BugsnagSwift.swift */; };
+		012FFE5228DD9222009670DB /* BugsnagSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012FFE4F28DD9221009670DB /* BugsnagSwift.swift */; };
+		012FFE5328DD9222009670DB /* BugsnagSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012FFE4F28DD9221009670DB /* BugsnagSwift.swift */; };
+		012FFE5428DD9222009670DB /* BugsnagSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012FFE4F28DD9221009670DB /* BugsnagSwift.swift */; };
+		012FFE5828DD967F009670DB /* BugsnagDefines.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01C41A27288FD3EA00BAE31A /* BugsnagDefines.h */; };
+		012FFE5928DD967F009670DB /* BugsnagFeatureFlag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01099391273D123800128BBE /* BugsnagFeatureFlag.h */; };
+		012FFE5A28DD967F009670DB /* BugsnagFeatureFlagStore.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 010993B0273D2F6100128BBE /* BugsnagFeatureFlagStore.h */; };
+		012FFE5B28DD967F009670DB /* BugsnagLastRunInfo.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01CCAEE825D414D60057268D /* BugsnagLastRunInfo.h */; };
 		0130DEF92880203A00E5953F /* BSGRunContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0130DEF82880203A00E5953F /* BSGRunContextTests.m */; };
 		0130DEFA2880203A00E5953F /* BSGRunContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0130DEF82880203A00E5953F /* BSGRunContextTests.m */; };
 		0130DEFB2880203A00E5953F /* BSGRunContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0130DEF82880203A00E5953F /* BSGRunContextTests.m */; };
@@ -1252,9 +1261,13 @@
 		00AD1CE224869C6C00A27979 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
+			dstPath = include/Bugsnag;
 			dstSubfolderSpec = 16;
 			files = (
+				012FFE5828DD967F009670DB /* BugsnagDefines.h in CopyFiles */,
+				012FFE5928DD967F009670DB /* BugsnagFeatureFlag.h in CopyFiles */,
+				012FFE5A28DD967F009670DB /* BugsnagFeatureFlagStore.h in CopyFiles */,
+				012FFE5B28DD967F009670DB /* BugsnagLastRunInfo.h in CopyFiles */,
 				3A700AE724A6492F0068CD1B /* BugsnagThread.h in CopyFiles */,
 				3A700AE824A6492F0068CD1B /* BugsnagSession.h in CopyFiles */,
 				3A700AE924A6492F0068CD1B /* BugsnagStackframe.h in CopyFiles */,
@@ -1535,6 +1548,7 @@
 		0126F7AA25DD5118008483C2 /* BSGEventUploadFileOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploadFileOperation.m; sourceTree = "<group>"; };
 		0126F7B925DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGEventUploadKSCrashReportOperation.h; sourceTree = "<group>"; };
 		0126F7BA25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploadKSCrashReportOperation.m; sourceTree = "<group>"; };
+		012FFE4F28DD9221009670DB /* BugsnagSwift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwift.swift; sourceTree = "<group>"; };
 		0130DEF82880203A00E5953F /* BSGRunContextTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRunContextTests.m; sourceTree = "<group>"; };
 		0134524A256BCF7C0088C548 /* BugsnagError+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagError+Private.h"; sourceTree = "<group>"; };
 		0134524B256BD00A0088C548 /* BugsnagThread+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagThread+Private.h"; sourceTree = "<group>"; };
@@ -1968,6 +1982,7 @@
 				01CCAEFF25D4151C0057268D /* BugsnagLastRunInfo+Private.h */,
 				00AD1EF82486A17700A27979 /* BugsnagSessionTracker.h */,
 				00AD1F012486A17900A27979 /* BugsnagSessionTracker.m */,
+				012FFE4F28DD9221009670DB /* BugsnagSwift.swift */,
 				CBB0928B2519F891007698BC /* BugsnagSystemState.h */,
 				CBB0928A2519F891007698BC /* BugsnagSystemState.m */,
 				00AD1CF124869EBD00A27979 /* Breadcrumbs */,
@@ -2828,6 +2843,7 @@
 				00AD1CE024869C6C00A27979 /* Sources */,
 				00AD1CE124869C6C00A27979 /* Frameworks */,
 				00AD1CE224869C6C00A27979 /* CopyFiles */,
+				012FFE5728DD955E009670DB /* Copy Swift Generated Header */,
 			);
 			buildRules = (
 			);
@@ -2905,6 +2921,7 @@
 				TargetAttributes = {
 					00AD1C7124869B0E00A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
+						LastSwiftMigration = 1400;
 					};
 					00AD1C7A24869B0E00A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
@@ -2912,24 +2929,28 @@
 					};
 					00AD1CAC24869C1200A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
+						LastSwiftMigration = 1400;
 					};
 					00AD1CB424869C1200A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
 					};
 					00AD1CC824869C2400A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
+						LastSwiftMigration = 1400;
 					};
 					00AD1CD024869C2400A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
 					};
 					00AD1CE324869C6C00A27979 = {
 						CreatedOnToolsVersion = 11.4.1;
+						LastSwiftMigration = 1400;
 					};
 					01A6176A2733CFEA00024A0B = {
 						CreatedOnToolsVersion = 11.7;
 					};
 					CBBDE8F7280067AB0070DCD3 = {
 						CreatedOnToolsVersion = 13.2.1;
+						LastSwiftMigration = 1400;
 					};
 					CBBDE900280067AB0070DCD3 = {
 						CreatedOnToolsVersion = 13.2.1;
@@ -3054,12 +3075,36 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		012FFE5728DD955E009670DB /* Copy Swift Generated Header */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Swift Generated Header";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp ${DERIVED_SOURCES_DIR}/${PRODUCT_MODULE_NAME}-Swift.h ${BUILT_PRODUCTS_DIR}/include/Bugsnag/Bugsnag-Swift.h\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		00AD1C6E24869B0E00A27979 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				0154E20528070AEA009044E4 /* BSGRunContext.m in Sources */,
+				012FFE5028DD9221009670DB /* BugsnagSwift.swift in Sources */,
 				008969992486DAD100DC48C2 /* BSG_KSMach_Arm64.c in Sources */,
 				008967E82486DA2D00DC48C2 /* BugsnagErrorTypes.m in Sources */,
 				0126F7AE25DD5118008483C2 /* BSGEventUploadFileOperation.m in Sources */,
@@ -3232,6 +3277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB33CD022703438400C76656 /* BSG_KSCrashNames.c in Sources */,
+				012FFE5128DD9222009670DB /* BugsnagSwift.swift in Sources */,
 				0089699A2486DAD100DC48C2 /* BSG_KSMach_Arm64.c in Sources */,
 				008967E92486DA2D00DC48C2 /* BugsnagErrorTypes.m in Sources */,
 				008968732486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
@@ -3401,6 +3447,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0154E20728070AEA009044E4 /* BSGRunContext.m in Sources */,
+				012FFE5228DD9222009670DB /* BugsnagSwift.swift in Sources */,
 				0089699B2486DAD100DC48C2 /* BSG_KSMach_Arm64.c in Sources */,
 				008967EA2486DA2D00DC48C2 /* BugsnagErrorTypes.m in Sources */,
 				008968742486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
@@ -3575,6 +3622,7 @@
 				E7462909248907E500F92D67 /* BSG_KSMach_x86_32.c in Sources */,
 				E746290B248907E500F92D67 /* BSG_KSMach_Arm.c in Sources */,
 				0126F7B125DD5118008483C2 /* BSGEventUploadFileOperation.m in Sources */,
+				012FFE5428DD9222009670DB /* BugsnagSwift.swift in Sources */,
 				017DCF942874212F000ECB22 /* BSGTelemetry.m in Sources */,
 				E746290C248907E500F92D67 /* BSG_KSJSONCodec.c in Sources */,
 				E746290D248907E500F92D67 /* BSG_KSMach.c in Sources */,
@@ -3667,6 +3715,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBBDE971280069540070DCD3 /* BugsnagThread.m in Sources */,
+				012FFE5328DD9222009670DB /* BugsnagSwift.swift in Sources */,
 				CBBDE9862800698F0070DCD3 /* BSG_KSCrashIdentifier.m in Sources */,
 				CBBDE9B9280069B20070DCD3 /* BSG_KSBacktrace.c in Sources */,
 				CBBDE9A6280069B20070DCD3 /* BSG_KSSignalInfo.c in Sources */,
@@ -3977,6 +4026,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -3996,6 +4046,8 @@
 				);
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -4004,6 +4056,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -4019,6 +4072,7 @@
 				);
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -4026,6 +4080,7 @@
 		00AD1C8A24869B0E00A27979 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4050,6 +4105,7 @@
 		00AD1C8B24869B0E00A27979 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
@@ -4071,6 +4127,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -4091,6 +4148,8 @@
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -4098,6 +4157,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -4114,12 +4174,14 @@
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
 		00AD1CC224869C1200A27979 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4143,6 +4205,7 @@
 		00AD1CC324869C1200A27979 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
@@ -4163,6 +4226,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4181,6 +4245,8 @@
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Debug;
@@ -4189,6 +4255,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -4203,6 +4270,7 @@
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Release;
@@ -4210,6 +4278,7 @@
 		00AD1CDE24869C2400A27979 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -4233,6 +4302,7 @@
 		00AD1CDF24869C2400A27979 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4253,9 +4323,17 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -4264,9 +4342,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -4274,6 +4359,7 @@
 		01A617822733CFEC00024A0B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
@@ -4291,6 +4377,7 @@
 		01A617832733CFEC00024A0B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
@@ -4310,6 +4397,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -4363,6 +4451,8 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -4372,6 +4462,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -4421,6 +4512,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -4428,6 +4520,7 @@
 		CBBDE90B280067AB0070DCD3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -4479,6 +4572,7 @@
 		CBBDE90C280067AB0070DCD3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
