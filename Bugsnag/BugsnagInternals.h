@@ -19,8 +19,8 @@
  * or bugfix releases, and should not be used by projects outside of Bugsnag.
  */
 
-#import "BugsnagHandledState.h"
-#import "BugsnagNotifier.h"
+#import "Payload/BugsnagHandledState.h"
+#import "Payload/BugsnagNotifier.h"
 
 @interface BSGFeatureFlagStore : NSObject <NSCopying>
 @end
@@ -238,5 +238,7 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 BUGSNAG_EXTERN NSString * BSGGetDefaultDeviceId(void);
 
 BUGSNAG_EXTERN NSDictionary * BSGGetSystemInfo(void);
+
+BUGSNAG_EXTERN NSTimeInterval BSGCrashSentryDeliveryTimeout;
 
 NS_ASSUME_NONNULL_END

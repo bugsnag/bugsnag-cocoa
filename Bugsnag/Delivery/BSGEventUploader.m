@@ -87,6 +87,12 @@ BSG_OBJC_DIRECT_MEMBERS
     [self.uploadQueue addOperation:operation];
 }
 
+- (void)uploadKSCrashReportWithFile:(NSString *)file completionHandler:(nullable void (^)(void))completionHandler {
+    BSGEventUploadKSCrashReportOperation *operation = [[BSGEventUploadKSCrashReportOperation alloc] initWithFile:file delegate:self];
+    operation.completionBlock = completionHandler;
+    [self.uploadQueue addOperation:operation];
+}
+
 - (void)uploadStoredEvents {
     if (self.scanQueue.operationCount > 1) {
         // Prevent too many scan operations being scheduled

@@ -5,9 +5,7 @@
 
 #import <Bugsnag/Bugsnag.h>
 
-// These headers expose some Bugsnag private APIs
-#import "AttachCustomStacktraceHook.h"
-#import "BugsnagHooks.h"
+#import "../../../../Bugsnag/BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
