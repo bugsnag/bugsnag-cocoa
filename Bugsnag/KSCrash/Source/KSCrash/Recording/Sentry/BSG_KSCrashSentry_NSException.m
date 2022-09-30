@@ -97,6 +97,14 @@ void bsg_ksnsexc_i_handleException(NSException *exception) {
         BSG_KSLOG_DEBUG(
             "Crash handling complete. Restoring original handlers.");
         bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAll);
+
+        // Must run before endHandlingCrash unblocks secondary crashed threads.
+        BSG_KSCrash_Context *context = crashContext();
+        if (context->crash.attemptDelivery) {
+            BSG_KSLOG_DEBUG("Attempting delivery.");
+            context->crash.attemptDelivery();
+        }
+
         bsg_kscrashsentry_endHandlingCrash();
     }
 

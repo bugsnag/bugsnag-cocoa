@@ -197,13 +197,15 @@ void bsg_kscrashsentry_resumeThreads(void) {
 
 void bsg_kscrashsentry_clearContext(BSG_KSCrash_SentryContext *context) {
     void (*onCrash)(void *) = context->onCrash;
+    void (*attemptDelivery)(void) = context->attemptDelivery;
     bool threadTracingEnabled = context->threadTracingEnabled;
     thread_t reservedThreads[BSG_KSCrashReservedThreadTypeCount];
     memcpy(reservedThreads, context->reservedThreads, sizeof(reservedThreads));
 
     memset(context, 0, sizeof(*context));
-    context->onCrash = onCrash;
 
+    context->onCrash = onCrash;
+    context->attemptDelivery = attemptDelivery;
     context->threadTracingEnabled = threadTracingEnabled;
     memcpy(context->reservedThreads, reservedThreads, sizeof(reservedThreads));
 }

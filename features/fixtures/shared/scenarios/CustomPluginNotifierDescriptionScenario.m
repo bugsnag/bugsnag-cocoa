@@ -3,14 +3,6 @@
 @interface CustomPluginNotifierDescriptionScenario : Scenario
 @end
 
-@interface Bugsnag ()
-+ (BugsnagClient *)client;
-@end
-
-@interface BugsnagClient ()
-@property id notifier;
-@end
-
 @interface DescriptionPlugin : NSObject<BugsnagPlugin>
 
 @end

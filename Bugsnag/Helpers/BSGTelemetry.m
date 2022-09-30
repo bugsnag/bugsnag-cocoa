@@ -35,6 +35,7 @@ static NSDictionary * ConfigValue(BugsnagConfiguration *configuration) {
     config[@"reportBackgroundAppHangs"] = BooleanValue(configuration.reportBackgroundAppHangs, defaults.reportBackgroundAppHangs);
 #endif
     
+    config[@"attemptDeliveryOnCrash"] = BooleanValue(configuration.attemptDeliveryOnCrash, defaults.attemptDeliveryOnCrash);
     config[@"autoDetectErrors"] = BooleanValue(configuration.autoDetectErrors, defaults.autoDetectErrors);
     config[@"autoTrackSessions"] = BooleanValue(configuration.autoTrackSessions, defaults.autoTrackSessions);
     config[@"discardClassesCount"] = IntegerValue(configuration.discardClasses.count, 0);

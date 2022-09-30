@@ -82,6 +82,7 @@ BSG_OBJC_DIRECT_MEMBERS
     [copy setRedactedKeys:self.redactedKeys];
     [copy setLaunchDurationMillis:self.launchDurationMillis];
     [copy setSendLaunchCrashesSynchronously:self.sendLaunchCrashesSynchronously];
+    [copy setAttemptDeliveryOnCrash:self.attemptDeliveryOnCrash];
     [copy setMaxPersistedEvents:self.maxPersistedEvents];
     [copy setMaxPersistedSessions:self.maxPersistedSessions];
     [copy setMaxStringValueLength:self.maxStringValueLength];
@@ -169,6 +170,7 @@ BSG_OBJC_DIRECT_MEMBERS
     _enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
     _launchDurationMillis = 5000;
     _sendLaunchCrashesSynchronously = YES;
+    _attemptDeliveryOnCrash = NO;
     _maxBreadcrumbs = 100;
     _maxPersistedEvents = 32;
     _maxPersistedSessions = 128;

@@ -156,3 +156,18 @@ Feature: Delivery of errors
     And the event "usage.system.breadcrumbsRemoved" equals 17
     And the event "usage.system.stringCharsTruncated" is not null
     And the event "usage.system.stringsTruncated" is not null
+
+  Scenario: Attempt Delivery On Crash
+    When I run "AttemptDeliveryOnCrashScenario"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the event "context" equals "OnSendError"
+    And the event "metaData.error.nsexception.name" equals "NSRangeException"
+    And the event "metaData.error.type" equals "nsexception"
+    And the event "unhandled" is true
+    And the event "usage.config.attemptDeliveryOnCrash" is true
+    And I discard the oldest error
+    And I relaunch the app after a crash
+    And I configure Bugsnag for "AttemptDeliveryOnCrashScenario"
+    And I wait to receive 2 sessions
+    Then I should receive no error

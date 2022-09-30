@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add (experimental) `configuration.attemptDeliveryOnCrash` to allow uncaught
+  Objective-C exceptions to be sent at crash time, prior to app termination.
+  [#1488](https://github.com/bugsnag/bugsnag-cocoa/pull/1488)
+
 ## 6.23.1 (2022-09-21)
 
 ### Bug fixes
