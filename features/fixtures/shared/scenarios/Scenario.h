@@ -4,8 +4,8 @@
 //
 
 #import <Bugsnag/Bugsnag.h>
-
-#import "../../../../Bugsnag/BugsnagInternals.h"
+#import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.h>
+#import "BugsnagInternals.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

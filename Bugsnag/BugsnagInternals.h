@@ -19,8 +19,8 @@
  * or bugfix releases, and should not be used by projects outside of Bugsnag.
  */
 
-#import "Payload/BugsnagHandledState.h"
-#import "Payload/BugsnagNotifier.h"
+#import "BugsnagHandledState.h"
+#import "BugsnagNotifier.h"
 
 @interface BSGFeatureFlagStore : NSObject <NSCopying>
 @end
