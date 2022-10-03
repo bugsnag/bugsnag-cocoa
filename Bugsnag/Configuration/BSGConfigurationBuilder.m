@@ -31,6 +31,7 @@ BugsnagConfiguration * BSGConfigurationWithOptions(NSDictionary *options) {
         BSGKeyApiKey,
         BSGKeyAppType,
         BSGKeyAppVersion,
+        BSGKeyAttemptDeliveryOnCrash,
         BSGKeyAutoDetectErrors,
         BSGKeyAutoTrackSessions,
         BSGKeyBundleVersion,
@@ -53,6 +54,7 @@ BugsnagConfiguration * BSGConfigurationWithOptions(NSDictionary *options) {
     
     LoadString      (config, options, BSGKeyAppType);
     LoadString      (config, options, BSGKeyAppVersion);
+    LoadBoolean     (config, options, BSGKeyAttemptDeliveryOnCrash);
     LoadBoolean     (config, options, BSGKeyAutoDetectErrors);
     LoadBoolean     (config, options, BSGKeyAutoTrackSessions);
     LoadString      (config, options, BSGKeyBundleVersion);

@@ -21,6 +21,7 @@ static BSGKey const BSGKeyApiKey                    = @"apiKey";
 static BSGKey const BSGKeyApp                       = @"app";
 static BSGKey const BSGKeyAppType                   = @"appType";
 static BSGKey const BSGKeyAppVersion                = @"appVersion";
+static BSGKey const BSGKeyAttemptDeliveryOnCrash    = @"attemptDeliveryOnCrash";
 static BSGKey const BSGKeyAttributes                = @"attributes";
 static BSGKey const BSGKeyAutoDetectErrors          = @"autoDetectErrors";
 static BSGKey const BSGKeyAutoTrackSessions         = @"autoTrackSessions";

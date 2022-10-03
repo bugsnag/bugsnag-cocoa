@@ -135,6 +135,11 @@
 #endif
 }
 
+- (void)testAttemptDeliveryOnCrash {
+    XCTAssertFalse(BSGConfigurationWithOptions(@{@"apiKey": DUMMY_APIKEY_32CHAR_1, @"attemptDeliveryOnCrash": @NO}).attemptDeliveryOnCrash);
+    XCTAssertTrue(BSGConfigurationWithOptions(@{@"apiKey": DUMMY_APIKEY_32CHAR_1, @"attemptDeliveryOnCrash": @YES}).attemptDeliveryOnCrash);
+}
+
 // MARK: - invalid config options
 
 - (void)testInvalidConfigOptions {
