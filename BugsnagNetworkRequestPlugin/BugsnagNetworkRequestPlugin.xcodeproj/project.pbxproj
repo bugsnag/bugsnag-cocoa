@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01151ACF28EAC8C50086B706 /* BugsnagNetworkRequestPlugin.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */; };
 		016113862716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		016113872716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
 		016113882716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 016113852716EFBE002A50D4 /* BSGURLSessionTracingProxyTests.m */; };
@@ -128,9 +129,10 @@
 		CB2430D526F1DA8A00CB5EC4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
+			dstPath = include/BugsnagNetworkRequestPlugin;
 			dstSubfolderSpec = 16;
 			files = (
+				01151ACF28EAC8C50086B706 /* BugsnagNetworkRequestPlugin.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

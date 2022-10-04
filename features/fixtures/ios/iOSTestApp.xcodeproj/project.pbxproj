@@ -301,7 +301,6 @@
 		8AB8866A20404DD30003E444 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8AB8866D20404DD30003E444 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8AB8866F20404DD30003E444 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8AB88675204052990003E444 /* iOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		8AEEBBCF20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionMixedEventsScenario.m; sourceTree = "<group>"; };
 		8AEFC73020F8D1A000A78779 /* AutoSessionWithUserScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AutoSessionWithUserScenario.m; sourceTree = "<group>"; };
 		8AEFC73320F8D1BB00A78779 /* ManualSessionWithUserScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ManualSessionWithUserScenario.m; sourceTree = "<group>"; };
@@ -436,7 +435,6 @@
 				8AB8866320404DD30003E444 /* AppDelegate.swift */,
 				8AB8866A20404DD30003E444 /* Assets.xcassets */,
 				8AB8866F20404DD30003E444 /* Info.plist */,
-				8AB88675204052990003E444 /* iOSTestApp-Bridging-Header.h */,
 				8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */,
 				8AB8866520404DD30003E444 /* ViewController.swift */,
 				8AB8866720404DD30003E444 /* Main.storyboard */,
@@ -1077,8 +1075,8 @@
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
-					../../../Bugsnag/include,
-					../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include,
+					../../../Bugsnag,
+					../../../Bugsnag/Payload,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1092,10 +1090,11 @@
 				STRIP_STYLE = all;
 				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "iOSTestApp/iOSTestApp-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 4.2;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/include";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1118,8 +1117,8 @@
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				HEADER_SEARCH_PATHS = (
-					../../../Bugsnag/include,
-					../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/include,
+					../../../Bugsnag,
+					../../../Bugsnag/Payload,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1134,10 +1133,11 @@
 				STRIP_STYLE = all;
 				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "iOSTestApp/iOSTestApp-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 4.2;
+				SYSTEM_HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/include";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
