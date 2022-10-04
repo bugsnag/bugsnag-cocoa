@@ -135,9 +135,45 @@
 #endif
 }
 
+// MARK: - individual values
+
+#define TEST_BOOL(key) ({ \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @YES}).key, YES); \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @NO}).key, NO); \
+})
+
+#define TEST_NUMBER(key, value1, value2) ({ \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @value1}).key, value1); \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @value2}).key, value2); \
+})
+
+- (void)testAppHangThresholdMillis {
+    TEST_NUMBER(appHangThresholdMillis, 250, 2000);
+}
+
 - (void)testAttemptDeliveryOnCrash {
-    XCTAssertFalse(BSGConfigurationWithOptions(@{@"apiKey": DUMMY_APIKEY_32CHAR_1, @"attemptDeliveryOnCrash": @NO}).attemptDeliveryOnCrash);
-    XCTAssertTrue(BSGConfigurationWithOptions(@{@"apiKey": DUMMY_APIKEY_32CHAR_1, @"attemptDeliveryOnCrash": @YES}).attemptDeliveryOnCrash);
+    TEST_BOOL(attemptDeliveryOnCrash);
+}
+
+- (void)testDiscardClasses {
+    XCTAssertEqualObjects(BSGConfigurationWithOptions(@{@"discardClasses": @[@"one", @"two"]})
+                          .discardClasses, ([NSSet setWithObjects:@"one", @"two", nil]));
+}
+
+- (void)testLaunchDurationMillis {
+    TEST_NUMBER(launchDurationMillis, 250, 2000);
+}
+
+- (void)testMaxStringValueLength {
+    TEST_NUMBER(maxStringValueLength, 250, 2000);
+}
+
+- (void)testReportBackgroundAppHangs {
+    TEST_BOOL(reportBackgroundAppHangs);
+}
+
+- (void)testSendLaunchCrashesSynchronously {
+    TEST_BOOL(sendLaunchCrashesSynchronously);
 }
 
 // MARK: - invalid config options

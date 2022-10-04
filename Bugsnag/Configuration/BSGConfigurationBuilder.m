@@ -29,20 +29,26 @@ BugsnagConfiguration * BSGConfigurationWithOptions(NSDictionary *options) {
 
     NSArray<NSString *> *validKeys = @[
         BSGKeyApiKey,
+        BSGKeyAppHangThresholdMillis,
         BSGKeyAppType,
         BSGKeyAppVersion,
         BSGKeyAttemptDeliveryOnCrash,
         BSGKeyAutoDetectErrors,
         BSGKeyAutoTrackSessions,
         BSGKeyBundleVersion,
+        BSGKeyDiscardClasses,
         BSGKeyEnabledReleaseStages,
         BSGKeyEndpoints,
+        BSGKeyLaunchDurationMillis,
         BSGKeyMaxBreadcrumbs,
         BSGKeyMaxPersistedEvents,
         BSGKeyMaxPersistedSessions,
+        BSGKeyMaxStringValueLength,
         BSGKeyPersistUser,
         BSGKeyRedactedKeys,
         BSGKeyReleaseStage,
+        BSGKeyReportBackgroundAppHangs,
+        BSGKeySendLaunchCrashesSynchronously,
         BSGKeySendThreads,
     ];
     
@@ -52,20 +58,26 @@ BugsnagConfiguration * BSGConfigurationWithOptions(NSDictionary *options) {
         bsg_log_warn(@"Unknown dictionary keys passed in configuration options: %@", unknownKeys);
     }
     
+    LoadNumber      (config, options, BSGKeyAppHangThresholdMillis);
     LoadString      (config, options, BSGKeyAppType);
     LoadString      (config, options, BSGKeyAppVersion);
     LoadBoolean     (config, options, BSGKeyAttemptDeliveryOnCrash);
     LoadBoolean     (config, options, BSGKeyAutoDetectErrors);
     LoadBoolean     (config, options, BSGKeyAutoTrackSessions);
     LoadString      (config, options, BSGKeyBundleVersion);
+    LoadStringSet   (config, options, BSGKeyDiscardClasses);
     LoadBoolean     (config, options, BSGKeyPersistUser);
     LoadString      (config, options, BSGKeyReleaseStage);
     LoadStringSet   (config, options, BSGKeyEnabledReleaseStages);
     LoadStringSet   (config, options, BSGKeyRedactedKeys);
+    LoadBoolean     (config, options, BSGKeyReportBackgroundAppHangs);
+    LoadBoolean     (config, options, BSGKeySendLaunchCrashesSynchronously);
     LoadEndpoints   (config, options);
+    LoadNumber      (config, options, BSGKeyLaunchDurationMillis);
     LoadNumber      (config, options, BSGKeyMaxBreadcrumbs);
     LoadNumber      (config, options, BSGKeyMaxPersistedEvents);
     LoadNumber      (config, options, BSGKeyMaxPersistedSessions);
+    LoadNumber      (config, options, BSGKeyMaxStringValueLength);
     LoadSendThreads (config, options);
     return config;
 }
