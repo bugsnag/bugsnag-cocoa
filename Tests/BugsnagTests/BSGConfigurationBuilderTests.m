@@ -147,9 +147,11 @@
     XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @value2}).key, value2); \
 })
 
+#if !TARGET_OS_WATCH
 - (void)testAppHangThresholdMillis {
     TEST_NUMBER(appHangThresholdMillis, 250, 2000);
 }
+#endif
 
 - (void)testAttemptDeliveryOnCrash {
     TEST_BOOL(attemptDeliveryOnCrash);
@@ -168,9 +170,11 @@
     TEST_NUMBER(maxStringValueLength, 250, 2000);
 }
 
+#if !TARGET_OS_WATCH
 - (void)testReportBackgroundAppHangs {
     TEST_BOOL(reportBackgroundAppHangs);
 }
+#endif
 
 - (void)testSendLaunchCrashesSynchronously {
     TEST_BOOL(sendLaunchCrashesSynchronously);
