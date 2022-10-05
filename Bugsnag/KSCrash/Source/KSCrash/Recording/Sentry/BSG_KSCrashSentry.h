@@ -58,6 +58,9 @@ typedef struct BSG_KSCrash_SentryContext {
     /** Called by the crash handler when a crash is detected. */
     void (*onCrash)(void *);
 
+    /** BSGCrashSentryAttemptyDelivery */
+    void (*attemptDelivery)(void);
+
     /**
      * The methodology used for tracing threads.
      * If true, will capture traces for all running threads

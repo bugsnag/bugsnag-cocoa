@@ -8,15 +8,19 @@
 
 #import "BSGCrashSentry.h"
 
-#import "BSGDefines.h"
+#import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrash.h"
 #import "BSG_KSCrashC.h"
 #import "BSG_KSMach.h"
-#import "BugsnagConfiguration.h"
-#import "BugsnagErrorTypes.h"
+#import "BugsnagClient+Private.h"
+#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
+
+NSTimeInterval BSGCrashSentryDeliveryTimeout = 3;
+
+static void BSGCrashSentryAttemptyDelivery(void);
 
 void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallback onCrash) {
     BSG_KSCrash *ksCrash = [BSG_KSCrash sharedInstance];
@@ -35,6 +39,10 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, BSG_KSReportWriteCallba
             bsg_log_info(@"Unhandled errors will not be reported because a debugger is attached");
         } else {
             crashTypes = BSG_KSCrashTypeFromBugsnagErrorTypes(config.enabledErrorTypes);
+        }
+        if (config.attemptDeliveryOnCrash) {
+            bsg_log_debug(@"Enabling on-crash delivery");
+            crashContext()->crash.attemptDelivery = BSGCrashSentryAttemptyDelivery;
         }
     }
 
@@ -67,4 +75,19 @@ BSG_KSCrashType BSG_KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *errorTyp
             (errorTypes.machExceptions ?        BSG_KSCrashTypeMachException : 0)   |
 #endif
             0);
+}
+
+static void BSGCrashSentryAttemptyDelivery(void) {
+    NSString *file = @(crashContext()->config.crashReportFilePath);
+    bsg_log_info(@"Attempting crash-time delivery of %@", file);
+    int64_t timeout = (int64_t)(BSGCrashSentryDeliveryTimeout * NSEC_PER_SEC);
+    dispatch_time_t deadline = dispatch_time(DISPATCH_TIME_NOW, timeout);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [Bugsnag.client.eventUploader uploadKSCrashReportWithFile:file completionHandler:^{
+        bsg_log_debug(@"Sent crash.");
+        dispatch_semaphore_signal(semaphore);
+    }];
+    if (dispatch_semaphore_wait(semaphore, deadline)) {
+        bsg_log_debug(@"Timed out waiting for crash to be sent.");
+    }
 }

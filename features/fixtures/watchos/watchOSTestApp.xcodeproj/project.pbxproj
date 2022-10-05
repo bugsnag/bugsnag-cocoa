@@ -77,7 +77,6 @@
 		01479A352847775800E53BB9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
 		01479A46284779A400E53BB9 /* Scenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scenario.h; sourceTree = "<group>"; };
 		01479AA6284779A400E53BB9 /* Scenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scenario.m; sourceTree = "<group>"; };
-		01479BA628477A0000E53BB9 /* Swift-Objc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Swift-Objc-Bridging-Header.h"; sourceTree = "<group>"; };
 		01479BA72847923A00E53BB9 /* BareboneTestHandledScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestHandledScenario.swift; sourceTree = "<group>"; };
 		01479BA9284792B100E53BB9 /* BareboneTestUnhandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BareboneTestUnhandledErrorScenario.swift; sourceTree = "<group>"; };
 		01515B1728508BA600E498EC /* Interface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Interface.storyboard; sourceTree = "<group>"; };
@@ -138,7 +137,6 @@
 				01479A2E2847775600E53BB9 /* ComplicationController.swift */,
 				01515B1B28508DBB00E498EC /* ExtensionDelegate.swift */,
 				01515B1A28508DBB00E498EC /* InterfaceController.swift */,
-				01479BA628477A0000E53BB9 /* Swift-Objc-Bridging-Header.h */,
 				01479A302847775800E53BB9 /* Assets.xcassets */,
 				01479A352847775800E53BB9 /* Info.plist */,
 				01479A43284779A400E53BB9 /* scenarios */,
@@ -510,6 +508,11 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../../Bugsnag,
+					../../../Bugsnag/Payload,
+				);
 				INFOPLIST_FILE = "watchOSTestApp WatchKit Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "watchOSTestApp WatchKit Extension";
 				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
@@ -527,7 +530,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "watchOSTestApp WatchKit Extension/Swift-Objc-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};
@@ -544,6 +547,11 @@
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../../Bugsnag,
+					../../../Bugsnag/Payload,
+				);
 				INFOPLIST_FILE = "watchOSTestApp WatchKit Extension/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "watchOSTestApp WatchKit Extension";
 				INFOPLIST_KEY_CLKComplicationPrincipalClass = "$(PRODUCT_MODULE_NAME).ComplicationController";
@@ -561,7 +569,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "watchOSTestApp WatchKit Extension/Swift-Objc-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 			};

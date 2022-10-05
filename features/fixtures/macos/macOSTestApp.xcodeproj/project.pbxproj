@@ -70,6 +70,7 @@
 		01B6BB7225D56CBF00FC4DE6 /* LastRunInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenario.swift */; };
 		01B6BBA225DA774C00FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BBA125DA774C00FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */; };
 		01BB5D2628A1463C00A7F322 /* OversizedBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BB5D2528A1463C00A7F322 /* OversizedBreadcrumbsScenario.swift */; };
+		01CDC15B28E58DAA00DE7125 /* AttemptDeliveryOnCrashScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CDC15A28E58DAA00DE7125 /* AttemptDeliveryOnCrashScenario.swift */; };
 		01DCB82D279868160048640A /* ConcurrentCrashesScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01DCB82C279868160048640A /* ConcurrentCrashesScenario.mm */; };
 		01DE903A26CEAD1200455213 /* CriticalThermalStateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE903926CEAD1200455213 /* CriticalThermalStateScenario.swift */; };
 		01E0DB0625E8E95700A740ED /* AppDurationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E0DB0425E8E90500A740ED /* AppDurationScenario.swift */; };
@@ -236,7 +237,6 @@
 		010BDFBA28883703007025F9 /* UserNilScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserNilScenario.swift; sourceTree = "<group>"; };
 		011B7A4B26CD52080071C3EB /* ThermalStateBreadcrumbScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalStateBreadcrumbScenario.swift; sourceTree = "<group>"; };
 		0123189B275921590007EFD7 /* RecrashScenarios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RecrashScenarios.mm; sourceTree = "<group>"; };
-		01452360254AFEA700D436AA /* macOSTestApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "macOSTestApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		015AE239276B88300044B1AE /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
 		0176C0A8254AE81B0066E0F3 /* macOSTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = macOSTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0176C0AC254AE81B0066E0F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; usesTabs = 1; };
@@ -273,6 +273,7 @@
 		01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastRunInfoScenario.swift; sourceTree = "<group>"; };
 		01B6BBA125DA774C00FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendLaunchCrashesSynchronouslyScenario.swift; sourceTree = "<group>"; };
 		01BB5D2528A1463C00A7F322 /* OversizedBreadcrumbsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OversizedBreadcrumbsScenario.swift; sourceTree = "<group>"; };
+		01CDC15A28E58DAA00DE7125 /* AttemptDeliveryOnCrashScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttemptDeliveryOnCrashScenario.swift; sourceTree = "<group>"; };
 		01DCB82C279868160048640A /* ConcurrentCrashesScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ConcurrentCrashesScenario.mm; sourceTree = "<group>"; };
 		01DE903926CEAD1200455213 /* CriticalThermalStateScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CriticalThermalStateScenario.swift; sourceTree = "<group>"; };
 		01E0DB0425E8E90500A740ED /* AppDurationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDurationScenario.swift; sourceTree = "<group>"; };
@@ -363,7 +364,6 @@
 		01F47CA9254B1B3000B184AD /* SIGPIPEScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGPIPEScenario.m; sourceTree = "<group>"; };
 		01F47CAA254B1B3000B184AD /* SessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionOOMScenario.m; sourceTree = "<group>"; };
 		01F47CAB254B1B3000B184AD /* ObjCMsgSendScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCMsgSendScenario.m; sourceTree = "<group>"; };
-		01F47CAC254B1B3000B184AD /* BugsnagHooks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagHooks.h; sourceTree = "<group>"; };
 		01F47CAD254B1B3000B184AD /* SIGFPEScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIGFPEScenario.m; sourceTree = "<group>"; };
 		01F47CAE254B1B3000B184AD /* BreadcrumbCallbackRemovalScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BreadcrumbCallbackRemovalScenario.m; sourceTree = "<group>"; };
 		01F47CAF254B1B3000B184AD /* SwiftAssertionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftAssertionScenario.swift; sourceTree = "<group>"; };
@@ -376,7 +376,6 @@
 		01F47CBA254B1B3000B184AD /* OnErrorOverwriteScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteScenario.swift; sourceTree = "<group>"; };
 		01F47CBB254B1B3000B184AD /* OOMLoadScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OOMLoadScenario.swift; sourceTree = "<group>"; };
 		01F47CBD254B1B3000B184AD /* MetadataMergeScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataMergeScenario.swift; sourceTree = "<group>"; };
-		01F47CBE254B1B3000B184AD /* AttachCustomStacktraceHook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttachCustomStacktraceHook.h; sourceTree = "<group>"; };
 		01F47CBF254B1B3000B184AD /* AutoContextNSExceptionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoContextNSExceptionScenario.swift; sourceTree = "<group>"; };
 		01F47CC0254B1B3000B184AD /* OverwriteLinkRegisterScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverwriteLinkRegisterScenario.m; sourceTree = "<group>"; };
 		01F47CC1254B1B3000B184AD /* ResumeSessionOOMScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResumeSessionOOMScenario.m; sourceTree = "<group>"; };
@@ -433,7 +432,7 @@
 				010BAB442833D34A0003FF36 /* AppHangScenario.swift */,
 				01018BAA25E417EC000312C6 /* AsyncSafeMallocScenario.m */,
 				01F47C40254B1B2D00B184AD /* AsyncSafeThreadScenario.m */,
-				01F47CBE254B1B3000B184AD /* AttachCustomStacktraceHook.h */,
+				01CDC15A28E58DAA00DE7125 /* AttemptDeliveryOnCrashScenario.swift */,
 				01F47C6F254B1B2E00B184AD /* AutoCaptureRunScenario.m */,
 				01F47CB1254B1B3000B184AD /* AutoContextNSErrorScenario.swift */,
 				01F47CBF254B1B3000B184AD /* AutoContextNSExceptionScenario.swift */,
@@ -453,7 +452,6 @@
 				01F47C7A254B1B2F00B184AD /* BreadcrumbCallbackOrderScenario.swift */,
 				01F47C8C254B1B2F00B184AD /* BreadcrumbCallbackOverrideScenario.swift */,
 				01F47CAE254B1B3000B184AD /* BreadcrumbCallbackRemovalScenario.m */,
-				01F47CAC254B1B3000B184AD /* BugsnagHooks.h */,
 				01F47C2B254B1B2D00B184AD /* BuiltinTrapScenario.m */,
 				01DCB82C279868160048640A /* ConcurrentCrashesScenario.mm */,
 				0184DBDD28C6317C006AF50B /* CouldNotCreateDirectoryScenario.swift */,
@@ -632,7 +630,6 @@
 				0176C0B0254AE81B0066E0F3 /* AppDelegate.m */,
 				0176C0B2254AE81B0066E0F3 /* Images.xcassets */,
 				0176C0AC254AE81B0066E0F3 /* Info.plist */,
-				01452360254AFEA700D436AA /* macOSTestApp-Bridging-Header.h */,
 				0176C0AD254AE81B0066E0F3 /* main.m */,
 				0176C0B4254AE81B0066E0F3 /* MainMenu.xib */,
 				017FBFB5254B09C300809042 /* MainWindowController.h */,
@@ -788,6 +785,7 @@
 				01F47D23254B1B3100B184AD /* SwiftAssertionScenario.swift in Sources */,
 				010BAB642833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift in Sources */,
 				01F47D1C254B1B3100B184AD /* SessionCallbackRemovalScenario.m in Sources */,
+				01CDC15B28E58DAA00DE7125 /* AttemptDeliveryOnCrashScenario.swift in Sources */,
 				01F47CE3254B1B3100B184AD /* MetadataRedactionRegexScenario.swift in Sources */,
 				01F47D25254B1B3100B184AD /* AutoContextNSErrorScenario.swift in Sources */,
 				01F47D15254B1B3100B184AD /* UndefinedInstructionScenario.m in Sources */,
@@ -1083,13 +1081,18 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../../Bugsnag,
+					../../../Bugsnag/Payload,
+				);
 				INFOPLIST_FILE = macOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.macOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_SWIFT_SYMBOLS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "macOSTestApp/macOSTestApp-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 			};
@@ -1104,13 +1107,18 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../../Bugsnag,
+					../../../Bugsnag/Payload,
+				);
 				INFOPLIST_FILE = macOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.macOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_SWIFT_SYMBOLS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "macOSTestApp/macOSTestApp-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;

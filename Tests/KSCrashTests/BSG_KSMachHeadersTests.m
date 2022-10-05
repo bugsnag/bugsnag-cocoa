@@ -6,10 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
 #import "BSG_KSMachHeaders.h"
+#import <Bugsnag/Bugsnag.h>
+#import <XCTest/XCTest.h>
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
+#import <objc/runtime.h>
 
 void bsg_mach_headers_add_image(const struct mach_header *mh, intptr_t slide);
 
@@ -44,10 +46,11 @@ const struct segment_command command2 = {
 
 @implementation BSG_KSMachHeadersTests
 
-- (void)testAddRemoveHeaders {
-    
+- (void)setUp {
     bsg_mach_headers_initialize();
-    
+}
+
+- (void)testAddRemoveHeaders {
     bsg_mach_headers_add_image(&header1, 0);
     
     BSG_Mach_Header_Info *listTail;
@@ -79,12 +82,11 @@ const struct segment_command command2 = {
     XCTAssert(listTail->unloaded == TRUE);
     XCTAssertEqual(listTail->next->imageVmAddr, 222);
     XCTAssert(listTail->next->unloaded == TRUE);
-    
+
+    bsg_mach_headers_initialize();
 }
 
 - (void)testFindImageAtAddress {
-    bsg_mach_headers_initialize();
-    
     bsg_mach_headers_add_image(&header1, 0);
     bsg_mach_headers_add_image(&header2, 0);
     
@@ -94,6 +96,8 @@ const struct segment_command command2 = {
     
     item = bsg_mach_headers_image_at_address((uintptr_t)&header2);
     XCTAssertEqual(item->imageVmAddr, 222);
+
+    bsg_mach_headers_initialize();
 }
 
 - (void) testGetImageNameNULL
@@ -102,17 +106,17 @@ const struct segment_command command2 = {
     XCTAssertTrue(img == NULL);
 }
 
-- (void)testMainImage {
-    bsg_mach_headers_initialize();
+- (void)testGetSelfImage {
+    XCTAssertEqualObjects(@(bsg_mach_headers_get_self_image()->name),
+                          @(class_getImageName([Bugsnag class])));
+}
 
-    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
-    XCTAssert(image != NULL);
-    XCTAssertEqualObjects(@(image ? image->name : ""), NSBundle.mainBundle.executablePath);
+- (void)testMainImage {
+    XCTAssertEqualObjects(@(bsg_mach_headers_get_main_image()->name),
+                          NSBundle.mainBundle.executablePath);
 }
 
 - (void)testImageAtAddress {
-    bsg_mach_headers_initialize();
-    
     for (NSNumber *number in NSThread.callStackReturnAddresses) {
         uintptr_t address = number.unsignedIntegerValue;
         BSG_Mach_Header_Info *image = bsg_mach_headers_image_at_address(address);

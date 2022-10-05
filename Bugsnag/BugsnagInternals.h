@@ -239,4 +239,6 @@ BUGSNAG_EXTERN NSString * BSGGetDefaultDeviceId(void);
 
 BUGSNAG_EXTERN NSDictionary * BSGGetSystemInfo(void);
 
+BUGSNAG_EXTERN NSTimeInterval BSGCrashSentryDeliveryTimeout;
+
 NS_ASSUME_NONNULL_END

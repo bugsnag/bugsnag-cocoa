@@ -135,6 +135,51 @@
 #endif
 }
 
+// MARK: - individual values
+
+#define TEST_BOOL(key) ({ \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @YES}).key, YES); \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @NO}).key, NO); \
+})
+
+#define TEST_NUMBER(key, value1, value2) ({ \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @value1}).key, value1); \
+    XCTAssertEqual(BSGConfigurationWithOptions(@{@#key: @value2}).key, value2); \
+})
+
+#if !TARGET_OS_WATCH
+- (void)testAppHangThresholdMillis {
+    TEST_NUMBER(appHangThresholdMillis, 250, 2000);
+}
+#endif
+
+- (void)testAttemptDeliveryOnCrash {
+    TEST_BOOL(attemptDeliveryOnCrash);
+}
+
+- (void)testDiscardClasses {
+    XCTAssertEqualObjects(BSGConfigurationWithOptions(@{@"discardClasses": @[@"one", @"two"]})
+                          .discardClasses, ([NSSet setWithObjects:@"one", @"two", nil]));
+}
+
+- (void)testLaunchDurationMillis {
+    TEST_NUMBER(launchDurationMillis, 250, 2000);
+}
+
+- (void)testMaxStringValueLength {
+    TEST_NUMBER(maxStringValueLength, 250, 2000);
+}
+
+#if !TARGET_OS_WATCH
+- (void)testReportBackgroundAppHangs {
+    TEST_BOOL(reportBackgroundAppHangs);
+}
+#endif
+
+- (void)testSendLaunchCrashesSynchronously {
+    TEST_BOOL(sendLaunchCrashesSynchronously);
+}
+
 // MARK: - invalid config options
 
 - (void)testInvalidConfigOptions {
