@@ -59,6 +59,7 @@
 		010BDFB92885562D007025F9 /* ReportBackgroundAppHangScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BDFB82885562D007025F9 /* ReportBackgroundAppHangScenario.swift */; };
 		010BDFBD28883714007025F9 /* UserNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010BDFBC28883714007025F9 /* UserNilScenario.swift */; };
 		01221E55282E5538008095C3 /* MaxPersistedSessionsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */; };
+		015453C328F865E40077ACE1 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 015453C228F865E40077ACE1 /* libsqlite3.tbd */; };
 		0163BFA72583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */; };
 		017B4134276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */; };
 		017BA42428A1558A00CB985E /* OversizedBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */; };
@@ -253,6 +254,7 @@
 		010BDFB82885562D007025F9 /* ReportBackgroundAppHangScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportBackgroundAppHangScenario.swift; sourceTree = "<group>"; };
 		010BDFBC28883714007025F9 /* UserNilScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserNilScenario.swift; sourceTree = "<group>"; };
 		01221E54282E5538008095C3 /* MaxPersistedSessionsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MaxPersistedSessionsScenario.m; sourceTree = "<group>"; };
+		015453C228F865E40077ACE1 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		0163BFA62583B3CF008DC28B /* DiscardClassesHandledExceptionRegexScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardClassesHandledExceptionRegexScenario.swift; sourceTree = "<group>"; };
 		017B4133276B8D9B0054C91D /* OnSendErrorPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnSendErrorPersistenceScenario.m; sourceTree = "<group>"; };
 		017BA42328A1558A00CB985E /* OversizedBreadcrumbsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedBreadcrumbsScenario.swift; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				015453C328F865E40077ACE1 /* libsqlite3.tbd in Frameworks */,
 				01DF442C2798044E00C31104 /* SystemConfiguration.framework in Frameworks */,
 				CB42FF9026F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a in Frameworks */,
 				01CD103926690463007FA5F0 /* libBugsnagStatic.a in Frameworks */,
@@ -445,6 +448,7 @@
 		D018DCE3210BCB4D0B8FA6D2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				015453C228F865E40077ACE1 /* libsqlite3.tbd */,
 				01DF442B2798044E00C31104 /* SystemConfiguration.framework */,
 				CB42FF8F26F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a */,
 				AAFEFA0226EB6B5A00980A10 /* BugsnagNetworkRequestPlugin.framework */,

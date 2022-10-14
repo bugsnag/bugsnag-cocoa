@@ -41,6 +41,7 @@ let package = Package(
             linkerSettings: [
                 .linkedLibrary("z"),
                 .linkedLibrary("c++"),
+                .linkedLibrary("sqlite3"),
             ]
         ),
         .target(

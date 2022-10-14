@@ -18,6 +18,7 @@
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 
+#import <sqlite3.h>
 #import <stdatomic.h>
 
 //
@@ -37,11 +38,13 @@ static atomic_bool g_writing_crash_report;
 
 @interface BugsnagBreadcrumbs ()
 
-@property (readonly, nonatomic) NSString *breadcrumbsPath;
-
 @property (nonatomic) BugsnagConfiguration *config;
 @property (nonatomic) unsigned int nextFileNumber;
 @property (nonatomic) unsigned int maxBreadcrumbs;
+
+@property (nonatomic) sqlite3 *sqlite;
+@property (nonatomic) sqlite3_stmt *insert;
+@property (nonatomic) sqlite3_stmt *trim;
 
 @end
 
@@ -59,7 +62,48 @@ BSG_OBJC_DIRECT_MEMBERS
     // Capture maxBreadcrumbs to protect against config being changed after initialization
     _maxBreadcrumbs = (unsigned int)config.maxBreadcrumbs;
     
-    _breadcrumbsPath = [BSGFileLocations current].breadcrumbs;
+    NSString *path = [[BSGFileLocations current].breadcrumbs
+                      stringByAppendingPathExtension:@"sqlite"];
+    
+    if (sqlite3_open(path.fileSystemRepresentation, &_sqlite) != SQLITE_OK) {
+        sqlite3_close(_sqlite);
+        _sqlite = NULL;
+    } else {
+        int status;
+        
+        status = sqlite3_exec(_sqlite, "PRAGMA journal_mode=WAL", NULL, NULL, NULL);
+        NSParameterAssert(status == SQLITE_OK);
+        
+        status = sqlite3_exec(_sqlite,
+                              "CREATE TABLE IF NOT EXISTS Breadcrumbs ("
+                              " id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,"
+                              " value BLOB"
+                              ")",
+                              NULL, NULL, NULL);
+        NSParameterAssert(status == SQLITE_OK);
+        
+        status = sqlite3_prepare_v2(_sqlite,
+                                    "INSERT INTO Breadcrumbs (value) VALUES (?)",
+                                    -1,
+                                    &_insert,
+                                    NULL);
+        NSParameterAssert(status == SQLITE_OK);
+        NSParameterAssert(_insert != NULL);
+        
+        status = sqlite3_prepare_v2(_sqlite,
+                                    "DELETE FROM Breadcrumbs "
+                                    "WHERE id NOT IN ("
+                                    " SELECT id FROM Breadcrumbs ORDER BY id DESC LIMIT ?"
+                                    ")",
+                                    -1,
+                                    &_trim,
+                                    NULL);
+        NSParameterAssert(status == SQLITE_OK);
+        NSParameterAssert(_trim != NULL);
+        
+        status = sqlite3_bind_int(_trim, 1, (int)self.maxBreadcrumbs);
+        NSParameterAssert(status == SQLITE_OK);
+    }
     
     return self;
 }
@@ -148,33 +192,31 @@ BSG_OBJC_DIRECT_MEMBERS
         // launch if an OOM is detected.
         //
         dispatch_async(BSGGetFileSystemQueue(), ^{
-            // Avoid writing breadcrumbs that have already been deleted from the in-memory store.
-            // This can occur when breadcrumbs are being added faster than they can be written.
-            BOOL isStale;
-            @synchronized (self) {
-                unsigned int nextFileNumber = self.nextFileNumber;
-                isStale = (self.maxBreadcrumbs < nextFileNumber) && (fileNumber < (nextFileNumber - self.maxBreadcrumbs));
-            }
-            
-            NSError *error = nil;
-            
-            if (!isStale) {
-                NSString *file = [self pathForFileNumber:fileNumber];
-                // NSDataWritingAtomic not required because we no longer read the files without checking for validity
-                if (![data writeToFile:file options:0 error:&error]) {
-                    bsg_log_err(@"Unable to write breadcrumb: %@", error);
-                }
-            }
-            
-            if (deleteOld) {
-                NSString *fileToDelete = [self pathForFileNumber:fileNumber - self.maxBreadcrumbs];
-                if (![[[NSFileManager alloc] init] removeItemAtPath:fileToDelete error:&error] &&
-                    !([error.domain isEqual:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
-                    bsg_log_err(@"Unable to delete old breadcrumb: %@", error);
-                }
-            }
+            [self insertBreadcrumbWithData:data];
+            [self trimBreadcrumbs];
         });
     }
+}
+
+#define CHECK_EQUALS(expr, eres) ({ \
+    int result = (expr); \
+    if (result != eres) { \
+        bsg_log_err("%s in " #expr, sqlite3_errstr(result)); \
+    } \
+})
+
+- (void)insertBreadcrumbWithData:(NSData *)data {
+    sqlite3_stmt *insert = self.insert;
+    CHECK_EQUALS(sqlite3_bind_blob(insert, 1, data.bytes, (int)data.length, SQLITE_STATIC), SQLITE_OK);
+    CHECK_EQUALS(sqlite3_step(insert), SQLITE_DONE);
+    CHECK_EQUALS(sqlite3_clear_bindings(insert), SQLITE_OK);
+    CHECK_EQUALS(sqlite3_reset(insert), SQLITE_OK);
+}
+
+- (void)trimBreadcrumbs {
+    sqlite3_stmt *trim = self.trim;
+    CHECK_EQUALS(sqlite3_step(trim), SQLITE_DONE);
+    CHECK_EQUALS(sqlite3_reset(trim), SQLITE_OK);
 }
 
 - (BOOL)shouldSendBreadcrumb:(BugsnagBreadcrumb *)crumb {
@@ -201,13 +243,7 @@ BSG_OBJC_DIRECT_MEMBERS
         self.nextFileNumber = 0;
     }
     dispatch_async(BSGGetFileSystemQueue(), ^{
-        NSError *error = nil;
-        NSString *directory = self.breadcrumbsPath;
-        NSFileManager *fileManager = [NSFileManager new];
-        if (![fileManager removeItemAtPath:directory error:&error] ||
-            ![fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error]) {
-            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
-        }
+        sqlite3_exec(self.sqlite, "DELETE FROM Breadcrumbs", NULL, NULL, NULL);
     });
 }
 
@@ -223,44 +259,29 @@ BSG_OBJC_DIRECT_MEMBERS
     return data;
 }
 
-- (NSString *)pathForFileNumber:(unsigned int)fileNumber {
-    return [self.breadcrumbsPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%u.json", fileNumber]];
-}
-
 - (NSArray<BugsnagBreadcrumb *> *)cachedBreadcrumbs {
-    NSError *error = nil;
+    sqlite3_stmt *select = NULL;
     
-    NSArray<NSString *> *filenames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.breadcrumbsPath error:&error];
-    if (!filenames) {
-        bsg_log_err(@"Unable to read breadcrumbs: %@", error);
-        return @[];
-    }
-    
-    // We cannot use NSString's -localizedStandardCompare: because its sorting may vary by locale.
-    filenames = [filenames sortedArrayUsingComparator:^NSComparisonResult(NSString *name1, NSString *name2) {
-        long long value1 = [[name1 stringByDeletingPathExtension] longLongValue];
-        long long value2 = [[name2 stringByDeletingPathExtension] longLongValue];
-        if (value1 < value2) { return NSOrderedAscending; }
-        if (value1 > value2) { return NSOrderedDescending; }
-        return NSOrderedSame;
-    }];
+    int status;
+    status = sqlite3_prepare_v2(self.sqlite,
+                                "SELECT value from Breadcrumbs",
+                                -1, &select, NULL);
+    NSParameterAssert(status == SQLITE_OK);
     
     NSMutableArray *breadcrumbs = [NSMutableArray array];
     
-    for (NSString *file in filenames) {
-        if ([file hasPrefix:@"."] || ![file.pathExtension isEqual:@"json"]) {
-            // Ignore partially written files, which have names like ".dat.nosync43c9.RZFc3z"
+    for (;;) {
+        status = sqlite3_step(select);
+        if (status != SQLITE_ROW) {
+            break;
+        } 
+        const void *blob = sqlite3_column_blob(select, 0);
+        int length = sqlite3_column_bytes(select, 0);
+        if (!blob || !length) {
             continue;
         }
-        NSString *path = [self.breadcrumbsPath stringByAppendingPathComponent:file];
-        NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-        if (!data) {
-            // If a high volume of breadcrumbs is being logged, it is normal for older files to be deleted before this thread can read them.
-            if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
-                bsg_log_err(@"Unable to read breadcrumb: %@", error);
-            }
-            continue;
-        }
+        NSError *error = nil;
+        NSData *data = [NSData dataWithBytes:blob length:(NSUInteger)length];
         NSDictionary *JSONObject = BSGJSONDictionaryFromData(data, 0, &error);
         if (!JSONObject) {
             bsg_log_err(@"Unable to parse breadcrumb: %@", error);
@@ -268,11 +289,17 @@ BSG_OBJC_DIRECT_MEMBERS
         }
         BugsnagBreadcrumb *breadcrumb = [BugsnagBreadcrumb breadcrumbFromDict:JSONObject];
         if (!breadcrumb) {
-            bsg_log_err(@"Unexpected breadcrumb payload in file %@", file);
+            bsg_log_err(@"Unexpected breadcrumb payload");
             continue;
         }
         [breadcrumbs addObject:breadcrumb];
     }
+    
+    status = sqlite3_reset(select);
+    NSParameterAssert(status == SQLITE_OK);
+    
+    status = sqlite3_finalize(select);
+    NSParameterAssert(status == SQLITE_OK);
     
     return breadcrumbs;
 }
