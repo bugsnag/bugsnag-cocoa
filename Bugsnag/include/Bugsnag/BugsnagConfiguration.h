@@ -301,8 +301,9 @@ BUGSNAG_EXTERN
 /**
  * Whether Bugsnag should try to send crashing errors prior to app termination.
  *
- * Delivery will only be attempted for uncaught Objective-C exceptions, and
- * while in progress will block the crashing thread for up to 3 seconds.
+ * Delivery will only be attempted for uncaught Objective-C exceptions and Mach
+ * exceptions, and while in progress will block the crashing thread for up to 3
+ * seconds.
  *
  * Delivery will be unreliable due to the necessary short timeout and potential
  * memory corruption that caused the crashing error in the first place.

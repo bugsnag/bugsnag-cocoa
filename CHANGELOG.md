@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Expand `configuration.attemptDeliveryOnCrash` to send Mach exceptions (e.g.
+  Swift fatal errors and bad memory accesses) at crash time.
+  [#1496](https://github.com/bugsnag/bugsnag-cocoa/pull/1496)
+
 ## 6.24.0 (2022-10-05)
 
 ### Enhancements
