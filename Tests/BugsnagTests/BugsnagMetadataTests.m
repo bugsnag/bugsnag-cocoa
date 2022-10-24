@@ -422,7 +422,8 @@
         while (!threads[i]) {}
     }
     
-    char *scratch = malloc(1024 * 1024);
+    size_t size = 1024 * 1024;
+    char *scratch = malloc(size);
     
     for (int i = 0; i < 10000; i++) {
         // Threads must be suspended to prevent the metadata buffer from being freed while
@@ -432,7 +433,7 @@
             thread_suspend(threads[i]);
         }
         
-        strcpy(scratch, buffer);
+        strlcpy(scratch, buffer, size);
         
         for (int i = 0; i < threadCount; i++) {
             thread_resume(threads[i]);
