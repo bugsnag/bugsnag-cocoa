@@ -89,6 +89,17 @@ CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF                   = YES // -Wimplicit-retai
 CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK                   = YES // -Warc-repeated-use-of-weak -Wno-arc-maybe-repeated-use-of-weak
 CLANG_WARN__ARC_BRIDGE_CAST_NONARC                     = YES // -Warc-bridge-casts-disallowed-in-nonarc
 
+// Static Analysis - Issues - Security
+
+CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER               = YES
+CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND               = YES 
+CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY             = YES
+
+// Static Analysis - Issues - Unused Code
+
+CLANG_TIDY_BUGPRONE_REDUNDANT_BRANCH_CONDITION         = YES
+CLANG_TIDY_MISC_REDUNDANT_EXPRESSION                   = YES
+
 // Warning flags that have no dedicated Xcode build settings
 
 WARNING_CFLAGS = -Wcast-qual -Wconditional-uninitialized -Wcustom-atomic-properties -Wdirect-ivar-access -Wdocumentation-unknown-command -Wformat-nonliteral -Widiomatic-parentheses -Wimplicit-int-float-conversion -Wimport-preprocessor-directive-pedantic -Wincomplete-implementation -Wmissing-variable-declarations -Wno-unknown-warning-option -Wnonportable-include-path -Wnullable-to-nonnull-conversion -Woverriding-method-mismatch -Wpointer-sign -Wswitch-enum -Wundef -Wunused-macros
