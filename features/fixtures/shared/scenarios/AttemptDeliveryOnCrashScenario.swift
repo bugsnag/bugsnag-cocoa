@@ -19,6 +19,24 @@ class AttemptDeliveryOnCrashScenario: Scenario {
     }
     
     override func run() {
-        NSArray().object(at: 42)
+        guard let eventMode = eventMode else { return } 
+        switch eventMode {
+        case "BadAccess":
+            if let ptr = UnsafePointer<CChar>(bitPattern: 42) {
+                strlen(ptr)
+            }
+            break
+            
+        case "NSException":
+            NSArray().object(at: 42)
+            break
+            
+        case "SwiftFatalError":
+            _ = URL(string: "")!
+            break
+            
+        default:
+            break
+        }
     }
 }
