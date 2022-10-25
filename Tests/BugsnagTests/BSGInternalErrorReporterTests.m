@@ -17,7 +17,7 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagNotifier.h"
 
-@interface BSGInternalErrorReporterTests : XCTestCase <BSGInternalErrorReporterDataSource>
+@interface BSGInternalErrorReporterTests : XCTestCase
 
 @property (nonatomic) BugsnagConfiguration *configuration;
 
@@ -33,9 +33,13 @@
     self.configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
 }
 
+- (BSGInternalErrorReporter *)makeReporter {
+    return [[BSGInternalErrorReporter alloc] initWithApiKey:self.configuration.apiKey endpoint:[NSURL URLWithString:self.configuration.endpoints.notify]];
+}
+
 - (void)testEventWithErrorClass {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    BSGInternalErrorReporter *reporter = [self makeReporter];
     
     BugsnagEvent *event = [reporter eventWithErrorClass:@"Internal error" context:@"test" message:@"Something went wrong" diagnostics:@{}];
     XCTAssertEqualObjects(event.errors[0].errorClass, @"Internal error");
@@ -54,7 +58,7 @@
 
 - (void)testEventWithException {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    BSGInternalErrorReporter *reporter = [self makeReporter];
     
     NSException *exception = nil;
     @try {
@@ -80,7 +84,7 @@
 
 - (void)testEventWithRecrashReport {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
-    BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    BSGInternalErrorReporter *reporter = [self makeReporter];
     
     NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:@"RecrashReport" ofType:@"json" inDirectory:@"Data"];
     id recrashReport = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:0 error:nil];
@@ -105,7 +109,7 @@
     self.configuration.endpoints.notify = @"https://notify.example.com";
     
     BugsnagNotifier *notifier = [[BugsnagNotifier alloc] init];
-    BSGInternalErrorReporter *reporter = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+    BSGInternalErrorReporter *reporter = [self makeReporter];
 
     BugsnagEvent *event = [[BugsnagEvent alloc] init];
     
@@ -132,7 +136,7 @@
         XCTAssertNotNil(reporter);
         [expectation fulfill];
     }];
-    [BSGInternalErrorReporter setSharedInstance:[[BSGInternalErrorReporter alloc] initWithDataSource:self]];
+    [BSGInternalErrorReporter setSharedInstance:[[BSGInternalErrorReporter alloc] initWithApiKey:self.configuration.apiKey endpoint:[NSURL URLWithString:self.configuration.endpoints.notify]]];
     [self waitForExpectations:@[expectation] timeout:1];
     
     expectation = [self expectationWithDescription:@"+performBlock: block is called immediately"];

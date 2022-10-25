@@ -11,13 +11,9 @@
 #import "BSGKeys.h"
 #import "BSG_KSCrashReportFields.h"
 #import "BSG_KSSysCtl.h"
-#import "BSG_KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
-#import "BugsnagAppWithState+Private.h"
 #import "BugsnagCollections.h"
-#import "BugsnagConfiguration+Private.h"
-#import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagHandledState.h"
@@ -50,13 +46,16 @@ NSString *BSGErrorDescription(NSError *error) {
 
 static NSString * DeviceId(void);
 
+static NSString * Sysctl(const char *name);
+
 
 // MARK: -
 
 BSG_OBJC_DIRECT_MEMBERS
 @interface BSGInternalErrorReporter ()
 
-@property (weak, nullable, nonatomic) id<BSGInternalErrorReporterDataSource> dataSource;
+@property (nonatomic) NSString *apiKey;
+@property (nonatomic) NSURL *endpoint;
 @property (nonatomic) NSURLSession *session;
 
 @end
@@ -88,9 +87,10 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
     }
 }
 
-- (instancetype)initWithDataSource:(id<BSGInternalErrorReporterDataSource>)dataSource {
+- (instancetype)initWithApiKey:(NSString *)apiKey endpoint:(NSURL *)endpoint {
     if ((self = [super init])) {
-        _dataSource = dataSource;
+        _apiKey = apiKey;
+        _endpoint = endpoint;
         _session = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.ephemeralSessionConfiguration];
     }
     return self;
@@ -199,24 +199,30 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                               diagnostics:(nullable NSDictionary<NSString *, id> *)diagnostics
                              groupingHash:(nullable NSString *)groupingHash {
     
-    id<BSGInternalErrorReporterDataSource> dataSource = self.dataSource;
-    if (!dataSource) {
-        return nil;
-    }
-    
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] init];
     if (diagnostics) {
         [metadata addMetadata:(NSDictionary * _Nonnull)diagnostics toSection:BugsnagDiagnosticsKey];
     }
-    [metadata addMetadata:dataSource.configuration.apiKey withKey:BSGKeyApiKey toSection:BugsnagDiagnosticsKey];
+    [metadata addMetadata:self.apiKey withKey:BSGKeyApiKey toSection:BugsnagDiagnosticsKey];
     
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemVersion = [NSDictionary dictionaryWithContentsOfFile:
+                                   @"/System/Library/CoreServices/SystemVersion.plist"];
     
-    BugsnagDeviceWithState *device = [dataSource generateDeviceWithState:systemInfo];
-    device.id = DeviceId();
+    BugsnagDeviceWithState *device = [BugsnagDeviceWithState new];
+    device.id           = DeviceId();
+    device.manufacturer = @"Apple";
+    device.osName       = systemVersion[@"ProductName"];
+    device.osVersion    = systemVersion[@"ProductVersion"];
+    
+#if TARGET_OS_OSX || TARGET_OS_SIMULATOR || (defined(TARGET_OS_MACCATALYST) && TARGET_OS_MACCATALYST)
+    device.model        = Sysctl("hw.model");
+#else
+    device.model        = Sysctl("hw.machine");
+    device.modelNumber  = Sysctl("hw.model");
+#endif
     
     BugsnagEvent *event =
-    [[BugsnagEvent alloc] initWithApp:[dataSource generateAppWithState:systemInfo]
+    [[BugsnagEvent alloc] initWithApp:[BugsnagAppWithState new]
                                device:device
                          handledState:[BugsnagHandledState handledStateWithSeverityReason:HandledError]
                                  user:[[BugsnagUser alloc] init]
@@ -235,20 +241,6 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 // MARK: Delivery
 
 - (NSURLRequest *)requestForEvent:(nonnull BugsnagEvent *)event error:(NSError * __autoreleasing *)errorPtr {
-    id<BSGInternalErrorReporterDataSource> dataSource = self.dataSource;
-    if (!dataSource) {
-        return nil;
-    }
-    
-    NSURL *url = dataSource.configuration.notifyURL;
-    if (!url) {
-        if (errorPtr) {
-            *errorPtr = [NSError errorWithDomain:@"BugsnagConfigurationErrorDomain" code:0
-                                        userInfo:@{NSLocalizedDescriptionKey: @"Missing notify URL"}];
-        }
-        return nil;
-    }
-    
     NSMutableDictionary *requestPayload = [NSMutableDictionary dictionary];
     requestPayload[BSGKeyEvents] = @[[event toJsonWithRedactedKeys:nil]];
     requestPayload[BSGKeyNotifier] = [[[BugsnagNotifier alloc] init] toDict];
@@ -266,7 +258,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
     headers[BugsnagHTTPHeaderNamePayloadVersion] = EventPayloadVersion;
     headers[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.endpoint];
     request.allHTTPHeaderFields = headers;
     request.HTTPBody = data;
     request.HTTPMethod = @"POST";
@@ -303,7 +295,7 @@ static NSString * DeviceId() {
     CC_SHA1_Update(&ctx, uuid, sizeof(uuid));
 #elif TARGET_OS_WATCH
     uuid_t uuid = {0};
-    [[[NSClassFromString(@"WKInterfaceDevice") currentDevice] identifierForVendor] getUUIDBytes:uuid];
+    [[[WKInterfaceDevice currentDevice] identifierForVendor] getUUIDBytes:uuid];
     CC_SHA1_Update(&ctx, uuid, sizeof(uuid));
 #else
 #error Unsupported target platform
@@ -324,4 +316,13 @@ static NSString * DeviceId() {
         hex[i * 2 + 1] = lookup[(md[i] & 0xf0) >> 8];
     }
     return [[NSString alloc] initWithBytes:hex length:sizeof(hex) encoding:NSASCIIStringEncoding];
+}
+
+static NSString * Sysctl(const char *name) {
+    char buffer[32] = {0};
+    if (bsg_kssysctl_stringForName(name, buffer, sizeof buffer - 1)) {
+        return @(buffer);
+    } else {
+        return nil;
+    }
 }

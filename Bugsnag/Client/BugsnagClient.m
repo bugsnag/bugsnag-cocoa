@@ -150,7 +150,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
 // MARK: -
 
 BSG_OBJC_DIRECT_MEMBERS
-@interface BugsnagClient () <BSGBreadcrumbSink, BSGInternalErrorReporterDataSource>
+@interface BugsnagClient () <BSGBreadcrumbSink>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
@@ -246,7 +246,9 @@ BSG_OBJC_DIRECT_MEMBERS
     [self computeDidCrashLastLaunch];
 
     if (self.configuration.telemetry & BSGTelemetryInternalErrors) {
-        BSGInternalErrorReporter.sharedInstance = [[BSGInternalErrorReporter alloc] initWithDataSource:self];
+        BSGInternalErrorReporter.sharedInstance =
+        [[BSGInternalErrorReporter alloc] initWithApiKey:self.configuration.apiKey
+                                                endpoint:(NSURL *_Nonnull)self.configuration.notifyURL];
     } else {
         bsg_log_debug(@"Internal error reporting was disabled in config");
     }
