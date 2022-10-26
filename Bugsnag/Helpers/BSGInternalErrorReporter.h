@@ -10,28 +10,12 @@
 
 #import "BSGDefines.h"
 
-@class BugsnagAppWithState;
-@class BugsnagConfiguration;
-@class BugsnagDeviceWithState;
 @class BugsnagEvent;
-@class BugsnagNotifier;
 
 NS_ASSUME_NONNULL_BEGIN
 
 /// Returns a concise desription of the error including its domain, code, and debug description or localizedDescription.
 NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
-
-// MARK: -
-
-@protocol BSGInternalErrorReporterDataSource <NSObject>
-
-@property (readonly, nonatomic) BugsnagConfiguration *configuration;
-
-- (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo;
-
-- (BugsnagDeviceWithState *)generateDeviceWithState:(NSDictionary *)systemInfo;
-
-@end
 
 // MARK: -
 
@@ -43,7 +27,7 @@ BSG_OBJC_DIRECT_MEMBERS
 /// Runs the block immediately if sharedInstance exists, otherwise runs the block once sharedInstance has been created.
 + (void)performBlock:(void (^)(BSGInternalErrorReporter *))block;
 
-- (instancetype)initWithDataSource:(id<BSGInternalErrorReporterDataSource>)dataSource NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithApiKey:(NSString *)apiKey endpoint:(NSURL *)endpoint NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 

@@ -1,12 +1,22 @@
 Changelog
 =========
 
+## 6.25.0 (2022-10-26)
+
+### Enhancements
+
+* Expand `configuration.attemptDeliveryOnCrash` to send Mach exceptions (e.g.
+  Swift fatal errors and bad memory accesses) at crash time.
+  [#1496](https://github.com/bugsnag/bugsnag-cocoa/pull/1496)
+
 ## 6.24.0 (2022-10-05)
 
 ### Enhancements
 
-* Add (experimental) `configuration.attemptDeliveryOnCrash` to allow uncaught
-  Objective-C exceptions to be sent at crash time, prior to app termination.
+* Add `configuration.attemptDeliveryOnCrash` to allow uncaught Objective-C
+  exceptions to be sent at crash time, prior to app termination. Use of this
+  feature may impair user experience and other crash reporters; please read
+  https://docs.bugsnag.com/platforms/ios/configuration-options/#attemptdeliveryoncrash
   [#1488](https://github.com/bugsnag/bugsnag-cocoa/pull/1488)
 
 ### Bug fixes

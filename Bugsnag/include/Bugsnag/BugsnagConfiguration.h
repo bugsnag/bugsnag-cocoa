@@ -299,6 +299,30 @@ BUGSNAG_EXTERN
 @property (nonatomic) BOOL sendLaunchCrashesSynchronously;
 
 /**
+ * Whether Bugsnag should try to send crashing errors prior to app termination.
+ *
+ * Delivery will only be attempted for uncaught Objective-C exceptions and Mach
+ * exceptions, and while in progress will block the crashing thread for up to 3
+ * seconds.
+ *
+ * Delivery will be unreliable due to the necessary short timeout and potential
+ * memory corruption that caused the crashing error in the first place.
+ *
+ * If it fails prior to termination, delivery will be reattempted at next launch
+ * (the default behavior). 
+ *
+ * Use of this feature is discouraged because it:
+ * - may cause the app to hang while delivery occurs and impact the hang rate
+ *   reported in Xcode Organizer
+ * - will result in duplicate crashes in your dashboard for crashes that were
+ *   fully sent but without receiving an HTTP response within the timeout
+ * - may prevent other crash reporters from detecting the crash.
+ *
+ * By default this value is false.
+ */
+@property (nonatomic) BOOL attemptDeliveryOnCrash;
+
+/**
  * The types of breadcrumbs which will be captured. By default, this is all types.
  */
 @property (nonatomic) BSGEnabledBreadcrumbType enabledBreadcrumbTypes;
@@ -487,33 +511,6 @@ BUGSNAG_EXTERN
  * By default all types of telemetry are enabled.
  */
 @property (nonatomic) BSGTelemetryOptions telemetry;
-
-// =============================================================================
-// MARK: - Experimental
-// =============================================================================
-
-/**
- * Whether Bugsnag should try to send crashing errors prior to app termination.
- *
- * Delivery will only be attempted for uncaught Objective-C exceptions, and
- * while in progress will block the crashing thread for up to 3 seconds.
- *
- * Delivery will be unreliable due to the necessary short timeout and potential
- * memory corruption that caused the crashing error in the first place.
- *
- * If it fails prior to termination, delivery will be reattempted at next launch
- * (the default behavior). 
- *
- * Use of this feature is discouraged because it:
- * - may cause the app to hang while delivery occurs and impact the hang rate
- *   reported in Xcode Organizer
- * - will result in duplicate crashes in your dashboard for crashes that were
- *   fully sent but without receiving an HTTP response within the timeout
- * - may prevent other crash reporters from detecting the crash.
- *
- * By default this value is false.
- */
-@property (nonatomic) BOOL attemptDeliveryOnCrash;
 
 // =============================================================================
 // MARK: - Plugins

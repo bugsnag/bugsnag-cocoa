@@ -504,6 +504,7 @@ static void ResizeAndMapFile(int fd) {
     }
     
     memset(ptr, 0, SIZEOF_STRUCT);
+    mlock(ptr, SIZEOF_STRUCT);
     bsg_runContext = ptr;
     return;
     
