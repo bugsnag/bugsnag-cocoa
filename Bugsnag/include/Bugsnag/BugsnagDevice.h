@@ -38,12 +38,12 @@ BUGSNAG_EXTERN
 @property (copy, nullable, nonatomic) NSString *manufacturer;
 
 /**
- * The model name of the device used
+ * The model ID of the device used, e.g. "iPhone14,1" or "MacBookPro17,1"
  */
 @property (copy, nullable, nonatomic) NSString *model;
 
 /**
- * The model number of the device used
+ * The model number of the device used, e.g. "N841AP"
  */
 @property (copy, nullable, nonatomic) NSString *modelNumber;
 
