@@ -2,16 +2,6 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
-  - label: 'Trigger RN tests for all builds of our next branch'
-    if: build.branch == "next"
-    trigger: 'bugsnag-js'
-    build:
-      branch: 'next'
-      message: 'Run RN tests with latest Cocoa next branch'
-      env:
-        BUILD_RN_WITH_LATEST_NATIVES: "true"
-    async: true
-
   ##############################################################################
   #
   # Build
