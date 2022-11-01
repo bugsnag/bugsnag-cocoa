@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Truncate additional data to reduce number of oversized payloads.
+  [#1501](https://github.com/bugsnag/bugsnag-cocoa/pull/1501)
+
 ## 6.25.0 (2022-10-26)
 
 ### Enhancements

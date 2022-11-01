@@ -728,6 +728,15 @@ BSG_OBJC_DIRECT_MEMBERS
         .maxLength = maxLength
     };
     
+    if (self.context) {
+        self.context = BSGTruncateString(&context, self.context);
+    }
+    
+    for (BugsnagError *error in self.errors) {
+        error.errorClass = BSGTruncateString(&context, error.errorClass);
+        error.errorMessage = BSGTruncateString(&context, error.errorMessage);
+    }
+    
     for (BugsnagBreadcrumb *breadcrumb in self.breadcrumbs) {
         breadcrumb.message = BSGTruncateString(&context, breadcrumb.message);
         breadcrumb.metadata = BSGTruncateStrings(&context, breadcrumb.metadata);
