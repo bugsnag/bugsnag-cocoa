@@ -25,7 +25,7 @@ typedef struct _BSGTruncateContext {
     NSUInteger length;
 } BSGTruncateContext;
 
-NSString * BSGTruncateString(BSGTruncateContext *context, NSString *string);
+NSString * BSGTruncateString(BSGTruncateContext *context, NSString *_Nullable string);
 
 id BSGTruncateStrings(BSGTruncateContext *context, id object);
 
