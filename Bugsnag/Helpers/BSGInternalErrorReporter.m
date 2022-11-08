@@ -281,6 +281,8 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 
 // MARK: -
 
+// Intentionally differs from +[BSG_KSSystemInfo deviceAndAppHash]
+// See ROAD-1488
 static NSString * DeviceId() {
     CC_SHA1_CTX ctx;
     CC_SHA1_Init(&ctx);
@@ -312,8 +314,8 @@ static NSString * DeviceId() {
     char hex[2 * sizeof(md)];
     for (size_t i = 0; i < sizeof(md); i++) {
         static char lookup[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        hex[i * 2 + 0] = lookup[(md[i] & 0x0f)];
-        hex[i * 2 + 1] = lookup[(md[i] & 0xf0) >> 8];
+        hex[i * 2 + 0] = lookup[(md[i] & 0xf0) >> 4];
+        hex[i * 2 + 1] = lookup[(md[i] & 0x0f)];
     }
     return [[NSString alloc] initWithBytes:hex length:sizeof(hex) encoding:NSASCIIStringEncoding];
 }
