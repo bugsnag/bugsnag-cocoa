@@ -138,9 +138,9 @@ Feature: Reporting crash events
     Then the error is valid for the error reporting API
     And the exception "message" matches "Attempted to dereference (garbage|null) pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
-    And the stacktrace contains one of the following methods:
-      | ARM   | __29-[ReleasedObjectScenario run]_block_invoke |
-      | Intel | -[ReleasedObjectScenario run]                  |
+    And the "method" of stack frame 0 equals "objc_msgSend"
+    And the stacktrace contains methods:
+      | -[ReleasedObjectScenario run]                  |
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
     And the "isPC" of stack frame 1 is null
