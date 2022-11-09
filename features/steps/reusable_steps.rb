@@ -124,6 +124,15 @@ Then('the stacktrace contains methods:') do |table|
   Maze.check.true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
 
+Then('the stacktrace contains one of the following methods:') do |possible_values|
+  field = "events.0.exceptions.0.stacktrace"
+  expected = possible_values.raw.flatten
+  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], field)
+  methods = stacktrace.map { |frame| frame["method"] }
+  contains = expected.any? { |expected_method| methods.include?(expected_method) }
+  Maze.check.true(contains, "Stacktrace methods #{methods} did not contain #{expected}")
+end
+
 Then('the received sessions match:') do |table|
   requests = Maze::Server.sessions.remaining
   match_count = 0

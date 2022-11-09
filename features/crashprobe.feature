@@ -139,7 +139,7 @@ Feature: Reporting crash events
     And the exception "message" matches "Attempted to dereference (garbage|null) pointer"
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
-    And the "method" of stack frame 1 equals one of:
+    And the stacktrace contains one of the following methods:
       | ARM   | __29-[ReleasedObjectScenario run]_block_invoke |
       | Intel | -[ReleasedObjectScenario run]                  |
     And the "isPC" of stack frame 0 is true
