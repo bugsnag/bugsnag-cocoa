@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fix memory leak in the app hang detection code.
+  [#1507](https://github.com/bugsnag/bugsnag-cocoa/pull/1507)
+
 * Truncate additional data to reduce number of oversized payloads.
   [#1501](https://github.com/bugsnag/bugsnag-cocoa/pull/1501)
 
