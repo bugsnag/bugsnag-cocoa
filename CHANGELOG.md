@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.25.1 (2022-12-07)
+
+### Bug fixes
+
+* Fix memory leak in the app hang detection code.
+  [#1507](https://github.com/bugsnag/bugsnag-cocoa/pull/1507)
+
+* Truncate additional data to reduce number of oversized payloads.
+  [#1501](https://github.com/bugsnag/bugsnag-cocoa/pull/1501)
+
 ## 6.25.0 (2022-10-26)
 
 ### Enhancements

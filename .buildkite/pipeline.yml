@@ -2,16 +2,6 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
-  - label: 'Trigger RN tests for all builds of our next branch'
-    if: build.branch == "next"
-    trigger: 'bugsnag-js'
-    build:
-      branch: 'next'
-      message: 'Run RN tests with latest Cocoa next branch'
-      env:
-        BUILD_RN_WITH_LATEST_NATIVES: "true"
-    async: true
-
   ##############################################################################
   #
   # Build
@@ -216,7 +206,7 @@ steps:
   # Barebones E2E tests
   #
 
-  - label: 'iOS 15 E2E tests batch 1'
+  - label: 'iOS 16 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -232,7 +222,7 @@ steps:
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
-          - "--device=IOS_15"
+          - "--device=IOS_16"
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
@@ -245,7 +235,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 15 E2E tests batch 2'
+  - label: 'iOS 16 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -261,7 +251,7 @@ steps:
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
-          - "--device=IOS_15"
+          - "--device=IOS_16"
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
