@@ -122,46 +122,48 @@ BSG_OBJC_DIRECT_MEMBERS
     NSThread.currentThread.name = @"com.bugsnag.app-hang-detector";
     
     while (!self.shouldStop) {
-        if (dispatch_semaphore_wait(self.processingStarted, DISPATCH_TIME_FOREVER) != 0) {
-            bsg_log_err(@"BSGAppHangDetector: dispatch_semaphore_wait failed unexpectedly");
-            return;
-        }
-        
-        const dispatch_time_t deadline = self.processingDeadline;
-        
-        if (dispatch_semaphore_wait(self.processingFinished, deadline) == 0) {
-            // Run loop finished within the deadline
-            continue;
-        }
-        
-        BOOL shouldReportAppHang = YES;
-        
-        if (dispatch_time(DISPATCH_TIME_NOW, 0) > dispatch_time(deadline, 1 * NSEC_PER_SEC)) {
-            // If this thread has woken up long after the deadline, the app may have been suspended.
-            bsg_log_debug(@"Ignoring potential false positive app hang");
-            shouldReportAppHang = NO;
-        }
-        
+        @autoreleasepool {
+            if (dispatch_semaphore_wait(self.processingStarted, DISPATCH_TIME_FOREVER) != 0) {
+                bsg_log_err(@"BSGAppHangDetector: dispatch_semaphore_wait failed unexpectedly");
+                return;
+            }
+
+            const dispatch_time_t deadline = self.processingDeadline;
+
+            if (dispatch_semaphore_wait(self.processingFinished, deadline) == 0) {
+                // Run loop finished within the deadline
+                continue;
+            }
+
+            BOOL shouldReportAppHang = YES;
+
+            if (dispatch_time(DISPATCH_TIME_NOW, 0) > dispatch_time(deadline, 1 * NSEC_PER_SEC)) {
+                // If this thread has woken up long after the deadline, the app may have been suspended.
+                bsg_log_debug(@"Ignoring potential false positive app hang");
+                shouldReportAppHang = NO;
+            }
+
 #if defined(DEBUG) && DEBUG
-        if (shouldReportAppHang && bsg_ksmachisBeingTraced()) {
-            bsg_log_debug(@"Ignoring app hang because debugger is attached");
-            shouldReportAppHang = NO;
-        }
+            if (shouldReportAppHang && bsg_ksmachisBeingTraced()) {
+                bsg_log_debug(@"Ignoring app hang because debugger is attached");
+                shouldReportAppHang = NO;
+            }
 #endif
-        
-        if (shouldReportAppHang && !bsg_runContext->isForeground && !self.delegate.configuration.reportBackgroundAppHangs) {
-            bsg_log_debug(@"Ignoring app hang because app is in the background");
-            shouldReportAppHang = NO;
-        }
-        
-        if (shouldReportAppHang) {
-            [self appHangDetected];
-        }
-        
-        dispatch_semaphore_wait(self.processingFinished, DISPATCH_TIME_FOREVER);
-        
-        if (shouldReportAppHang) {
-            [self appHangEnded];
+
+            if (shouldReportAppHang && !bsg_runContext->isForeground && !self.delegate.configuration.reportBackgroundAppHangs) {
+                bsg_log_debug(@"Ignoring app hang because app is in the background");
+                shouldReportAppHang = NO;
+            }
+
+            if (shouldReportAppHang) {
+                [self appHangDetected];
+            }
+
+            dispatch_semaphore_wait(self.processingFinished, DISPATCH_TIME_FOREVER);
+
+            if (shouldReportAppHang) {
+                [self appHangEnded];
+            }
         }
     }
 }
