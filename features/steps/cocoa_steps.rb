@@ -55,15 +55,24 @@ def check_device_model(field, list)
     'iPhone 11' => %w[iPhone12,1],
     'iPhone 11 Pro' => %w[iPhone12,3],
     'iPhone 11 Pro Max' => %w[iPhone12,5],
+    'iPhone 14' => %w[iPhone14,7],
+    'iPhone 14 Plus' => %w[iPhone14,8],
+    'iPhone 14 Pro' => %w[iPhone15,2],
+    'iPhone 14 Pro Max' => %w[iPhone15,3],
     'iPhone X' => %w[iPhone10,3 iPhone10,6],
     'iPhone XR' => %w[iPhone11,8],
     'iPhone XS' => %w[iPhone11,2 iPhone11,4 iPhone11,8]
   }
-  expected_model = Maze.config.capabilities['device']
+  $logger.info Maze.config.capabilities
+
+  expected_model = Maze.config.capabilities['deviceName']
+  msg = "Model '#{expected_model}' found by Appium not present in internal_names hash"
+  Maze.check.true(internal_names.has_key?(expected_model), msg)
+
   valid_models = internal_names[expected_model]
   device_model = Maze::Helper.read_key_path(list.current[:body], field)
-  Maze.check.true(valid_models != nil ? valid_models.include?(device_model) : true,
-                  "The field #{device_model} did not match any of the list of expected fields")
+  Maze.check.true(valid_models.include?(device_model),
+                  "'#{device_model}' did not match any of the list of valid models #{valid_models}")
 end
 
 Then('the error payload field {string} matches the test device model') do |field|
