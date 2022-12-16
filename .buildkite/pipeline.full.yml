@@ -252,8 +252,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: cocoa-maze-runner-legacy
+        run: cocoa-maze-runner-legacy
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
@@ -283,8 +283,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: cocoa-maze-runner-legacy
+        run: cocoa-maze-runner-legacy
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
