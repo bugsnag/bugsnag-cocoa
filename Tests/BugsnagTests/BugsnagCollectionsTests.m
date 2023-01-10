@@ -50,7 +50,10 @@
 
 - (void)testDstNil {
     id src = @{@"a": @"one"};
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     XCTAssertEqualObjects(src, BSGDictMerge(src, nil), @"should copy");
+#pragma clang diagnostic pop
 }
 
 - (void)testSrcDict {
@@ -74,8 +77,11 @@
 // MARK: BSGJSONDictionary
 
 - (void)testBSGJSONDictionary {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     XCTAssertNil(BSGJSONDictionary(nil));
-    
+#pragma clang diagnostic pop
+
     id validDictionary = @{
         @"name": @"foobar",
         @"count": @1,
