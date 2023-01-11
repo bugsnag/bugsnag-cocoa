@@ -20,10 +20,14 @@ id BSGSanitizeObject(id obj) {
     return nil;
 }
 
-NSMutableDictionary * BSGSanitizeDict(NSDictionary *input) {
+NSMutableDictionary * BSGSanitizePossibleDict(NSDictionary *input) {
     if (![input isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
+    return BSGSanitizeDict(input);
+}
+
+NSMutableDictionary * BSGSanitizeDict(NSDictionary *input) {
     __block NSMutableDictionary *output =
         [NSMutableDictionary dictionaryWithCapacity:[input count]];
     [input enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj,
@@ -47,10 +51,14 @@ static NSArray * BSGSanitizeArray(NSArray *input) {
     return output;
 }
 
-NSString * BSGTruncateString(BSGTruncateContext *context, NSString *string) {
+NSString * BSGTruncatePossibleString(BSGTruncateContext *context, NSString *string) {
     if (![string isKindOfClass:[NSString class]]) {
         return nil;
     }
+    return BSGTruncateString(context, string);
+}
+
+NSString * BSGTruncateString(BSGTruncateContext *context, NSString *string) {
     const NSUInteger inputLength = string.length;
     if (inputLength <= context->maxLength) return string;
     // Prevent chopping in the middle of a composed character sequence

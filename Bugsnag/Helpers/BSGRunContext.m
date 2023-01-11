@@ -31,7 +31,6 @@
     atomic_store((_Atomic(typeof(field)) *)&field, newValue_); \
 } while (0)
 
-
 #pragma mark Forward declarations
 
 static uint64_t GetBootTime(void);
@@ -342,9 +341,11 @@ void BSGRunContextUpdateTimestamp() {
 }
 
 static void UpdateHostMemory() {
-    static mach_port_t host;
+    static _Atomic mach_port_t host_atomic = 0;
+    mach_port_t host = atomic_load(&host_atomic);
     if (!host) {
         host = mach_host_self();
+        atomic_store(&host_atomic, host);
     }
     
     vm_statistics_data_t host_vm;
@@ -357,7 +358,7 @@ static void UpdateHostMemory() {
     }
     
     size_t hostMemoryFree = host_vm.free_count * vm_kernel_page_size;
-    ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
+    bsg_runContext->hostMemoryFree = hostMemoryFree;
 }
 
 static void UpdateTaskMemory() {
