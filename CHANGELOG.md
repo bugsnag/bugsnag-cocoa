@@ -1,12 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 6.25.2 (2023-01-18)
 
 ### Bug fixes
 
 * Workaround for thermal state lock re-entry bug on iOS 15.0.2-15.1.1.
-  [1514]https://github.com/bugsnag/bugsnag-cocoa/pull/1514
+  [1514](https://github.com/bugsnag/bugsnag-cocoa/pull/1514)
 
 * Clean up compiler warnings about data races and nullability.
   [1515](https://github.com/bugsnag/bugsnag-cocoa/pull/1515)
