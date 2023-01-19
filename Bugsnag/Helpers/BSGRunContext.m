@@ -31,7 +31,6 @@
     atomic_store((_Atomic(typeof(field)) *)&field, newValue_); \
 } while (0)
 
-
 #pragma mark Forward declarations
 
 static uint64_t GetBootTime(void);
@@ -259,11 +258,16 @@ static void NoteThermalState(__unused CFNotificationCenterRef center,
                              __unused CFNotificationName name,
                              const void *object,
                              __unused CFDictionaryRef userInfo) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-    bsg_runContext->thermalState = ((__bridge NSProcessInfo *)object).thermalState;
-#pragma clang diagnostic pop
-    BSGRunContextUpdateTimestamp();
+    if (@available(iOS 11.0, tvOS 11.0, watchOS 4.0, *)) {
+        // Workaround for iOS 15.0.2 to 15.1.1: Foundation in rare cases posts
+        // ThermalStateDidChangeNotification from within -[NSProcessInfo thermalState],
+        // causing recursion and a crash via _os_unfair_lock_recursive_abort().
+        // To avoid this, grab the new thermal state asynchronously.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            bsg_runContext->thermalState = ((__bridge NSProcessInfo *)object).thermalState;
+            BSGRunContextUpdateTimestamp();
+        });
+    }
 }
 
 #if BSG_HAVE_OOM_DETECTION
@@ -342,9 +346,11 @@ void BSGRunContextUpdateTimestamp() {
 }
 
 static void UpdateHostMemory() {
-    static mach_port_t host;
+    static _Atomic mach_port_t host_atomic = 0;
+    mach_port_t host = atomic_load(&host_atomic);
     if (!host) {
         host = mach_host_self();
+        atomic_store(&host_atomic, host);
     }
     
     vm_statistics_data_t host_vm;
@@ -357,7 +363,7 @@ static void UpdateHostMemory() {
     }
     
     size_t hostMemoryFree = host_vm.free_count * vm_kernel_page_size;
-    ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
+    bsg_runContext->hostMemoryFree = hostMemoryFree;
 }
 
 static void UpdateTaskMemory() {

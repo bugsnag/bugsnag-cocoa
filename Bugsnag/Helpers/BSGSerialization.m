@@ -20,6 +20,13 @@ id BSGSanitizeObject(id obj) {
     return nil;
 }
 
+NSMutableDictionary * BSGSanitizePossibleDict(NSDictionary *input) {
+    if (![input isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    return BSGSanitizeDict(input);
+}
+
 NSMutableDictionary * BSGSanitizeDict(NSDictionary *input) {
     __block NSMutableDictionary *output =
         [NSMutableDictionary dictionaryWithCapacity:[input count]];
@@ -42,6 +49,13 @@ static NSArray * BSGSanitizeArray(NSArray *input) {
             [output addObject:cleanedObject];
     }
     return output;
+}
+
+NSString * BSGTruncatePossibleString(BSGTruncateContext *context, NSString *string) {
+    if (![string isKindOfClass:[NSString class]]) {
+        return nil;
+    }
+    return BSGTruncateString(context, string);
 }
 
 NSString * BSGTruncateString(BSGTruncateContext *context, NSString *string) {

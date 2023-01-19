@@ -9,7 +9,9 @@ NS_ASSUME_NONNULL_BEGIN
  @param input a dictionary
  @return a new dictionary
  */
-NSMutableDictionary * BSGSanitizeDict(NSDictionary *input);
+NSMutableDictionary *BSGSanitizeDict(NSDictionary * input);
+
+NSMutableDictionary *_Nullable BSGSanitizePossibleDict(NSDictionary *_Nullable input);
 
 /**
  Cleans the object, including nested dictionary and array values
@@ -25,7 +27,8 @@ typedef struct _BSGTruncateContext {
     NSUInteger length;
 } BSGTruncateContext;
 
-NSString * BSGTruncateString(BSGTruncateContext *context, NSString *_Nullable string);
+NSString * BSGTruncateString(BSGTruncateContext *context, NSString * string);
+NSString *_Nullable BSGTruncatePossibleString(BSGTruncateContext *context, NSString *_Nullable string);
 
 id BSGTruncateStrings(BSGTruncateContext *context, id object);
 
