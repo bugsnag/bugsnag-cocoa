@@ -747,6 +747,12 @@ BSG_OBJC_DIRECT_MEMBERS
 - (void)notifyInternal:(BugsnagEvent *_Nonnull)event
                  block:(BugsnagOnErrorBlock)block
 {
+    // Checks whether releaseStage is in enabledReleaseStages, blocking onError callback from running if it is not.
+    if (!self.configuration.shouldSendReports || ![event shouldBeSent]) {
+        bsg_log_info("Discarding error because releaseStage '%@' not in enabledReleaseStages", self.configuration.releaseStage);
+        return;
+    }
+    
     NSString *errorClass = event.errors.firstObject.errorClass;
     if ([self.configuration shouldDiscardErrorClass:errorClass]) {
         bsg_log_info(@"Discarding event because errorClass \"%@\" matched configuration.discardClasses", errorClass);
