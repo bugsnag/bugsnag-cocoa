@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
     @IBOutlet var apiKeyField: UITextField!
+    var mazeRunnerAddress: String = "";
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +47,15 @@ class ViewController: UIViewController {
         Scenario.clearPersistentData()
     }
 
+    func loadMazeRunnerAddress() -> String {
+#if TARGET_OS_IOS
+        return "";
+#else
+        return "localhost:9339";
+#endif
+
+    }
+    
     internal func prepareScenario() {
         var config: BugsnagConfiguration?
         if (apiKeyField.text!.count > 0) {
@@ -56,12 +66,13 @@ class ViewController: UIViewController {
             config = BugsnagConfiguration(apiKeyField.text!)
         }
 
-        Scenario.createScenarioNamed(scenarioNameField.text!, withConfig: config)
+        
+        Scenario.createScenarioNamed(scenarioNameField.text!, withConfig: config, withMazeAddress: loadMazeRunnerAddress())
         Scenario.current!.eventMode = scenarioMetaDataField.text
     }
 
     @IBAction func executeCommand(_ sender: Any) {
-        Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
+        Scenario.current!.executeMazeRunnerCommand { _, scenarioName, eventMode in
             self.scenarioNameField.text = scenarioName
             self.scenarioMetaDataField.text = eventMode
         }
