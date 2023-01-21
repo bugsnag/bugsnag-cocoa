@@ -70,8 +70,8 @@ static char ksLogPath[PATH_MAX];
 }
 
 + (Scenario *)createScenarioNamed:(NSString *)className
-                                   withConfig:(BugsnagConfiguration *)config
-                                   withMazeAddress:(NSString *)mazeAddress {
+                       withConfig:(BugsnagConfiguration *)config
+                   andMazeAddress:(NSString *)mazeAddress {
     Class class = NSClassFromString(className) ?:
     NSClassFromString([@SWIFT_MODULE "." stringByAppendingString:className]);
 
@@ -80,7 +80,7 @@ static char ksLogPath[PATH_MAX];
     }
 
     return (theScenario = [(Scenario *)[class alloc] initWithConfig:config
-                                                     withMazeAddress:mazeAddress]);
+                                                     andMazeAddress:mazeAddress]);
 }
 
 + (Scenario *)currentScenario {
@@ -110,7 +110,7 @@ static char ksLogPath[PATH_MAX];
 
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                withMazeAddress:(NSString *) mazeAddress {
+                andMazeAddress:(NSString *) mazeAddress {
     if (self = [super init]) {
         _baseMazeAddress = mazeAddress;
         if (config) {
@@ -293,8 +293,8 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
     NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     theScenario = [Scenario createScenarioNamed:scenarioName
-                            withConfig:nil
-                            withMazeAddress:_baseMazeAddress];
+                                     withConfig:nil
+                                 andMazeAddress:_baseMazeAddress];
     theScenario.eventMode = eventMode;
     
     NSLog(@"Starting scenario \"%@\"", NSStringFromClass([theScenario class]));

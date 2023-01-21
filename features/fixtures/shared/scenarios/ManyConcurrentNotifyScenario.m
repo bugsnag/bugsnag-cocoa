@@ -13,9 +13,9 @@
 @implementation ManyConcurrentNotifyScenario
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                               withMazeAddress:(NSString *)mazeAddress {
+                andMazeAddress:(NSString *)mazeAddress {
     if (self = [super initWithConfig:config
-                      withMazeAddress:mazeAddress]) {
+                      andMazeAddress:mazeAddress]) {
         _queue1 = dispatch_queue_create("Log Queue 1", DISPATCH_QUEUE_CONCURRENT);
         _queue2 = dispatch_queue_create("Log Queue 2", DISPATCH_QUEUE_CONCURRENT);
     }

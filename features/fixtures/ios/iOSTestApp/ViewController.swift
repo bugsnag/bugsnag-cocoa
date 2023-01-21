@@ -49,9 +49,10 @@ class ViewController: UIViewController {
 
     func loadMazeRunnerAddress() -> String {
 #if TARGET_OS_IOS
-        return "";
+        // TODO Load dynamically from file
+        return "https://bs-local.com:9339";
 #else
-        return "localhost:9339";
+        return "http://localhost:9339";
 #endif
 
     }
@@ -67,7 +68,9 @@ class ViewController: UIViewController {
         }
 
         
-        Scenario.createScenarioNamed(scenarioNameField.text!, withConfig: config, withMazeAddress: loadMazeRunnerAddress())
+        Scenario.createScenarioNamed(scenarioNameField.text!,
+                                     withConfig: config,
+                                     andMazeAddress: loadMazeRunnerAddress())
         Scenario.current!.eventMode = scenarioMetaDataField.text
     }
 

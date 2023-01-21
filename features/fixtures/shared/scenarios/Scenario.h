@@ -23,13 +23,13 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
 + (Scenario *)createScenarioNamed:(NSString *)className
-                                  withConfig:(nullable BugsnagConfiguration *)config
-                                  withMazeAddress:(NSString *)mazeAddress;
+                       withConfig:(nullable BugsnagConfiguration *)config
+                   andMazeAddress:(NSString *)mazeAddress;
     
 @property (class, readonly, nullable) Scenario *currentScenario;
 
 - (instancetype)initWithConfig:(nullable BugsnagConfiguration *)config
-                                withMazeAddress:(NSString *) mazeAddress;
+                andMazeAddress:(NSString *) mazeAddress;
 
 /**
  * Executes the test case
