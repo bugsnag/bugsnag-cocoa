@@ -57,14 +57,13 @@ Feature: Attaching a series of notable events leading up to errors
 
   @watchos
   Scenario: Network breadcrumbs
-    When I start the document server
-    And I run "NetworkBreadcrumbsScenario"
+    When I run "NetworkBreadcrumbsScenario"
     Then I wait to receive an error
     And the event "breadcrumbs.0.timestamp" is a timestamp
     And the event "breadcrumbs.0.name" equals "NSURLSession request failed"
     And the event "breadcrumbs.0.type" equals "request"
     And the event "breadcrumbs.0.metaData.method" equals "GET"
-    And the event "breadcrumbs.0.metaData.url" matches "http://.*:9340/reflect/"
+    And the event "breadcrumbs.0.metaData.url" matches "http://.*:9339/reflect/"
     And the event "breadcrumbs.0.metaData.urlParams.status" equals "444"
     And the event "breadcrumbs.0.metaData.urlParams.password" equals "[REDACTED]"
     And the event "breadcrumbs.0.metaData.status" equals 444
@@ -75,7 +74,7 @@ Feature: Attaching a series of notable events leading up to errors
     And the event "breadcrumbs.1.name" equals "NSURLSession request succeeded"
     And the event "breadcrumbs.1.type" equals "request"
     And the event "breadcrumbs.1.metaData.method" equals "GET"
-    And the event "breadcrumbs.1.metaData.url" matches "http://.*:9340/reflect/"
+    And the event "breadcrumbs.1.metaData.url" matches "http://.*:9339/reflect/"
     And the event "breadcrumbs.1.metaData.urlParams.delay_ms" equals "3000"
     And the event "breadcrumbs.1.metaData.status" equals 200
     And the event "breadcrumbs.1.metaData.duration" is greater than 0
