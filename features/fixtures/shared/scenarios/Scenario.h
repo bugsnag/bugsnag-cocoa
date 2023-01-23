@@ -15,21 +15,15 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 @interface Scenario : NSObject
 
-@property (nonatomic, readonly) NSString *baseMazeAddress;
-
-// TODO Do we still need this?
-@property (nonatomic, readonly) NSURL *mazeRunnerURL;
-
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 
 + (Scenario *)createScenarioNamed:(NSString *)className
-                       withConfig:(nullable BugsnagConfiguration *)config
-                   andMazeAddress:(NSString *)mazeAddress;
+                       withConfig:(nullable BugsnagConfiguration *)config;
     
+@property (class, readwrite) NSString *baseMazeAddress;
 @property (class, readonly, nullable) Scenario *currentScenario;
 
-- (instancetype)initWithConfig:(nullable BugsnagConfiguration *)config
-                andMazeAddress:(NSString *) mazeAddress;
+- (instancetype)initWithConfig:(nullable BugsnagConfiguration *)config;
 
 /**
  * Executes the test case
@@ -48,7 +42,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 + (void)clearPersistentData;
 
-- (void)executeMazeRunnerCommand:(nullable void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler;
++ (void)executeMazeRunnerCommand:(nullable void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler;
 
 @end
 

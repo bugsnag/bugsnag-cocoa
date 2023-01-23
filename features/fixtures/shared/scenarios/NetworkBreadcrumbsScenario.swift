@@ -15,7 +15,7 @@ class NetworkBreadcrumbsScenario : Scenario {
         config.autoTrackSessions = false;
         config.add(BugsnagNetworkRequestPlugin())
         config.addOnBreadcrumb {
-            ($0.metadata["url"] as? String ?? "").hasPrefix(self.baseMazeAddress)
+            ($0.metadata["url"] as? String ?? "").hasPrefix(Scenario.baseMazeAddress)
         }
 
         super.startBugsnag()
@@ -32,7 +32,7 @@ class NetworkBreadcrumbsScenario : Scenario {
     }
 
     func query(string: String) {
-        let url = URL(string: self.baseMazeAddress + string)!
+        let url = URL(string: Scenario.baseMazeAddress + string)!
         let semaphore = DispatchSemaphore(value: 0)
 
         let task = URLSession.shared.dataTask(with: url) {(data, response, error) in

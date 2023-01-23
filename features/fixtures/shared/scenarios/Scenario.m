@@ -32,6 +32,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 // MARK: -
 
 static Scenario *theScenario;
+static NSString *theBaseMazeAddress;
 
 #if !TARGET_OS_WATCH
 static char ksLogPath[PATH_MAX];
@@ -40,7 +41,6 @@ static char ksLogPath[PATH_MAX];
 @implementation Scenario {
     dispatch_block_t _onEventDelivery;
     dispatch_block_t _onSessionDelivery;
-    NSString *_baseMazeAddress;
 }
 
 + (void)load {
@@ -70,8 +70,10 @@ static char ksLogPath[PATH_MAX];
 }
 
 + (Scenario *)createScenarioNamed:(NSString *)className
-                       withConfig:(BugsnagConfiguration *)config
-                   andMazeAddress:(NSString *)mazeAddress {
+                       withConfig:(BugsnagConfiguration *)config {
+
+    NSLog(@"SKW createScenarioNamed: %@", className);
+    
     Class class = NSClassFromString(className) ?:
     NSClassFromString([@SWIFT_MODULE "." stringByAppendingString:className]);
 
@@ -79,46 +81,37 @@ static char ksLogPath[PATH_MAX];
         [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
     }
 
-    return (theScenario = [(Scenario *)[class alloc] initWithConfig:config
-                                                     andMazeAddress:mazeAddress]);
+    return  (theScenario = [(Scenario *)[class alloc] initWithConfig:config]);
 }
 
 + (Scenario *)currentScenario {
     return theScenario;
 }
 
-- (NSString *)readMazeRunnerAddress {
-    // TODO Read from disk
-    return NULL;
++ (NSString *)baseMazeAddress {
+    return theBaseMazeAddress;
 }
 
-- (NSURL *)mazeRunnerURL {
-     
-    return NULL;
-
-    //    NSData to read from disk
-    //    NSJsonSerialzation
++ (void)setBaseMazeAddress:(NSString *)baseMazeAddress {
+    theBaseMazeAddress = baseMazeAddress;
 }
 
-- (NSString *)baseMazeAddress {
-     
-    return NULL;
+//- (NSString *)baseMazeAddress {
+//
+//    return NULL;
+//
+//    //    NSData
+//    //    NSJsonSerialzation
+//}
 
-    //    NSData
-    //    NSJsonSerialzation
-}
-
-
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config
-                andMazeAddress:(NSString *) mazeAddress {
+- (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
-        _baseMazeAddress = mazeAddress;
         if (config) {
             _config = config;
         } else {
             _config = [[BugsnagConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-            _config.endpoints.notify = [NSString stringWithFormat:@"%@/notify", _baseMazeAddress];
-            _config.endpoints.sessions = [NSString stringWithFormat:@"%@/sessions", _baseMazeAddress];
+            _config.endpoints.notify = [NSString stringWithFormat:@"%@/notify", theBaseMazeAddress];
+            _config.endpoints.sessions = [NSString stringWithFormat:@"%@/sessions", theBaseMazeAddress];
         }
 #if !TARGET_OS_WATCH
         _config.enabledErrorTypes.ooms = NO;
@@ -236,10 +229,10 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 #endif
 }
 
-- (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
++ (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
     NSLog(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-    NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", _baseMazeAddress];
+    NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", theBaseMazeAddress];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:commandEndpoint]];
     [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
@@ -280,24 +273,22 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
     }] resume];
 }
 
-- (void)runScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
++ (void)runScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
     NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     [self startBugsnagForScenario:scenarioName eventMode:eventMode];
     
-    NSLog(@"Running scenario \"%@\"", NSStringFromClass([theScenario class]));
     [theScenario run];
 }
 
-- (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
++ (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
     NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     theScenario = [Scenario createScenarioNamed:scenarioName
-                                     withConfig:nil
-                                 andMazeAddress:_baseMazeAddress];
+                                     withConfig:nil];
     theScenario.eventMode = eventMode;
     
-    NSLog(@"Starting scenario \"%@\"", NSStringFromClass([theScenario class]));
+    NSLog(@"Starting scenario \"%@\"", NSStringFromClass([self class]));
     [theScenario startBugsnag];
 }
 

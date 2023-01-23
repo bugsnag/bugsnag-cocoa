@@ -21,22 +21,39 @@ class ViewController: UIViewController {
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
+
+        log("SKW 1")
+        
+        Scenario.baseMazeAddress = loadMazeRunnerAddress()
     }
 
     @IBAction func runTestScenario() {
+
+        log("SKW 2")
+
         // Cater for multiple calls to run()
         if Scenario.current == nil {
+
+            log("SKW 3")
+
             prepareScenario()
+
+            log("SKW 4")
 
             log("Starting Bugsnag for scenario: \(Scenario.current!)")
             Scenario.current!.startBugsnag()
         }
+        
+        log("SKW 5")
 
         log("Running scenario: \(Scenario.current!)")
         Scenario.current!.run()
     }
 
     @IBAction func startBugsnag() {
+
+        log("SKW 6")
+
         prepareScenario()
 
         log("Starting Bugsnag for scenario: \(Scenario.current!)")
@@ -44,20 +61,18 @@ class ViewController: UIViewController {
     }
 
     @IBAction func clearPersistentData(_ sender: Any) {
+        log("SKW 7")
         Scenario.clearPersistentData()
     }
 
     func loadMazeRunnerAddress() -> String {
-#if TARGET_OS_IOS
         // TODO Load dynamically from file
-        return "https://bs-local.com:9339";
-#else
-        return "http://localhost:9339";
-#endif
-
+        return "http://bs-local.com:9339";
     }
     
     internal func prepareScenario() {
+        log("SKW 9")
+
         var config: BugsnagConfiguration?
         if (apiKeyField.text!.count > 0) {
             // Manual testing mode - use the real dashboard and the API key provided
@@ -69,13 +84,14 @@ class ViewController: UIViewController {
 
         
         Scenario.createScenarioNamed(scenarioNameField.text!,
-                                     withConfig: config,
-                                     andMazeAddress: loadMazeRunnerAddress())
+                                     withConfig: config)
         Scenario.current!.eventMode = scenarioMetaDataField.text
     }
 
     @IBAction func executeCommand(_ sender: Any) {
-        Scenario.current!.executeMazeRunnerCommand { _, scenarioName, eventMode in
+        log("SKW 10")
+
+        Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
             self.scenarioNameField.text = scenarioName
             self.scenarioMetaDataField.text = eventMode
         }

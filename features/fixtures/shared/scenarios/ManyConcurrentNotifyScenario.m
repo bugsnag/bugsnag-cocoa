@@ -14,8 +14,7 @@
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config
                 andMazeAddress:(NSString *)mazeAddress {
-    if (self = [super initWithConfig:config
-                      andMazeAddress:mazeAddress]) {
+    if (self = [super initWithConfig:config]) {
         _queue1 = dispatch_queue_create("Log Queue 1", DISPATCH_QUEUE_CONCURRENT);
         _queue2 = dispatch_queue_create("Log Queue 2", DISPATCH_QUEUE_CONCURRENT);
     }

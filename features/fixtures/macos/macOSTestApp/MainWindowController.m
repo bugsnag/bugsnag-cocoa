@@ -55,8 +55,7 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     // Cater for multiple calls to -run
     if (!Scenario.currentScenario) {
         [Scenario createScenarioNamed:self.scenarioName
-                           withConfig:[self configuration]
-                       andMazeAddress:@"http://localhost:9339"];
+                           withConfig:[self configuration]];
         Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
         BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
@@ -77,8 +76,7 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
     [Scenario createScenarioNamed:self.scenarioName
-                       withConfig:[self configuration]
-                   andMazeAddress:@"http://localhost:9339"];
+                       withConfig:[self configuration]];
     Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
     BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
@@ -97,7 +95,7 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 
 - (IBAction)executeMazeRunnerCommand:(id)sender {
 
-    [Scenario.currentScenario executeMazeRunnerCommand:^(NSString *action, NSString *scenarioName, NSString *eventMode){
+    [Scenario executeMazeRunnerCommand:^(NSString *action, NSString *scenarioName, NSString *eventMode){
         self.scenarioName = scenarioName;
         self.scenarioMetadata = eventMode;
     }];
