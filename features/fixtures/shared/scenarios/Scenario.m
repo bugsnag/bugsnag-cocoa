@@ -69,11 +69,7 @@ static char ksLogPath[PATH_MAX];
     }];
 }
 
-+ (Scenario *)createScenarioNamed:(NSString *)className
-                       withConfig:(BugsnagConfiguration *)config {
-
-    NSLog(@"SKW createScenarioNamed: %@", className);
-    
++ (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
     Class class = NSClassFromString(className) ?:
     NSClassFromString([@SWIFT_MODULE "." stringByAppendingString:className]);
 
@@ -81,7 +77,7 @@ static char ksLogPath[PATH_MAX];
         [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
     }
 
-    return  (theScenario = [(Scenario *)[class alloc] initWithConfig:config]);
+    return (theScenario = [(Scenario *)[class alloc] initWithConfig:config]);
 }
 
 + (Scenario *)currentScenario {
@@ -95,14 +91,6 @@ static char ksLogPath[PATH_MAX];
 + (void)setBaseMazeAddress:(NSString *)baseMazeAddress {
     theBaseMazeAddress = baseMazeAddress;
 }
-
-//- (NSString *)baseMazeAddress {
-//
-//    return NULL;
-//
-//    //    NSData
-//    //    NSJsonSerialzation
-//}
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config {
     if (self = [super init]) {
@@ -254,7 +242,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         }
 
         if ([[command objectForKey:@"reset_data"] isEqual:@YES]) {
-            [Scenario clearPersistentData];
+            [self clearPersistentData];
         }
 
         if (preHandler) {
@@ -284,8 +272,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 + (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
     NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
-    theScenario = [Scenario createScenarioNamed:scenarioName
-                                     withConfig:nil];
+    theScenario = [Scenario createScenarioNamed:scenarioName withConfig:nil];
     theScenario.eventMode = eventMode;
     
     NSLog(@"Starting scenario \"%@\"", NSStringFromClass([self class]));
