@@ -1,5 +1,12 @@
 Changelog
 =========
+## TBD
+
+## Bug fixes
+
+* onError blocked from running if releaseStage not in enabledReleaseStages.
+  [1518](https://github.com/bugsnag/bugsnag-cocoa/pull/1518)
+
 
 ## 6.25.2 (2023-01-18)
 
