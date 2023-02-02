@@ -1,5 +1,7 @@
-PATH
-  remote: ../maze-runner
+GIT
+  remote: https://github.com/bugsnag/maze-runner
+  revision: 01596b90f65a11759e4bd307242e46b1f4c240b2
+  tag: v7.17.0
   specs:
     bugsnag-maze-runner (7.17.0)
       appium_lib (~> 12.0.0)
