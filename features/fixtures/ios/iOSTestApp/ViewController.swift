@@ -52,6 +52,13 @@ class ViewController: UIViewController {
     }
 
     func loadMazeRunnerAddress() -> String {
+
+        let bsAddress = "http://bs-local.com:9339"
+        
+        // Only iOS 12 and above will run on BitBat for now
+        if #available(iOS 12.0, *) {} else {
+            return bsAddress;
+        }
         
         for _ in 1...60 {
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -78,7 +85,7 @@ class ViewController: UIViewController {
         }
 
         log("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
-        return "http://bs-local.com:9339";
+        return bsAddress;
     }
     
     internal func prepareScenario() {
