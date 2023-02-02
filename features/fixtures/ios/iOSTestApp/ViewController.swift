@@ -9,6 +9,10 @@
 import UIKit
 import os
 
+class FixtureConfig: Codable {
+    var maze_address: String
+}
+
 class ViewController: UIViewController {
 
     @IBOutlet var scenarioNameField : UITextField!
@@ -21,7 +25,6 @@ class ViewController: UIViewController {
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
-        Scenario.baseMazeAddress = loadMazeRunnerAddress()
     }
 
     @IBAction func runTestScenario() {
@@ -49,7 +52,32 @@ class ViewController: UIViewController {
     }
 
     func loadMazeRunnerAddress() -> String {
-        // TODO Load dynamically from file
+        
+        for _ in 1...60 {
+            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+            log("Reading Maze Runner address from fixture_config.json")
+            do {
+                let fileUrl = URL(fileURLWithPath: "fixture_config",
+                                  relativeTo: documentsUrl).appendingPathExtension("json")
+                let savedData = try Data(contentsOf: fileUrl)
+                if let contents = String(data: savedData, encoding: .utf8) {
+                    let decoder = JSONDecoder()
+                    let jsonData = contents.data(using: .utf8)
+                    let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
+                    let address = "http://" + config.maze_address
+                    log("Using Maze Runner address: " + address)
+                    return address
+                }
+            }
+            catch let error as NSError {
+                log("Failed to read fixture_config.json: \(error)")
+            }
+            log("Waiting for fixture_config.json to appear")
+            sleep(1)
+        }
+
+        log("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
         return "http://bs-local.com:9339";
     }
     
@@ -69,6 +97,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func executeCommand(_ sender: Any) {
+
+        // TODO Only if nil?
+        Scenario.baseMazeAddress = loadMazeRunnerAddress()
         Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
             self.scenarioNameField.text = scenarioName
             self.scenarioMetaDataField.text = eventMode
