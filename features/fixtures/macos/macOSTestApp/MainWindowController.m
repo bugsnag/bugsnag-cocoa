@@ -54,7 +54,6 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
     
     // Cater for multiple calls to -run
     if (!Scenario.currentScenario) {
-        Scenario.baseMazeAddress = @"http://localhost:9339";
         [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
         Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
@@ -93,6 +92,7 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 }
 
 - (IBAction)executeMazeRunnerCommand:(id)sender {
+    Scenario.baseMazeAddress = @"http://localhost:9339";
     [Scenario executeMazeRunnerCommand:^(NSString *action, NSString *scenarioName, NSString *eventMode){
         self.scenarioName = scenarioName;
         self.scenarioMetadata = eventMode;

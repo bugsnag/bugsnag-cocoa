@@ -104,8 +104,6 @@ class ViewController: UIViewController {
     }
 
     @IBAction func executeCommand(_ sender: Any) {
-
-        // TODO Only if nil?
         Scenario.baseMazeAddress = loadMazeRunnerAddress()
         Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
             self.scenarioNameField.text = scenarioName
