@@ -1,9 +1,7 @@
-GIT
-  remote: https://github.com/bugsnag/maze-runner
-  revision: 121e7396c663d6484646674e633d84ac790962fe
-  tag: v7.13.1
+PATH
+  remote: ../maze-runner
   specs:
-    bugsnag-maze-runner (7.13.1)
+    bugsnag-maze-runner (7.17.0)
       appium_lib (~> 12.0.0)
       appium_lib_core (~> 5.4.0)
       bugsnag (~> 6.24)
@@ -13,6 +11,7 @@ GIT
       json_schemer (~> 0.2.24)
       optimist (~> 3.0.1)
       os (~> 1.0.0)
+      rack (~> 2.2)
       rake (~> 12.3.3)
       rubyzip (~> 2.3.2)
       selenium-webdriver (~> 4.0)
@@ -153,7 +152,7 @@ GEM
     nanaimo (0.3.0)
     nap (1.1.0)
     netrc (0.11.0)
-    nokogiri (1.14.0)
+    nokogiri (1.14.1)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     optimist (3.0.1)
@@ -161,6 +160,7 @@ GEM
     power_assert (2.0.3)
     public_suffix (4.0.7)
     racc (1.6.2)
+    rack (2.2.6.2)
     rake (12.3.3)
     regexp_parser (2.6.2)
     rexml (3.2.5)
