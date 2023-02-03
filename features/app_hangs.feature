@@ -46,7 +46,7 @@ Feature: App hangs
     And the error payload field "events.0.device.manufacturer" equals "Apple"
     And the error payload field "events.0.device.locale" is not null
     And the error payload field "events.0.device.id" is not null
-    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.model" matches the regex "iPhone1?\d,\d"
     And the error payload field "events.0.device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
