@@ -41,7 +41,7 @@ steps:
           - "features"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bb"
-          - "--device=ANDROID_10"
+          - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 5
