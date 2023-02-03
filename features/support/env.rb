@@ -121,12 +121,6 @@ Maze.hooks.after do |scenario|
       FileUtils.mv '/tmp/kscrash.log', path
     end
   when 'ios'
-    # get_log can be slow (1 or 2 seconds) on device farms
-    if scenario.failed? || Maze.config.farm == :local
-      File.open(File.join(path, 'syslog.log'), 'wb') do |file|
-        Maze.driver.get_log('syslog').each { |entry| file.puts entry.message }
-      end
-    end
     begin
       data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
       File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
