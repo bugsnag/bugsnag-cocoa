@@ -26,7 +26,7 @@ services:
       - ./maze_output:/app/maze_output
 
   cocoa-maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:integration-bitbar-improvements-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-device-fixes-cli
     environment:
       DEBUG:
       VERBOSE:
