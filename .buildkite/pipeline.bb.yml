@@ -14,7 +14,7 @@ steps:
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "features"
+          - "--exclude=features/[e-z].*.feature$"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bb"
           - "--device=IOS_15"
@@ -38,7 +38,7 @@ steps:
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "features"
+          - "--exclude=features/[a-d].*.feature$"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bb"
           - "--device=IOS_15"
