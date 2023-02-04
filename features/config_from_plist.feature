@@ -5,6 +5,8 @@ Feature: Loading Bugsnag configuration from Info.plist
     Background:
         Given I clear all persistent data
 
+    # PLAT-9615
+    @skip_bitbar
     Scenario: Specifying config in Info.plist
         When I run "LoadConfigFromFileScenario"
         And I wait to receive a session
@@ -19,6 +21,8 @@ Feature: Loading Bugsnag configuration from Info.plist
           | macos | macOSTestApp.LaunchError |
         And the event "app.releaseStage" equals "beta2"
 
+    # PLAT-9615
+    @skip_bitbar
     Scenario: Calling Bugsnag.start() with no configuration
         When I run "LoadConfigFromFileAutoScenario"
         And I wait to receive a session

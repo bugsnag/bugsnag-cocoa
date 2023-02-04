@@ -61,6 +61,10 @@ def enable_malloc_scribble
   $app_env.merge! env
 end
 
+Before('@skip_bitbar') do |scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.farm == :bb
+end
+
 def skip_below(os, version)
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version < version
 end
