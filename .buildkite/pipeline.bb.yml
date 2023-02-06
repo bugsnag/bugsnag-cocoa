@@ -50,3 +50,4 @@ steps:
     concurrency: 5
     concurrency_group: 'bitbar-ios-15'
     concurrency_method: eager
+
