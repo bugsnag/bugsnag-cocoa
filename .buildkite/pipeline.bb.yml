@@ -2,7 +2,7 @@ steps:
 
   - label: 'BitBar Poc - iOS 15 - batch 1'
     depends_on: "cocoa_fixture"
-    timeout_in_minutes: 60
+    timeout_in_minutes: 90
     agents:
       queue: opensource
     plugins:
@@ -14,7 +14,8 @@ steps:
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--exclude=features/[e-z].*.feature$"
+# TODO: Run in a single batch until PLAT-9603 is done
+#          - "--exclude=features/[e-z].*.feature$"
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bb"
           - "--device=IOS_15"
@@ -25,8 +26,10 @@ steps:
     concurrency_method: eager
 
   - label: 'BitBar Poc - iOS 15 - batch 2'
+    # TODO: Run in a single batch until PLAT-9603 is done
+    skip: Pending PLAT-9603
     depends_on: "cocoa_fixture"
-    timeout_in_minutes: 60
+    timeout_in_minutes: 90
     agents:
       queue: opensource
     plugins:
