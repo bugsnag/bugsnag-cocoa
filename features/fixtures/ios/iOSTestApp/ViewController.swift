@@ -55,7 +55,7 @@ class ViewController: UIViewController {
 
         let bsAddress = "http://bs-local.com:9339"
         
-        // Only iOS 12 and above will run on BitBat for now
+        // Only iOS 12 and above will run on BitBar for now
         if #available(iOS 12.0, *) {} else {
             return bsAddress;
         }

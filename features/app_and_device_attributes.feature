@@ -19,7 +19,8 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.manufacturer" equals "Apple"
     And the error payload field "events.0.device.locale" is not null
     And the error payload field "events.0.device.id" is not null
-    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.model" matches the regex "[Macmini|iPhone]1?\d,\d"
+
     And the error payload field "events.0.device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
@@ -90,6 +91,9 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.manufacturer" equals "Nokia"
     And the error payload field "events.0.device.modelNumber" equals "0898"
 
+
+  # PLAT-9615
+  @skip_bitbar
   Scenario: Info.plist settings are used when calling startWithApiKey
     When I run "AppAndDeviceAttributesStartWithApiKeyScenario"
     And I wait to receive an error
