@@ -4,7 +4,7 @@
 class AppAndDeviceAttributesStartWithApiKeyScenario: Scenario {
 
     override func startBugsnag() {
-        Bugsnag.start(withApiKey: "12312312312312312312312312312312")
+        BugsnagWrapper.start(withApiKey: "12312312312312312312312312312312")
 
         super.startBugsnag()
     }

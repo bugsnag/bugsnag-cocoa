@@ -119,6 +119,7 @@
 		A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */; };
 		A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */; };
 		A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E5A2536036400014FDA /* OOMSessionScenario.swift */; };
+		AA5646F629A7EE9D00CE8629 /* BugsnagWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5646F529A7EE9D00CE8629 /* BugsnagWrapper.swift */; };
 		AA6ACD1C2773E0B3006464C4 /* UserFromConfigScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD1B2773E0B3006464C4 /* UserFromConfigScenario.swift */; };
 		AA6ACD202773E3F0006464C4 /* UserInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD1F2773E3F0006464C4 /* UserInfoScenario.swift */; };
 		AAFEF9EA26EB533800980A10 /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFEF9E926EB533800980A10 /* NetworkBreadcrumbsScenario.swift */; };
@@ -314,6 +315,7 @@
 		A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMAutoDetectErrorsScenario.swift; sourceTree = "<group>"; };
 		A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
 		A1117E5A2536036400014FDA /* OOMSessionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMSessionScenario.swift; sourceTree = "<group>"; };
+		AA5646F529A7EE9D00CE8629 /* BugsnagWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagWrapper.swift; sourceTree = "<group>"; };
 		AA6ACD1B2773E0B3006464C4 /* UserFromConfigScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFromConfigScenario.swift; sourceTree = "<group>"; };
 		AA6ACD1F2773E3F0006464C4 /* UserInfoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoScenario.swift; sourceTree = "<group>"; };
 		AAFEF9E926EB533800980A10 /* NetworkBreadcrumbsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBreadcrumbsScenario.swift; sourceTree = "<group>"; };
@@ -438,6 +440,7 @@
 				8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */,
 				8AB8866520404DD30003E444 /* ViewController.swift */,
 				8AB8866720404DD30003E444 /* Main.storyboard */,
+				AA5646F529A7EE9D00CE8629 /* BugsnagWrapper.swift */,
 			);
 			path = iOSTestApp;
 			sourceTree = "<group>";
@@ -783,6 +786,7 @@
 				E700EE65247D6C08008CFFB6 /* OnSendCallbackRemovalScenario.m in Sources */,
 				8A38C5D124094D7B00BC4463 /* DiscardedBreadcrumbTypeScenario.swift in Sources */,
 				010BAB292833D08F0003FF36 /* BareboneTestUnhandledErrorScenario.swift in Sources */,
+				AA5646F629A7EE9D00CE8629 /* BugsnagWrapper.swift in Sources */,
 				01F6B75F2832757F00B75C5D /* OversizedHandledErrorScenario.swift in Sources */,
 				010BAB002833CE570003FF36 /* DisableNSExceptionScenario.m in Sources */,
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,

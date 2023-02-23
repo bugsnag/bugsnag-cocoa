@@ -10,7 +10,7 @@ class LoadConfigFromFileAutoScenarioError : Error {
 @objc class LoadConfigFromFileAutoScenario: Scenario {
 
     override func startBugsnag() {
-        Bugsnag.start()
+        BugsnagWrapper.start()
     }
 
     override func run() {
