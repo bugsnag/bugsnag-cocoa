@@ -74,12 +74,12 @@ static void InitRunContext() {
     }
     
     BSGRunContextUpdateTimestamp();
-    InstallTimer();
-    
     BSGRunContextUpdateMemory();
     if (!bsg_runContext->memoryLimit) {
         bsg_log_debug(@"Cannot query `memoryLimit` on this device");
     }
+
+    InstallTimer();
     
     // Set `structVersion` last so that BSGRunContextLoadLast() will reject data
     // that is not fully initialised.
