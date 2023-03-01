@@ -50,7 +50,7 @@ static dispatch_queue_t bsg_g_serial_queue;
 
 static BSG_Mach_Header_Info *g_self_image;
 
-BSG_Mach_Header_Info *bsg_mach_headers_get_images() {
+BSG_Mach_Header_Info *bsg_mach_headers_get_images(void) {
     if (!bsg_g_mach_headers_images_head) {
         bsg_mach_headers_initialize();
         bsg_mach_headers_register_dyld_images();
@@ -59,7 +59,7 @@ BSG_Mach_Header_Info *bsg_mach_headers_get_images() {
     return bsg_g_mach_headers_images_head;
 }
 
-BSG_Mach_Header_Info *bsg_mach_headers_get_main_image() {
+BSG_Mach_Header_Info *bsg_mach_headers_get_main_image(void) {
     for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
         if (img->header->filetype == MH_EXECUTE) {
             return img;
@@ -73,7 +73,7 @@ BSG_Mach_Header_Info *bsg_mach_headers_get_self_image(void) {
     return g_self_image;
 }
 
-void bsg_mach_headers_initialize() {
+void bsg_mach_headers_initialize(void) {
     
     // Clear any existing headers to reset the head/tail pointers
     for (BSG_Mach_Header_Info *img = bsg_g_mach_headers_images_head; img != NULL; ) {
@@ -88,7 +88,7 @@ void bsg_mach_headers_initialize() {
     g_self_image = NULL;
 }
 
-static void bsg_mach_headers_register_dyld_images() {
+static void bsg_mach_headers_register_dyld_images(void) {
     // /usr/lib/dyld's mach header is is not exposed via the _dyld APIs, so to be able to include information
     // about stack frames in dyld`start (for example) we need to acess "_dyld_all_image_infos"
     task_dyld_info_data_t dyld_info = {0};
@@ -114,7 +114,7 @@ static void bsg_mach_headers_register_dyld_images() {
     }
 }
 
-static void bsg_mach_headers_register_for_changes() {
+static void bsg_mach_headers_register_for_changes(void) {
     // Register for binary images being loaded and unloaded. dyld calls the add function once
     // for each library that has already been loaded and then keeps this cache up-to-date
     // with future changes

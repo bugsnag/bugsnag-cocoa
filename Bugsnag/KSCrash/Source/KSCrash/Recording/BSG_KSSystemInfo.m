@@ -48,7 +48,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <mach-o/dyld.h>
 
-static inline bool is_jailbroken() {
+static inline bool is_jailbroken(void) {
     static bool initialized_jb;
     static bool is_jb;
     if(!initialized_jb) {
@@ -72,7 +72,7 @@ static inline bool is_jailbroken() {
  * https://opensource.apple.com/source/xnu/xnu-7195.81.3/libsyscall/wrappers/system-version-compat.c.auto.html
  */
 #if !TARGET_OS_SIMULATOR
-static NSDictionary * bsg_systemversion() {
+static NSDictionary * bsg_systemversion(void) {
     int fd = -1;
     char buffer[1024] = {0};
     const char *file = "/System/Library/CoreServices/SystemVersion.plist";
