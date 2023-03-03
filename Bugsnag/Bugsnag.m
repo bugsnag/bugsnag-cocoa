@@ -62,6 +62,10 @@ BSG_OBJC_DIRECT_MEMBERS
     }
 }
 
++ (BOOL)isStarted {
+    return bsg_g_bugsnag_client.isStarted;
+}
+
 /**
  * Purge the global client so that it will be regenerated on the next call to start.
  * This is only used by the unit tests.
@@ -119,7 +123,7 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (BOOL)bugsnagStarted {
-    if (!self.client.started) {
+    if (!self.client.isStarted) {
         bsg_log_err(@"Ensure you have started Bugsnag with startWithApiKey: "
                     @"before calling any other Bugsnag functions.");
 
