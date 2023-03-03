@@ -208,7 +208,7 @@ void bsg_kscrashstate_notifyAppCrash(void) {
     bsg_kscrashstate_i_saveState(bsg_g_state, bsg_g_stateFilePath);
 }
 
-void bsg_kscrashstate_updateDurationStats() {
+void bsg_kscrashstate_updateDurationStats(void) {
     uint64_t timeNow = mach_absolute_time();
     const double duration = bsg_ksmachtimeDifferenceInSeconds(
         timeNow, bsg_g_state->lastUpdateDurationsTime ?: bsg_g_state->appLaunchTime);

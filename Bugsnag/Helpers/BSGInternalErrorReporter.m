@@ -283,7 +283,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 
 // Intentionally differs from +[BSG_KSSystemInfo deviceAndAppHash]
 // See ROAD-1488
-static NSString * DeviceId() {
+static NSString * DeviceId(void) {
     CC_SHA1_CTX ctx;
     CC_SHA1_Init(&ctx);
 
