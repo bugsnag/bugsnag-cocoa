@@ -26,12 +26,12 @@
 // Protect access to thread-unsafe bsg_kscrashsentry_suspendThreads()
 static pthread_mutex_t bsg_suspend_threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void suspend_threads() {
+static void suspend_threads(void) {
     pthread_mutex_lock(&bsg_suspend_threads_mutex);
     bsg_kscrashsentry_suspendThreads();
 }
 
-static void resume_threads() {
+static void resume_threads(void) {
     bsg_kscrashsentry_resumeThreads();
     pthread_mutex_unlock(&bsg_suspend_threads_mutex);
 }
