@@ -1,8 +1,14 @@
 Changelog
 =========
+
 ## TBD
 
-## Bug fixes
+### Enhancements
+
+* Added isStarted to Bugsnag and BugsnagClient
+  [1528](https://github.com/bugsnag/bugsnag-cocoa/pull/1528)
+
+### Bug fixes
 
 * onError blocked from running if releaseStage not in enabledReleaseStages.
   [1518](https://github.com/bugsnag/bugsnag-cocoa/pull/1518)

@@ -123,7 +123,7 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (BOOL)bugsnagStarted {
-    if (!self.client.isStarted) {
+    if (!self.client.ready) {
         bsg_log_err(@"Ensure you have started Bugsnag with startWithApiKey: "
                     @"before calling any other Bugsnag functions.");
 
