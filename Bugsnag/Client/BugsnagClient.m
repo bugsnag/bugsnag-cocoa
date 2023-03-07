@@ -284,7 +284,7 @@ BSG_OBJC_DIRECT_MEMBERS
 #endif
                  object:nil];
 
-    self.ready = YES;
+    self.readyForInternalCalls = YES;
 
     id<BugsnagPlugin> reactNativePlugin = [NSClassFromString(@"BugsnagReactNativePlugin") new];
     if (reactNativePlugin) {

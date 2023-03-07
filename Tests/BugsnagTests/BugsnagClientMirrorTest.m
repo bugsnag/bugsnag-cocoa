@@ -76,8 +76,8 @@
             @"orientationDidChange: v24@0:8@16",
             @"pluginClient @16@0:8",
             @"populateEventData: v24@0:8@16",
-            @"ready B16@0:8",
-            @"ready c16@0:8",
+            @"readyForInternalCalls B16@0:8",
+            @"readyForInternalCalls c16@0:8",
             @"sendBreadcrumbForControlNotification: v24@0:8@16",
             @"sendBreadcrumbForMenuItemNotification: v24@0:8@16",
             @"sendBreadcrumbForNotification: v24@0:8@16",
@@ -109,8 +109,8 @@
             @"setNotifier: v24@0:8@16",
             @"setObserver: v24@0:8@?16",
             @"setPluginClient: v24@0:8@16",
-            @"setReady: v20@0:8B16",
-            @"setReady: v20@0:8c16",
+            @"setReadyForInternalCalls: v20@0:8B16",
+            @"setReadyForInternalCalls: v20@0:8c16",
             @"setSessionTracker: v24@0:8@16",
             @"setStarted: v20@0:8B16",
             @"setStarted: v20@0:8c16",
@@ -134,8 +134,8 @@
     // the following methods are implemented on Bugsnag but do not need to
     // be mirrored on BugsnagClient
     self.bugsnagMethodsNotRequiredOnClient = [NSSet setWithArray:@[
-            @"bugsnagStarted B16@0:8",
-            @"bugsnagStarted c16@0:8",
+            @"bugsnagReady B16@0:8",
+            @"bugsnagReady c16@0:8",
             @"client @16@0:8",
             @"getContext @16@0:8",
             @"purge v16@0:8",

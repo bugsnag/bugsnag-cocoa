@@ -41,10 +41,10 @@ BSG_OBJC_DIRECT_MEMBERS
 @property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 
 @property (atomic) BOOL started;
-@property (atomic) BOOL ready;
 
-/// A read-only version of started property. It was created to match the Bugsnag API
-@property (atomic, readonly) BOOL isStarted;
+/// YES if BugsnagClient is ready to handle some internal method calls.
+/// It does not mean that it is fully started and ready to receive method calls from outside of the library.
+@property (atomic) BOOL readyForInternalCalls;
 
 /// State related metadata
 ///
