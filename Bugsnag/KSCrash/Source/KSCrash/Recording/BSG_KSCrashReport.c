@@ -844,7 +844,7 @@ void bsg_kscrw_i_writeBinaryImages(const BSG_KSCrashReportWriter *const writer,
 {
     writer->beginArray(writer, key);
     {
-        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = img->next) {
+        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = atomic_load(&img->next)) {
             if (img->inCrashReport) {
                 bsg_kscrw_i_writeBinaryImage(writer, NULL, img);
             }

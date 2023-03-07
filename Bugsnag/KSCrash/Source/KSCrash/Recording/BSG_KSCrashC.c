@@ -109,6 +109,8 @@ BSG_KSCrashType bsg_kscrash_install(const char *const crashReportFilePath,
         return context->config.handlingCrashTypes;
     }
     bsg_g_installed = 1;
+    
+    bsg_mach_headers_initialize();
 
     bsg_kscrash_reinstall(crashReportFilePath, recrashReportFilePath,
                           stateFilePath, crashID);
