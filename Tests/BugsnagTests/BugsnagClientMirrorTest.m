@@ -112,8 +112,8 @@
             @"setReadyForInternalCalls: v20@0:8B16",
             @"setReadyForInternalCalls: v20@0:8c16",
             @"setSessionTracker: v24@0:8@16",
-            @"setStarted: v20@0:8B16",
-            @"setStarted: v20@0:8c16",
+            @"setIsStarted: v20@0:8B16",
+            @"setIsStarted: v20@0:8c16",
             @"setState: v24@0:8@16",
             @"setStateEventBlocks: v24@0:8@16",
             @"setStateMetadataFromLastLaunch: v24@0:8@16",
@@ -134,8 +134,8 @@
     // the following methods are implemented on Bugsnag but do not need to
     // be mirrored on BugsnagClient
     self.bugsnagMethodsNotRequiredOnClient = [NSSet setWithArray:@[
-            @"bugsnagReady B16@0:8",
-            @"bugsnagReady c16@0:8",
+            @"bugsnagReadyForInternalCalls B16@0:8",
+            @"bugsnagReadyForInternalCalls c16@0:8",
             @"client @16@0:8",
             @"getContext @16@0:8",
             @"purge v16@0:8",

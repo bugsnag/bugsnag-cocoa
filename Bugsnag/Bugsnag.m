@@ -63,7 +63,7 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (BOOL)isStarted {
-    return bsg_g_bugsnag_client.started;
+    return bsg_g_bugsnag_client.isStarted;
 }
 
 /**
@@ -79,50 +79,50 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (BOOL)appDidCrashLastLaunch {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return [self.client appDidCrashLastLaunch];
     }
     return NO;
 }
 
 + (BugsnagLastRunInfo *)lastRunInfo {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return self.client.lastRunInfo;
     }
     return nil;
 }
 
 + (void)markLaunchCompleted {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client markLaunchCompleted];
     }
 }
 
 + (void)notify:(NSException *)exception {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client notify:exception];
     }
 }
 
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client notify:exception block:block];
     }
 }
 
 + (void)notifyError:(NSError *)error {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client notifyError:error];
     }
 }
 
 + (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client notifyError:error block:block];
     }
 }
 
-+ (BOOL)bugsnagReady {
++ (BOOL)bugsnagReadyForInternalCalls {
     if (!self.client.readyForInternalCalls) {
         bsg_log_err(@"Ensure you have started Bugsnag with startWithApiKey: "
                     @"before calling any other Bugsnag functions.");
@@ -133,14 +133,14 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (void)leaveBreadcrumbWithMessage:(NSString *)message {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client leaveBreadcrumbWithMessage:message];
     }
 }
 
 + (void)leaveBreadcrumbForNotificationName:
     (NSString *_Nonnull)notificationName {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client leaveBreadcrumbForNotificationName:notificationName];
     }
 }
@@ -149,7 +149,7 @@ BSG_OBJC_DIRECT_MEMBERS
                           metadata:(NSDictionary *_Nullable)metadata
                            andType:(BSGBreadcrumbType)type
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client leaveBreadcrumbWithMessage:message
                                        metadata:metadata
                                         andType:type];
@@ -158,13 +158,13 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (void)leaveNetworkRequestBreadcrumbForTask:(NSURLSessionTask *)task
                                      metrics:(NSURLSessionTaskMetrics *)metrics {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
     }
 }
 
 + (NSArray<BugsnagBreadcrumb *> *_Nonnull)breadcrumbs {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return self.client.breadcrumbs;
     } else {
         return @[];
@@ -172,19 +172,19 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (void)startSession {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client startSession];
     }
 }
 
 + (void)pauseSession {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client pauseSession];
     }
 }
 
 + (BOOL)resumeSession {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return [self.client resumeSession];
     } else {
         return false;
@@ -196,31 +196,31 @@ BSG_OBJC_DIRECT_MEMBERS
 // =============================================================================
 
 + (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client addFeatureFlagWithName:name variant:variant];
     }
 }
 
 + (void)addFeatureFlagWithName:(NSString *)name {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client addFeatureFlagWithName:name];
     }
 }
 
 + (void)addFeatureFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client addFeatureFlags:featureFlags];
     }
 }
 
 + (void)clearFeatureFlagWithName:(NSString *)name {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client clearFeatureFlagWithName:name];
     }
 }
 
 + (void)clearFeatureFlags {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client clearFeatureFlags];
     }
 }
@@ -241,7 +241,7 @@ BSG_OBJC_DIRECT_MEMBERS
             withKey:(NSString *_Nonnull)key
           toSection:(NSString *_Nonnull)section
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client addMetadata:metadata
                                   withKey:key
                                 toSection:section];
@@ -251,7 +251,7 @@ BSG_OBJC_DIRECT_MEMBERS
 + (void)addMetadata:(id _Nonnull)metadata
           toSection:(NSString *_Nonnull)section
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client addMetadata:metadata
                        toSection:section];
     }
@@ -259,7 +259,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (NSMutableDictionary *)getMetadataFromSection:(NSString *)section
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return [[self.client getMetadataFromSection:section] mutableCopy];
     }
     return nil;
@@ -268,7 +268,7 @@ BSG_OBJC_DIRECT_MEMBERS
 + (id _Nullable )getMetadataFromSection:(NSString *_Nonnull)section
                                 withKey:(NSString *_Nonnull)key
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return [[self.client getMetadataFromSection:section withKey:key] mutableCopy];
     }
     return nil;
@@ -276,7 +276,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (void)clearMetadataFromSection:(NSString *)section
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client clearMetadataFromSection:section];
     }
 }
@@ -284,7 +284,7 @@ BSG_OBJC_DIRECT_MEMBERS
 + (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
                          withKey:(NSString *_Nonnull)key
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client clearMetadataFromSection:sectionName
                                       withKey:key];
     }
@@ -293,13 +293,13 @@ BSG_OBJC_DIRECT_MEMBERS
 // MARK: -
 
 + (void)setContext:(NSString *_Nullable)context {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client setContext:context];
     }
 }
 
 + (NSString *_Nullable)context {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return self.client.context;
     }
     return nil;
@@ -312,13 +312,13 @@ BSG_OBJC_DIRECT_MEMBERS
 + (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client setUser:userId withEmail:email andName:name];
     }
 }
 
 + (nonnull BugsnagOnSessionRef)addOnSessionBlock:(nonnull BugsnagOnSessionBlock)block {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return [self.client addOnSessionBlock:block];
     } else {
         // We need to return something from this nonnull method; simulate what would have happened.
@@ -327,14 +327,14 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (void)removeOnSession:(nonnull BugsnagOnSessionRef)callback {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client removeOnSession:callback];
     }
 }
 
 + (void)removeOnSessionBlock:(BugsnagOnSessionBlock _Nonnull )block
 {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client removeOnSessionBlock:block];
     }
 }
@@ -344,7 +344,7 @@ BSG_OBJC_DIRECT_MEMBERS
 // =============================================================================
 
 + (nonnull BugsnagOnBreadcrumbRef)addOnBreadcrumbBlock:(nonnull BugsnagOnBreadcrumbBlock)block {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         return [self.client addOnBreadcrumbBlock:block];
     } else {
         // We need to return something from this nonnull method; simulate what would have happened.
@@ -353,13 +353,13 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (void)removeOnBreadcrumb:(nonnull BugsnagOnBreadcrumbRef)callback {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client removeOnBreadcrumb:callback];
     }
 }
 
 + (void)removeOnBreadcrumbBlock:(BugsnagOnBreadcrumbBlock _Nonnull)block {
-    if ([self bugsnagReady]) {
+    if ([self bugsnagReadyForInternalCalls]) {
         [self.client removeOnBreadcrumbBlock:block];
     }
 }

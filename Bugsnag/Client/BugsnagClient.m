@@ -326,11 +326,7 @@ BSG_OBJC_DIRECT_MEMBERS
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
     [self startAppHangDetector];
 #endif
-    self.started = YES;
-}
-
-- (BOOL)isStarted {
-    return self.started;
+    self.isStarted = YES;
 }
 
 - (void)appLaunchTimerFired:(__unused NSTimer *)timer {
