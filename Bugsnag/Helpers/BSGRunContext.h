@@ -77,7 +77,7 @@ void BSGRunContextUpdateTimestamp(void);
 #pragma mark -
 
 #ifdef FOUNDATION_EXTERN
-static inline bool BSGRunContextWasCriticalThermalState() {
+static inline bool BSGRunContextWasCriticalThermalState(void) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
     return bsg_lastRunContext && bsg_lastRunContext->thermalState == NSProcessInfoThermalStateCritical;
@@ -89,16 +89,16 @@ static inline bool BSGRunContextWasCriticalThermalState() {
 bool BSGRunContextWasKilled(void);
 #endif
 
-static inline bool BSGRunContextWasLaunching() {
+static inline bool BSGRunContextWasLaunching(void) {
     return bsg_lastRunContext && bsg_lastRunContext->isLaunching;
 }
 
 #if BSG_HAVE_OOM_DETECTION
-static inline bool BSGRunContextWasMemoryWarning() {
+static inline bool BSGRunContextWasMemoryWarning(void) {
     return bsg_lastRunContext && bsg_lastRunContext->memoryPressure > DISPATCH_MEMORYPRESSURE_NORMAL;
 }
 #endif
 
-static inline bool BSGRunContextWasTerminating() {
+static inline bool BSGRunContextWasTerminating(void) {
     return bsg_lastRunContext && bsg_lastRunContext->isTerminating;
 }
