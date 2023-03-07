@@ -391,7 +391,7 @@ static void UpdateHostMemory(void) {
     }
     
     size_t hostMemoryFree = host_vm.free_count * vm_kernel_page_size;
-    bsg_runContext->hostMemoryFree = hostMemoryFree;
+    ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
 }
 
 static void UpdateTaskMemory(void) {
