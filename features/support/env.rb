@@ -69,6 +69,14 @@ def skip_below(os, version)
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version < version
 end
 
+def skip_between(os, version_lo, version_hi)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version >= version_lo and Maze.config.os_version <= version_hi
+end
+
+Before('@skip_ios_16') do |scenario|
+  skip_between('ios', 16, 16.99)
+end
+
 Before('@skip_below_ios_11') do |scenario|
   skip_below('ios', 11)
 end
