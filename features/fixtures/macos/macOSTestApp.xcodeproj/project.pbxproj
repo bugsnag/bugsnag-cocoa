@@ -184,6 +184,7 @@
 		01FA9EC626D64FFF0059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC526D64FFF0059FF4A /* AppHangInTerminationScenario.swift */; };
 		8A096DF827C7E63A00DB6ECC /* CxxUnexpectedScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF727C7E63A00DB6ECC /* CxxUnexpectedScenario.mm */; };
 		8A096DFA27C7E6D800DB6ECC /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */; };
+		AA4C7F1829AEA31D009B09A9 /* BugsnagWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4C7F1729AEA31D009B09A9 /* BugsnagWrapper.swift */; };
 		AA6ACD1A2773E098006464C4 /* UserFromConfigScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD192773E098006464C4 /* UserFromConfigScenario.swift */; };
 		AA6ACD1E2773E39C006464C4 /* UserInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD1D2773E39C006464C4 /* UserInfoScenario.swift */; };
 		CB0AE1F3287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AE1F2287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */; };
@@ -390,6 +391,7 @@
 		5C65BFC9838298CFA8A35072 /* Pods_macOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A096DF727C7E63A00DB6ECC /* CxxUnexpectedScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxUnexpectedScenario.mm; sourceTree = "<group>"; };
 		8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxBareThrowScenario.mm; sourceTree = "<group>"; };
+		AA4C7F1729AEA31D009B09A9 /* BugsnagWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagWrapper.swift; sourceTree = "<group>"; };
 		AA6ACD192773E098006464C4 /* UserFromConfigScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFromConfigScenario.swift; sourceTree = "<group>"; };
 		AA6ACD1D2773E39C006464C4 /* UserInfoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoScenario.swift; sourceTree = "<group>"; };
 		CB0AE1F2287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackFeatureFlagsScenario.swift; sourceTree = "<group>"; };
@@ -607,6 +609,7 @@
 		0176C09F254AE81B0066E0F3 = {
 			isa = PBXGroup;
 			children = (
+				AA4C7F1629AEA1F2009B09A9 /* utils */,
 				0176C0AA254AE81B0066E0F3 /* macOSTestApp */,
 				01452234254AFCD600D436AA /* scenarios */,
 				0176C0A9254AE81B0066E0F3 /* Products */,
@@ -646,6 +649,15 @@
 				2C49722B331FF4B0DC477462 /* Pods-macOSTestApp.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		AA4C7F1629AEA1F2009B09A9 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				AA4C7F1729AEA31D009B09A9 /* BugsnagWrapper.swift */,
+			);
+			name = utils;
+			path = ../shared/utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -921,6 +933,7 @@
 				01F47D20254B1B3100B184AD /* ObjCMsgSendScenario.m in Sources */,
 				01F47CD4254B1B3100B184AD /* AsyncSafeThreadScenario.m in Sources */,
 				01ECBCF525A7522000FC0678 /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */,
+				AA4C7F1829AEA31D009B09A9 /* BugsnagWrapper.swift in Sources */,
 				01DCB82D279868160048640A /* ConcurrentCrashesScenario.mm in Sources */,
 				0123189C275921590007EFD7 /* RecrashScenarios.mm in Sources */,
 				CB0AE1F3287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift in Sources */,
