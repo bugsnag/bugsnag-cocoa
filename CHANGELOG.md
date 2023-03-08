@@ -1,8 +1,14 @@
 Changelog
 =========
+
 ## TBD
 
-## Bug fixes
+### Enhancements
+
+* Added isStarted to Bugsnag and BugsnagClient
+  [1528](https://github.com/bugsnag/bugsnag-cocoa/pull/1528)
+
+### Bug fixes
 
 * Fixed some race conditions that could cause issues in rare cases.
   [1529](https://github.com/bugsnag/bugsnag-cocoa/pull/1529)

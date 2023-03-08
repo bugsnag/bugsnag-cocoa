@@ -284,7 +284,7 @@ BSG_OBJC_DIRECT_MEMBERS
 #endif
                  object:nil];
 
-    self.started = YES;
+    self.readyForInternalCalls = YES;
 
     id<BugsnagPlugin> reactNativePlugin = [NSClassFromString(@"BugsnagReactNativePlugin") new];
     if (reactNativePlugin) {
@@ -326,6 +326,7 @@ BSG_OBJC_DIRECT_MEMBERS
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
     [self startAppHangDetector];
 #endif
+    self.isStarted = YES;
 }
 
 - (void)appLaunchTimerFired:(__unused NSTimer *)timer {

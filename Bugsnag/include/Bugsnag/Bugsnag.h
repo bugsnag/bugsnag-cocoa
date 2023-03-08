@@ -108,6 +108,12 @@ BUGSNAG_EXTERN
 + (BOOL)appDidCrashLastLaunch BUGSNAG_DEPRECATED_WITH_REPLACEMENT("lastRunInfo.crashed");
 
 /**
+ * @return YES if and only if a Bugsnag.start() has been called
+ * and Bugsnag has initialized such that any calls to the Bugsnag methods can succeed
+ */
++ (BOOL)isStarted;
+
+/**
  * Information about the last run of the app, and whether it crashed.
  */
 @property (class, readonly, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;

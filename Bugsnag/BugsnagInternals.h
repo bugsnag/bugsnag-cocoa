@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Bugsnag ()
 
-@property (class, readonly, nonatomic) BOOL bugsnagStarted;
+@property (class, readonly, nonatomic) BOOL bugsnagReadyForInternalCalls;
 
 @property (class, readonly, nonatomic) BugsnagClient *client;
 
