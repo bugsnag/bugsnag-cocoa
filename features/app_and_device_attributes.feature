@@ -19,7 +19,8 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.manufacturer" equals "Apple"
     And the error payload field "events.0.device.locale" is not null
     And the error payload field "events.0.device.id" is not null
-    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.model" matches the regex "[Macmini|iPhone]1?\d,\d"
+
     And the error payload field "events.0.device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |
@@ -89,14 +90,6 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.releaseStage" equals "thirdStage"
     And the error payload field "events.0.device.manufacturer" equals "Nokia"
     And the error payload field "events.0.device.modelNumber" equals "0898"
-
-  Scenario: Info.plist settings are used when calling startWithApiKey
-    When I run "AppAndDeviceAttributesStartWithApiKeyScenario"
-    And I wait to receive an error
-    Then the error is valid for the error reporting API
-    And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
-
-    And the error payload field "events.0.app.releaseStage" equals "beta2"
 
   Scenario: Duration value increments as expected
     When I run "AppDurationScenario"

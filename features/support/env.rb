@@ -61,8 +61,20 @@ def enable_malloc_scribble
   $app_env.merge! env
 end
 
+Before('@skip_bitbar') do |scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.farm == :bb
+end
+
 def skip_below(os, version)
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version < version
+end
+
+def skip_between(os, version_lo, version_hi)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version >= version_lo and Maze.config.os_version <= version_hi
+end
+
+Before('@skip_ios_16') do |scenario|
+  skip_between('ios', 16, 16.99)
 end
 
 Before('@skip_below_ios_11') do |scenario|
@@ -121,12 +133,6 @@ Maze.hooks.after do |scenario|
       FileUtils.mv '/tmp/kscrash.log', path
     end
   when 'ios'
-    # get_log can be slow (1 or 2 seconds) on device farms
-    if scenario.failed? || Maze.config.farm == :local
-      File.open(File.join(path, 'syslog.log'), 'wb') do |file|
-        Maze.driver.get_log('syslog').each { |entry| file.puts entry.message }
-      end
-    end
     begin
       data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
       File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }

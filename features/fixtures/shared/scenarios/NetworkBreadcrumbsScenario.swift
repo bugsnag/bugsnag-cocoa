@@ -10,18 +10,12 @@ import Foundation
 
 @available(iOS 10.0, macOS 10.12, *)
 class NetworkBreadcrumbsScenario : Scenario {
-    
-    lazy var baseURL: URL = {
-        var components = URLComponents(string: Scenario.mazeRunnerURL.absoluteString)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!
-    }()
-    
+        
     override func startBugsnag() {
         config.autoTrackSessions = false;
         config.add(BugsnagNetworkRequestPlugin())
         config.addOnBreadcrumb {
-            ($0.metadata["url"] as? String ?? "").hasPrefix(self.baseURL.absoluteString)
+            ($0.metadata["url"] as? String ?? "").hasPrefix(Scenario.baseMazeAddress)
         }
 
         super.startBugsnag()
@@ -38,7 +32,7 @@ class NetworkBreadcrumbsScenario : Scenario {
     }
 
     func query(string: String) {
-        let url = URL(string: string, relativeTo: baseURL)!
+        let url = URL(string: Scenario.baseMazeAddress + string)!
         let semaphore = DispatchSemaphore(value: 0)
 
         let task = URLSession.shared.dataTask(with: url) {(data, response, error) in

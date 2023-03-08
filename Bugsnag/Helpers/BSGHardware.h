@@ -18,11 +18,11 @@
 #pragma mark Device
 
 #if TARGET_OS_IOS
-static inline UIDevice *BSGGetDevice() {
+static inline UIDevice *BSGGetDevice(void) {
     return [UIDEVICE currentDevice];
 }
 #elif TARGET_OS_WATCH
-static inline WKInterfaceDevice *BSGGetDevice() {
+static inline WKInterfaceDevice *BSGGetDevice(void) {
     return [WKInterfaceDevice currentDevice];
 }
 #endif

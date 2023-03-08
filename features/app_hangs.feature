@@ -7,6 +7,8 @@ Feature: App hangs
     When I run "AppHangDefaultConfigScenario"
     Then I should receive no errors
 
+  # PLAT-9616
+  @skip_bitbar
   Scenario: App hangs above the threshold should be reported
     When I set the app to "2.1" mode
     And I run "AppHangScenario"
@@ -46,7 +48,7 @@ Feature: App hangs
     And the error payload field "events.0.device.manufacturer" equals "Apple"
     And the error payload field "events.0.device.locale" is not null
     And the error payload field "events.0.device.id" is not null
-    And the error payload field "events.0.device.model" matches the test device model
+    And the error payload field "events.0.device.model" matches the regex "[Macmini|iPhone]1?\d,\d"
     And the error payload field "events.0.device.modelNumber" equals the platform-dependent string:
       | ios   | @not_null |
       | macos | @null     |

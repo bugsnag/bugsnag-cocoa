@@ -40,7 +40,11 @@ BSG_OBJC_DIRECT_MEMBERS
 
 @property (nonatomic) NSMutableDictionary *extraRuntimeInfo;
 
-@property (nonatomic) BOOL started;
+@property (atomic) BOOL isStarted;
+
+/// YES if BugsnagClient is ready to handle some internal method calls.
+/// It does not mean that it is fully started and ready to receive method calls from outside of the library.
+@property (atomic) BOOL readyForInternalCalls;
 
 /// State related metadata
 ///
