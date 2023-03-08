@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 6.26.0 (2023-03-08)
 
 ### Enhancements
 
