@@ -11,7 +11,7 @@ class LaunchError : Error {
 
     override func startBugsnag() {
         config = BugsnagConfiguration.loadConfig()
-        Bugsnag.start(with: config)
+        _ = BugsnagWrapper.start(with: config)
     }
 
     override func run() {

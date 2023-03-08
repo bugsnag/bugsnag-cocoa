@@ -10,6 +10,9 @@ Changelog
 
 ### Bug fixes
 
+* Fixed some race conditions that could cause issues in rare cases.
+  [1529](https://github.com/bugsnag/bugsnag-cocoa/pull/1529)
+
 * onError blocked from running if releaseStage not in enabledReleaseStages.
   [1518](https://github.com/bugsnag/bugsnag-cocoa/pull/1518)
 

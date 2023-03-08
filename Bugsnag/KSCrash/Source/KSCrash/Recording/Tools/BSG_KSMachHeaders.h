@@ -11,6 +11,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdatomic.h>
 
 /* Maintaining our own list of framework Mach headers means that we avoid potential
  * deadlock situations where we try and suspend lock-holding threads prior to
@@ -52,13 +53,14 @@ typedef struct bsg_mach_image {
     bool inCrashReport;
 
     /// The next image in the linked list
-    struct bsg_mach_image *next;
+    _Atomic(struct bsg_mach_image *) next;
 } BSG_Mach_Header_Info;
 
 // MARK: - Operations
 
 /**
-  * Resets mach header data
+ * Initialize the headers management system.
+ * This MUST be called before calling anything else.
  */
 void bsg_mach_headers_initialize(void);
 
@@ -76,16 +78,6 @@ BSG_Mach_Header_Info *bsg_mach_headers_get_main_image(void);
  * Returns the image that contains KSCrash.
  */
 BSG_Mach_Header_Info *bsg_mach_headers_get_self_image(void);
-
-/**
- * Called when a binary image is loaded.
- */
-void bsg_mach_headers_add_image(const struct mach_header *mh, intptr_t slide);
-
-/**
- * Called when a binary image is unloaded.
- */
-void bsg_mach_headers_remove_image(const struct mach_header *mh, intptr_t slide);
 
 /**
  * Find the loaded binary image that contains the specified instruction address.
@@ -119,5 +111,20 @@ uintptr_t bsg_mach_headers_first_cmd_after_header(const struct mach_header *head
  * @return The __crash_info message, or NULL if no readable message could be found.
  */
 const char *bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *header);
+
+/**
+ * Resets mach header data (for unit tests).
+ */
+void bsg_test_support_mach_headers_reset(void);
+
+/**
+ * Add a binary image (for unit tests).
+ */
+void bsg_test_support_mach_headers_add_image(const struct mach_header *mh, intptr_t slide);
+
+/**
+ * Remove a binary image (for unit tests).
+ */
+void bsg_test_support_mach_headers_remove_image(const struct mach_header *mh, intptr_t slide);
 
 #endif /* BSG_KSMachHeaders_h */

@@ -243,6 +243,7 @@ Feature: Barebone tests
     And the "isLR" of stack frame 0 is null
 
   @skip_macos
+  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-9724
   Scenario: Barebone test: Out Of Memory
     When I run "OOMScenario"
 
