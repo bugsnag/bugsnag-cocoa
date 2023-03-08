@@ -9,35 +9,35 @@
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 313,
+      "line": 319,
       "symbol": "Bugsnag.+addFeatureFlagWithName:variant:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 316,
+      "line": 322,
       "symbol": "Bugsnag.+addFeatureFlagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 319,
+      "line": 325,
       "symbol": "Bugsnag.+addFeatureFlags:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 322,
+      "line": 328,
       "symbol": "Bugsnag.+clearFeatureFlagWithName:",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/Bugsnag.h",
-      "line": 325,
+      "line": 331,
       "symbol": "Bugsnag.+clearFeatureFlags",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
