@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Disabled breadcrumb disk storage when not required
+
 ## 6.26.0 (2023-03-08)
 
 ### Enhancements

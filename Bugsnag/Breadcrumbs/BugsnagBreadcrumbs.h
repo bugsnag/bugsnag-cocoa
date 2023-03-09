@@ -33,8 +33,6 @@ BSG_OBJC_DIRECT_MEMBERS
 
 /**
  * Store a new serialized breadcrumb.
- *
- * This method is not intended to be used from other classes, it is exposed to facilitate unit testing.
  */
 - (void)addBreadcrumbWithData:(NSData *)data writeToDisk:(BOOL)writeToDisk;
 

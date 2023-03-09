@@ -109,7 +109,7 @@ BSG_OBJC_DIRECT_MEMBERS
     if (!data) {
         return;
     }
-    [self addBreadcrumbWithData:data writeToDisk:YES];
+    [self addBreadcrumbWithData:data writeToDisk:[self shouldWriteToDisk]];
 }
 
 - (void)addBreadcrumbWithData:(NSData *)data writeToDisk:(BOOL)writeToDisk {
@@ -188,6 +188,14 @@ BSG_OBJC_DIRECT_MEMBERS
         }
     }
     return YES;
+}
+
+- (BOOL)shouldWriteToDisk {
+#if TARGET_OS_WATCH
+    return NO;
+#else
+    return self.config.enabledErrorTypes.ooms || self.config.enabledErrorTypes.thermalKills;
+#endif
 }
 
 - (void)removeAllBreadcrumbs {

@@ -564,6 +564,42 @@ static void * executeBlock(void *ptr) {
     }];
 }
 
+- (void)testShouldCacheBreadcrumbsIfOOMErrorsAreSupported {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    config.enabledErrorTypes.thermalKills = NO;
+    config.enabledErrorTypes.ooms = YES;
+    self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [self.crumbs removeAllBreadcrumbs];
+    [self.crumbs addBreadcrumb:WithMessage(@"this is a test")];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *cachedBredcrumbs = [self.crumbs cachedBreadcrumbs];
+    XCTAssertEqual(1, cachedBredcrumbs.count);
+}
+
+- (void)testShouldCacheBreadcrumbsIfThermalKillsAreSupported {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    config.enabledErrorTypes.ooms = NO;
+    config.enabledErrorTypes.thermalKills = YES;
+    self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [self.crumbs removeAllBreadcrumbs];
+    [self.crumbs addBreadcrumb:WithMessage(@"this is a test")];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *cachedBredcrumbs = [self.crumbs cachedBreadcrumbs];
+    XCTAssertEqual(1, cachedBredcrumbs.count);
+}
+
+- (void)testShouldNotCacheBreadcrumbsIfOOMsAndThermalKillsAreNotSupported {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    config.enabledErrorTypes.thermalKills = NO;
+    config.enabledErrorTypes.ooms = NO;
+    self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [self.crumbs removeAllBreadcrumbs];
+    [self.crumbs addBreadcrumb:WithMessage(@"this is a test")];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *cachedBredcrumbs = [self.crumbs cachedBreadcrumbs];
+    XCTAssertEqual(0, cachedBredcrumbs.count);
+}
+
 @end
 
 #pragma mark -
