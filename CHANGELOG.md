@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Disabled breadcrumb disk storage when not required
+  [1534](https://github.com/bugsnag/bugsnag-cocoa/pull/1534)
+
 ## 6.26.0 (2023-03-08)
 
 ### Enhancements
