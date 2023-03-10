@@ -176,6 +176,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(value[0][@"type"], @"state");
 }
 
+#if !TARGET_OS_WATCH
 - (void)testPersistentCrumbManual {
     awaitBreadcrumbSync(self.crumbs);
     NSArray<BugsnagBreadcrumb *> *breadcrumbs = [self.crumbs cachedBreadcrumbs];
@@ -205,6 +206,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
     XCTAssertEqualObjects(breadcrumbs[3].metadata[@"captain"], @"Bob");
     XCTAssertNotNil(breadcrumbs[3].timestamp);
 }
+#endif
 
 - (void)testDefaultDiscardByType {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
@@ -564,6 +566,20 @@ static void * executeBlock(void *ptr) {
     }];
 }
 
+#if TARGET_OS_WATCH
+
+- (void)testShouldNotCacheBreadcrumbsOnWatchOs {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    self.crumbs = [[BugsnagBreadcrumbs alloc] initWithConfiguration:config];
+    [self.crumbs removeAllBreadcrumbs];
+    [self.crumbs addBreadcrumb:WithMessage(@"this is a test")];
+    awaitBreadcrumbSync(self.crumbs);
+    NSArray *cachedBredcrumbs = [self.crumbs cachedBreadcrumbs];
+    XCTAssertEqual(0, cachedBredcrumbs.count);
+}
+
+#else
+
 - (void)testShouldCacheBreadcrumbsIfOOMErrorsAreSupported {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     config.enabledErrorTypes.thermalKills = NO;
@@ -599,6 +615,8 @@ static void * executeBlock(void *ptr) {
     NSArray *cachedBredcrumbs = [self.crumbs cachedBreadcrumbs];
     XCTAssertEqual(0, cachedBredcrumbs.count);
 }
+
+#endif
 
 @end
 
