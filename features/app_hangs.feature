@@ -7,8 +7,6 @@ Feature: App hangs
     When I run "AppHangDefaultConfigScenario"
     Then I should receive no errors
 
-  # PLAT-9616
-  @skip_bitbar
   Scenario: App hangs above the threshold should be reported
     When I set the app to "2.1" mode
     And I run "AppHangScenario"
