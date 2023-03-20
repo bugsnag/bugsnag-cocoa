@@ -38,6 +38,7 @@ services:
     ports:
       - "9000-9499:9339"
     volumes:
+      - .git:/app/.git
       - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
