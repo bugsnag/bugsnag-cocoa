@@ -46,10 +46,10 @@ struct BSGRunContext {
     dispatch_source_memorypressure_flags_t memoryPressure;
 #endif
     double timestamp __attribute__((aligned(8)));
-    unsigned long long hostMemoryFree;
-    unsigned long long memoryAvailable;
-    unsigned long long memoryFootprint;
-    unsigned long long memoryLimit;
+    size_t hostMemoryFree;
+    size_t memoryAvailable;
+    size_t memoryFootprint;
+    size_t memoryLimit;
 };
 
 /// Information about the current run of the app / process.

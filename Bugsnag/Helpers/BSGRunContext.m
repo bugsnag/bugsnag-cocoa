@@ -22,6 +22,7 @@
 #import <sys/mman.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
+#include <os/proc.h>
 
 
 // Fields which may be updated from arbitrary threads simultaneously should be
@@ -394,6 +395,12 @@ static void UpdateHostMemory(void) {
     ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
 }
 
+void setMemoryUsage(size_t footprint, size_t available) {
+    size_t limit = footprint + available;
+    ATOMIC_SET(bsg_runContext->memoryAvailable, available);
+    ATOMIC_SET(bsg_runContext->memoryLimit, limit);
+}
+
 static void UpdateTaskMemory(void) {
     task_vm_info_data_t task_vm = {0};
     mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
@@ -411,10 +418,13 @@ static void UpdateTaskMemory(void) {
     // this code must be compiled out when building with older SDKs.
 #ifdef TASK_VM_INFO_REV4_COUNT
     if (task_vm.limit_bytes_remaining) {
-        unsigned long long available = task_vm.limit_bytes_remaining;
-        unsigned long long limit = footprint + available;
-        ATOMIC_SET(bsg_runContext->memoryAvailable, available);
-        ATOMIC_SET(bsg_runContext->memoryLimit, limit);
+        setMemoryUsage(footprint, task_vm.limit_bytes_remaining);
+    } else {
+#if !TARGET_OS_OSX
+    if (@available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
+        setMemoryUsage(footprint, os_proc_available_memory());
+    }
+#endif
     }
 #endif
 }
