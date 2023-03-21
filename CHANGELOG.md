@@ -7,6 +7,9 @@ Changelog
 
 * Disabled breadcrumb disk storage when not required
   [1534](https://github.com/bugsnag/bugsnag-cocoa/pull/1534)
+  
+* Improved reliability of obtaining memory metadata on iOS 13+
+  [1537](https://github.com/bugsnag/bugsnag-cocoa/pull/1537)
 
 ## 6.26.0 (2023-03-08)
 
