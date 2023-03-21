@@ -22,7 +22,10 @@
 #import <sys/mman.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
+
+#if !TARGET_OS_OSX
 #include <os/proc.h>
+#endif
 
 
 // Fields which may be updated from arbitrary threads simultaneously should be
