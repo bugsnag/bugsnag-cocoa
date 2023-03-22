@@ -23,7 +23,7 @@
 #import <sys/stat.h>
 #import <sys/sysctl.h>
 
-#if !TARGET_OS_OSX
+#if __has_include(<os/proc.h>)
 #include <os/proc.h>
 #endif
 
