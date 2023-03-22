@@ -398,8 +398,8 @@ static void UpdateHostMemory(void) {
     ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
 }
 
-void setMemoryUsage(size_t footprint, size_t available) {
-    size_t limit = footprint + available;
+void setMemoryUsage(uint64_t footprint, uint64_t available) {
+    uint64_t limit = footprint + available;
     ATOMIC_SET(bsg_runContext->memoryAvailable, available);
     ATOMIC_SET(bsg_runContext->memoryLimit, limit);
 }
