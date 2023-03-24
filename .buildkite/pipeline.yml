@@ -344,7 +344,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':browserstack: iOS 10 E2E tests batch 1'
+  - label: ':browserstack: iOS 15 barebone tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -355,17 +355,15 @@ steps:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner-legacy
-        run: cocoa-maze-runner-legacy
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
-          - "--device=IOS_10"
-          - "--appium-version=1.8.0"
-          - "--capabilities={\"browserstack.networkLogs\":\"true\"}"
+          - "--device=IOS_15"
+          - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
+          - "features/barebone_tests.feature"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -374,7 +372,118 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':browserstack: iOS 10 E2E tests batch 2'
+  - label: ':browserstack: iOS 14 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url.txt"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "features/barebone_tests.feature"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':browserstack: iOS 13 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url.txt"
+          - "--farm=bs"
+          - "--device=IOS_13"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+          - "features/barebone_tests.feature"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':browserstack: iOS 12 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url.txt"
+          - "--farm=bs"
+          - "--device=IOS_12"
+          - "--appium-version=1.17.0"
+          - "--fail-fast"
+          - "features/barebone_tests.feature"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':browserstack: iOS 11 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner-legacy
+        run: cocoa-maze-runner-legacy
+        command:
+          - "--app=@build/ipa_url.txt"
+          - "--farm=bs"
+          - "--device=IOS_11_0_IPHONE_8_PLUS"
+          - "--appium-version=1.8.0"
+          - "features/barebone_tests.feature"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':browserstack: iOS 10 barebone tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -393,8 +502,7 @@ steps:
           - "--device=IOS_10"
           - "--appium-version=1.8.0"
           - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
+          - "features/barebone_tests.feature"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
