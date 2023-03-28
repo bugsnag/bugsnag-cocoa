@@ -7,7 +7,61 @@ steps:
   # E2E tests
   #
 
-  - label: 'iOS 15 E2E tests batch 1'
+  #
+  # BitBar
+  #
+  - label: ':bitbar: iOS 15 E2E tests batch 1'
+    depends_on: "cocoa_fixture"
+    timeout_in_minutes: 90
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--exclude=features/[e-z].*.feature$"
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bb"
+          - "--device=IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
+
+  - label: ':bitbar: iOS 15 E2E tests batch 2'
+    depends_on: "cocoa_fixture"
+    timeout_in_minutes: 90
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--exclude=features/[a-d].*.feature$"
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bb"
+          - "--device=IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
+
+  #
+  # BrowserStack
+  #
+  - label: ':browserstack: iOS 15 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -36,7 +90,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 15 E2E tests batch 2'
+  - label: ':browserstack: iOS 15 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -65,7 +119,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 14 E2E tests batch 1'
+  - label: ':browserstack: iOS 14 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -94,7 +148,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 14 E2E tests batch 2'
+  - label: ':browserstack: iOS 14 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -123,7 +177,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 13 E2E tests batch 1'
+  - label: ':browserstack: iOS 13 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -152,7 +206,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 13 E2E tests batch 2'
+  - label: ':browserstack: iOS 13 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -181,7 +235,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 12 E2E tests batch 1'
+  - label: ':browserstack: iOS 12 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -210,7 +264,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 12 E2E tests batch 2'
+  - label: ':browserstack: iOS 12 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -239,7 +293,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 11 E2E tests batch 1'
+  - label: ':browserstack: iOS 11 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
@@ -270,7 +324,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'iOS 11 E2E tests batch 2'
+  - label: ':browserstack: iOS 11 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and

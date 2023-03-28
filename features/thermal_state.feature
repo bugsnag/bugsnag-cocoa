@@ -1,5 +1,6 @@
 # Thermal state is not available prior to iOS/tvOS 11 and macOS 10.10.3
 @skip_below_ios_11
+@skip_ios_16
 Feature: Thermal State
 
   Background:

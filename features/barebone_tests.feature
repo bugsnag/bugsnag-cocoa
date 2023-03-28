@@ -110,7 +110,7 @@ Feature: Barebone tests
     And the error payload field "events.0.app.durationInForeground" is a number
     And the error payload field "events.0.device.freeDisk" is an integer
     And the error payload field "events.0.device.freeMemory" is an integer
-    And the error payload field "events.0.device.model" matches the regex "[Macmini|iPhone]1?\d,\d"
+    And the error payload field "events.0.device.model" matches the regex "[iPad|Macmini|iPhone]1?\d,\d"
     And the error payload field "events.0.device.totalMemory" is an integer
     And the error payload field "events.0.threads" is an array with 0 elements
     And the "isPC" of stack frame 0 is null
@@ -234,7 +234,7 @@ Feature: Barebone tests
     And the error payload field "events.0.app.durationInForeground" is a number
     And the error payload field "events.0.device.freeDisk" is an integer
     And the error payload field "events.0.device.freeMemory" is an integer
-    And the error payload field "events.0.device.model" matches the regex "[Macmini|iPhone]1?\d,\d"
+    And the error payload field "events.0.device.model" matches the regex "[iPad|Macmini|iPhone]1?\d,\d"
     And the error payload field "events.0.device.totalMemory" is an integer
     And on !watchOS, the error payload field "events.0.threads" is a non-empty array
     And on !watchOS, the error payload field "events.0.threads.1" is not null
@@ -335,5 +335,5 @@ Feature: Barebone tests
     And the error payload field "events.0.app.duration" is null
     And the error payload field "events.0.app.durationInForeground" is null
     And the error payload field "events.0.device.freeDisk" is null
-    And the error payload field "events.0.device.model" matches the regex "[Macmini|iPhone]1?\d,\d"
+    And the error payload field "events.0.device.model" matches the regex "[iPad|Macmini|iPhone]1?\d,\d"
     And the error payload field "events.0.threads" is an array with 0 elements
