@@ -1,4 +1,6 @@
 # Thermal state is not available prior to iOS/tvOS 11 and macOS 10.10.3
+# TODO Skip Pending PLAT-9988
+@skip
 @skip_below_ios_11
 @skip_ios_16
 Feature: Thermal State
