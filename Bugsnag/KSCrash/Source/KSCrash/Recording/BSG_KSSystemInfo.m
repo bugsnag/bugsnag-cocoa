@@ -378,7 +378,7 @@ BSG_OBJC_DIRECT_MEMBERS
     sysInfo[@BSG_KSSystemField_Jailbroken] = @(is_jailbroken());
     sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
     sysInfo[@BSG_KSSystemField_Memory] = @{
-        @BSG_KSCrashField_Free: @(bsg_runContext->hostMemoryFree),
+        @BSG_KSCrashField_Free: @(bsg_getHostMemory()),
         @BSG_KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
 

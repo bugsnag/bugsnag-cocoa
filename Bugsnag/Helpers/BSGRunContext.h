@@ -70,6 +70,8 @@ void BSGRunContextInit(NSString *_Nonnull path);
 
 #pragma mark -
 
+size_t bsg_getHostMemory(void);
+
 void BSGRunContextUpdateMemory(void);
 
 void BSGRunContextUpdateTimestamp(void);
