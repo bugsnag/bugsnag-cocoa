@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Include event API key when serializing/deserializing to/from JSON
+  [1547](https://github.com/bugsnag/bugsnag-cocoa/pull/1547)
+
 ## 6.26.1 (2023-03-28)
 
 ### Bug fixes
