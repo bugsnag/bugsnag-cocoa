@@ -377,25 +377,31 @@ void BSGRunContextUpdateTimestamp(void) {
     ATOMIC_SET(bsg_runContext->timestamp, CFAbsoluteTimeGetCurrent());
 }
 
-static void UpdateHostMemory(void) {
+size_t bsg_getHostMemory(void) {
     static _Atomic mach_port_t host_atomic = 0;
     mach_port_t host = atomic_load(&host_atomic);
     if (!host) {
         host = mach_host_self();
         atomic_store(&host_atomic, host);
     }
-    
+
     vm_statistics_data_t host_vm;
     mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
     kern_return_t kr = host_statistics(host, HOST_VM_INFO,
                                        (host_info_t)&host_vm, &count);
     if (kr != KERN_SUCCESS) {
         bsg_log_debug(@"host_statistics: %d", kr);
-        return;
+        return 0;
     }
-    
-    size_t hostMemoryFree = host_vm.free_count * vm_kernel_page_size;
-    ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
+
+    return host_vm.free_count * vm_kernel_page_size;
+}
+
+static void UpdateHostMemory(void) {
+    size_t hostMemoryFree = bsg_getHostMemory();
+    if (hostMemoryFree > 0) {
+        ATOMIC_SET(bsg_runContext->hostMemoryFree, hostMemoryFree);
+    }
 }
 
 void setMemoryUsage(uint64_t footprint, uint64_t available) {
@@ -493,7 +499,8 @@ bool BSGRunContextWasKilled(void) {
 
 #define SIZEOF_STRUCT sizeof(struct BSGRunContext)
 
-struct BSGRunContext *bsg_runContext;
+static struct BSGRunContext fallback;
+struct BSGRunContext *bsg_runContext = &fallback;
 
 const struct BSGRunContext *bsg_lastRunContext;
 
@@ -534,12 +541,10 @@ static void LoadLastRunContext(int fd) {
 /// Truncates or extends the file to the size of struct BSGRunContext,
 /// maps it into memory, and sets the `bsg_runContext` pointer.
 static void ResizeAndMapFile(int fd) {
-    static struct BSGRunContext fallback;
-    
     // Note: ftruncate fills the file with zeros when extending.
     if (ftruncate(fd, SIZEOF_STRUCT) != 0) {
         bsg_log_warn(@"ftruncate failed: %d", errno);
-        goto fail;
+        return;
     }
     
     const int prot = PROT_READ | PROT_WRITE;
@@ -547,16 +552,12 @@ static void ResizeAndMapFile(int fd) {
     void *ptr = mmap(0, SIZEOF_STRUCT, prot, flags, fd, 0);
     if (ptr == MAP_FAILED) {
         bsg_log_warn(@"mmap failed: %d", errno);
-        goto fail;
+        return;
     }
     
     memset(ptr, 0, SIZEOF_STRUCT);
     mlock(ptr, SIZEOF_STRUCT);
     bsg_runContext = ptr;
-    return;
-    
-fail:
-    bsg_runContext = &fallback;
 }
 
 void BSGRunContextInit(NSString *_Nonnull path) {
