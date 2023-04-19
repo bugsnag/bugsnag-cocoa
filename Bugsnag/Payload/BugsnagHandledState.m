@@ -236,4 +236,8 @@ BSG_OBJC_DIRECT_MEMBERS
     return dict;
 }
 
+- (BOOL)originalUnhandledValue {
+    return self.unhandledOverridden ? !self.unhandled : self.unhandled;
+}
+
 @end
