@@ -794,7 +794,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
     event.usage = BSGTelemetryCreateUsage(self.configuration);
 
-    if (event.unhandled) {
+    if (event.handledState.originalUnhandledValue) {
         // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the
         // call to notifyInternal, so the event needs to be persisted to disk for sending in the next session.
         // The fatal "RCTFatalException" / "Unhandled JS Exception" is explicitly ignored by
