@@ -1,9 +1,15 @@
 Changelog
 =========
 
-## TBD
+## 6.26.2 (2023-04-20)
 
 ### Bug fixes
+
+* Persist events based on the original unhandled value
+  [1549](https://github.com/bugsnag/bugsnag-cocoa/pull/1549)
+
+* Fixed a race condition in BSGRunContext
+  [1548](https://github.com/bugsnag/bugsnag-cocoa/pull/1548)
 
 * Include event API key when serializing/deserializing to/from JSON
   [1547](https://github.com/bugsnag/bugsnag-cocoa/pull/1547)
