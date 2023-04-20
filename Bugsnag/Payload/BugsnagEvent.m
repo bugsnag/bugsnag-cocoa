@@ -176,6 +176,8 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (instancetype)initWithJson:(NSDictionary *)json {
     if ((self = [super init])) {
+        _apiKey = BSGDeserializeString(json[BSGKeyApiKey]);
+
         _app = BSGDeserializeObject(json[BSGKeyApp], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagAppWithState appFromJson:dict];
         }) ?: [[BugsnagAppWithState alloc] init];
@@ -585,6 +587,7 @@ BSG_OBJC_DIRECT_MEMBERS
         bsg_log_err(@"An exception was thrown while sanitising metadata: %@", exception);
     }
 
+    event[BSGKeyApiKey] = self.apiKey;
     event[BSGKeyDevice] = [self.device toDictionary];
     event[BSGKeyApp] = [self.app toDict];
 

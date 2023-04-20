@@ -102,4 +102,22 @@
     XCTAssertNil(state.attrValue);
 }
 
+- (void)testOriginalUnhandled {
+    BugsnagHandledState *unhandledState =
+    [BugsnagHandledState handledStateWithSeverityReason:PromiseRejection];
+    XCTAssertTrue(unhandledState.originalUnhandledValue);
+    
+    unhandledState.unhandledOverridden = YES;
+    XCTAssertFalse(unhandledState.originalUnhandledValue);
+    
+    BugsnagHandledState *handledState =
+    [BugsnagHandledState handledStateWithSeverityReason:HandledError
+                                               severity:BSGSeverityWarning
+                                              attrValue:@"Test"];
+    XCTAssertFalse(handledState.originalUnhandledValue);
+    
+    handledState.unhandledOverridden = YES;
+    XCTAssertTrue(handledState.originalUnhandledValue);
+}
+
 @end

@@ -48,6 +48,7 @@ BUGSNAG_EXTERN
 
 @property(nonatomic) BOOL unhandled;
 @property(nonatomic) BOOL unhandledOverridden;
+@property(nonatomic, readonly) BOOL originalUnhandledValue;
 @property(nonatomic, readonly) SeverityReasonType severityReasonType;
 @property(nonatomic, readonly) BSGSeverity originalSeverity;
 @property(nonatomic) BSGSeverity currentSeverity;
