@@ -199,7 +199,7 @@ steps:
         command:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bb"
-          - "--device=IOS_13"
+          - "--device=IOS_12"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
@@ -230,7 +230,7 @@ steps:
         command:
           - "--app=/app/build/iOSTestApp.ipa"
           - "--farm=bb"
-          - "--device=IOS_13"
+          - "--device=IOS_12"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
