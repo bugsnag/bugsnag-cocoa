@@ -430,7 +430,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
-    concurrency: 24
+    concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -459,7 +459,7 @@ steps:
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
-    concurrency: 24
+    concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -486,7 +486,7 @@ steps:
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.8.0"
           - "features/barebone_tests.feature"
-    concurrency: 24
+    concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
@@ -514,7 +514,7 @@ steps:
           - "--appium-version=1.8.0"
           - "--fail-fast"
           - "features/barebone_tests.feature"
-    concurrency: 24
+    concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
     retry:
