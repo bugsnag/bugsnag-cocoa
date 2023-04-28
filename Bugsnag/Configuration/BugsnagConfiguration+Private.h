@@ -34,6 +34,8 @@ BSG_OBJC_DIRECT_MEMBERS
 
 @property (readonly, nonatomic) BOOL shouldSendReports;
 
+@property (readonly, nonnull, nonatomic) NSURLSession *sessionOrDefault;
+
 @property (readonly, nullable, nonatomic) NSURL *sessionURL;
 
 @property (readwrite, retain, nonnull, nonatomic) BugsnagUser *user;

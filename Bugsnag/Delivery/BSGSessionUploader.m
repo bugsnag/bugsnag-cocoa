@@ -173,7 +173,7 @@ BSG_OBJC_DIRECT_MEMBERS
         return;
     }
     
-    BSGPostJSONData(self.config.session, data, headers, url, ^(BSGDeliveryStatus status, NSError *error) {
+    BSGPostJSONData(self.config.sessionOrDefault, data, headers, url, ^(BSGDeliveryStatus status, NSError *error) {
         switch (status) {
             case BSGDeliveryStatusDelivered:
                 bsg_log_info(@"Sent session %@", session.id);
