@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## TBD
+
+* Added BSGErrorTypeCSharp
+  [1556](https://github.com/bugsnag/bugsnag-cocoa/pull/1556)
+
 ## 6.26.2 (2023-04-20)
 
 ### Bug fixes

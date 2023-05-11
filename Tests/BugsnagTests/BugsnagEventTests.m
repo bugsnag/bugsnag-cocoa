@@ -266,9 +266,14 @@
     
     error.type = BSGErrorTypeReactNativeJs;
     XCTAssertEqualObjects(event.stacktraceTypes, @[@"reactnativejs"]);
-    
+
+    error.type = BSGErrorTypeCSharp;
+    XCTAssertEqualObjects(event.stacktraceTypes, @[@"csharp"]);
+
     NSArray *(^ sorted)(NSArray *) = ^(NSArray *array) { return [array sortedArrayUsingSelector:@selector(compare:)]; };
     
+    error = [[BugsnagError alloc] init];
+    event.errors = @[error];
     error.stacktrace = @[
         [BugsnagStackframe frameFromJson:@{}],
         [BugsnagStackframe frameFromJson:@{@"type": @"cocoa"}],
