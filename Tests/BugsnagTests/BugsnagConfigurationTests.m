@@ -35,7 +35,7 @@
 
 - (void)testDefaultSessionNotNil {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-    XCTAssertNotNil(config.session);
+    XCTAssertNotNil(config.sessionOrDefault);
 }
 
 - (void)testDefaultSessionConfig {

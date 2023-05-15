@@ -341,7 +341,7 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 - (void)sendLaunchCrashSynchronously {
-    if (self.configuration.session.delegateQueue == NSOperationQueue.currentQueue) {
+    if (self.configuration.sessionOrDefault.delegateQueue == NSOperationQueue.currentQueue) {
         bsg_log_warn(@"Cannot send launch crash synchronously because session.delegateQueue is set to the current queue.");
         return;
     }

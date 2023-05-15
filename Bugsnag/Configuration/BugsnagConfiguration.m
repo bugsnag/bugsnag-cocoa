@@ -41,6 +41,18 @@ const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 
 static const int BSGApiKeyLength = 32;
 
+static NSURLSession *getConfigDefaultURLSession(void);
+static NSURLSession *getConfigDefaultURLSession(void) {
+    static dispatch_once_t once_t;
+    static NSURLSession *session;
+    dispatch_once(&once_t, ^{
+        session = [NSURLSession
+                    sessionWithConfiguration:[NSURLSessionConfiguration
+                                              defaultSessionConfiguration]];
+    });
+    return session;
+}
+
 // =============================================================================
 // MARK: - BugsnagConfiguration
 // =============================================================================
@@ -190,12 +202,6 @@ BSG_OBJC_DIRECT_MEMBERS
     // persistUser isn't settable until post-init.
     _user = BSGGetPersistedUser();
 
-    if ([NSURLSession class]) {
-        _session = [NSURLSession
-            sessionWithConfiguration:[NSURLSessionConfiguration
-                                         defaultSessionConfiguration]];
-    }
-    
     _telemetry = BSGTelemetryAll;
     
     NSString *releaseStage = nil;
@@ -271,6 +277,11 @@ BSG_OBJC_DIRECT_MEMBERS
     if (self.persistUser) {
         BSGSetPersistedUser(user);
     }
+}
+
+- (NSURLSession *)sessionOrDefault {
+    NSURLSession *session = self.session;
+    return session ? session : getConfigDefaultURLSession();
 }
 
 // =============================================================================

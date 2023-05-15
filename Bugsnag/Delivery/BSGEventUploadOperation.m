@@ -159,7 +159,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         }
     }
     
-    BSGPostJSONData(configuration.session, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
+    BSGPostJSONData(configuration.sessionOrDefault, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {
             case BSGDeliveryStatusDelivered:
                 bsg_log_debug(@"Uploaded event %@", self.name);
