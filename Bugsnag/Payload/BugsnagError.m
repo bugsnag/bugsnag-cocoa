@@ -23,6 +23,7 @@ typedef NSString * BSGErrorTypeString NS_TYPED_ENUM;
 static BSGErrorTypeString const BSGErrorTypeStringCocoa = @"cocoa";
 static BSGErrorTypeString const BSGErrorTypeStringC = @"c";
 static BSGErrorTypeString const BSGErrorTypeStringReactNativeJs = @"reactnativejs";
+static BSGErrorTypeString const BSGErrorTypeStringCSharp = @"csharp";
 
 
 NSString *_Nonnull BSGSerializeErrorType(BSGErrorType errorType) {
@@ -33,6 +34,8 @@ NSString *_Nonnull BSGSerializeErrorType(BSGErrorType errorType) {
             return BSGErrorTypeStringC;
         case BSGErrorTypeReactNativeJs:
             return BSGErrorTypeStringReactNativeJs;
+        case BSGErrorTypeCSharp:
+            return BSGErrorTypeStringCSharp;
     }
 }
 
@@ -43,6 +46,8 @@ BSGErrorType BSGParseErrorType(NSString *errorType) {
         return BSGErrorTypeC;
     } else if ([BSGErrorTypeStringReactNativeJs isEqualToString:errorType]) {
         return BSGErrorTypeReactNativeJs;
+    } else if ([BSGErrorTypeStringCSharp isEqualToString:errorType]) {
+        return BSGErrorTypeCSharp;
     } else {
         return BSGErrorTypeCocoa;
     }

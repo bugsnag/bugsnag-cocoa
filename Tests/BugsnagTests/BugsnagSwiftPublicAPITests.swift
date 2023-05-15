@@ -371,6 +371,7 @@ class BugsnagSwiftPublicAPITests: XCTestCase {
         e.type = .cocoa
         e.type = .c
         e.type = .reactNativeJs
+        e.type = .cSharp
     }
 
     func testBugsnagSessionClass() throws {
