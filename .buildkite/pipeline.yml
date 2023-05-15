@@ -286,7 +286,7 @@ steps:
   #
   # BitBar
   #
-  - label: ':BitBar: iOS 16 E2E tests batch 1'
+  - label: ':bitbar: iOS 16 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -317,7 +317,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':BitBar: iOS 16 E2E tests batch 2'
+  - label: ':bitbar: iOS 16 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -348,7 +348,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':BitBar: iOS 15 barebone tests'
+  - label: ':bitbar: iOS 15 barebone tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
