@@ -1,10 +1,17 @@
 Changelog
 =========
 
-## TBD
+## 6.27.0 (2023-05-15)
 
-* Added BSGErrorTypeCSharp
+### Enhancements
+
+* Added BSGErrorTypeCSharp enum value to identify C# events passed to the SDK
   [1556](https://github.com/bugsnag/bugsnag-cocoa/pull/1556)
+
+### Bug fixes
+
+* Don't generate a new URLSession when copying a configuration.
+  [1554](https://github.com/bugsnag/bugsnag-cocoa/pull/1554)
 
 ## 6.26.2 (2023-04-20)
 
