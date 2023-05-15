@@ -141,6 +141,13 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagError.h",
+      "line": 22,
+      "symbol": "BSGErrorType.BSGErrorTypeCSharp",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.enumcase",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/runner/work/bugsnag-cocoa/bugsnag-cocoa/Bugsnag/include/Bugsnag/BugsnagEvent.h",
       "line": 30,
       "symbol": "BSGSeverity.BSGSeverityError",
