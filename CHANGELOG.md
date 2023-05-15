@@ -1,10 +1,17 @@
 Changelog
 =========
 
-## TBD
+## 6.26.3 (2023-05-15)
+
+### Enhancements
 
 * Added BSGErrorTypeCSharp
   [1556](https://github.com/bugsnag/bugsnag-cocoa/pull/1556)
+
+### Bug fixes
+
+* Don't generate a new URLSession when copying a configuration.
+  [1554](https://github.com/bugsnag/bugsnag-cocoa/pull/1554)
 
 ## 6.26.2 (2023-04-20)
 
