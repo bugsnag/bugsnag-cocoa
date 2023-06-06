@@ -49,6 +49,7 @@
         
         // Add some additional metadata once we're sure it's not already there
         [client addMetadata:@"aValue2" withKey:@"aKey2" toSection:@"mySection2"];
+        return NO;
     }];
     
     [client notify:exception2 block:^BOOL(BugsnagEvent * _Nonnull event) {
@@ -56,6 +57,7 @@
         XCTAssertEqualObjects([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"], @"aValue2");
         XCTAssertEqual(event.errors[0].errorClass, @"exception2");
         XCTAssertEqual(event.errors[0].errorMessage, @"reason2");
+        return NO;
     }];
 
     // Check nil value causes deletions
@@ -66,6 +68,7 @@
     [client notify:exception1 block:^BOOL(BugsnagEvent * _Nonnull event) {
         XCTAssertNil([event getMetadataFromSection:@"mySection1" withKey:@"aKey1"]);
         XCTAssertNil([event getMetadataFromSection:@"mySection2" withKey:@"aKey2"]);
+        return NO;
     }];
     
     // Check that event-level metadata alteration doesn't affect configuration-level metadata
@@ -85,6 +88,7 @@
         
         
         [expectation fulfill];
+        return NO;
     }];
 
     [self waitForExpectationsWithTimeout:0.1 handler:^(NSError * _Nullable error) {
