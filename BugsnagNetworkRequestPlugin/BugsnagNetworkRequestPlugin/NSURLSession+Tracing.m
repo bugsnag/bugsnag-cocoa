@@ -21,7 +21,7 @@ static IMP set_class_imp(Class _Nonnull class, SEL selector, id _Nonnull impleme
     }
 }
 
-static void replace_NSURLSession_sessionWithConfigurationDelegateQueue() {
+static void replace_NSURLSession_sessionWithConfigurationDelegateQueue(void) {
     Class class = NSURLSession.class;
     SEL selector = @selector(sessionWithConfiguration:delegate:delegateQueue:);
     typedef NSURLSession *(*IMPPrototype)(id, SEL, NSURLSessionConfiguration *,
@@ -42,7 +42,7 @@ static void replace_NSURLSession_sessionWithConfigurationDelegateQueue() {
     });
 }
 
-static void replace_NSURLSession_sharedSession() {
+static void replace_NSURLSession_sharedSession(void) {
     set_class_imp(NSURLSession.class, @selector(sharedSession), ^(__unused id self) {
         static NSURLSession *session;
         static dispatch_once_t onceToken;
@@ -60,7 +60,7 @@ static void replace_NSURLSession_sharedSession() {
     });
 }
 
-void bsg_installNSURLSessionTracing() {
+void bsg_installNSURLSessionTracing(void) {
     replace_NSURLSession_sessionWithConfigurationDelegateQueue();
     replace_NSURLSession_sharedSession();
 }

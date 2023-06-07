@@ -20,7 +20,7 @@ class MetadataRedactionNestedScenario: Scenario {
     }
 
     override func run() {
-        let dictionary = [
+        let dictionary: [String: [String: Any]] = [
             "alpha": [
                 "password": "foo",
                 "name": "Bob"
@@ -32,7 +32,7 @@ class MetadataRedactionNestedScenario: Scenario {
                     "name": [
                         "title": "Mr"
                     ]
-                ]
+                ] as [String: Any]
             ]
         ]
         Bugsnag.addOnSession { (block) -> Bool in

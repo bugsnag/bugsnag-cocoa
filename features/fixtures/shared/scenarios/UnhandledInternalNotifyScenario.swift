@@ -9,7 +9,7 @@ import Foundation
                                     userInfo: nil);
 
         Bugsnag.notify(exception) { (event) -> Bool in
-            let frames = [
+            let frames: [[String: Any]] = [
                 ["method":"bar()", "file":"foo.js", "lineNumber": 43],
                 ["method":"baz()", "file":"[native code]"],
                 ["method":"is_done()"]
