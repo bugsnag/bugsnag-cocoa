@@ -191,6 +191,10 @@ BSG_OBJC_DIRECT_MEMBERS
     }
 }
 
++ (BugsnagSession *)session {
+    return [self.client session];
+}
+
 // =============================================================================
 // MARK: - <BugsnagFeatureFlagStore>
 // =============================================================================

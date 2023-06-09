@@ -197,6 +197,11 @@ NS_SWIFT_NAME(leaveNetworkRequestBreadcrumb(task:metrics:));
  */
 - (BOOL)resumeSession;
 
+/**
+ * Currently running Bugsnag session.
+ */
+@property (readonly, nullable, nonatomic) BugsnagSession *session;
+
 // =============================================================================
 // MARK: - onSession
 // =============================================================================

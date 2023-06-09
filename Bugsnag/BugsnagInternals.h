@@ -87,9 +87,6 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @property (nullable, nonatomic) BSGClientObserver observer;
 
-/// The currently active (not paused) session.
-@property (readonly, nullable, nonatomic) BugsnagSession *session;
-
 - (void)addRuntimeVersionInfo:(NSString *)info withKey:(NSString *)key;
 
 - (BugsnagAppWithState *)generateAppWithState:(NSDictionary *)systemInfo;

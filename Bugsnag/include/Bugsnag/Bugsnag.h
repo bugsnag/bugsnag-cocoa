@@ -276,6 +276,11 @@ BUGSNAG_EXTERN
  */
 + (BOOL)resumeSession;
 
+/**
+ * Currently running Bugsnag session.
+ */
++ (BugsnagSession *_Nullable)session;
+
 // =============================================================================
 // MARK: - Other methods
 // =============================================================================

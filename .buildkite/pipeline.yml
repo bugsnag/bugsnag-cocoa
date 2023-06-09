@@ -213,6 +213,7 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -230,7 +231,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*", "maze_output/metrics.csv"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -250,6 +251,7 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
     commands:
       - bundle config set --local path 'vendor/bundle'
       - bundle install
@@ -295,7 +297,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -326,7 +330,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -357,7 +363,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -387,7 +395,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -417,7 +427,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -447,7 +459,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -480,7 +494,9 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner-legacy
         run: cocoa-maze-runner-legacy
@@ -507,7 +523,9 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner-legacy
         run: cocoa-maze-runner-legacy

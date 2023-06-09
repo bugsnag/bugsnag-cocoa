@@ -114,7 +114,9 @@ static char ksLogPath[PATH_MAX];
 }
 
 - (void)startBugsnag {
-    [Bugsnag startWithConfiguration:self.config];
+    [self performBlockAndReportDuration:^{
+        [Bugsnag startWithConfiguration:self.config];
+    } measurement:@"start"];
 }
 
 - (void)didEnterBackgroundNotification {
@@ -136,6 +138,48 @@ static char ksLogPath[PATH_MAX];
     };
     block();
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+}
+
+- (void)performBlockAndReportDuration:(dispatch_block_t)block measurement:(NSString *)measurement {
+    NSDate *startDate = [NSDate new];
+    block();
+    NSDate *endDate = [NSDate new];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger duration = [[calendar components:NSCalendarUnitNanosecond fromDate:startDate toDate:endDate options: 0] nanosecond];
+    NSDictionary *metrics = @{@"duration.nanos": [@(duration) stringValue]};
+    [self reportMetrics:metrics measurement:measurement];
+}
+
+- (void)reportMetrics:(NSDictionary *)metrics measurement:(NSString *)measurement {
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
+    NSString *metricsEndpoint = [NSString stringWithFormat:@"%@/metrics", theBaseMazeAddress];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:metricsEndpoint]];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSMutableDictionary *body = [metrics mutableCopy];
+    body[@"metric.measurement"] = measurement;
+    body[@"device.manufacturer"] = [Bugsnag session].device.manufacturer ?: @"Apple";
+    NSString *deviceModel = [Bugsnag session].device.model;
+    NSString *systemVersion = [Bugsnag session].device.osVersion;
+    if (deviceModel) {
+        body[@"device.model"] = deviceModel;
+    }
+    if (systemVersion) {
+        body[@"os.version"] = systemVersion;
+    }
+    
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:body
+                                                       options:0
+                                                         error:&error];
+    if (!jsonData) {
+        return;
+    }
+    [request setHTTPBody: jsonData];
+    
+    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {}] resume];
 }
 
 - (void)requestDidComplete:(NSURLRequest *)request {

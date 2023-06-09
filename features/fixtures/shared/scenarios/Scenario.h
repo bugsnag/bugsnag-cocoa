@@ -35,6 +35,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 - (void)didEnterBackgroundNotification;
 
 @property (nonatomic, strong, nullable) NSString *eventMode;
+@property (nonatomic, strong, nullable) BugsnagSession *session;
 
 - (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForEventDelivery(_:));
 
