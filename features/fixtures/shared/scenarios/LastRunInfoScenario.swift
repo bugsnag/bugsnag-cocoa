@@ -39,7 +39,7 @@ class LastRunInfoScenario: Scenario {
     
     func waitForDelivery() {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("com.bugsnag.Bugsnag")
+            .appendingPathComponent("com.bugsnag.fixtures.Bugsnag")
             .appendingPathComponent(Bundle.main.bundleIdentifier!)
             .appendingPathComponent("v1")
             .appendingPathComponent("KSCrashReports")

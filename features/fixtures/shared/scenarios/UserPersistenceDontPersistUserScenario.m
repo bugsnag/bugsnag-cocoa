@@ -23,7 +23,7 @@
 }
 
 - (void)run {
-    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag.fixtures" code:833 userInfo:nil]];
 }
 
 @end

@@ -27,7 +27,7 @@
 - (void)modifySessionCreationDate {
     NSString *dir = [@[
         NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES)[0],
-        @"com.bugsnag.Bugsnag",
+        @"com.bugsnag.fixtures.Bugsnag",
         NSBundle.mainBundle.bundleIdentifier,
         @"v1",
         @"sessions"

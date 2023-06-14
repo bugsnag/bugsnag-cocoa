@@ -16,7 +16,7 @@ class CouldNotCreateDirectoryScenario: Scenario {
         let fileManager = FileManager()
         
         let dir = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("com.bugsnag.Bugsnag")
+            .appendingPathComponent("com.bugsnag.fixtures.Bugsnag")
             .appendingPathComponent(Bundle.main.bundleIdentifier!)
         
         try? fileManager.removeItem(at: dir)

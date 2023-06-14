@@ -15,7 +15,7 @@ BeforeAll do
 
   if Maze.config.os == 'ios' && Maze.config.farm == :local
     # Recent Appium versions don't always uninstall the old version of the app ¯\_(ツ)_/¯
-    system('ideviceinstaller --uninstall com.bugsnag.iOSTestApp')
+    system('ideviceinstaller --uninstall com.bugsnag.fixtures.iOSTestApp')
   end
 
   if Maze.config.os == 'ios'
@@ -134,7 +134,7 @@ Maze.hooks.after do |scenario|
     end
   when 'ios'
     begin
-      data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
+      data = Maze.driver.pull_file '@com.bugsnag.fixtures.iOSTestApp/Documents/kscrash.log'
       File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
     rescue StandardError
       puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"

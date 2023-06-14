@@ -33,7 +33,7 @@
 - (void)run  __attribute__((noreturn)) {
     // Notify error so that mazerunner sees something
     [self performBlockAndWaitForEventDelivery:^{
-        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+        [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag.fixtures" code:833 userInfo:nil]];
     }];
 
     strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)

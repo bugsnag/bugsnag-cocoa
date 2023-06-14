@@ -67,13 +67,13 @@ end
 
 Then('the app is running in the foreground') do
   wait_for_true do
-    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_foreground
+    Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :running_in_foreground
   end
 end
 
 Then('the app is running in the background') do
   wait_for_true do
-    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_background
+    Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :running_in_background
   end
 end
 
@@ -81,9 +81,9 @@ Then('the app is not running') do
   wait_for_true do
     case Maze::Helper.get_current_platform
     when 'ios'
-      Maze.driver.app_state('com.bugsnag.iOSTestApp') == :not_running
+      Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :not_running
     when 'macos'
-      `lsappinfo info -only pid -app com.bugsnag.macOSTestApp`.empty?
+      `lsappinfo info -only pid -app com.bugsnag.fixtures.macOSTestApp`.empty?
     else
       raise "Don't know how to query app state on this platform"
     end

@@ -1105,7 +1105,7 @@
 				);
 				INFOPLIST_FILE = macOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.macOSTestApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.macOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_SWIFT_SYMBOLS = NO;
@@ -1131,7 +1131,7 @@
 				);
 				INFOPLIST_FILE = macOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.macOSTestApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.macOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_SWIFT_SYMBOLS = NO;
