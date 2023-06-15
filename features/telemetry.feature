@@ -32,7 +32,7 @@ Feature: Telemetry
     And the event "apiKey" is null
     And the event "context" equals "v1"
     And the event "metaData.BugsnagDiagnostics.apiKey" equals "12312312312312312312312312312312"
-    And the event "metaData.BugsnagDiagnostics.NSFilePath" matches "com.bugsnag.fixtures.Bugsnag"
+    And the event "metaData.BugsnagDiagnostics.NSFilePath" matches "com.bugsnag.Bugsnag"
     And the event "unhandled" is false
     And the exception "errorClass" equals "Could not create directory"
     And the exception "message" matches "NSCocoaErrorDomain 513: You don’t have permission"

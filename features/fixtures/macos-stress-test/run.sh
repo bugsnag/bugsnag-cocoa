@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 QUIET=true ./build/usr/local/bin/BugsnagStressTest
 RESULT=$?
 
-rm -rf ~/Library/Application\ Support/com.bugsnag.fixtures.Bugsnag
+rm -rf ~/Library/Application\ Support/com.bugsnag.Bugsnag
 
 if [ "$RESULT" -ne "0" ]; then
 	# Wait for the crash reporter to write a crash report

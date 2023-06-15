@@ -38,7 +38,7 @@ int main(int argc, const char * argv[]) {
          [[NSFileManager.defaultManager
            URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask
            appropriateForURL:nil create:NO error:nil]
-          URLByAppendingPathComponent:@"com.bugsnag.fixtures.Bugsnag"] error:nil];
+          URLByAppendingPathComponent:@"com.bugsnag.Bugsnag"] error:nil];
         
         BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
         config.apiKey = @"0192837465afbecd0192837465afbecd";

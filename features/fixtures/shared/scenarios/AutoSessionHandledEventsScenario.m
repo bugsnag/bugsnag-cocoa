@@ -14,7 +14,7 @@
 @implementation AutoSessionHandledEventsScenario
 
 - (void)run {
-    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag.fixtures" code:833 userInfo:nil]];
+    [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [Bugsnag notify:[NSException exceptionWithName:@"BugsnagsKnownUnknowns"
                                                 reason:@"this event was very questionable"

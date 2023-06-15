@@ -13,7 +13,7 @@ class OldCrashReportScenario: Scenario {
     
     func modifyEventCreationDate() {
         let dir = [NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)[0],
-                   "com.bugsnag.fixtures.Bugsnag",
+                   "com.bugsnag.Bugsnag",
                    Bundle.main.bundleIdentifier!,
                    "v1",
                    "KSCrashReports"].joined(separator: "/")

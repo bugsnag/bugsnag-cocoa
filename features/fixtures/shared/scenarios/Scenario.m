@@ -205,7 +205,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         }
     }
     NSString *appSupportDir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *rootDir = [appSupportDir stringByAppendingPathComponent:@"com.bugsnag.fixtures.Bugsnag"];
+    NSString *rootDir = [appSupportDir stringByAppendingPathComponent:@"com.bugsnag.Bugsnag"];
     NSError *error = nil;
     if (![NSFileManager.defaultManager removeItemAtPath:rootDir error:&error]) {
         if (![error.domain isEqualToString:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
