@@ -32,6 +32,10 @@ BeforeAll do
 
     disable_unexpectedly_quit_dialog
   end
+
+  # Experiment
+  Maze.config.enable_retries
+
 end
 
 # Disables the "macOSTestApp quit unexpectedly" dialog to prevent focus being stolen from the fixture.
