@@ -65,18 +65,6 @@ end
 # 3: The application is running in the background and is not suspended
 # 4: The application is running in the foreground
 
-Then('the app is running in the foreground') do
-  wait_for_true do
-    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_foreground
-  end
-end
-
-Then('the app is running in the background') do
-  wait_for_true do
-    Maze.driver.app_state('com.bugsnag.iOSTestApp') == :running_in_background
-  end
-end
-
 Then('the app is not running') do
   wait_for_true do
     case Maze::Helper.get_current_platform
