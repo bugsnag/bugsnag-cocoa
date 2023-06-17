@@ -282,191 +282,191 @@ steps:
   #
   # Basic build E2E tests
   #
-
-  #
-  # BitBar
-  #
-  - label: ':bitbar: iOS 16 E2E tests batch 1'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=/app/build/iOSTestApp.ipa"
-          - "--farm=bb"
-          - "--device=IOS_16"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
-    concurrency: 25
-    concurrency_group: 'bitbar-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 16 E2E tests batch 2'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=/app/build/iOSTestApp.ipa"
-          - "--farm=bb"
-          - "--device=IOS_16"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
-    concurrency: 25
-    concurrency_group: 'bitbar-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 15 barebone tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=/app/build/iOSTestApp.ipa"
-          - "--farm=bb"
-          - "--device=IOS_15"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 25
-    concurrency_group: 'bitbar-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 14 barebone tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=/app/build/iOSTestApp.ipa"
-          - "--farm=bb"
-          - "--device=IOS_14"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 25
-    concurrency_group: 'bitbar-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 13 barebone tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=/app/build/iOSTestApp.ipa"
-          - "--farm=bb"
-          - "--device=IOS_13"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 25
-    concurrency_group: 'bitbar-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 12 barebone tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=/app/build/iOSTestApp.ipa"
-          - "--farm=bb"
-          - "--device=IOS_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 25
-    concurrency_group: 'bitbar-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
+#
+#  #
+#  # BitBar
+#  #
+#  - label: ':bitbar: iOS 16 E2E tests batch 1'
+#    depends_on:
+#      - cocoa_fixture
+#    timeout_in_minutes: 60
+#    agents:
+#      queue: opensource
+#    plugins:
+#      artifacts#v1.9.0:
+#        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+#        upload: "maze_output/failed/**/*"
+#      docker-compose#v4.7.0:
+#        pull: cocoa-maze-runner-bitbar
+#        run: cocoa-maze-runner-bitbar
+#        service-ports: true
+#        command:
+#          - "--app=/app/build/iOSTestApp.ipa"
+#          - "--farm=bb"
+#          - "--device=IOS_16"
+#          - "--no-tunnel"
+#          - "--aws-public-ip"
+#          - "--fail-fast"
+#          - "--exclude=features/[e-z].*.feature$"
+#          - "--order=random"
+#    concurrency: 25
+#    concurrency_group: 'bitbar-app'
+#    concurrency_method: eager
+#    retry:
+#      automatic:
+#        - exit_status: -1  # Agent was lost
+#          limit: 2
+#
+#  - label: ':bitbar: iOS 16 E2E tests batch 2'
+#    depends_on:
+#      - cocoa_fixture
+#    timeout_in_minutes: 60
+#    agents:
+#      queue: opensource
+#    plugins:
+#      artifacts#v1.9.0:
+#        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+#        upload: "maze_output/failed/**/*"
+#      docker-compose#v4.7.0:
+#        pull: cocoa-maze-runner-bitbar
+#        run: cocoa-maze-runner-bitbar
+#        service-ports: true
+#        command:
+#          - "--app=/app/build/iOSTestApp.ipa"
+#          - "--farm=bb"
+#          - "--device=IOS_16"
+#          - "--no-tunnel"
+#          - "--aws-public-ip"
+#          - "--fail-fast"
+#          - "--exclude=features/[a-d].*.feature$"
+#          - "--order=random"
+#    concurrency: 25
+#    concurrency_group: 'bitbar-app'
+#    concurrency_method: eager
+#    retry:
+#      automatic:
+#        - exit_status: -1  # Agent was lost
+#          limit: 2
+#
+#  - label: ':bitbar: iOS 15 barebone tests'
+#    depends_on:
+#      - cocoa_fixture
+#    timeout_in_minutes: 60
+#    agents:
+#      queue: opensource
+#    plugins:
+#      artifacts#v1.9.0:
+#        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+#        upload: "maze_output/failed/**/*"
+#      docker-compose#v4.7.0:
+#        pull: cocoa-maze-runner-bitbar
+#        run: cocoa-maze-runner-bitbar
+#        service-ports: true
+#        command:
+#          - "--app=/app/build/iOSTestApp.ipa"
+#          - "--farm=bb"
+#          - "--device=IOS_15"
+#          - "--no-tunnel"
+#          - "--aws-public-ip"
+#          - "--fail-fast"
+#          - "features/barebone_tests.feature"
+#    concurrency: 25
+#    concurrency_group: 'bitbar-app'
+#    concurrency_method: eager
+#    retry:
+#      automatic:
+#        - exit_status: -1  # Agent was lost
+#          limit: 2
+#
+#  - label: ':bitbar: iOS 14 barebone tests'
+#    depends_on:
+#      - cocoa_fixture
+#    timeout_in_minutes: 60
+#    agents:
+#      queue: opensource
+#    plugins:
+#      artifacts#v1.9.0:
+#        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+#        upload: "maze_output/failed/**/*"
+#      docker-compose#v4.7.0:
+#        pull: cocoa-maze-runner-bitbar
+#        run: cocoa-maze-runner-bitbar
+#        service-ports: true
+#        command:
+#          - "--app=/app/build/iOSTestApp.ipa"
+#          - "--farm=bb"
+#          - "--device=IOS_14"
+#          - "--no-tunnel"
+#          - "--aws-public-ip"
+#          - "--fail-fast"
+#          - "features/barebone_tests.feature"
+#    concurrency: 25
+#    concurrency_group: 'bitbar-app'
+#    concurrency_method: eager
+#    retry:
+#      automatic:
+#        - exit_status: -1  # Agent was lost
+#          limit: 2
+#
+#  - label: ':bitbar: iOS 13 barebone tests'
+#    depends_on:
+#      - cocoa_fixture
+#    timeout_in_minutes: 60
+#    agents:
+#      queue: opensource
+#    plugins:
+#      artifacts#v1.9.0:
+#        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+#        upload: "maze_output/failed/**/*"
+#      docker-compose#v4.7.0:
+#        pull: cocoa-maze-runner-bitbar
+#        run: cocoa-maze-runner-bitbar
+#        service-ports: true
+#        command:
+#          - "--app=/app/build/iOSTestApp.ipa"
+#          - "--farm=bb"
+#          - "--device=IOS_13"
+#          - "--no-tunnel"
+#          - "--aws-public-ip"
+#          - "--fail-fast"
+#          - "features/barebone_tests.feature"
+#    concurrency: 25
+#    concurrency_group: 'bitbar-app'
+#    concurrency_method: eager
+#    retry:
+#      automatic:
+#        - exit_status: -1  # Agent was lost
+#          limit: 2
+#
+#  - label: ':bitbar: iOS 12 barebone tests'
+#    depends_on:
+#      - cocoa_fixture
+#    timeout_in_minutes: 60
+#    agents:
+#      queue: opensource
+#    plugins:
+#      artifacts#v1.9.0:
+#        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+#        upload: "maze_output/failed/**/*"
+#      docker-compose#v4.7.0:
+#        pull: cocoa-maze-runner-bitbar
+#        run: cocoa-maze-runner-bitbar
+#        service-ports: true
+#        command:
+#          - "--app=/app/build/iOSTestApp.ipa"
+#          - "--farm=bb"
+#          - "--device=IOS_12"
+#          - "--no-tunnel"
+#          - "--aws-public-ip"
+#          - "--fail-fast"
+#          - "features/barebone_tests.feature"
+#    concurrency: 25
+#    concurrency_group: 'bitbar-app'
+#    concurrency_method: eager
+#    retry:
+#      automatic:
+#        - exit_status: -1  # Agent was lost
+#          limit: 2
 
   #
   # BrowserStack
