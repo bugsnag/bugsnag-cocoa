@@ -102,7 +102,7 @@ end
 def trigger_app_command
   case Maze::Helper.get_current_platform
   when 'ios'
-    Maze.driver.click_element :execute_command
+    # Do nothing
   when 'macos'
     run_macos_app
   when 'watchos'

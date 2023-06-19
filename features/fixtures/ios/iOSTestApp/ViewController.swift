@@ -25,6 +25,17 @@ class ViewController: UIViewController {
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
+
+        // Poll for commands to run
+        Scenario.baseMazeAddress = loadMazeRunnerAddress()
+        if #available(iOS 10.0, *) {
+            Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { timer in
+                Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
+                    self.scenarioNameField.text = scenarioName
+                    self.scenarioMetaDataField.text = eventMode
+                }
+            }
+        }
     }
 
     @IBAction func runTestScenario() {
@@ -101,14 +112,6 @@ class ViewController: UIViewController {
         Scenario.createScenarioNamed(scenarioNameField.text!,
                                      withConfig: config)
         Scenario.current!.eventMode = scenarioMetaDataField.text
-    }
-
-    @IBAction func executeCommand(_ sender: Any) {
-        Scenario.baseMazeAddress = loadMazeRunnerAddress()
-        Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
-            self.scenarioNameField.text = scenarioName
-            self.scenarioMetaDataField.text = eventMode
-        }
     }
 
     @objc func didEnterBackgroundNotification() {

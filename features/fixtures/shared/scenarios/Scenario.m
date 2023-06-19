@@ -231,6 +231,11 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         NSDictionary *command = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         
         NSString *action = [command objectForKey:@"action"];
+        if ([action isEqualToString:@"noop"]) {
+            NSLog(@"No Maze Runner command queued at present");
+            return;
+        }
+        
         NSParameterAssert([action isKindOfClass:[NSString class]]);
         
         NSString *scenarioName = [command objectForKey:@"scenario_name"];
