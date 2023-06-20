@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         // Poll for commands to run
         Scenario.baseMazeAddress = loadMazeRunnerAddress()
         if #available(iOS 10.0, *) {
-            Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { timer in
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
                 Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
                     self.scenarioNameField.text = scenarioName
                     self.scenarioMetaDataField.text = eventMode
