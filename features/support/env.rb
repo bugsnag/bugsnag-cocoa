@@ -136,12 +136,12 @@ Maze.hooks.after do |scenario|
       Process.wait log
       FileUtils.mv '/tmp/kscrash.log', path
     end
-  # when 'ios'
-  #   begin
-  #     data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
-  #     File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
-  #   rescue StandardError
-  #     puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"
-  #   end
+  when 'ios'
+    begin
+      data = Maze.driver.pull_file '@com.bugsnag.iOSTestApp/Documents/kscrash.log'
+      File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+    rescue StandardError
+      puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"
+    end
   end
 end
