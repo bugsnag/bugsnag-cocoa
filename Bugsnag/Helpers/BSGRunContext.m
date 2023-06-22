@@ -253,7 +253,7 @@ static void NoteAppWillTerminate(__unused CFNotificationCenterRef center,
 
 #endif
 
-#if TARGET_OS_IOS
+#if !TARGET_OS_XR && TARGET_OS_IOS
 
 static void NoteBatteryLevel(__unused CFNotificationCenterRef center,
                              __unused void *observer,
@@ -356,7 +356,7 @@ static void AddObservers(void) {
     bsg_runContext->batteryState = BSGGetDevice().batteryState;
 #endif
 
-#if TARGET_OS_IOS
+#if !TARGET_OS_XR && TARGET_OS_IOS
     UIDevice *currentDevice = [UIDEVICE currentDevice];
     [currentDevice beginGeneratingDeviceOrientationNotifications];
     bsg_runContext->lastKnownOrientation = currentDevice.orientation;

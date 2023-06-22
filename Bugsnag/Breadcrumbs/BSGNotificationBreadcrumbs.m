@@ -413,7 +413,7 @@ static NSString *nullStringIfBlank(NSString *str) {
 
 #pragma mark -
 
-#if TARGET_OS_IOS
+#if !TARGET_OS_XR && TARGET_OS_IOS
 
 - (void)orientationDidChange:(NSNotification *)notification {
     UIDevice *device = notification.object;
