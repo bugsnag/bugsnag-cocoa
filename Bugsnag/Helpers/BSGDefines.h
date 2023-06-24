@@ -23,6 +23,12 @@
 #define BSG_HAVE_UIDEVICE                     __has_include(<UIKit/UIDevice.h>)
 #define BSG_HAVE_WINDOW                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
 
+// Capabilities from future OS versions to allow this to be merged during visionOS beta
+
+#ifndef TARGET_OS_XR
+  #define TARGET_OS_XR 0
+#endif
+
 // Capabilities dependent upon previously defined capabilities
 #define BSG_HAVE_APP_HANG_DETECTION           (BSG_HAVE_MACH_THREADS)
 
