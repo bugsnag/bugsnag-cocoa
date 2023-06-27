@@ -86,6 +86,7 @@ BSG_OBJC_DIRECT_MEMBERS
  *
  * @return The stringified hex representation of the hash for this device + app.
  */
-+ (NSString *)deviceAndAppHash;
+// Disabled so that it never gets used unintentionally.
+//+ (NSString *)deviceAndAppHash;
 
 @end

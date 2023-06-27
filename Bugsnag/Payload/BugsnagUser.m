@@ -9,6 +9,7 @@
 #import "BugsnagUser+Private.h"
 
 #import "BSG_KSSystemInfo.h"
+#import "BSGPersistentDeviceID.h"
 
 BSG_OBJC_DIRECT_MEMBERS
 @implementation BugsnagUser
@@ -43,7 +44,7 @@ BSG_OBJC_DIRECT_MEMBERS
     if (self.id) {
         return self;
     } else {
-        return [[BugsnagUser alloc] initWithId:[BSG_KSSystemInfo deviceAndAppHash]
+        return [[BugsnagUser alloc] initWithId:BSGPersistentDeviceID.current.external
                                           name:self.name
                                   emailAddress:self.email];
     }
