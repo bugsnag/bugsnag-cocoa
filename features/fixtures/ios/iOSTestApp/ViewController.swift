@@ -71,7 +71,7 @@ class ViewController: UIViewController {
             return bsAddress;
         }
         
-        for _ in 1...60 {
+        for _ in 1...15 {
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
             log("Reading Maze Runner address from fixture_config.json")
