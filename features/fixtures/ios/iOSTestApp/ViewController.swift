@@ -36,10 +36,10 @@ class ViewController: UIViewController {
 
         // Poll for commands to run
         if #available(iOS 10.0, *) {
-            if Scenario.baseMazeAddress.isEmpty {
-                Scenario.baseMazeAddress = loadMazeRunnerAddress()
-            }
-                Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+                if Scenario.baseMazeAddress.isEmpty {
+                    Scenario.baseMazeAddress = self.loadMazeRunnerAddress()
+                }
                 Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
                     log("Setting field values")
                     self.scenarioNameField.text = scenarioName
