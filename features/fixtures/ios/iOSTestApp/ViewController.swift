@@ -31,8 +31,10 @@ class ViewController: UIViewController {
         if #available(iOS 10.0, *) {
             Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
                 Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
+                    log("Setting field values")
                     self.scenarioNameField.text = scenarioName
                     self.scenarioMetaDataField.text = eventMode
+                    log("Done setting field values")
                 }
             }
         }
@@ -71,7 +73,7 @@ class ViewController: UIViewController {
             return bsAddress;
         }
         
-        for _ in 1...15 {
+        for n in 1...20 {
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
             log("Reading Maze Runner address from fixture_config.json")
@@ -80,6 +82,7 @@ class ViewController: UIViewController {
                                   relativeTo: documentsUrl).appendingPathExtension("json")
                 let savedData = try Data(contentsOf: fileUrl)
                 if let contents = String(data: savedData, encoding: .utf8) {
+                    NSLog("Found file after %@ seconds", n)
                     let decoder = JSONDecoder()
                     let jsonData = contents.data(using: .utf8)
                     let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
