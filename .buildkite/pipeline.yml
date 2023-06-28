@@ -526,6 +526,29 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
+  - label: ':bitbar: Temp test'
+    depends_on: "cocoa_fixture"
+    timeout_in_minutes: 20
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bb"
+          - "--device=IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "features/app_and_device_attributes.feature:6"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
 
   ##############################################################################
   #
