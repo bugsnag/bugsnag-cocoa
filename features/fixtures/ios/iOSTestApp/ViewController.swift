@@ -18,13 +18,21 @@ class ViewController: UIViewController {
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
     @IBOutlet var apiKeyField: UITextField!
-    var mazeRunnerAddress: String = "";
+    var mazeRunnerAddress: String = ""
+    var timerStarted: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if timerStarted { return }
+        timerStarted = true
 
         // Poll for commands to run
         Scenario.baseMazeAddress = loadMazeRunnerAddress()
@@ -73,7 +81,7 @@ class ViewController: UIViewController {
             return bsAddress;
         }
         
-        for n in 1...20 {
+        for n in 1...60 {
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
             log("Reading Maze Runner address from fixture_config.json")
@@ -82,7 +90,7 @@ class ViewController: UIViewController {
                                   relativeTo: documentsUrl).appendingPathExtension("json")
                 let savedData = try Data(contentsOf: fileUrl)
                 if let contents = String(data: savedData, encoding: .utf8) {
-                    NSLog("Found file after %@ seconds", n)
+                    NSLog("Found fixture_config.json after %@ seconds", n)
                     let decoder = JSONDecoder()
                     let jsonData = contents.data(using: .utf8)
                     let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
