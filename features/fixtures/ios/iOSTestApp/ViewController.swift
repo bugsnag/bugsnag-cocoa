@@ -36,15 +36,17 @@ class ViewController: UIViewController {
 
         // Poll for commands to run
         if #available(iOS 10.0, *) {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-                if Scenario.baseMazeAddress.isEmpty {
-                    Scenario.baseMazeAddress = self.loadMazeRunnerAddress()
-                }
-                Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
-                    log("Setting field values")
-                    self.scenarioNameField.text = scenarioName
-                    self.scenarioMetaDataField.text = eventMode
-                    log("Done setting field values")
+            DispatchQueue.global(qos: .background).async {
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+                    if Scenario.baseMazeAddress.isEmpty {
+                        Scenario.baseMazeAddress = self.loadMazeRunnerAddress()
+                    }
+                    Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
+                        log("Setting field values")
+                        self.scenarioNameField.text = scenarioName
+                        self.scenarioMetaDataField.text = eventMode
+                        log("Done setting field values")
+                    }
                 }
             }
         }
