@@ -32,7 +32,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 // MARK: -
 
 static Scenario *theScenario;
-static NSString *theBaseMazeAddress;
+static NSString *theBaseMazeAddress = @"";
 
 #if !TARGET_OS_WATCH
 static char ksLogPath[PATH_MAX];

@@ -35,9 +35,11 @@ class ViewController: UIViewController {
         timerStarted = true
 
         // Poll for commands to run
-        Scenario.baseMazeAddress = loadMazeRunnerAddress()
         if #available(iOS 10.0, *) {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            if Scenario.baseMazeAddress.isEmpty {
+                Scenario.baseMazeAddress = loadMazeRunnerAddress()
+            }
+                Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
                 Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
                     log("Setting field values")
                     self.scenarioNameField.text = scenarioName
@@ -81,7 +83,7 @@ class ViewController: UIViewController {
             return bsAddress;
         }
         
-        for n in 1...60 {
+        for n in 1...30 {
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
             log("Reading Maze Runner address from fixture_config.json")
