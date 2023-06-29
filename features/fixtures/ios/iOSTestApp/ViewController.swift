@@ -11,6 +11,11 @@ import os
 
 class FixtureConfig: Codable {
     var maze_address: String
+    
+    
+    func startBugsnag() {
+        sleep(1)
+    }
 }
 
 class ViewController: UIViewController {
@@ -27,24 +32,16 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
 
+        
         // Poll for commands to run
         if #available(iOS 10.0, *) {
-
-            DispatchQueue.global().async {
-                if Scenario.baseMazeAddress.isEmpty {
-                    Scenario.baseMazeAddress = self.loadMazeRunnerAddress()
-                }
-
-                while true {
-                    Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
-                        log("Setting field values")
-                        self.scenarioNameField.text = scenarioName
-                        self.scenarioMetaDataField.text = eventMode
-                        log("Done setting field values")
-                    }
-                    sleep(1)
-                }
+            let uiUpdater = { (scenarioName: String, eventMode: String) in
+                self.scenarioNameField.text = scenarioName
+                self.scenarioMetaDataField.text = eventMode
             }
+
+            let thread = CommandReaderThread(action: uiUpdater)
+            thread.start()
         }
     }
 
@@ -72,56 +69,6 @@ class ViewController: UIViewController {
         Scenario.clearPersistentData()
     }
 
-    func loadMazeRunnerAddress() -> String {
-
-        // TODO Debug - default to nonsense for now so it also fails on BS
-        //let bsAddress = "http://bs-local.com:9339"
-        let bsAddress = "http://sdsdfcsdcfewcw:1234"
-
-        // Only iOS 12 and above will run on BitBar for now
-        if #available(iOS 12.0, *) {} else {
-            return bsAddress;
-        }
-        
-        for n in 1...30 {
-            log("SKW0")
-            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-
-            log("Reading Maze Runner address from fixture_config.json")
-            do {
-                
-                log("SKW1")
-                
-                let fileUrl = URL(fileURLWithPath: "fixture_config",
-                                  relativeTo: documentsUrl).appendingPathExtension("json")
-
-                log("SKW2")
-                let savedData = try Data(contentsOf: fileUrl)
-
-                log("SKW3")
-                if let contents = String(data: savedData, encoding: .utf8) {
-                    NSLog("Found fixture_config.json after %@ seconds", n)
-                    let decoder = JSONDecoder()
-                    let jsonData = contents.data(using: .utf8)
-                    let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
-                    let address = "http://" + config.maze_address
-                    log("Using Maze Runner address: " + address)
-                    return address
-                }
-
-                log("SKW4")
-            }
-            catch let error as NSError {
-                log("Failed to read fixture_config.json: \(error)")
-            }
-            log("Waiting for fixture_config.json to appear")
-            sleep(1)
-        }
-
-        log("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
-        return bsAddress;
-    }
-    
     internal func prepareScenario() {
         var config: BugsnagConfiguration?
         if (apiKeyField.text!.count > 0) {

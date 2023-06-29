@@ -217,7 +217,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 #endif
 }
 
-+ (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
++ (void)executeMazeRunnerCommand:(void (^)(NSString *scenarioName, NSString *scenarioMode))preHandler {
     NSLog(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", theBaseMazeAddress];
@@ -250,9 +250,10 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
             [self clearPersistentData];
         }
 
+        // Display the scenario name/data on the UI
         if (preHandler) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                preHandler(action, scenarioName, eventMode);
+                preHandler(scenarioName, eventMode);
             });
         }
         
