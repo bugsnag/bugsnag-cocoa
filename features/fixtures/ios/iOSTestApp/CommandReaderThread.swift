@@ -31,9 +31,7 @@ class CommandReaderThread: Thread {
     
     func loadMazeRunnerAddress() -> String {
 
-        // TODO Debug - default to nonsense for now so it also fails on BS
-        //let bsAddress = "http://bs-local.com:9339"
-        let bsAddress = "http://sdsdfcsdcfewcw:1234"
+        let bsAddress = "http://bs-local.com:9339"
 
         // Only iOS 12 and above will run on BitBar for now
         if #available(iOS 12.0, *) {} else {
@@ -41,21 +39,15 @@ class CommandReaderThread: Thread {
         }
         
         for n in 1...30 {
-            log("SKW0")
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
             log("Reading Maze Runner address from fixture_config.json")
             do {
-                
-                log("SKW1")
-                
                 let fileUrl = URL(fileURLWithPath: "fixture_config",
                                   relativeTo: documentsUrl).appendingPathExtension("json")
 
-                log("SKW2")
                 let savedData = try Data(contentsOf: fileUrl)
 
-                log("SKW3")
                 if let contents = String(data: savedData, encoding: .utf8) {
                     NSLog("Found fixture_config.json after %d seconds", n)
                     let decoder = JSONDecoder()
@@ -65,8 +57,6 @@ class CommandReaderThread: Thread {
                     log("Using Maze Runner address: " + address)
                     return address
                 }
-
-                log("SKW4")
             }
             catch let error as NSError {
                 log("Failed to read fixture_config.json: \(error)")
