@@ -16,6 +16,7 @@
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagEvent+Private.h"
 #import "BugsnagNotifier.h"
+#import "BSGPersistentDeviceID.h"
 
 @interface BSGInternalErrorReporterTests : XCTestCase
 
@@ -53,7 +54,7 @@
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
     
     XCTAssertNotNil(event.device.id);
-    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
+    XCTAssertNotEqualObjects(event.device.id, BSGPersistentDeviceID.current.external, @"Internal errors must use a different device id");
 }
 
 - (void)testEventWithException {
@@ -79,7 +80,7 @@
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);
     
     XCTAssertNotNil(event.device.id);
-    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
+    XCTAssertNotEqualObjects(event.device.id, BSGPersistentDeviceID.current.external, @"Internal errors must use a different device id");
 }
 
 - (void)testEventWithRecrashReport {
@@ -97,7 +98,7 @@
     XCTAssertNil(event.apiKey);
     
     XCTAssertNotNil(event.device.id);
-    XCTAssertNotEqualObjects(event.device.id, [BSG_KSSystemInfo deviceAndAppHash], @"Internal errors must use a different device id");
+    XCTAssertNotEqualObjects(event.device.id, BSGPersistentDeviceID.current.external, @"Internal errors must use a different device id");
     
     NSDictionary *diagnostics = [event.metadata getMetadataFromSection:@"BugsnagDiagnostics"];
     XCTAssertEqualObjects(diagnostics[@"apiKey"], configuration.apiKey);

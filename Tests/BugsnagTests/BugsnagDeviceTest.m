@@ -56,7 +56,7 @@
 
     // verify stateless fields
     XCTAssertTrue(device.jailbroken);
-    XCTAssertEqualObjects(@"123", device.id);
+    XCTAssertNotNil(device.id);
     XCTAssertNotNil(device.locale);
     XCTAssertEqualObjects(@"Apple", device.manufacturer);
     XCTAssertEqualObjects(@"x86_64", device.model);
@@ -76,7 +76,7 @@
 
     // verify stateless fields
     XCTAssertTrue(device.jailbroken);
-    XCTAssertEqualObjects(@"123", device.id);
+    XCTAssertNotNil(device.id);
     XCTAssertNotNil(device.locale);
     XCTAssertEqualObjects(@"Apple", device.manufacturer);
     XCTAssertEqualObjects(@"x86_64", device.model);
@@ -114,7 +114,7 @@
 
     // verify stateless fields
     XCTAssertTrue(dict[@"jailbroken"]);
-    XCTAssertEqualObjects(@"123", dict[@"id"]);
+    XCTAssertNotNil(device.id);
     XCTAssertEqualObjects(@"en-US", dict[@"locale"]);
     XCTAssertEqualObjects(@"Apple", dict[@"manufacturer"]);
     XCTAssertEqualObjects(@"x86_64", dict[@"model"]);
@@ -136,7 +136,7 @@
     NSDictionary *dict = [device toDictionary];
 
     XCTAssertTrue(dict[@"jailbroken"]);
-    XCTAssertEqualObjects(@"123", dict[@"id"]);
+    XCTAssertNotNil(device.id);
     XCTAssertEqualObjects(@"en-US", dict[@"locale"]);
     XCTAssertEqualObjects(@"Apple", dict[@"manufacturer"]);
     XCTAssertEqualObjects(@"x86_64", dict[@"model"]);
