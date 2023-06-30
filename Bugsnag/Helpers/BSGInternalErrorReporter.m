@@ -23,6 +23,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagUser+Private.h"
+#import "BSGPersistentDeviceID.h"
 
 #if TARGET_OS_IOS || TARGET_OS_TV
 #import "BSGUIKit.h"
@@ -43,8 +44,6 @@ NSString *BSGErrorDescription(NSError *error) {
     return error ? [NSString stringWithFormat:@"%@ %ld: %@", error.domain, (long)error.code,
                     error.userInfo[NSDebugDescriptionErrorKey] ?: error.localizedDescription] : nil;
 }
-
-static NSString * DeviceId(void);
 
 static NSString * Sysctl(const char *name);
 
@@ -209,7 +208,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
                                    @"/System/Library/CoreServices/SystemVersion.plist"];
     
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState new];
-    device.id           = DeviceId();
+    device.id           = BSGPersistentDeviceID.current.internal;
     device.manufacturer = @"Apple";
     device.osName       = systemVersion[@"ProductName"];
     device.osVersion    = systemVersion[@"ProductVersion"];
@@ -280,45 +279,6 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 
 
 // MARK: -
-
-// Intentionally differs from +[BSG_KSSystemInfo deviceAndAppHash]
-// See ROAD-1488
-static NSString * DeviceId(void) {
-    CC_SHA1_CTX ctx;
-    CC_SHA1_Init(&ctx);
-
-#if TARGET_OS_OSX
-    char mac[6] = {0};
-    bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, mac);
-    CC_SHA1_Update(&ctx, mac, sizeof(mac));
-#elif TARGET_OS_IOS || TARGET_OS_TV
-    uuid_t uuid = {0};
-    [[[UIDEVICE currentDevice] identifierForVendor] getUUIDBytes:uuid];
-    CC_SHA1_Update(&ctx, uuid, sizeof(uuid));
-#elif TARGET_OS_WATCH
-    uuid_t uuid = {0};
-    [[[WKInterfaceDevice currentDevice] identifierForVendor] getUUIDBytes:uuid];
-    CC_SHA1_Update(&ctx, uuid, sizeof(uuid));
-#else
-#error Unsupported target platform
-#endif
-    
-    const char *name = (NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName).UTF8String;
-    if (name) {
-        CC_SHA1_Update(&ctx, name, (CC_LONG)strlen(name));
-    }
-    
-    unsigned char md[CC_SHA1_DIGEST_LENGTH];
-    CC_SHA1_Final(md, &ctx);
-    
-    char hex[2 * sizeof(md)];
-    for (size_t i = 0; i < sizeof(md); i++) {
-        static char lookup[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        hex[i * 2 + 0] = lookup[(md[i] & 0xf0) >> 4];
-        hex[i * 2 + 1] = lookup[(md[i] & 0x0f)];
-    }
-    return [[NSString alloc] initWithBytes:hex length:sizeof(hex) encoding:NSASCIIStringEncoding];
-}
 
 static NSString * Sysctl(const char *name) {
     char buffer[32] = {0};

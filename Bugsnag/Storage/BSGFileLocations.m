@@ -30,7 +30,7 @@ static BOOL ensureDirExists(NSString *path) {
     return YES;
 }
 
-static NSString *rootDirectory(NSString *fsVersion) {
+static NSString *cachesDirectory() {
     // Default to an unusable location that will always fail.
     static NSString* rootPath = @"/";
 
@@ -50,8 +50,21 @@ static NSString *rootDirectory(NSString *fsVersion) {
             return;
         }
 
+
+        rootPath = url.path;
+    });
+
+    return rootPath;
+}
+
+static NSString *bugsnagPath(NSString *fsVersion) {
+    // Default to an unusable location that will always fail.
+    static NSString* rootPath = @"/";
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         rootPath = [NSString stringWithFormat:@"%@/com.bugsnag.Bugsnag/%@/%@",
-                    url.path,
+                    cachesDirectory(),
                     // Processes that don't have an Info.plist have no bundleIdentifier
                     NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName,
                     fsVersion];
@@ -60,6 +73,21 @@ static NSString *rootDirectory(NSString *fsVersion) {
     });
 
     return rootPath;
+}
+
+static NSString *bugsnagSharedPath() {
+    // Default to an unusable location that will always fail.
+    static NSString* sharedPath = @"/";
+
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedPath = [cachesDirectory() stringByAppendingFormat:@"/bugsnag-shared-%@",
+                      [[NSBundle mainBundle] bundleIdentifier]];
+
+        ensureDirExists(sharedPath);
+    });
+
+    return sharedPath;
 }
 
 static NSString *getAndCreateSubdir(NSString *rootPath, NSString *relativePath) {
@@ -86,7 +114,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (instancetype)initWithVersion1 {
     if ((self = [super init])) {
-        NSString *root = rootDirectory(@"v1");
+        NSString *root = bugsnagPath(@"v1");
         _events = getAndCreateSubdir(root, @"events");
         _sessions = getAndCreateSubdir(root, @"sessions");
         _breadcrumbs = getAndCreateSubdir(root, @"breadcrumbs");
@@ -98,6 +126,8 @@ BSG_OBJC_DIRECT_MEMBERS
         _runContext = [root stringByAppendingPathComponent:@"run_context"];
         _state = [root stringByAppendingPathComponent:@"state.json"];
         _systemState = [root stringByAppendingPathComponent:@"system_state.json"];
+
+        _persistentDeviceID = [bugsnagSharedPath() stringByAppendingPathComponent:@"device-id.json"];
     }
     return self;
 }

@@ -22,6 +22,7 @@
 #import "BSG_KSCrashState.h"
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagLogger.h"
+#import "BSGPersistentDeviceID.h"
 
 #import <stdatomic.h>
 
@@ -70,7 +71,7 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
 #endif
 
     NSMutableDictionary *device = [NSMutableDictionary new];
-    device[@"id"] = systemInfo[@BSG_KSSystemField_DeviceAppHash];
+    device[@"id"] = BSGPersistentDeviceID.current.external;
     device[@"jailbroken"] = systemInfo[@BSG_KSSystemField_Jailbroken];
     device[@"osBuild"] = systemInfo[@BSG_KSSystemField_OSVersion];
     device[@"osVersion"] = systemInfo[@BSG_KSSystemField_SystemVersion];

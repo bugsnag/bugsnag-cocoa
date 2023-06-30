@@ -56,6 +56,11 @@ BSG_OBJC_DIRECT_MEMBERS
  */
 @property (readonly, nonatomic) NSString *systemState;
 
+/**
+ * Persistent device ID shared with bugsnag-performance.
+ */
+@property (readonly, nonatomic) NSString *persistentDeviceID;
+
 + (instancetype) current;
 + (instancetype) v1;
 
