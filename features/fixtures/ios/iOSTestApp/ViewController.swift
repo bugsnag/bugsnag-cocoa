@@ -24,7 +24,6 @@ class ViewController: UIViewController {
     @IBOutlet var scenarioMetaDataField : UITextField!
     @IBOutlet var apiKeyField: UITextField!
     var mazeRunnerAddress: String = ""
-    var timerStarted: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +31,6 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
 
-        
         // Poll for commands to run
         if #available(iOS 10.0, *) {
             let uiUpdater = { (scenarioName: String, eventMode: String) in
