@@ -11,11 +11,6 @@ import os
 
 class FixtureConfig: Codable {
     var maze_address: String
-    
-    
-    func startBugsnag() {
-        sleep(1)
-    }
 }
 
 class ViewController: UIViewController {
