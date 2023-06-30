@@ -15,7 +15,8 @@ class NetworkBreadcrumbsScenario : Scenario {
         config.autoTrackSessions = false;
         config.add(BugsnagNetworkRequestPlugin())
         config.addOnBreadcrumb {
-            ($0.metadata["url"] as? String ?? "").hasPrefix(Scenario.baseMazeAddress)
+            let url = $0.metadata["url"] as? String ?? ""
+            return url.hasPrefix(Scenario.baseMazeAddress) && url.contains("/reflect")
         }
 
         super.startBugsnag()
