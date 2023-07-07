@@ -339,7 +339,6 @@ steps:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
     commands:
-      - bundle config set --local path 'vendor/bundle'
       - bundle install
       - bundle exec maze-runner
         --os=macos
