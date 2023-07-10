@@ -22,7 +22,7 @@ Feature: Delivery of errors
     And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "HandledExceptionScenario"
-    Then I should receive no requests
+    Then I should receive no errors
 
   Scenario: Delivery is not retried for oversized handled payloads
     Given I set the HTTP status code to 500
@@ -33,7 +33,7 @@ Feature: Delivery of errors
     And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "OversizedHandledErrorScenario"
-    Then I should receive no requests
+    Then I should receive no errors
 
   Scenario: Delivery is not retried for old handled payloads
     Given I set the HTTP status code to 500
@@ -50,7 +50,7 @@ Feature: Delivery of errors
     And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "OldHandledErrorScenario"
-    Then I should receive no requests
+    Then I should receive no errors
 
   Scenario: Delivery is not retried for oversized crash payloads
     Given I set the HTTP status code to 500
@@ -62,7 +62,7 @@ Feature: Delivery of errors
     And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "OversizedCrashReportScenario"
-    Then I should receive no requests
+    Then I should receive no errors
 
   Scenario: Delivery is not retried for old crash payloads
     Given I set the HTTP status code to 500
@@ -74,7 +74,7 @@ Feature: Delivery of errors
     And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "OldCrashReportScenario"
-    Then I should receive no requests
+    Then I should receive no errors
 
   Scenario: Bugsnag.start() should block for 2 seconds after a launch crash
     When I run "SendLaunchCrashesSynchronouslyScenario" and relaunch the crashed app
@@ -125,7 +125,7 @@ Feature: Delivery of errors
     And I wait to receive a session
     Then the session "user.id" equals "new"
     And I discard the oldest session
-    And I should receive no requests
+    And I should receive no sessions
 
   Scenario: The oldest sessions should be deleted to comply with maxPersistedSessions
     Given I set the HTTP status code to 500

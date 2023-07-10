@@ -11,7 +11,7 @@ Feature: Detection of crashes during crash handling
     Given I run "<scenario>" and relaunch the crashed app
     And I configure Bugsnag for "<scenario>"
     And I wait to receive an error
-    And the error "Bugsnag-Api-Key" header is null
+    And the error "Bugsnag-Api-Key" header is not present
     And the error "Bugsnag-Internal-Error" header equals "bugsnag-cocoa"
     And the error payload field "events.0.threads" is an array with 0 elements
     And the event "metaData.BugsnagDiagnostics.apiKey" equals "12312312312312312312312312312312"

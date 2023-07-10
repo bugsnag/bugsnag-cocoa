@@ -20,7 +20,7 @@ x-common-environment: &common-environment
 
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:
@@ -31,7 +31,7 @@ services:
       - ./maze_output:/app/maze_output
 
   cocoa-maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
@@ -45,7 +45,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   cocoa-maze-runner-legacy:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-guard-unlock-cli-legacy
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli-legacy
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:

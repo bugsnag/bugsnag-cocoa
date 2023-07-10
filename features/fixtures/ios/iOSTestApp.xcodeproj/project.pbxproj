@@ -123,6 +123,7 @@
 		AA4C7F1529AEA0C4009B09A9 /* BugsnagWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4C7F1429AEA0C4009B09A9 /* BugsnagWrapper.swift */; };
 		AA6ACD1C2773E0B3006464C4 /* UserFromConfigScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD1B2773E0B3006464C4 /* UserFromConfigScenario.swift */; };
 		AA6ACD202773E3F0006464C4 /* UserInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD1F2773E3F0006464C4 /* UserInfoScenario.swift */; };
+		AA8BAEE32A4DD90E00A8BEA7 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BAEE22A4DD90E00A8BEA7 /* CommandReaderThread.swift */; };
 		AAFEF9EA26EB533800980A10 /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFEF9E926EB533800980A10 /* NetworkBreadcrumbsScenario.swift */; };
 		CB0AE1F1287D89C90079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AE1F0287D89C90079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */; };
 		CB42FF9026F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB42FF8F26F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a */; };
@@ -320,6 +321,7 @@
 		AA4C7F1429AEA0C4009B09A9 /* BugsnagWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagWrapper.swift; sourceTree = "<group>"; };
 		AA6ACD1B2773E0B3006464C4 /* UserFromConfigScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFromConfigScenario.swift; sourceTree = "<group>"; };
 		AA6ACD1F2773E3F0006464C4 /* UserInfoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoScenario.swift; sourceTree = "<group>"; };
+		AA8BAEE22A4DD90E00A8BEA7 /* CommandReaderThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
 		AAFEF9E926EB533800980A10 /* NetworkBreadcrumbsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBreadcrumbsScenario.swift; sourceTree = "<group>"; };
 		AAFEFA0226EB6B5A00980A10 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB0AE1F0287D89C90079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackFeatureFlagsScenario.swift; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 				8AB8866C20404DD30003E444 /* LaunchScreen.storyboard */,
 				8AB8866520404DD30003E444 /* ViewController.swift */,
 				8AB8866720404DD30003E444 /* Main.storyboard */,
+				AA8BAEE22A4DD90E00A8BEA7 /* CommandReaderThread.swift */,
 			);
 			path = iOSTestApp;
 			sourceTree = "<group>";
@@ -778,6 +781,7 @@
 				E75040A2247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift in Sources */,
 				E700EE7E247D7A61008CFFB6 /* SIGSYSScenario.m in Sources */,
 				010BAB272833D0160003FF36 /* AppHangDefaultConfigScenario.swift in Sources */,
+				AA8BAEE32A4DD90E00A8BEA7 /* CommandReaderThread.swift in Sources */,
 				010BAB212833CFE60003FF36 /* AppHangFatalDisabledScenario.swift in Sources */,
 				E75040A42478052D005D33BD /* AutoDetectFalseAbortScenario.swift in Sources */,
 				8A14F0F62282D4AE00337B05 /* (null) in Sources */,

@@ -65,18 +65,6 @@ end
 # 3: The application is running in the background and is not suspended
 # 4: The application is running in the foreground
 
-Then('the app is running in the foreground') do
-  wait_for_true do
-    Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :running_in_foreground
-  end
-end
-
-Then('the app is running in the background') do
-  wait_for_true do
-    Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :running_in_background
-  end
-end
-
 Then('the app is not running') do
   wait_for_true do
     case Maze::Helper.get_current_platform
@@ -114,7 +102,7 @@ end
 def trigger_app_command
   case Maze::Helper.get_current_platform
   when 'ios'
-    Maze.driver.click_element :execute_command
+    # Do nothing
   when 'macos'
     run_macos_app
   when 'watchos'

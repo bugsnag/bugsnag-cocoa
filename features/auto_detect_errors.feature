@@ -15,7 +15,7 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         And I kill and relaunch the app
         When I run "AutoDetectFalseNSExceptionScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoDetectFalseHandledScenario"
-        Then I should receive no requests
+        Then I should receive no errors
 
     Scenario: Signal not reported when autoDetectErrors is false
         When I run "AutoDetectFalseHandledScenario"
@@ -27,4 +27,4 @@ Feature: autoDetectErrors flag controls whether errors are captured automaticall
         And I kill and relaunch the app
         When I run "AutoDetectFalseAbortScenario" and relaunch the crashed app
         And I configure Bugsnag for "AutoDetectFalseHandledScenario"
-        Then I should receive no requests
+        Then I should receive no errors
