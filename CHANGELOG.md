@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.27.1 (2023-07-24)
+
+### Enhancements
+
+* Device ID is now stored in a file that is shared between Bugsnag Cocoa and Bugsnag Cocoa Performance
+  [1568](https://github.com/bugsnag/bugsnag-cocoa/pull/1568)
+
+* Addressed new warning types introduced in Xcode 14.3
+  [1561](https://github.com/bugsnag/bugsnag-cocoa/pull/1561)
+
 ## 6.27.0 (2023-05-15)
 
 ### Enhancements

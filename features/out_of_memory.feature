@@ -38,7 +38,7 @@ Feature: Out of memory errors
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.wordSize" is not null
-    And the event "app.id" equals "com.bugsnag.iOSTestApp"
+    And the event "app.id" equals "com.bugsnag.fixtures.iOSTestApp"
     And the event "metaData.app.name" equals "iOSTestApp"
     And the event "app.inForeground" is true
     And the event "app.type" equals "iOS"

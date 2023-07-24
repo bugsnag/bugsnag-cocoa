@@ -251,7 +251,6 @@ steps:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
     commands:
-      - bundle config set --local path 'vendor/bundle'
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
@@ -286,7 +285,69 @@ steps:
   #
   # BitBar
   #
-  - label: ':BitBar: iOS 15 barebone tests'
+  - label: ':bitbar: iOS 16 E2E tests batch 1'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "--exclude=features/[e-z].*.feature$"
+          - "--order=random"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':bitbar: iOS 16 E2E tests batch 2'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=/app/build/iOSTestApp.ipa"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "--exclude=features/[a-d].*.feature$"
+          - "--order=random"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':bitbar: iOS 15 barebone tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -409,64 +470,6 @@ steps:
   #
   # BrowserStack
   #
-  - label: ':browserstack: iOS 16 E2E tests batch 1'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@build/ipa_url.txt"
-          - "--farm=bs"
-          - "--device=IOS_16"
-          - "--appium-version=1.21.0"
-          - "--fail-fast"
-          - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
-    concurrency: 5
-    concurrency_group: browserstack-app
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':browserstack: iOS 16 E2E tests batch 2'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@build/ipa_url.txt"
-          - "--farm=bs"
-          - "--device=IOS_16"
-          - "--appium-version=1.21.0"
-          - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
-    concurrency: 5
-    concurrency_group: browserstack-app
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
   - label: ':browserstack: iOS 11 barebone tests'
     depends_on:
       - cocoa_fixture
@@ -478,13 +481,13 @@ steps:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner-legacy
-        run: cocoa-maze-runner-legacy
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
-          - "--appium-version=1.8.0"
+          - "--appium-version=1.16.0"
           - "features/barebone_tests.feature"
     concurrency: 5
     concurrency_group: browserstack-app
@@ -505,13 +508,13 @@ steps:
         download: "features/fixtures/ios/output/ipa_url.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner-legacy
-        run: cocoa-maze-runner-legacy
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         command:
           - "--app=@build/ipa_url.txt"
           - "--farm=bs"
           - "--device=IOS_10"
-          - "--appium-version=1.8.0"
+          - "--appium-version=1.15.0"
           - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 5

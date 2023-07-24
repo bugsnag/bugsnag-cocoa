@@ -20,7 +20,7 @@ static void * spin_malloc(struct _malloc_zone_t *zone, size_t size) {
 }
 
 // Override malloc() with a version that deadlocks the current thread.
-static inline void install_spin_malloc() {
+static inline void install_spin_malloc(void) {
     malloc_zone_t *zone = malloc_default_zone();
     vm_protect(mach_task_self(), (uintptr_t)zone, sizeof(malloc_zone_t), 0, VM_PROT_READ | VM_PROT_WRITE);
     zone->malloc = spin_malloc;

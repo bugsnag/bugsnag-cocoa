@@ -12,6 +12,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagCollections.h"
+#import "BSGPersistentDeviceID.h"
 
 @implementation BugsnagDevice
 
@@ -19,7 +20,7 @@
     BugsnagDevice *device = [BugsnagDevice new];
     if (json != nil) {
         device.jailbroken = [json[@"jailbroken"] boolValue];
-        device.id = json[@"id"];
+        device.id = BSGPersistentDeviceID.current.external;
         device.locale = json[@"locale"];
         device.manufacturer = json[@"manufacturer"];
         device.model = json[@"model"];
@@ -42,7 +43,7 @@
             dictionary:(NSDictionary *)event {
     NSDictionary *system = event[@"system"];
     device.jailbroken = [system[@BSG_KSSystemField_Jailbroken] boolValue];
-    device.id = system[@BSG_KSSystemField_DeviceAppHash];
+    device.id = BSGPersistentDeviceID.current.external;
     device.locale = [[NSLocale currentLocale] localeIdentifier];
     device.manufacturer = @"Apple";
     device.model = system[@BSG_KSSystemField_Machine];

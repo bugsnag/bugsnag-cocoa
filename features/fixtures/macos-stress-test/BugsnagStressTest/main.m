@@ -49,14 +49,14 @@ int main(int argc, const char * argv[]) {
         // These threads make a deadlock more likely if any of the notify threads are doing something they shouldn't.
         
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-            NSThread.currentThread.name = @"com.bugsnag.stress-test-malloc";
+            NSThread.currentThread.name = @"com.bugsnag.fixtures.stress-test-malloc";
             while (1) {
                 free(malloc(1024 * 1024));
             }
         });
         
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-            NSThread.currentThread.name = @"com.bugsnag.stress-test-objc";
+            NSThread.currentThread.name = @"com.bugsnag.fixtures.stress-test-objc";
             while (1) {
                 @autoreleasepool {
                     [[NSArray arrayWithObjects:@0, @1, @3, @4, nil] sortedArrayUsingSelector:@selector(compare:)];

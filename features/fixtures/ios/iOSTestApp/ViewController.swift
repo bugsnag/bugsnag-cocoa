@@ -18,13 +18,24 @@ class ViewController: UIViewController {
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
     @IBOutlet var apiKeyField: UITextField!
-    var mazeRunnerAddress: String = "";
+    var mazeRunnerAddress: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
         apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
+
+        // Poll for commands to run
+        if #available(iOS 10.0, *) {
+            let uiUpdater = { (scenarioName: String, eventMode: String) in
+                self.scenarioNameField.text = scenarioName
+                self.scenarioMetaDataField.text = eventMode
+            }
+
+            let thread = CommandReaderThread(action: uiUpdater)
+            thread.start()
+        }
     }
 
     @IBAction func runTestScenario() {
@@ -51,43 +62,6 @@ class ViewController: UIViewController {
         Scenario.clearPersistentData()
     }
 
-    func loadMazeRunnerAddress() -> String {
-
-        let bsAddress = "http://bs-local.com:9339"
-        
-        // Only iOS 12 and above will run on BitBar for now
-        if #available(iOS 12.0, *) {} else {
-            return bsAddress;
-        }
-        
-        for _ in 1...60 {
-            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-
-            log("Reading Maze Runner address from fixture_config.json")
-            do {
-                let fileUrl = URL(fileURLWithPath: "fixture_config",
-                                  relativeTo: documentsUrl).appendingPathExtension("json")
-                let savedData = try Data(contentsOf: fileUrl)
-                if let contents = String(data: savedData, encoding: .utf8) {
-                    let decoder = JSONDecoder()
-                    let jsonData = contents.data(using: .utf8)
-                    let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
-                    let address = "http://" + config.maze_address
-                    log("Using Maze Runner address: " + address)
-                    return address
-                }
-            }
-            catch let error as NSError {
-                log("Failed to read fixture_config.json: \(error)")
-            }
-            log("Waiting for fixture_config.json to appear")
-            sleep(1)
-        }
-
-        log("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
-        return bsAddress;
-    }
-    
     internal func prepareScenario() {
         var config: BugsnagConfiguration?
         if (apiKeyField.text!.count > 0) {
@@ -101,14 +75,6 @@ class ViewController: UIViewController {
         Scenario.createScenarioNamed(scenarioNameField.text!,
                                      withConfig: config)
         Scenario.current!.eventMode = scenarioMetaDataField.text
-    }
-
-    @IBAction func executeCommand(_ sender: Any) {
-        Scenario.baseMazeAddress = loadMazeRunnerAddress()
-        Scenario.executeMazeRunnerCommand { _, scenarioName, eventMode in
-            self.scenarioNameField.text = scenarioName
-            self.scenarioMetaDataField.text = eventMode
-        }
     }
 
     @objc func didEnterBackgroundNotification() {

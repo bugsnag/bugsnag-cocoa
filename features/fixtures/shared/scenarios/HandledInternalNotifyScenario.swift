@@ -9,7 +9,7 @@ import Foundation
                                     userInfo: nil);
 
         Bugsnag.notify(exception) { (event) -> Bool in
-            let frames = [
+            let frames: [[String: Any]] = [
                 ["method":"foo()", "file":"src/Giraffe.mm", "lineNumber": 200],
                 ["method":"bar()", "file":"parser.js"],
                 ["method":"yes()"]

@@ -32,7 +32,7 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 // MARK: -
 
 static Scenario *theScenario;
-static NSString *theBaseMazeAddress;
+static NSString *theBaseMazeAddress = @"";
 
 #if !TARGET_OS_WATCH
 static char ksLogPath[PATH_MAX];
@@ -217,7 +217,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 #endif
 }
 
-+ (void)executeMazeRunnerCommand:(void (^)(NSString *action, NSString *scenarioName, NSString *scenarioMode))preHandler {
++ (void)executeMazeRunnerCommand:(void (^)(NSString *scenarioName, NSString *scenarioMode))preHandler {
     NSLog(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", theBaseMazeAddress];
@@ -231,6 +231,11 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         NSDictionary *command = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         
         NSString *action = [command objectForKey:@"action"];
+        if ([action isEqualToString:@"noop"]) {
+            NSLog(@"No Maze Runner command queued at present");
+            return;
+        }
+        
         NSParameterAssert([action isKindOfClass:[NSString class]]);
         
         NSString *scenarioName = [command objectForKey:@"scenario_name"];
@@ -245,9 +250,10 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
             [self clearPersistentData];
         }
 
+        // Display the scenario name/data on the UI
         if (preHandler) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                preHandler(action, scenarioName, eventMode);
+                preHandler(scenarioName, eventMode);
             });
         }
         

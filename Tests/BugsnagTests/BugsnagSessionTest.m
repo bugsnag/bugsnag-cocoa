@@ -142,7 +142,7 @@
     NSDictionary *device = rootNode[@"device"];
     XCTAssertNotNil(device);
     XCTAssertTrue(device[@"jailbroken"]);
-    XCTAssertEqualObjects(@"123", device[@"id"]);
+    XCTAssertNotNil(device[@"id"]);
     XCTAssertEqualObjects(@"en-US", device[@"locale"]);
     XCTAssertEqualObjects(@"Apple", device[@"manufacturer"]);
     XCTAssertEqualObjects(@"x86_64", device[@"model"]);
@@ -188,7 +188,7 @@
     BugsnagDevice *device = session.device;
     XCTAssertNotNil(device);
     XCTAssertTrue(device.jailbroken);
-    XCTAssertEqualObjects(@"123", device.id);
+    XCTAssertNotNil(device.id);
     XCTAssertEqualObjects(@"en-US", device.locale);
     XCTAssertEqualObjects(@"Apple", device.manufacturer);
     XCTAssertEqualObjects(@"x86_64", device.model);
