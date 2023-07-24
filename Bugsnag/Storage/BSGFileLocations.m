@@ -30,7 +30,7 @@ static BOOL ensureDirExists(NSString *path) {
     return YES;
 }
 
-static NSString *cachesDirectory() {
+static NSString *cachesDirectory(void) {
     // Default to an unusable location that will always fail.
     static NSString* rootPath = @"/";
 
@@ -75,7 +75,7 @@ static NSString *bugsnagPath(NSString *fsVersion) {
     return rootPath;
 }
 
-static NSString *bugsnagSharedPath() {
+static NSString *bugsnagSharedPath(void) {
     // Default to an unusable location that will always fail.
     static NSString* sharedPath = @"/";
 

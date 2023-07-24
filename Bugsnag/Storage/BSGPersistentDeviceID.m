@@ -30,7 +30,7 @@
 #pragma mark Generator
 
 // Used to compute deviceId; mimics +[BSG_KSSystemInfo CPUArchForCPUType:subType:]
-static NSString * _Nullable cpuArch() {
+static NSString * _Nullable cpuArch(void) {
     cpu_type_t cpuType = 0;
     size_t size = sizeof cpuType;
     if (sysctlbyname("hw.cputype", &cpuType, &size, NULL, 0) != 0) {
@@ -112,7 +112,7 @@ static bool isAllZeroes(NSData * _Nullable data) {
     return true;
 }
 
-static NSMutableData * _Nonnull generateIdentificationData() {
+static NSMutableData * _Nonnull generateIdentificationData(void) {
     NSMutableData *data = nil;
 
 #if TARGET_OS_WATCH
@@ -156,11 +156,11 @@ static NSString * _Nonnull computeHash(NSData * _Nullable data) {
     return hash;
 }
 
-static NSString * _Nonnull generateExternalDeviceID() {
+static NSString * _Nonnull generateExternalDeviceID(void) {
     return computeHash(generateIdentificationData());
 }
 
-static NSString * _Nonnull generateInternalDeviceID() {
+static NSString * _Nonnull generateInternalDeviceID(void) {
     // ROAD-1488: internal device ID should be different.
     uint8_t additionalData[] = {251};
     NSMutableData *data = generateIdentificationData();
