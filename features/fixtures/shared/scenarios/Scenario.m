@@ -225,6 +225,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
     [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
             NSLog(@"%s request failed with %@", __PRETTY_FUNCTION__, response ?: error);
+            preHandler(@"", NULL);
             return;
         }
         NSLog(@"%s response body:  %@", __PRETTY_FUNCTION__, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
@@ -233,6 +234,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         NSString *action = [command objectForKey:@"action"];
         if ([action isEqualToString:@"noop"]) {
             NSLog(@"No Maze Runner command queued at present");
+            preHandler(@"", NULL);
             return;
         }
         

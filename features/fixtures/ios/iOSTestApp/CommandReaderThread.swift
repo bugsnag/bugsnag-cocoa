@@ -29,7 +29,9 @@ class CommandReaderThread: Thread {
             } else {
                 isRunningCommand = true
                 Scenario.executeMazeRunnerCommand() { scenarioName, eventMode in
-                    self.action(scenarioName, eventMode)
+                    if (!scenarioName.isEmpty) {
+                        self.action(scenarioName, eventMode)
+                    }
                     isRunningCommand = false
                 }
             }
