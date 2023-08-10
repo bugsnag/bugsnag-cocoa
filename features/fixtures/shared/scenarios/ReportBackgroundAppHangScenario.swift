@@ -21,9 +21,10 @@ class ReportBackgroundAppHangScenario: Scenario {
             let timeInterval: TimeInterval = 2
             NSLog("Simulating an app hang of \(timeInterval) seconds...")
             Thread.sleep(forTimeInterval: timeInterval)
+            Thread.sleep(forTimeInterval: timeInterval)
             NSLog("Finished sleeping")
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 UIApplication.shared.endBackgroundTask(backgroundTask)
             }
         }

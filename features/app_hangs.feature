@@ -183,7 +183,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Background app hangs should be reported if reportBackgroundAppHangs = true
     When I run "ReportBackgroundAppHangScenario"
-    And I send the app to the background for 3 seconds
+    And I send the app to the background
     And I wait to receive an error
     Then the exception "errorClass" equals "App Hang"
     And the exception "message" equals "The app's main thread failed to respond to an event within 1000 milliseconds"
