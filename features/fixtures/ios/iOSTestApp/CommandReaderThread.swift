@@ -21,9 +21,19 @@ class CommandReaderThread: Thread {
             Scenario.baseMazeAddress = self.loadMazeRunnerAddress()
         }
         
+        var isRunningCommand = false
+
         while true {
-            Scenario.executeMazeRunnerCommand() { scenarioName, eventMode in
-                self.action(scenarioName, eventMode)
+            if isRunningCommand {
+                logInfo("A command fetch is already in progress, waiting 1 second more...")
+            } else {
+                isRunningCommand = true
+                Scenario.executeMazeRunnerCommand() { scenarioName, eventMode in
+                    if (!scenarioName.isEmpty) {
+                        self.action(scenarioName, eventMode)
+                    }
+                    isRunningCommand = false
+                }
             }
             Thread.sleep(forTimeInterval: 1)
         }
@@ -41,7 +51,7 @@ class CommandReaderThread: Thread {
         for n in 1...30 {
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
-            log("Reading Maze Runner address from fixture_config.json")
+            logInfo("Reading Maze Runner address from fixture_config.json")
             do {
                 let fileUrl = URL(fileURLWithPath: "fixture_config",
                                   relativeTo: documentsUrl).appendingPathExtension("json")
@@ -49,28 +59,41 @@ class CommandReaderThread: Thread {
                 let savedData = try Data(contentsOf: fileUrl)
 
                 if let contents = String(data: savedData, encoding: .utf8) {
-                    NSLog("Found fixture_config.json after %d seconds", n)
+                    logInfo(String(format: "Found fixture_config.json after %d seconds", n))
                     let decoder = JSONDecoder()
                     let jsonData = contents.data(using: .utf8)
                     let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
                     let address = "http://" + config.maze_address
-                    log("Using Maze Runner address: " + address)
+                    logInfo("Using Maze Runner address: " + address)
                     return address
                 }
             }
             catch let error as NSError {
-                log("Failed to read fixture_config.json: \(error)")
+                logWarn("Failed to read fixture_config.json: \(error)")
             }
-            log("Waiting for fixture_config.json to appear")
+            logInfo("Waiting for fixture_config.json to appear")
             Thread.sleep(forTimeInterval: 1)
         }
 
-        log("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
+        logError("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
         return bsAddress;
     }
 }
 
-private func log(_ message: String) {
-    NSLog("%@", message)
-    kslog("\(Date()) \(message)")
+private func logInfo(_ message: String) {
+    let fullMessage = String(format: "bugsnagci info: %s", message)
+    NSLog("%@", fullMessage)
+    kslog("\(Date()) \(fullMessage)")
+}
+
+private func logWarn(_ message: String) {
+    let fullMessage = String(format: "bugsnagci warn: %s", message)
+    NSLog("%@", fullMessage)
+    kslog("\(Date()) \(fullMessage)")
+}
+
+private func logError(_ message: String) {
+    let fullMessage = String(format: "bugsnagci error: %s", message)
+    NSLog("%@", fullMessage)
+    kslog("\(Date()) \(fullMessage)")
 }
