@@ -19,7 +19,7 @@
 #define BSG_HAVE_REACHABILITY_WWAN            (                 TARGET_OS_IOS || TARGET_OS_TV                   )
 #define BSG_HAVE_SIGNAL                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
 #define BSG_HAVE_SIGALTSTACK                  (TARGET_OS_OSX || TARGET_OS_IOS                                   )
-#define BSG_HAVE_SYSCALL                      (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
+#define BSG_HAVE_SYSCALL                      (TARGET_OS_IOS || TARGET_OS_TV                   )
 #define BSG_HAVE_UIDEVICE                     __has_include(<UIKit/UIDevice.h>)
 #define BSG_HAVE_WINDOW                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
 
