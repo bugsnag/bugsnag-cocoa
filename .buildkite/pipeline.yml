@@ -141,7 +141,7 @@ steps:
     agents:
       queue: ms-arm-12-1
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.0
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.4
     artifact_paths:
       - logs/*
 
@@ -150,7 +150,7 @@ steps:
     agents:
       queue: ms-arm-12-1
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.3
     artifact_paths:
       - logs/*
 
