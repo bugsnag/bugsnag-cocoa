@@ -42,7 +42,7 @@
     "-fvisibility=hidden"
   ],
   "libraries": [
-    "c++", "z"
+    "z"
   ],
   "platforms": {
     "ios": "9.0",
