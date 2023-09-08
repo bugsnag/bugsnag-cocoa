@@ -39,8 +39,6 @@ let package = Package(
                 .headerSearchPath("Storage"),
             ],
             linkerSettings: [
-                .linkedLibrary("z"),
-                .linkedLibrary("c++"),
             ]
         ),
         .target(

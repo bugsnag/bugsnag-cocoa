@@ -1087,8 +1087,6 @@
 		CBBDE9BF280069B20070DCD3 /* BSG_KSString.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969242486DAD000DC48C2 /* BSG_KSString.c */; };
 		CBBDE9C0280069B20070DCD3 /* BSG_KSMach_x86_32.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969032486DAD000DC48C2 /* BSG_KSMach_x86_32.c */; };
 		CBBDE9C2280069B20070DCD3 /* BSG_KSMach_Arm64.c in Sources */ = {isa = PBXBuildFile; fileRef = 008969172486DAD000DC48C2 /* BSG_KSMach_Arm64.c */; };
-		CBBDE9C4280069D10070DCD3 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CBBDE9C3280069D10070DCD3 /* libc++.tbd */; };
-		CBBDE9C6280069D90070DCD3 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CBBDE9C5280069D90070DCD3 /* libz.tbd */; };
 		CBCAF6FA25A457F90095771F /* BSGFileLocations.h in Headers */ = {isa = PBXBuildFile; fileRef = CBCAF6F825A457F90095771F /* BSGFileLocations.h */; };
 		CBCAF6FB25A457F90095771F /* BSGFileLocations.h in Headers */ = {isa = PBXBuildFile; fileRef = CBCAF6F825A457F90095771F /* BSGFileLocations.h */; };
 		CBCAF6FC25A457F90095771F /* BSGFileLocations.h in Headers */ = {isa = PBXBuildFile; fileRef = CBCAF6F825A457F90095771F /* BSGFileLocations.h */; };
@@ -1178,16 +1176,10 @@
 		E746291C248907E500F92D67 /* BSG_KSCrashC.c in Sources */ = {isa = PBXBuildFile; fileRef = 0089694B2486DAD000DC48C2 /* BSG_KSCrashC.c */; };
 		E746292524890BFE00F92D67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292424890BFE00F92D67 /* Foundation.framework */; };
 		E746292724890C1100F92D67 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292624890C1100F92D67 /* SystemConfiguration.framework */; };
-		E746292924890C1500F92D67 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292824890C1500F92D67 /* libc++.tbd */; };
-		E746292B24890C1A00F92D67 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292A24890C1A00F92D67 /* libz.tbd */; };
 		E746292D24890C3300F92D67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292C24890C3300F92D67 /* Foundation.framework */; };
 		E746292F24890C3900F92D67 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292E24890C3900F92D67 /* SystemConfiguration.framework */; };
-		E746293224890C5200F92D67 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E746293124890C4300F92D67 /* libz.tbd */; };
-		E746293324890C5700F92D67 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E746293024890C3D00F92D67 /* libc++.tbd */; };
 		E746293524890C6500F92D67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746293424890C6500F92D67 /* Foundation.framework */; };
 		E746293724890C6B00F92D67 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746293624890C6B00F92D67 /* SystemConfiguration.framework */; };
-		E746293924890C7400F92D67 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E746293824890C7000F92D67 /* libc++.tbd */; };
-		E746293B24890C7E00F92D67 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E746293A24890C7900F92D67 /* libz.tbd */; };
 		E746293C24890C9F00F92D67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292424890BFE00F92D67 /* Foundation.framework */; };
 		E746293D24890CA400F92D67 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E746292624890C1100F92D67 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
@@ -1632,8 +1624,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E746292B24890C1A00F92D67 /* libz.tbd in Frameworks */,
-				E746292924890C1500F92D67 /* libc++.tbd in Frameworks */,
 				E746292724890C1100F92D67 /* SystemConfiguration.framework in Frameworks */,
 				E746292524890BFE00F92D67 /* Foundation.framework in Frameworks */,
 				CBEC89382A4AC8520088A3CE /* UIKit.framework in Frameworks */,
@@ -1653,8 +1643,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E746292F24890C3900F92D67 /* SystemConfiguration.framework in Frameworks */,
-				E746293224890C5200F92D67 /* libz.tbd in Frameworks */,
-				E746293324890C5700F92D67 /* libc++.tbd in Frameworks */,
 				E746292D24890C3300F92D67 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1671,8 +1659,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E746293924890C7400F92D67 /* libc++.tbd in Frameworks */,
-				E746293B24890C7E00F92D67 /* libz.tbd in Frameworks */,
 				E746293724890C6B00F92D67 /* SystemConfiguration.framework in Frameworks */,
 				E746293524890C6500F92D67 /* Foundation.framework in Frameworks */,
 			);
@@ -1707,8 +1693,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBBDE9C6280069D90070DCD3 /* libz.tbd in Frameworks */,
-				CBBDE9C4280069D10070DCD3 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3916,11 +3900,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-lc++",
-					"-lz",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -3958,11 +3938,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				OTHER_LDFLAGS = (
-					"-lc++",
-					"-lz",
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				RUN_CLANG_STATIC_ANALYZER = YES;
