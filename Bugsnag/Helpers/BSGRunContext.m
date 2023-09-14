@@ -112,8 +112,13 @@ static bool GetIsActive(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    WKExtension *ext = [WKExtension sharedExtension];
-    return ext && ext.applicationState == WKApplicationStateActive;
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+        WKExtension *ext = [WKExtension sharedExtension];
+        return ext && ext.applicationState == WKApplicationStateActive;
+    } else {
+        WKApplication *app = [WKApplication sharedApplication];
+        return app && app.applicationState == WKApplicationStateActive;
+    }
 #endif
 }
 
@@ -170,8 +175,13 @@ static bool GetIsForeground(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    WKExtension *ext = [WKExtension sharedExtension];
-    return ext && ext.applicationState != WKApplicationStateBackground;
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+        WKExtension *ext = [WKExtension sharedExtension];
+        return ext && ext.applicationState != WKApplicationStateBackground;
+    } else {
+        WKApplication *app = [WKApplication sharedApplication];
+        return app && app.applicationState == WKApplicationStateBackground;
+    }
 #endif
 }
 
