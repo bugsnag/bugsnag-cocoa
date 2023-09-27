@@ -239,11 +239,10 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 + (NSString *)currentCPUArch {
-    NSString *result =
-        [self CPUArchForCPUType:bsg_kssysctl_int32ForName("hw.cputype")
-                        subType:bsg_kssysctl_int32ForName("hw.cpusubtype")];
-
-    return result ?: [NSString stringWithUTF8String:bsg_ksmachcurrentCPUArch()];
+    int32_t cpu_type = bsg_kssysctl_int32ForName("hw.cputype");
+    int32_t cpu_subtype = bsg_kssysctl_int32ForName("hw.cpusubtype");
+    NSString *result = [self CPUArchForCPUType:cpu_type subType:cpu_subtype];
+    return result ?: [NSString stringWithFormat:@"unknown (type %d, subtype %d)", cpu_type, cpu_subtype];
 }
 
 // ============================================================================
