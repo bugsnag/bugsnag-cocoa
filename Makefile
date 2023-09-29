@@ -94,6 +94,13 @@ compile_commands.json:
 		build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO | \
 		xcpretty -r json-compilation-database -o compile_commands.json
 
+project:
+	xcodegen generate
+	sed -i "" 's/Bugsnag-iOS.framework/Bugsnag.framework/g' Bugsnag.xcodeproj/project.pbxproj
+	sed -i "" 's/productName = "Bugsnag-iOS";/productName = "Bugsnag";/g' Bugsnag.xcodeproj/project.pbxproj
+	sed -i "" 's/PRODUCT_NAME = "Bugsnag-iOS";/PRODUCT_NAME = "Bugsnag-iOS";/g' Bugsnag.xcodeproj/project.pbxproj
+
+
 #--------------------------------------------------------------------------
 # Static Analysis
 #--------------------------------------------------------------------------

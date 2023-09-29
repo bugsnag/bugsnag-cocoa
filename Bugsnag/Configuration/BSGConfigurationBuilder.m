@@ -109,8 +109,8 @@ static void LoadEndpoints(BugsnagConfiguration *config, NSMutableDictionary *opt
     }
 }
 
-static void LoadSendThreads(BugsnagConfiguration *config, NSMutableDictionary *options) {
 #if BSG_HAVE_MACH_THREADS
+static void LoadSendThreads(BugsnagConfiguration *config, NSMutableDictionary *options) {
     NSString *sendThreads = [PopValue(options, BSG_KEYPATH(config, sendThreads)) lowercaseString];
     if ([sendThreads isKindOfClass:[NSString class]]) {
         if ([@"unhandledonly" isEqualToString:sendThreads]) {
@@ -121,5 +121,8 @@ static void LoadSendThreads(BugsnagConfiguration *config, NSMutableDictionary *o
             config.sendThreads = BSGThreadSendPolicyNever;
         }
     }
-#endif
 }
+#else
+static void LoadSendThreads(__unused BugsnagConfiguration *config, __unused NSMutableDictionary *options) {
+}
+#endif
