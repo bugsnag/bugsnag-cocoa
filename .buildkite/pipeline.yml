@@ -311,7 +311,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -342,7 +342,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -372,7 +372,7 @@ steps:
           - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -402,7 +402,7 @@ steps:
           - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -432,7 +432,7 @@ steps:
           - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -462,7 +462,7 @@ steps:
           - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -492,7 +492,7 @@ steps:
           - "--appium-version=1.16.0"
           - "features/barebone_tests.feature"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -520,7 +520,7 @@ steps:
           - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:

@@ -31,7 +31,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
 
   - label: ':bitbar: iOS 15 E2E tests batch 2'
@@ -55,7 +55,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
 
   - label: ':bitbar: iOS 14 E2E tests batch 1'
@@ -82,7 +82,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -113,7 +113,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -144,7 +144,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -175,7 +175,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -206,7 +206,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -237,7 +237,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -271,7 +271,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -302,7 +302,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
