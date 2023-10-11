@@ -30,7 +30,12 @@ else
  else
   ifeq ($(PLATFORM),iOS)
    SDK?=iphonesimulator
-   DEVICE?=iPhone 8
+   ifeq ($(shell expr $(OS) \>= 17.0), 1)
+	DEVICE?=iPhone 14
+   else
+	DEVICE?=iPhone 8
+   endif
+	   
    DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-iphoneos
   else
