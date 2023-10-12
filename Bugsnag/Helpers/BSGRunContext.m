@@ -115,9 +115,11 @@ static bool GetIsActive(void) {
     if ([BSG_KSSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState == WKApplicationStateActive;
-    } else {
+    } else if (@available(watchOS 7.0, *)) {
         WKApplication *app = [WKApplication sharedApplication];
         return app && app.applicationState == WKApplicationStateActive;
+    } else {
+        return true;
     }
 #endif
 }
@@ -178,9 +180,11 @@ static bool GetIsForeground(void) {
     if ([BSG_KSSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState != WKApplicationStateBackground;
-    } else {
+    } else if (@available(watchOS 7.0, *)) {
         WKApplication *app = [WKApplication sharedApplication];
         return app && app.applicationState == WKApplicationStateBackground;
+    } else {
+        return true;
     }
 #endif
 }
