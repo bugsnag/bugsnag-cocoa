@@ -70,11 +70,16 @@
     
     BugsnagEvent *event = [reporter eventWithException:exception diagnostics:nil groupingHash:@"test"];
     XCTAssertEqualObjects(event.errors[0].errorClass, @"NSRangeException");
+#if TARGET_OS_IOS
     if ([UIDevice.currentDevice.systemVersion doubleValue] >= 17.0) {
         XCTAssertEqualObjects(event.errors[0].errorMessage, @"*** -[__NSArray0 objectAtIndex:]: index 0 beyond bounds for empty array");
     } else {
         XCTAssertEqualObjects(event.errors[0].errorMessage, @"*** -[__NSArray0 objectAtIndex:]: index 0 beyond bounds for empty NSArray");
     }
+#else
+    XCTAssertEqualObjects(event.errors[0].errorMessage, @"*** -[__NSArray0 objectAtIndex:]: index 0 beyond bounds for empty NSArray");
+#endif
+    
     XCTAssertEqualObjects(event.groupingHash, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
     XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
