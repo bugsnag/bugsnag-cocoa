@@ -481,7 +481,7 @@ steps:
   #
   # BrowserStack
   #
-    - label: ':browserstack: iOS 17 E2E tests batch 1'
+  - label: ':browserstack: iOS 17 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
