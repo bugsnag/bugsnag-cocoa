@@ -253,6 +253,10 @@
             // This frame is not in any known image
             return;
         }
+        if ([stackframe.method isEqualToString: @"start_sim"]) {
+            // This frame is part of the simulator environment
+            return;
+        }
 #endif
         XCTAssertNotNil(stackframe.machoUuid);
         XCTAssertNotNil(stackframe.machoVmAddress);
