@@ -293,68 +293,6 @@ steps:
   #
   # BitBar
   #
-  - label: ':bitbar: iOS 17 E2E tests batch 1'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_17"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
-    concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 17 E2E tests batch 2'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_17"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
-    concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-  
   - label: ':bitbar: iOS 16 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
@@ -538,6 +476,68 @@ steps:
   #
   # BrowserStack
   #
+    - label: ':browserstack: iOS 17 E2E tests batch 1'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "--exclude=features/[e-z].*.feature$"
+          - "--order=random"
+    concurrency: 25
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':browserstack: iOS 17 E2E tests batch 2'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "--exclude=features/[a-d].*.feature$"
+          - "--order=random"
+    concurrency: 25
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+          
   - label: ':browserstack: iOS 11 barebone tests'
     skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
     depends_on:
