@@ -90,7 +90,7 @@ steps:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
       - logs/*
-      
+
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
@@ -447,7 +447,7 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
-          
+
   - label: ':bitbar: iOS 12 barebone tests'
     depends_on:
       - cocoa_fixture
@@ -496,14 +496,14 @@ steps:
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs.txt"
-          - "--farm=bs"
-          - "--device=IOS_17"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
+          - --app=@/app/build/ipa_url_bs.txt
+          - --farm=bs
+          - --device=IOS_17
+          - --appium-version=1.18.0
+          - --a11y-locator
+          - --fail-fast
+          - --exclude=features/[e-z].*.feature$
+          - --order=random
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -542,7 +542,7 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
-          
+
   - label: ':browserstack: iOS 11 barebone tests'
     depends_on:
       - cocoa_fixture
