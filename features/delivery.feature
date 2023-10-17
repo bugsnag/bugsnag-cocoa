@@ -181,6 +181,7 @@ Feature: Delivery of errors
       | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.                             |
 
   @skip_below_ios_17
+  @skip_macos
   Scenario Outline: Attempt Delivery On Crash iOS 17
     When I set the app to "<scenario_mode>" mode
     And I run "AttemptDeliveryOnCrashScenario"
