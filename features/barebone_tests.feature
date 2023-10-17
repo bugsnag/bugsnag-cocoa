@@ -244,6 +244,7 @@ Feature: Barebone tests
 
   @skip_macos
   @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-9724
+  @skip_ios_17
   Scenario: Barebone test: Out Of Memory
     When I run "OOMScenario"
 
