@@ -528,7 +528,7 @@ steps:
           - --appium-version=1.18.0
           - --a11y-locator
           - --fail-fast
-          - --exclude=features/[e-z].*.feature$
+          - --exclude=features/[a-d].*.feature$
           - --order=random
     concurrency: 25
     concurrency_group: 'browserstack-app'
