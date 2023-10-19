@@ -23,7 +23,7 @@ GEM
     atomos (0.1.3)
     bugsnag (6.26.0)
       concurrent-ruby (~> 1.0)
-    bugsnag-maze-runner (8.8.0)
+    bugsnag-maze-runner (8.5.0)
       appium_lib (~> 12.0.0)
       appium_lib_core (~> 5.4.0)
       bugsnag (~> 6.24)
@@ -149,6 +149,8 @@ GEM
     nanaimo (0.3.0)
     nap (1.1.0)
     netrc (0.11.0)
+    nokogiri (1.15.4-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.15.4-x86_64-darwin)
       racc (~> 1.4)
     optimist (3.0.1)
@@ -196,12 +198,13 @@ GEM
       rexml (~> 3.2.4)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
 
 DEPENDENCIES
-  bugsnag-maze-runner (~> 8.8)
+  bugsnag-maze-runner (~> 8.5)
   cocoapods
 
 BUNDLED WITH
