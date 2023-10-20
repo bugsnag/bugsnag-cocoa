@@ -13,7 +13,7 @@ steps:
     agents:
       queue: ms-arm-13-1
     env:
-      DEVELOPER_DIR: /Applications/Xcode15.0.1.app
+      DEVELOPER_DIR: /Applications/Xcode15.1_beta.app
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
