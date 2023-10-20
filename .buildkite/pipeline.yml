@@ -11,9 +11,9 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-13-arm
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.1.app
+      DEVELOPER_DIR: /Applications/Xcode14.3.app
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
