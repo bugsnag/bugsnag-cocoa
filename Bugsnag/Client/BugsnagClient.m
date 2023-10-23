@@ -560,7 +560,7 @@ BSG_OBJC_DIRECT_MEMBERS
 - (void)setUser:(NSString *)userId withEmail:(NSString *)email andName:(NSString *)name {
     @synchronized (self.configuration) {
         [self.configuration setUser:userId withEmail:email andName:name];
-        [self.state addMetadata:[self.configuration.user toJson] toSection:BSGKeyUser];
+        [self.state addMetadata:[self.configuration.user toJsonWithNSNulls] toSection:BSGKeyUser];
         if (self.observer) {
             self.observer(BSGClientObserverUpdateUser, self.user);
         }

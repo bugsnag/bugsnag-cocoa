@@ -31,6 +31,35 @@
     XCTAssertEqualObjects(user.name, @"Tom Bombadil");
 }
 
+- (void)testDictNullDeserialisation {
+
+    NSDictionary *dict = @{
+            @"id": [NSNull null],
+            @"email": [NSNull null],
+            @"name": [NSNull null]
+    };
+    BugsnagUser *user = [[BugsnagUser alloc] initWithDictionary:dict];
+
+    XCTAssertNotNil(user);
+    XCTAssertNil(user.id);
+    XCTAssertNil(user.email);
+    XCTAssertNil(user.name);
+}
+
+- (void)testDictNullSerialisation {
+    BugsnagUser *user = [[BugsnagUser alloc] initWithId:nil name:nil emailAddress:nil];
+    NSDictionary *dict = [user toJson];
+    XCTAssertEqualObjects(@{}, dict);
+
+    dict = [user toJsonWithNSNulls];
+    NSDictionary *expected = @{
+            @"id": [NSNull null],
+            @"email": [NSNull null],
+            @"name": [NSNull null]
+    };
+    XCTAssertEqualObjects(expected, dict);
+}
+
 - (void)testPayloadSerialisation {
     BugsnagUser *payload = [[BugsnagUser alloc] initWithId:@"test" name:@"Tom Bombadil" emailAddress:@"fake@example.com"];
     NSDictionary *rootNode = [payload toJson];
