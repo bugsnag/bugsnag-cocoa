@@ -196,8 +196,6 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: opensource-arm-mac-cocoa-12
-    env:
-      DEVELOPER_DIR: /Applications/Xcode13.4.app
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3
     artifact_paths:
