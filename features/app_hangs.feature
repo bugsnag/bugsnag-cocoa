@@ -107,7 +107,7 @@ Feature: App hangs
 
   Scenario: Fatal app hangs should be reported if appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
     When I run "AppHangFatalOnlyScenario"
-    And I wait for 3 seconds
+    And I wait for 6 seconds
     And I kill and relaunch the app
     And I set the HTTP status code to 500
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
@@ -139,7 +139,7 @@ Feature: App hangs
 
   Scenario: Fatal app hangs should not be reported if enabledErrorTypes.appHangs = false
     When I run "AppHangFatalDisabledScenario"
-    And I wait for 3 seconds
+    And I wait for 5 seconds
     And I kill and relaunch the app
     And I configure Bugsnag for "AppHangFatalDisabledScenario"
     Then I should receive no errors
@@ -147,7 +147,8 @@ Feature: App hangs
   @skip_macos
   Scenario: Fatal app hangs should be reported if the app hangs before going to the background
     When I run "AppHangFatalOnlyScenario"
-    And I send the app to the background for 3 seconds
+    And I wait for 5 seconds
+    And I send the app to the background
     And I kill and relaunch the app
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
@@ -156,7 +157,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Fatal app hangs should not be reported if they occur once the app is in the background
     When I run "AppHangDidEnterBackgroundScenario"
-    And I send the app to the background for 3 seconds
+    And I send the app to the background for 6 seconds
     And I kill and relaunch the app
     And I configure Bugsnag for "AppHangDidEnterBackgroundScenario"
     Then I should receive no errors
@@ -182,7 +183,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Background app hangs should be reported if reportBackgroundAppHangs = true
     When I run "ReportBackgroundAppHangScenario"
-    And I send the app to the background for 3 seconds
+    And I send the app to the background
     And I wait to receive an error
     Then the exception "errorClass" equals "App Hang"
     And the exception "message" equals "The app's main thread failed to respond to an event within 1000 milliseconds"

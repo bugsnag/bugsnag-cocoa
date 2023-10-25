@@ -76,7 +76,7 @@ static inline bool bsg_local_is_insert_libraries_env_var(const char* str) {
 // - Use pointers for output parameters, with labels that identify them as such.
 // - Beware of global consts or defines bleeding through.
 
-#if TARGET_CPU_ARM64
+#if TARGET_CPU_ARM64 && !TARGET_OS_OSX
 #define BSG_HAS_CUSTOM_SYSCALL 1
 
 // ARM64 3-parameter syscall
@@ -105,7 +105,7 @@ static inline bool bsg_local_is_insert_libraries_env_var(const char* str) {
     } \
 } while(0)
 
-#elif TARGET_CPU_X86_64 && defined(__GCC_ASM_FLAG_OUTPUTS__)
+#elif TARGET_CPU_X86_64 && defined(__GCC_ASM_FLAG_OUTPUTS__) && !TARGET_OS_OSX
 #define BSG_HAS_CUSTOM_SYSCALL 1
 
 // X86_64 3-parameter syscall

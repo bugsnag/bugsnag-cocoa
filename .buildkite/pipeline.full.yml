@@ -17,7 +17,7 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
@@ -25,13 +25,13 @@ steps:
         service-ports: true
         command:
           - "--exclude=features/[e-z].*.feature$"
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
 
   - label: ':bitbar: iOS 15 E2E tests batch 2'
@@ -41,7 +41,7 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
@@ -49,13 +49,13 @@ steps:
         service-ports: true
         command:
           - "--exclude=features/[a-d].*.feature$"
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
 
   - label: ':bitbar: iOS 14 E2E tests batch 1'
@@ -66,14 +66,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_14"
           - "--no-tunnel"
@@ -82,7 +82,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -97,14 +97,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_14"
           - "--no-tunnel"
@@ -113,7 +113,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -128,14 +128,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_13"
           - "--no-tunnel"
@@ -144,7 +144,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -159,14 +159,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_13"
           - "--no-tunnel"
@@ -175,7 +175,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -190,14 +190,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_12"
           - "--no-tunnel"
@@ -206,7 +206,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -221,14 +221,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_12"
           - "--no-tunnel"
@@ -237,7 +237,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -257,13 +257,13 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner-legacy
         run: cocoa-maze-runner-legacy
         command:
-          - "--app=@build/ipa_url.txt"
+          - "--app=@build/ipa_url_bs.txt"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.16.0"
@@ -271,7 +271,7 @@ steps:
           - "--exclude=features/[e-z].*.feature$"
           - "--order=random"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -288,13 +288,13 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner-legacy
         run: cocoa-maze-runner-legacy
         command:
-          - "--app=@build/ipa_url.txt"
+          - "--app=@build/ipa_url_bs.txt"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.16.0"
@@ -302,7 +302,7 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:

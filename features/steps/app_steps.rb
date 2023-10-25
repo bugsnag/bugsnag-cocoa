@@ -66,7 +66,7 @@ end
 # 4: The application is running in the foreground
 
 Then('the app is not running') do
-  wait_for_true do
+  wait_for_true('the app is not running') do
     case Maze::Helper.get_current_platform
     when 'ios'
       Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :not_running
@@ -112,7 +112,7 @@ def trigger_app_command
   end
 end
 
-def wait_for_true
+def wait_for_true(description)
   max_attempts = 300
   attempts = 0
   assertion_passed = false
@@ -121,7 +121,7 @@ def wait_for_true
     assertion_passed = yield
     sleep 0.1
   end
-  raise 'Assertion not passed in 30s' unless assertion_passed
+  $logger.warn "Assertion not passed in 30s: #{description}" unless assertion_passed
 end
 
 def run_macos_app

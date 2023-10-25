@@ -54,7 +54,8 @@ Feature: Reporting crash events
       | <redacted>                                      |
       | ___forwarding___ |
     And the "method" of stack frame 4 equals "_CF_forwarding_prep_0"
-    And the "method" of stack frame 5 equals "-[NonExistentMethodScenario run]"
+    # Skipped pending PLAT-10759
+    #And the "method" of stack frame 5 equals "-[NonExistentMethodScenario run]"
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
 

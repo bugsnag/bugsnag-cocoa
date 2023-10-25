@@ -46,12 +46,6 @@ extern "C" {
 #pragma mark - General Information -
 // ============================================================================
 
-/** Get the current CPU architecture.
- *
- * @return The current architecture.
- */
-const char *bsg_ksmachcurrentCPUArch(void);
-
 /** Get the name of a mach exception.
  *
  * @param exceptionType The exception type.

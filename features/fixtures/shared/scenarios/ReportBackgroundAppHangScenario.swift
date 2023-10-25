@@ -23,7 +23,7 @@ class ReportBackgroundAppHangScenario: Scenario {
             Thread.sleep(forTimeInterval: timeInterval)
             NSLog("Finished sleeping")
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 UIApplication.shared.endBackgroundTask(backgroundTask)
             }
         }
