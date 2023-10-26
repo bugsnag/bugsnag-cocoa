@@ -35,7 +35,7 @@ else
    RELEASE_DIR=Release-iphoneos
   else
    SDK?=watchsimulator
-   DEVICE?=Apple Watch Series 5 - 40mm
+   DEVICE?=Apple Watch Series 5 (40mm)
    DESTINATION?=platform=watchOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-watchos
   endif
