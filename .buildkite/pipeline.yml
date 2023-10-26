@@ -188,7 +188,7 @@ steps:
     env:
       DEVELOPER_DIR: /Applications/Xcode-14.1.0.app
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator9.1
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5
     artifact_paths:
       - logs/*
 
@@ -199,7 +199,7 @@ steps:
     env:
       DEVELOPER_DIR: /Applications/Xcode-14.1.0.app
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.0
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4
     artifact_paths:
       - logs/*
 
