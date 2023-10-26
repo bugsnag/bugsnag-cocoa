@@ -186,9 +186,9 @@ steps:
     agents:
       queue: ms-arm-12-1
     env:
-      XCODE_VERSION: 14.1.0
+      XCODE_VERSION: 14.-.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3 SDK=watchsimulator9.5
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3 SDK=watchsimulator9.0
     artifact_paths:
       - logs/*
 
@@ -199,7 +199,7 @@ steps:
     env:
       XCODE_VERSION: 14.1.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.5
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.0
     artifact_paths:
       - logs/*
 
