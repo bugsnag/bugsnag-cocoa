@@ -137,6 +137,7 @@ Feature: App hangs
     And the event "session.events.handled" equals 0
     And the event "session.events.unhandled" equals 1
 
+  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-11155
   Scenario: Fatal app hangs should not be reported if enabledErrorTypes.appHangs = false
     When I run "AppHangFatalDisabledScenario"
     And I wait for 5 seconds
