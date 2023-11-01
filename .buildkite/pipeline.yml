@@ -473,6 +473,7 @@ steps:
   # BrowserStack
   #
   - label: ':browserstack: iOS 11 barebone tests'
+    skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
