@@ -248,6 +248,7 @@ steps:
   # BrowserStack
   #
   - label: ':browserstack: iOS 11 E2E tests batch 1'
+    skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
     depends_on:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
@@ -279,6 +280,7 @@ steps:
           limit: 2
 
   - label: ':browserstack: iOS 11 E2E tests batch 2'
+    skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
     depends_on:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
