@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Check app version to avoid detecting an app upgrade as an OOM
+  [1597](https://github.com/bugsnag/bugsnag-cocoa/pull/1597)
+
+
 ## 6.27.2 (2023-07-24)
 
 ### Enhancements

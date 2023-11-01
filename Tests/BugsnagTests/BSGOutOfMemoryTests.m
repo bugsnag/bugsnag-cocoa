@@ -133,6 +133,9 @@
     XCTAssertFalse(BSGRunContextWasKilled());
     uuid_copy(lastRunContext.machoUUID, bsg_runContext->machoUUID);
     
+    strncpy(lastRunContext.bundleVersion, "999.99", sizeof(lastRunContext.bundleVersion));
+    XCTAssertFalse(BSGRunContextWasKilled());
+
     lastRunContext.bootTime = 0;
     XCTAssertFalse(BSGRunContextWasKilled());
     lastRunContext.bootTime = bsg_runContext->bootTime;

@@ -71,7 +71,13 @@ static void InitRunContext(void) {
     if (image && image->uuid) {
         uuid_copy(bsg_runContext->machoUUID, image->uuid);
     }
-    
+
+    NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    const char *bundleVersionStr = (const char*)[bundleVersion cStringUsingEncoding:NSUTF8StringEncoding];
+    if (bundleVersionStr != nil) {
+        bsg_safe_strncpy(bsg_runContext->bundleVersion, bundleVersionStr, sizeof(bsg_runContext->bundleVersion));
+    }
+
     if ([NSThread isMainThread]) {
         bsg_runContext->isActive = GetIsActive();
     } else {
@@ -487,8 +493,13 @@ bool BSGRunContextWasKilled(void) {
     if (bsg_lastRunContext->bootTime != bsg_runContext->bootTime) {
         return NO; // The app may have been terminated due to the reboot
     }
-    
+
     // Ignore unexpected terminations due to the app being upgraded
+    if (strncmp(bsg_lastRunContext->bundleVersion,
+                bsg_runContext->bundleVersion,
+                sizeof(bsg_runContext->bundleVersion)) != 0) {
+        return NO;
+    }
     if (uuid_compare(bsg_lastRunContext->machoUUID, bsg_runContext->machoUUID)) {
         return NO;
     }
@@ -516,10 +527,13 @@ bool BSGRunContextWasKilled(void) {
 
 #define SIZEOF_STRUCT sizeof(struct BSGRunContext)
 
-static struct BSGRunContext fallback;
-struct BSGRunContext *bsg_runContext = &fallback;
+static struct BSGRunContext bsg_runContext_fallback;
+struct BSGRunContext *bsg_runContext = &bsg_runContext_fallback;
 
-const struct BSGRunContext *bsg_lastRunContext;
+static struct BSGRunContext bsg_lastRunContext_fallback = {
+    .structVersion = ~0,
+};
+const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 
 /// Opens the file and disables content protection, returning -1 on error.
 static int OpenFile(NSString *_Nonnull path) {
