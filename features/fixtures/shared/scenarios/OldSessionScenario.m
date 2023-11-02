@@ -41,7 +41,7 @@
     NSString *file = [dir stringByAppendingPathComponent:name];
     NSError *error;
     if ([NSFileManager.defaultManager setAttributes:@{NSFileCreationDate: creationDate} ofItemAtPath:file error:&error]) {
-        logInfo(@"OldSessionScenario: Updated creation date of %@ to %@", file.lastPathComponent,
+        logDebug(@"OldSessionScenario: Updated creation date of %@ to %@", file.lastPathComponent,
               [NSFileManager.defaultManager attributesOfItemAtPath:file error:nil].fileCreationDate);
     } else {
         logError(@"OldSessionScenario: %@", error);

@@ -48,7 +48,7 @@
 }
 
 - (IBAction)runScenario:(id)sender {
-    logInfo(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    logDebug(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
     
     // Cater for multiple calls to -run
     if (!Scenario.currentScenario) {
@@ -70,7 +70,7 @@
 }
 
 - (IBAction)startBugsnag:(id)sender {
-    logInfo(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    logDebug(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
     [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
     Scenario.currentScenario.eventMode = self.scenarioMetadata;

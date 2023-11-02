@@ -18,7 +18,7 @@ class AppHangScenario: Scenario {
     override func run() {
         Bugsnag.setContext("App Hang Scenario")
         let timeInterval = TimeInterval(eventMode!)!
-        logInfo("Simulating an app hang of \(timeInterval) seconds...")
+        logDebug("Simulating an app hang of \(timeInterval) seconds...")
         if timeInterval > 2 {
             Thread.sleep(forTimeInterval: 1.5)
             Bugsnag.leaveBreadcrumb(withMessage: "This breadcrumb was left during the hang, before detection")
@@ -27,6 +27,6 @@ class AppHangScenario: Scenario {
             Thread.sleep(forTimeInterval: timeInterval)
         }
         Bugsnag.leaveBreadcrumb(withMessage: "This breadcrumb was left after the hang")
-        logInfo("Finished sleeping")
+        logDebug("Finished sleeping")
     }
 }

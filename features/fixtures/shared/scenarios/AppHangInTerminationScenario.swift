@@ -27,7 +27,7 @@ class AppHangInTerminationScenario: Scenario {
         #endif
         
         NotificationCenter.default.addObserver(forName: willTerminate, object: nil, queue: nil) {
-            logInfo("Received \($0.name.rawValue), simulating an app hang...")
+            logDebug("Received \($0.name.rawValue), simulating an app hang...")
             Thread.sleep(forTimeInterval: 3)
         }
         

@@ -9,7 +9,7 @@ class AppHangFatalOnlyScenario: Scenario {
     }
     
     override func run() {
-        logInfo("Hanging indefinitely...")
+        logDebug("Hanging indefinitely...")
         // Use asyncAfter to allow the Appium click event to be handled
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             while true {}

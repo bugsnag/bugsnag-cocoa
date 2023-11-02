@@ -60,7 +60,7 @@ static char ksLogPath[PATH_MAX];
             return;
         }
 #endif
-        logInfo(@"Received notification %@", notification.name);
+        logDebug(@"Received notification %@", notification.name);
     }];
 }
 
@@ -213,11 +213,11 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)executeMazeRunnerCommand:(void (^)(NSString *scenarioName, NSString *scenarioMode))preHandler {
-    logInfo(@"%s", __PRETTY_FUNCTION__);
+    logDebug(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", theBaseMazeAddress];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:commandEndpoint]];
-    logInfo(@"%s: Sending command request to %@", __PRETTY_FUNCTION__, commandEndpoint);
+    logDebug(@"%s: Sending command request to %@", __PRETTY_FUNCTION__, commandEndpoint);
     [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
             logError(@"%s: command request failed with %@", __PRETTY_FUNCTION__, response ?: error);
@@ -266,7 +266,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)runScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
-    logInfo(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
+    logDebug(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     [self startBugsnagForScenario:scenarioName eventMode:eventMode];
     
@@ -274,7 +274,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
-    logInfo(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
+    logDebug(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     theScenario = [Scenario createScenarioNamed:scenarioName withConfig:nil];
     theScenario.eventMode = eventMode;
