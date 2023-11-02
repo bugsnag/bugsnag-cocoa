@@ -4,6 +4,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Sends a manual session payload to Bugsnag.

@@ -25,6 +25,7 @@
  */
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Call NSLog(@"%@", 16);, causing a crash when the runtime attempts to treat 16 as a pointer to an object.

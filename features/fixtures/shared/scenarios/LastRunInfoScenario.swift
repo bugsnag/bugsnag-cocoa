@@ -46,7 +46,7 @@ class LastRunInfoScenario: Scenario {
         
         while try! !FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil, options: [])
                 .filter({ $0.lastPathComponent.hasPrefix("CrashReport-") }).isEmpty {
-            NSLog("LastRunInfoScenario: waiting for delivery of crash reports...")
+            logInfo("LastRunInfoScenario: waiting for delivery of crash reports...")
             Thread.sleep(forTimeInterval: 0.1)
         }
     }

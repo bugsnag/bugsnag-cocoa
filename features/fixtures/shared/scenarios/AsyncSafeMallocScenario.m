@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 #include "spin_malloc.h"
 
 @interface AsyncSafeMallocScenario : Scenario

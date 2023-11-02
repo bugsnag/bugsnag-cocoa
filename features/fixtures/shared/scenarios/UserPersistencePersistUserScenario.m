@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Set a user on the config and persist it

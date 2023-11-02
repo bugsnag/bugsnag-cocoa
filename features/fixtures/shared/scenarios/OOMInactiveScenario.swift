@@ -22,7 +22,7 @@ class OOMInactiveScenario: Scenario {
         NotificationCenter.default.post(name: UIApplication.willResignActiveNotification,
                                         object: UIApplication.shared, userInfo: nil)
         
-        NSLog("Killing app to fake an OOM")
+        logInfo("Killing app to fake an OOM")
         kill(getpid(), SIGKILL)
     }
 }

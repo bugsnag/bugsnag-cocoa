@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface SIGPIPEIgnoredScenario : Scenario
 

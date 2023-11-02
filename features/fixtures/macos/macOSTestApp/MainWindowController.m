@@ -9,11 +9,9 @@
 #import "MainWindowController.h"
 
 #import "Scenario.h"
+#import "Logging.h"
 
 #import <Bugsnag/Bugsnag.h>
-
-static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL;
-
 
 @interface MainWindowController ()
 
@@ -50,39 +48,39 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 }
 
 - (IBAction)runScenario:(id)sender {
-    BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    logInfo(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
     
     // Cater for multiple calls to -run
     if (!Scenario.currentScenario) {
         [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
         Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
-        BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
+        logInfo(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
         [Scenario.currentScenario startBugsnag];
     }
 
-    BSLog(@"Will run scenario: %@", Scenario.currentScenario);
+    logInfo(@"Will run scenario: %@", Scenario.currentScenario);
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.
     // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
     // 0.1s delay allows accessibility APIs to finish handling the mouse click and returns control to the tests framework.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        BSLog(@"Running scenario: %@", Scenario.currentScenario);
+        logInfo(@"Running scenario: %@", Scenario.currentScenario);
         [Scenario.currentScenario run];
     });
 }
 
 - (IBAction)startBugsnag:(id)sender {
-    BSLog(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
+    logInfo(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
     [Scenario createScenarioNamed:self.scenarioName withConfig:[self configuration]];
     Scenario.currentScenario.eventMode = self.scenarioMetadata;
 
-    BSLog(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
+    logInfo(@"Starting Bugsnag for scenario: %@", Scenario.currentScenario);
     [Scenario.currentScenario startBugsnag];
 }
 
 - (IBAction)clearPersistentData:(id)sender {
-    BSLog(@"Clearing persistent data");
+    logInfo(@"Clearing persistent data");
     [Scenario clearPersistentData];
 }
 
@@ -100,13 +98,3 @@ static void BSLog(NSString *format, ...) NS_FORMAT_FUNCTION(1,2) NS_NO_TAIL_CALL
 }
 
 @end
-
-
-static void BSLog(NSString *format, ...) {
-    va_list vl;
-    va_start(vl, format);
-    NSString *message = [[NSString alloc] initWithFormat:format arguments:vl];
-    NSLog(@"%@", message);
-    kslog(message.UTF8String);
-    va_end(vl);
-}

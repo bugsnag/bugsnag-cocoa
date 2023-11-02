@@ -4,6 +4,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface DisabledSessionTrackingScenario : Scenario
 @end
