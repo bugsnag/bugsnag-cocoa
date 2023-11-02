@@ -80,7 +80,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -111,7 +110,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -142,7 +140,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -173,7 +170,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -204,7 +200,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -235,7 +230,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -270,7 +264,6 @@ steps:
           - "--appium-version=1.16.0"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -302,7 +295,6 @@ steps:
           - "--appium-version=1.16.0"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -326,7 +318,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'ARM macOS 12 E2E tests'
     depends_on:
@@ -345,7 +336,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'macOS 10.13 E2E tests'
     depends_on:
@@ -362,7 +352,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'macOS 10.14 E2E tests'
     depends_on:
@@ -379,7 +368,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   ##############################################################################
   #

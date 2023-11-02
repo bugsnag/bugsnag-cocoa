@@ -221,7 +221,6 @@ steps:
         features/barebone_tests.feature
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'macOS 10.15 E2E tests'
     depends_on:
@@ -238,7 +237,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'ARM macOS 12 barebones E2E tests'
     depends_on:
@@ -258,7 +256,6 @@ steps:
         features/barebone_tests.feature
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'macOS 12 stress test'
     timeout_in_minutes: 3
@@ -309,7 +306,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -340,7 +336,6 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
