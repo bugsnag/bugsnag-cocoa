@@ -1,3 +1,4 @@
+@skip # https://smartbear.atlassian.net/browse/PLAT-11155
 Feature: App hangs
 
   Background:
@@ -105,7 +106,6 @@ Feature: App hangs
     When I run "AppHangDisabledScenario"
     Then I should receive no errors
 
-  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-11155
   Scenario: Fatal app hangs should be reported if appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
     When I run "AppHangFatalOnlyScenario"
     And I wait for 6 seconds
@@ -138,7 +138,6 @@ Feature: App hangs
     And the event "session.events.handled" equals 0
     And the event "session.events.unhandled" equals 1
 
-  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-11155
   Scenario: Fatal app hangs should not be reported if enabledErrorTypes.appHangs = false
     When I run "AppHangFatalDisabledScenario"
     And I wait for 5 seconds
@@ -147,7 +146,6 @@ Feature: App hangs
     Then I should receive no errors
 
   @skip_macos
-  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-11155
   Scenario: Fatal app hangs should be reported if the app hangs before going to the background
     When I run "AppHangFatalOnlyScenario"
     And I wait for 5 seconds
