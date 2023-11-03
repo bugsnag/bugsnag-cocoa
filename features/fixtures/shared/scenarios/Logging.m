@@ -22,6 +22,13 @@ void logInternal(const char* level, NSString *format, va_list args) {
 
 }
 
+void logDebugObjC(NSString *format, ...) {
+    va_list args;
+    va_start(args, format);
+    logInternal("debug", format, args);
+    va_end(args);
+}
+
 void logInfoObjC(NSString *format, ...) {
     va_list args;
     va_start(args, format);

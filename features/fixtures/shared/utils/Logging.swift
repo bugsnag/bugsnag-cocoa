@@ -8,6 +8,15 @@
 
 import Foundation
 
+//public func logDebug(_ format: String) {
+//    logDebug(format: format, args: 0 as Int)
+//}
+public func logDebug(_ format: String, _ args: CVarArg...) {
+    withVaList(args) {
+        logInternal("debug", format, $0)
+    }
+}
+
 //public func logInfo(_ format: String) {
 //    logInfo(format: format, args: 0 as Int)
 //}
