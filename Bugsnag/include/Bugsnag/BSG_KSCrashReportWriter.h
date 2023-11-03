@@ -32,11 +32,13 @@
 #define HDR_BSG_KSCrashReportWriter_h
 
 #ifdef __cplusplus
+#include <sys/types.h>
+
 extern "C" {
 #endif
 
 #include <stdbool.h>
-#include <sys/types.h>
+#include <stddef.h>
 
 /**
  * Encapsulates report writing functionality.
@@ -190,7 +192,7 @@ typedef struct BSG_KSCrashReportWriter {
      *
      * @param name The name to give this element.
      *
-     * @param jsonElement A pointer to the JSON data.
+     * @param value A pointer to the JSON data.
      */
     void (*addJSONElement)(const struct BSG_KSCrashReportWriter *writer,
                            const char *name, const char *jsonElement);
