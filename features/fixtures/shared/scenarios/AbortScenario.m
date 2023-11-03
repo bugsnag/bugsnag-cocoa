@@ -25,6 +25,7 @@
  */
 
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface AbortScenario : Scenario
 @end

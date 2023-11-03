@@ -25,6 +25,7 @@
  */
 
 #import "MarkUnhandledHandledScenario.h"
+#import "Logging.h"
 
 @interface AbortOverrideScenario : MarkUnhandledHandledScenario
 @end

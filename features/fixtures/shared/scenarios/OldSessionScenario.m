@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface OldSessionScenario : Scenario
 @end
@@ -40,10 +41,10 @@
     NSString *file = [dir stringByAppendingPathComponent:name];
     NSError *error;
     if ([NSFileManager.defaultManager setAttributes:@{NSFileCreationDate: creationDate} ofItemAtPath:file error:&error]) {
-        NSLog(@"OldSessionScenario: Updated creation date of %@ to %@", file.lastPathComponent,
+        logDebug(@"OldSessionScenario: Updated creation date of %@ to %@", file.lastPathComponent,
               [NSFileManager.defaultManager attributesOfItemAtPath:file error:nil].fileCreationDate);
     } else {
-        NSLog(@"OldSessionScenario: %@", error);
+        logError(@"OldSessionScenario: %@", error);
         abort();
     }
 }

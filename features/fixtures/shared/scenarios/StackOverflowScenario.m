@@ -25,6 +25,7 @@
  */
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Execute an infinitely recursive method, which overflows the stack and

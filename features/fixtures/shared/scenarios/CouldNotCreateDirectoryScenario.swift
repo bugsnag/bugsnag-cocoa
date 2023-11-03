@@ -26,7 +26,7 @@ class CouldNotCreateDirectoryScenario: Scenario {
             try fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: dir.path)
             super.startBugsnag()
         } catch {
-            NSLog("\(error)")
+            logError("\(error)")
         }
     }
     

@@ -25,6 +25,7 @@
  */
 
 #import "Scenario.h"
+#import "Logging.h"
 #import <pthread.h>
 
 /**
@@ -46,7 +47,7 @@
 
     /* This is unreachable, but prevents clang from applying TCO to the above when
      * optimization is enabled. */
-    NSLog(@"I'm here from the tail call prevention department.");
+    logInfo(@"I'm here from the tail call prevention department.");
 }
 
 @end

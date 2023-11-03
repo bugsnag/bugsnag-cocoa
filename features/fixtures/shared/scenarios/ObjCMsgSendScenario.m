@@ -25,6 +25,7 @@
  */
 
 #import "Scenario.h"
+#import "Logging.h"
 
 #import <objc/message.h>
 

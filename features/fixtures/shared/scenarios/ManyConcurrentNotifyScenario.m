@@ -1,4 +1,5 @@
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface ManyConcurrentNotifyScenario : Scenario
 @property (nonatomic) dispatch_queue_t queue1;

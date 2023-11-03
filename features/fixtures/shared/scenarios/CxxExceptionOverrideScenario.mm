@@ -25,6 +25,7 @@
  */
 
 #import "MarkUnhandledHandledScenario.h"
+#import "Logging.h"
 
 #import <stdexcept>
 
