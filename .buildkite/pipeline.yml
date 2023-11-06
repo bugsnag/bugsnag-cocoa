@@ -305,7 +305,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
-          # App hang scenarios run on BrowserStack, see PLAT-11155
+          # PLAT-11155: App hang scenarios run on BrowserStack
           - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
     concurrency: 25
@@ -340,6 +340,34 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+  - label: ':browserstack: iOS 16 app hang tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_16"
+          - "--appium-version=1.22.0"
+          - "features/app_hangs.feature"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
