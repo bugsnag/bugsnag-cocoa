@@ -305,6 +305,8 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          # App hang scenarios run on BrowserStack, see PLAT-11155
+          - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
