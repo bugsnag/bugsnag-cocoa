@@ -46,7 +46,7 @@ Feature: Delivery of errors
     And I configure Bugsnag for "OldHandledErrorScenario"
     And I wait to receive an error
     And I wait for the fixture to process the response
-    # The error should now have been deleted 
+    # The error should now have been deleted
     And I kill and relaunch the app
     And I clear the error queue
     And I configure Bugsnag for "OldHandledErrorScenario"
@@ -157,6 +157,7 @@ Feature: Delivery of errors
     And the event "usage.system.stringCharsTruncated" is not null
     And the event "usage.system.stringsTruncated" is not null
 
+  @skip_ios_17
   Scenario Outline: Attempt Delivery On Crash
     When I set the app to "<scenario_mode>" mode
     And I run "AttemptDeliveryOnCrashScenario"
@@ -174,7 +175,31 @@ Feature: Delivery of errors
     And I wait to receive 2 sessions
     Then I should receive no error
     Examples:
-      | scenario_mode   | error_type  | error_class      | message                                                                    |
-      | NSException     | nsexception | NSRangeException | *** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray |
-      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value                  |
-      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.                             |
+      | scenario_mode   | error_type  | error_class      | message                                                   |
+      | NSException     | nsexception | NSRangeException | Something is out of range                                 |
+      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value |
+      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.            |
+
+  @skip_below_ios_17
+  @skip_macos
+  Scenario Outline: Attempt Delivery On Crash iOS 17
+    When I set the app to "<scenario_mode>" mode
+    And I run "AttemptDeliveryOnCrashScenario"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the event "context" equals "OnSendError"
+    And the exception "errorClass" equals "<error_class>"
+    And the exception "message" equals "<message>"
+    And the event "metaData.error.type" equals "<error_type>"
+    And the event "unhandled" is true
+    And the event "usage.config.attemptDeliveryOnCrash" is true
+    And I discard the oldest error
+    And I relaunch the app after a crash
+    And I configure Bugsnag for "AttemptDeliveryOnCrashScenario"
+    And I wait to receive 2 sessions
+    Then I should receive no error
+    Examples:
+      | scenario_mode   | error_type  | error_class      | message                                                   |
+      | NSException     | nsexception | NSRangeException | Something is out of range                                 |
+      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value |
+      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.            |

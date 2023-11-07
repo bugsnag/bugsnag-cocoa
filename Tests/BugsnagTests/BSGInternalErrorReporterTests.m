@@ -63,14 +63,17 @@
     
     NSException *exception = nil;
     @try {
-        NSLog(@"%@", @[][0]);
+        [[NSException exceptionWithName:NSRangeException
+                                 reason:@"Something is out of range"
+                               userInfo:nil] raise];
     } @catch (NSException *e) {
         exception = e;
     }
     
     BugsnagEvent *event = [reporter eventWithException:exception diagnostics:nil groupingHash:@"test"];
     XCTAssertEqualObjects(event.errors[0].errorClass, @"NSRangeException");
-    XCTAssertEqualObjects(event.errors[0].errorMessage, @"*** -[__NSArray0 objectAtIndex:]: index 0 beyond bounds for empty NSArray");
+    XCTAssertEqualObjects(event.errors[0].errorMessage, @"Something is out of range");
+    
     XCTAssertEqualObjects(event.groupingHash, @"test");
     XCTAssertEqualObjects(event.threads, @[]);
     XCTAssertGreaterThan(event.errors[0].stacktrace.count, 0);
