@@ -175,10 +175,10 @@ Feature: Delivery of errors
     And I wait to receive 2 sessions
     Then I should receive no error
     Examples:
-      | scenario_mode   | error_type  | error_class      | message                                                                    |
-      | NSException     | nsexception | NSRangeException | *** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray |
-      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value                  |
-      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.                             |
+      | scenario_mode   | error_type  | error_class      | message                                                   |
+      | NSException     | nsexception | NSRangeException | Something is out of range                                 |
+      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value |
+      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.            |
 
   @skip_below_ios_17
   @skip_macos
@@ -199,7 +199,7 @@ Feature: Delivery of errors
     And I wait to receive 2 sessions
     Then I should receive no error
     Examples:
-      | scenario_mode   | error_type  | error_class      | message                                                                    |
-      | NSException     | nsexception | NSRangeException | *** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty array |
-      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value                  |
-      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.                             |
+      | scenario_mode   | error_type  | error_class      | message                                                   |
+      | NSException     | nsexception | NSRangeException | Something is out of range                                 |
+      | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value |
+      | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.            |

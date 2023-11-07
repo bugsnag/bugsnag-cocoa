@@ -12,7 +12,10 @@
 #import <stdexcept>
 
 #define THROW_CPP_EXCEPTION throw std::runtime_error("err")
-#define THROW_OBJC_EXCEPTION [@[] objectAtIndex:42]
+#define THROW_OBJC_EXCEPTION \
+    [[NSException exceptionWithName:NSRangeException \
+                             reason:@"Something is out of range" \
+                           userInfo:nil] raise]
 #define CAUSE_MACH_EXCEPTION volatile int *ptr = NULL; *ptr = 42
 #define RAISE_SIGNAL abort()
 

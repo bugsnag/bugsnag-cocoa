@@ -68,7 +68,7 @@ Feature: Barebone tests
     And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
     And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
     And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
-    And the event "metaData.error.reason" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
+    And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null
     And the event "metaData.user.email" is null
@@ -103,7 +103,7 @@ Feature: Barebone tests
       | notify      | rangeException |
     And the event does not contain the feature flag "nope"
     And the exception "errorClass" equals "NSRangeException"
-    And the exception "message" equals "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]"
+    And the exception "message" equals "Something is out of range"
     And the exception "type" equals "cocoa"
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is a number
@@ -199,7 +199,7 @@ Feature: Barebone tests
     And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
     And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
     And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
-    And the event "metaData.error.reason" equals "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray"
+    And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null
     And the event "metaData.user.email" is null
@@ -227,7 +227,7 @@ Feature: Barebone tests
       | featureFlag | variant |
       | Testing     |         |
     And the exception "errorClass" equals "NSRangeException"
-    And the exception "message" equals "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray"
+    And the exception "message" equals "Something is out of range"
     And the exception "type" equals "cocoa"
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is a number
