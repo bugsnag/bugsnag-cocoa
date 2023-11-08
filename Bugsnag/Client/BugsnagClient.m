@@ -234,10 +234,11 @@ BSG_OBJC_DIRECT_MEMBERS
     // from the start method.
     [self.configuration validate];
 
+    // MUST be called before BSGRunContextInit to initialize bsg_runContext
+    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
+
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
-
-    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
 
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
