@@ -16,9 +16,19 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if ((self = [super init])) {
+        id nsnull = [NSNull null];
         _id = dict[@"id"];
+        if (_id == nsnull) {
+            _id = nil;
+        }
         _email = dict[@"email"];
+        if (_email == nsnull) {
+            _email = nil;
+        }
         _name = dict[@"name"];
+        if (_name == nsnull) {
+            _name = nil;
+        }
     }
     return self;
 }
@@ -32,6 +42,14 @@ BSG_OBJC_DIRECT_MEMBERS
     return self;
 }
 
+- (NSDictionary *)toJsonWithNSNulls {
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    dict[@"id"] = self.id ?: [NSNull null];
+    dict[@"email"] = self.email ?: [NSNull null];
+    dict[@"name"] = self.name ?: [NSNull null];
+    return [NSDictionary dictionaryWithDictionary:dict];
+}
+
 - (NSDictionary *)toJson {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     dict[@"id"] = self.id;
@@ -39,6 +57,7 @@ BSG_OBJC_DIRECT_MEMBERS
     dict[@"name"] = self.name;
     return [NSDictionary dictionaryWithDictionary:dict];
 }
+
 
 - (BugsnagUser *)withId {
     if (self.id) {
