@@ -89,7 +89,7 @@ class BareboneTestHandledScenario: Scenario {
             """, key: "shouldBeTruncated", section: "Other")
         
         Bugsnag.notify(NSException(name: .rangeException,
-                                   reason: "-[__NSSingleObjectArrayI objectAtIndex:]: index 1 beyond bounds [0 .. 0]",
+                                   reason: "Something is out of range",
                                    userInfo: ["date": Date(timeIntervalSinceReferenceDate: 0),
                                               "scenario": "BareboneTestHandledScenario",
                                               NSUnderlyingErrorKey: NSError(domain: "ErrorDomain", code: 0)])) {

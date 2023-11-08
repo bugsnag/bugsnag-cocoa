@@ -10,7 +10,7 @@ class AppHangDidBecomeActiveScenario: Scenario {
     
     override func run() {
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) {
-            NSLog("Received \($0.name), now sleeping for 3 seconds...")
+            logDebug("Received \($0.name), now sleeping for 3 seconds...")
             Thread.sleep(forTimeInterval: 3)
         }
     }

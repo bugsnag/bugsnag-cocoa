@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-void kslog(const char *message);
+void logInternal(const char* level, NSString *format, va_list args);
 
 void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 

@@ -9,6 +9,7 @@
 // C++ crashes are handled in a separate scenario, and OOM is not tested for.
 
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface DisableSignalsExceptionScenario : Scenario
 @end

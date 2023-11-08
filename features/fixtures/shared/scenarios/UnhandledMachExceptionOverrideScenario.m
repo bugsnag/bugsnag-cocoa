@@ -7,6 +7,7 @@
 //
 
 #import "MarkUnhandledHandledScenario.h"
+#import "Logging.h"
 
 @interface UnhandledMachExceptionOverrideScenario : MarkUnhandledHandledScenario
 @end

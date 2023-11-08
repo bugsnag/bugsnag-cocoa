@@ -33,7 +33,7 @@ class BareboneTestUnhandledErrorScenario: Scenario {
         // Manually constructing an exception to verify handling of userInfo
         NSException(
             name: .rangeException,
-            reason: "*** -[__NSArray0 objectAtIndex:]: index 42 beyond bounds for empty NSArray",
+            reason: "Something is out of range",
             userInfo: [
                 "date": Date(timeIntervalSinceReferenceDate: 0),
                 "scenario": "BareboneTestUnhandledErrorScenario",

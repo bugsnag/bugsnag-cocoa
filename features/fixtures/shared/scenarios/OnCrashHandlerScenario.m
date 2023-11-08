@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 // Create crash handler
 void HandleCrashedThread(const BSG_KSCrashReportWriter *writer) {

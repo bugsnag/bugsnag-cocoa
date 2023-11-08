@@ -24,10 +24,10 @@ class OldCrashReportScenario: Scenario {
             for name in try FileManager.default.contentsOfDirectory(atPath: dir) {
                 let file = (dir as NSString).appendingPathComponent(name)
                 try FileManager.default.setAttributes([.creationDate: creationDate], ofItemAtPath: file)
-                NSLog("OldCrashReportScenario: Updated creation date of \((file as NSString).lastPathComponent) to \(creationDate)")
+                logDebug("OldCrashReportScenario: Updated creation date of \((file as NSString).lastPathComponent) to \(creationDate)")
             }
         } catch {
-            NSLog("\(error)")
+            logError("\(error)")
         }
     }
 }

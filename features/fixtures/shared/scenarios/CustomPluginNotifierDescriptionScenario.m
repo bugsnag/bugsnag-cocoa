@@ -1,4 +1,5 @@
 #import "Scenario.h"
+#import "Logging.h"
 
 @interface CustomPluginNotifierDescriptionScenario : Scenario
 @end

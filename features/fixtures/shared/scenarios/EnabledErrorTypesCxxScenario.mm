@@ -1,4 +1,5 @@
 #import "Scenario.h"
+#import "Logging.h"
 
 #import <exception>
 

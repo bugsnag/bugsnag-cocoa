@@ -19,8 +19,8 @@ class BugsnagWrapper : Bugsnag {
         plistNotifyEndpoint = configuration.endpoints.notify;
         plistSessionsEndpoint = configuration.endpoints.sessions;
         
-        NSLog("Plist notify endpoint: %@", plistNotifyEndpoint);
-        NSLog("Plist sessions endpoint: %@", plistSessionsEndpoint);
+        logInfo("Plist notify endpoint: %@", plistNotifyEndpoint);
+        logInfo("Plist sessions endpoint: %@", plistSessionsEndpoint);
 
         if (plistNotifyEndpoint != "http://example.com/notify"
             || plistSessionsEndpoint != "http://example.com/sessions") {

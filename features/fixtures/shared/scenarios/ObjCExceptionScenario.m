@@ -25,6 +25,7 @@
  */
 
 #import "MarkUnhandledHandledScenario.h"
+#import "Logging.h"
 
 /**
  * Throw an uncaught Objective-C exception. It's possible to generate a better crash report here

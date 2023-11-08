@@ -4,6 +4,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 #import "spin_malloc.h"
 

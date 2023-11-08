@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 #import <stdexcept>
 
 @interface CxxBareThrowScenario : Scenario

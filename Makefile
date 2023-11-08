@@ -30,12 +30,18 @@ else
  else
   ifeq ($(PLATFORM),iOS)
    SDK?=iphonesimulator
-   DEVICE?=iPhone 8
+   ifeq ($(shell expr $(OS) \>= 17.0), 1)
+	DEVICE?=iPhone 14
+   else
+	DEVICE?=iPhone 8
+   endif
+	   
    DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-iphoneos
   else
-   SDK?=watchsimulator8.5
-   DEVICE?=Apple Watch Series 5 - 40mm
+   SDK?=watchsimulator
+#   Due to the inconsistency of device names as a result of running; xcodebuild -downloadAllPlatforms, this dynamically selects the watchOS device.
+   DEVICE?=$(shell xcrun simctl list --json | jq -r '.devices."com.apple.CoreSimulator.SimRuntime.watchOS-8-5"[] | select(.name | test("Apple Watch Series 5 .+ ?40mm ?")) | .name')
    DESTINATION?=platform=watchOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-watchos
   endif

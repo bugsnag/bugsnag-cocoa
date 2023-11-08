@@ -234,10 +234,11 @@ BSG_OBJC_DIRECT_MEMBERS
     // from the start method.
     [self.configuration validate];
 
+    // MUST be called before BSGRunContextInit to initialize bsg_runContext
+    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
+
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
-
-    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
 
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
@@ -560,7 +561,7 @@ BSG_OBJC_DIRECT_MEMBERS
 - (void)setUser:(NSString *)userId withEmail:(NSString *)email andName:(NSString *)name {
     @synchronized (self.configuration) {
         [self.configuration setUser:userId withEmail:email andName:name];
-        [self.state addMetadata:[self.configuration.user toJson] toSection:BSGKeyUser];
+        [self.state addMetadata:[self.configuration.user toJsonWithNSNulls] toSection:BSGKeyUser];
         if (self.observer) {
             self.observer(BSGClientObserverUpdateUser, self.user);
         }

@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 #import <UIKit/UIKit.h>
 
@@ -57,7 +58,7 @@ void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
     [Bugsnag setContext:@"OOM Scenario"];
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
                                                      queue:nil usingBlock:^(NSNotification *note) {
-        NSLog(@"*** Received memory warning");
+        logDebug(@"*** Received memory warning");
     }];
     // Delay to allow session payload to be sent
     [self performSelector:@selector(consumeAllMemory) withObject:nil afterDelay:2];
@@ -66,11 +67,11 @@ void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
 - (void)consumeAllMemory {
     struct utsname system = {0};
     uname(&system);
-    NSLog(@"*** Device = %s", system.machine);
+    logDebug(@"*** Device = %s", system.machine);
     
     NSUInteger physicalMemory = (NSUInteger)NSProcessInfo.processInfo.physicalMemory;
     NSUInteger megabytes = physicalMemory / MEGABYTE;
-    NSLog(@"*** Physical memory = %lu MB", (unsigned long)megabytes);
+    logDebug(@"*** Physical memory = %lu MB", (unsigned long)megabytes);
     
     //
     // The ActiveHard limit and point at which a memory warning is sent varies by device
@@ -104,21 +105,21 @@ void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
     kern_return_t result = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&vm_info, &count);
     if (result == KERN_SUCCESS && count >= TASK_VM_INFO_REV4_COUNT) {
         limit = (NSUInteger)(vm_info.phys_footprint + vm_info.limit_bytes_remaining) / MEGABYTE;
-        NSLog(@"*** Memory limit = %lu MB", (unsigned long)limit);
+        logDebug(@"*** Memory limit = %lu MB", (unsigned long)limit);
     } else if (!strcmp(system.machine, "iPhone6,2")) {
         limit = 650;
-        NSLog(@"*** Memory limit = %lu MB", (unsigned long)limit);
+        logDebug(@"*** Memory limit = %lu MB", (unsigned long)limit);
     } else {
         limit = MIN(2098, megabytes * 70 / 100);
-        NSLog(@"*** Memory limit = %lu MB (estimated)", (unsigned long)limit);
+        logDebug(@"*** Memory limit = %lu MB (estimated)", (unsigned long)limit);
     }
     
     // The size of the initial block needs to be under the memory warning limit in order for one to be reliably sent.
     NSUInteger initial = limit * 70 / 100;
-    NSLog(@"*** Dirtying an initial block of %lu MB", (unsigned long)initial);
+    logDebug(@"*** Dirtying an initial block of %lu MB", (unsigned long)initial);
     [self consumeMegabytes:initial];
     
-    NSLog(@"*** Dirtying remaining memory in ~2 seconds");
+    logDebug(@"*** Dirtying remaining memory in ~2 seconds");
     NSTimeInterval timeInterval = 2.0 / (limit - initial);
     [NSTimer scheduledTimerWithTimeInterval:timeInterval target:self selector:@selector(timerFired) userInfo:nil repeats:YES];
 }

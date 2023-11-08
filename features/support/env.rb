@@ -77,12 +77,20 @@ Before('@skip_ios_16') do |_scenario|
   skip_between('ios', 16, 16.99)
 end
 
+Before('@skip_ios_17') do |_scenario|
+  skip_between('ios', 17, 17.99)
+end
+
 Before('@skip_below_ios_11') do |_scenario|
   skip_below('ios', 11)
 end
 
 Before('@skip_below_ios_13') do |_scenario|
   skip_below('ios', 13)
+end
+
+Before('@skip_below_ios_13') do |_scenario|
+  skip_below('ios', 17)
 end
 
 Before('@skip_below_macos_10_15') do |_scenario|

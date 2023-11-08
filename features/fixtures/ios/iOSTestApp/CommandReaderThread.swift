@@ -79,21 +79,3 @@ class CommandReaderThread: Thread {
         return bsAddress;
     }
 }
-
-private func logInfo(_ message: String) {
-    let fullMessage = String(format: "bugsnagci info: %s", message)
-    NSLog("%@", fullMessage)
-    kslog("\(Date()) \(fullMessage)")
-}
-
-private func logWarn(_ message: String) {
-    let fullMessage = String(format: "bugsnagci warn: %s", message)
-    NSLog("%@", fullMessage)
-    kslog("\(Date()) \(fullMessage)")
-}
-
-private func logError(_ message: String) {
-    let fullMessage = String(format: "bugsnagci error: %s", message)
-    NSLog("%@", fullMessage)
-    kslog("\(Date()) \(fullMessage)")
-}

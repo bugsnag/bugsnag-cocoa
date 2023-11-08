@@ -20,7 +20,7 @@ class SendLaunchCrashesSynchronouslyScenario: Scenario {
     
     override func run() {
         if eventMode == "report" {
-            NSLog(">>> Delaying to allow previous run's crash report to be sent")
+            logDebug(">>> Delaying to allow previous run's crash report to be sent")
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [startDuration] in
                 NSLog(">>> Calling notify() with startDuration = \(startDuration)")
                 Bugsnag.notifyError(NSError(domain: "DummyError", code: 0)) {
@@ -29,7 +29,7 @@ class SendLaunchCrashesSynchronouslyScenario: Scenario {
                 }
             }
         } else {
-            NSLog(">>> Calling fatalError()")
+            logDebug(">>> Calling fatalError()")
             fatalError()
         }
     }
