@@ -1,4 +1,3 @@
-@skip # https://smartbear.atlassian.net/browse/PLAT-11155
 Feature: App hangs
 
   Background:
