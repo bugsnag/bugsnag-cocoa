@@ -63,7 +63,10 @@ static void InitRunContext(void) {
     }
     
     bsg_runContext->bootTime = GetBootTime();
-    
+
+    // Make sure the images list is populated.
+    bsg_mach_headers_initialize();
+
     BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
     if (image && image->uuid) {
         uuid_copy(bsg_runContext->machoUUID, image->uuid);
