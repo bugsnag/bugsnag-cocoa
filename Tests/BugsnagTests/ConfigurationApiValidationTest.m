@@ -6,7 +6,8 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import <Bugsnag/Bugsnag.h>
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagPlugin.h"
@@ -23,7 +24,7 @@
 /**
 * Validates that the Configuration API interface handles any invalid input gracefully.
 */
-@interface ConfigurationApiValidationTest : XCTestCase
+@interface ConfigurationApiValidationTest : BSGTestCase
 @property BugsnagConfiguration *config;
 @end
 

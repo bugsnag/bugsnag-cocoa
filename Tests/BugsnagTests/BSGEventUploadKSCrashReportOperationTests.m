@@ -6,13 +6,14 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
+#import "BSGTestCase.h"
+
 #import <Bugsnag/Bugsnag.h>
-#import <XCTest/XCTest.h>
 
 #import "BSGEventUploadKSCrashReportOperation.h"
 #import "BSGInternalErrorReporter.h"
 
-@interface BSGEventUploadKSCrashReportOperationTests : XCTestCase
+@interface BSGEventUploadKSCrashReportOperationTests : BSGTestCase
 
 @property NSString *errorClass;
 @property NSString *context;

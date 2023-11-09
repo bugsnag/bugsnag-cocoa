@@ -6,14 +6,15 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import <Bugsnag/Bugsnag.h>
 #import "BugsnagTestConstants.h"
 
 /**
 * Validates that the Client API interface handles any invalid input gracefully.
 */
-@interface ClientApiValidationTest : XCTestCase
+@interface ClientApiValidationTest : BSGTestCase
 @property BugsnagClient *client;
 @end
 

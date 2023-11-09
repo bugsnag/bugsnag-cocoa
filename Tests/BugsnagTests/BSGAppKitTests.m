@@ -6,9 +6,9 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
-@interface BSGAppKitTests : XCTestCase
+@interface BSGAppKitTests : BSGTestCase
 
 @end
 

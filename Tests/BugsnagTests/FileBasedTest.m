@@ -15,6 +15,9 @@
 }
 
 - (void)setUp {
+    if ([super respondsToSelector:@selector(setUp)]) {
+        [super setUp];
+    }
     self.filePath = [self newPath];
 }
 

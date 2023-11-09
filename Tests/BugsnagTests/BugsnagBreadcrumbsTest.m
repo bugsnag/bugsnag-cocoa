@@ -6,6 +6,8 @@
 //
 //
 
+#import "BSGTestCase.h"
+
 #import "BSGUtils.h"
 #import "BSG_KSJSONCodec.h"
 #import "Bugsnag.h"
@@ -15,7 +17,6 @@
 #import "BugsnagTestConstants.h"
 #import "BSGDefines.h"
 
-#import <XCTest/XCTest.h>
 #import <mach/mach_init.h>
 #import <mach/thread_act.h>
 #import <pthread.h>
@@ -61,7 +62,7 @@ static BugsnagBreadcrumb * WithMessage(NSString *message) {
     });
 }
 
-@interface BugsnagBreadcrumbsTest : XCTestCase
+@interface BugsnagBreadcrumbsTest : BSGTestCase
 @property(nonatomic, strong) BugsnagBreadcrumbs *crumbs;
 @end
 

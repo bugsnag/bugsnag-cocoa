@@ -6,11 +6,11 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagStacktrace.h"
 
-@interface BugsnagStacktraceTest : XCTestCase
+@interface BugsnagStacktraceTest : BSGTestCase
 @property NSDictionary *frameDict;
 @property NSArray *binaryImages;
 @end

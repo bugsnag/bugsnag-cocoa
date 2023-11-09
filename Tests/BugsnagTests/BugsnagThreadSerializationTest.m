@@ -3,11 +3,11 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagEvent+Private.h"
 
-@interface BugsnagThreadSerializationTest : XCTestCase
+@interface BugsnagThreadSerializationTest : BSGTestCase
 @end
 
 @implementation BugsnagThreadSerializationTest

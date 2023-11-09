@@ -6,11 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import <objc/runtime.h>
 #import <Bugsnag/Bugsnag.h>
 
-@interface BugsnagClientMirrorTest : XCTestCase
+@interface BugsnagClientMirrorTest : BSGTestCase
 @property NSSet *clientMethodsNotRequiredOnBugsnag;
 @property NSSet *bugsnagMethodsNotRequiredOnClient;
 @end

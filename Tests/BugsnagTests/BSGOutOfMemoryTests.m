@@ -1,4 +1,4 @@
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
@@ -10,7 +10,7 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagTestConstants.h"
 
-@interface BSGOutOfMemoryTests : XCTestCase
+@interface BSGOutOfMemoryTests : BSGTestCase
 @end
 
 @implementation BSGOutOfMemoryTests

@@ -1,9 +1,9 @@
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGConnectivity.h"
 #import "BSGDefines.h"
 
-@interface BSGConnectivityTest : XCTestCase
+@interface BSGConnectivityTest : BSGTestCase
 @end
 
 @implementation BSGConnectivityTest

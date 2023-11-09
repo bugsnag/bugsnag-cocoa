@@ -6,11 +6,11 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGJSONSerialization.h"
 
-@interface BSGJSONSerializationTests : XCTestCase
+@interface BSGJSONSerializationTests : BSGTestCase
 @end
 
 @implementation BSGJSONSerializationTests

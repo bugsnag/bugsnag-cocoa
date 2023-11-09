@@ -6,11 +6,11 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
+#import "BSGTestCase.h"
+
 #import "BSGFeatureFlagStore.h"
 
-#import <XCTest/XCTest.h>
-
-@interface BSGFeatureFlagStoreTests : XCTestCase
+@interface BSGFeatureFlagStoreTests : BSGTestCase
 
 @end
 

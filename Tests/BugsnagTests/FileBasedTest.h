@@ -6,9 +6,9 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
-@interface FileBasedTest : XCTestCase
+@interface FileBasedTest : BSGTestCase
 
 @property(readwrite, nonatomic) NSString *filePath;
 

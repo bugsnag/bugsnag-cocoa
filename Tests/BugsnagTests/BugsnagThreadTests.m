@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
@@ -15,7 +15,7 @@
 #import <pthread.h>
 #import <stdatomic.h>
 
-@interface BugsnagThreadTests : XCTestCase
+@interface BugsnagThreadTests : BSGTestCase
 @property NSArray *binaryImages;
 @property NSDictionary *thread;
 @end

@@ -6,7 +6,7 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagApp+Private.h"
 #import "BugsnagConfiguration+Private.h"
@@ -16,7 +16,7 @@
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagTestConstants.h"
 
-@interface BugsnagSessionTest : XCTestCase
+@interface BugsnagSessionTest : BSGTestCase
 @property BugsnagApp *app;
 @property BugsnagDevice *device;
 @property NSDictionary *serializedSession;

@@ -6,10 +6,11 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import "BugsnagNotifier.h"
 
-@interface BugsnagNotifierTest : XCTestCase
+@interface BugsnagNotifierTest : BSGTestCase
 @property BugsnagNotifier *notifier;
 @end
 

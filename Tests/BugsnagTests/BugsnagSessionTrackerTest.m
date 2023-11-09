@@ -6,7 +6,7 @@
 //  Copyright © 2017 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagUser.h"
 #import "BugsnagConfiguration+Private.h"
@@ -16,7 +16,7 @@
 #import "BSGDefines.h"
 #import "BSGWatchKit.h"
 
-@interface BugsnagSessionTrackerTest : XCTestCase
+@interface BugsnagSessionTrackerTest : BSGTestCase
 @property BugsnagConfiguration *configuration;
 @property BugsnagSessionTracker *sessionTracker;
 @property BugsnagUser *user;

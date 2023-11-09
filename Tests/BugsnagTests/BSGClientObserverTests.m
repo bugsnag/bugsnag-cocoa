@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
@@ -15,7 +15,7 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagUser+Private.h"
 
-@interface BSGClientObserverTests : XCTestCase
+@interface BSGClientObserverTests : BSGTestCase
 @property BugsnagClient *client;
 @property BSGClientObserverEvent event;
 @property id value;

@@ -2,7 +2,7 @@
  * Unit test the BugsnagConfiguration class
  */
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagConfiguration+Private.h"
 
@@ -19,7 +19,7 @@
 // MARK: - Tests
 // =============================================================================
 
-@interface BugsnagConfigurationTests : XCTestCase
+@interface BugsnagConfigurationTests : BSGTestCase
 @end
 
 @implementation BugsnagConfigurationTests
