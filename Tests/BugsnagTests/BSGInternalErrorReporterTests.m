@@ -6,7 +6,7 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import <Bugsnag/Bugsnag.h>
 
@@ -18,7 +18,7 @@
 #import "BugsnagNotifier.h"
 #import "BSGPersistentDeviceID.h"
 
-@interface BSGInternalErrorReporterTests : XCTestCase
+@interface BSGInternalErrorReporterTests : BSGTestCase
 
 @property (nonatomic) BugsnagConfiguration *configuration;
 
@@ -27,6 +27,7 @@
 @implementation BSGInternalErrorReporterTests
 
 - (void)setUp {
+    [super setUp];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
     [BSGInternalErrorReporter setSharedInstance:nil];

@@ -6,7 +6,8 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import <Bugsnag/Bugsnag.h>
 #import "BugsnagTestConstants.h"
 #import "TestSupport.h"
@@ -14,13 +15,14 @@
 /**
  * Validates that the Bugsnag API interface handles any invalid input gracefully.
  */
-@interface BugsnagApiValidationTest : XCTestCase
+@interface BugsnagApiValidationTest : BSGTestCase
 
 @end
 
 @implementation BugsnagApiValidationTest
 
 - (void)setUp {
+    [super setUp];
     [TestSupport purgePersistentData];
     [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
 }

@@ -6,11 +6,11 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGUtils.h"
 
-@interface BSGUtilsTests : XCTestCase
+@interface BSGUtilsTests : BSGTestCase
 @end
 
 @implementation BSGUtilsTests

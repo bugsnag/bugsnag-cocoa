@@ -6,11 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import <objc/runtime.h>
 #import <Bugsnag/Bugsnag.h>
 
-@interface BugsnagClientMirrorTest : XCTestCase
+@interface BugsnagClientMirrorTest : BSGTestCase
 @property NSSet *clientMethodsNotRequiredOnBugsnag;
 @property NSSet *bugsnagMethodsNotRequiredOnClient;
 @end
@@ -26,6 +27,7 @@
 @implementation BugsnagClientMirrorTest
 
 - (void)setUp {
+    [super setUp];
     // the following methods are implemented on BugsnagClient but do not need to
     // be mirrored on the Bugsnag facade
     self.clientMethodsNotRequiredOnBugsnag = [NSSet setWithArray:@[

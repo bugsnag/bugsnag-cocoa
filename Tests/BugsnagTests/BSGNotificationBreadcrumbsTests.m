@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import <Bugsnag/Bugsnag.h>
 
@@ -19,7 +19,7 @@
 #endif
 
 
-@interface BSGNotificationBreadcrumbsTests : XCTestCase <BSGBreadcrumbSink>
+@interface BSGNotificationBreadcrumbsTests : BSGTestCase <BSGBreadcrumbSink>
 
 @property NSNotificationCenter *notificationCenter;
 @property id notificationObject;
@@ -114,6 +114,7 @@
 #pragma mark Setup
 
 - (void)setUp {
+    [super setUp];
     self.breadcrumb = nil;
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:@"0192837465afbecd0192837465afbecd"];
     self.notificationBreadcrumbs = [[BSGNotificationBreadcrumbs alloc] initWithConfiguration:configuration breadcrumbSink:self];

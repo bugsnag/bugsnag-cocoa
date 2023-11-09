@@ -7,9 +7,9 @@
 //
 //  Swift unit tests of global Bugsnag behaviour
 
-import XCTest
+import Bugsnag
 
-class BugsnagSwiftTests: XCTestCase {
+class BugsnagSwiftTests: BSGTestCase {
 
     /**
      * Confirm that the addMetadata() method is exposed to Swift correctly

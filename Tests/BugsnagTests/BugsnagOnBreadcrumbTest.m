@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "Bugsnag.h"
 #import "BugsnagBreadcrumb+Private.h"
@@ -15,7 +15,7 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagBreadcrumbs.h"
 
-@interface BugsnagOnBreadcrumbTest : XCTestCase
+@interface BugsnagOnBreadcrumbTest : BSGTestCase
 @end
 
 @implementation BugsnagOnBreadcrumbTest

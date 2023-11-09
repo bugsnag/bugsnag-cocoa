@@ -6,20 +6,22 @@
 //  Copyright © 2020 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import <Bugsnag/Bugsnag.h>
 #import "BugsnagTestConstants.h"
 
 /**
 * Validates that the Client API interface handles any invalid input gracefully.
 */
-@interface ClientApiValidationTest : XCTestCase
+@interface ClientApiValidationTest : BSGTestCase
 @property BugsnagClient *client;
 @end
 
 @implementation ClientApiValidationTest
 
 - (void)setUp {
+    [super setUp];
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     [config addOnSendErrorBlock:^BOOL(BugsnagEvent *event) {
         return NO;

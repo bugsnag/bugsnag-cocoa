@@ -6,13 +6,14 @@
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import "BSGStorageMigratorV0V1.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagTestConstants.h"
 
-@interface BSGStorageMigratorV0V1Tests : XCTestCase
+@interface BSGStorageMigratorV0V1Tests : BSGTestCase
 
 @end
 
@@ -79,6 +80,7 @@
 }
 
 - (void)setUp {
+    [super setUp];
     NSFileManager *fm = [NSFileManager defaultManager];
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSString *cachesPath = [self getCachesDir];

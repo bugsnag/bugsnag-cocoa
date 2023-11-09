@@ -6,10 +6,9 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-import XCTest
 import Bugsnag
 
-class BugsnagSwiftConfigurationTests: XCTestCase {
+class BugsnagSwiftConfigurationTests: BSGTestCase {
 
     /**
      * Objective C trailing-NSError* initializers are translated into throwing

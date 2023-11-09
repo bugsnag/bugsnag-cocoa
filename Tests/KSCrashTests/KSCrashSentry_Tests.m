@@ -44,6 +44,7 @@ static BSG_KSCrash_SentryContext context;
 @implementation KSCrashSentry_Tests
 
 - (void) setUp {
+    [super setUp];
     bsg_kscrashsentry_installWithContext(&context, BSG_KSCrashTypeAll, onCrash);
 }
 

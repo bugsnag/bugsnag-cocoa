@@ -15,6 +15,7 @@
 }
 
 - (void)setUp {
+    [super setUp];
     self.filePath = [self newPath];
 }
 

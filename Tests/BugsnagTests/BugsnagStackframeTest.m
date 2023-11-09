@@ -6,12 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
 
-@interface BugsnagStackframeTest : XCTestCase
+@interface BugsnagStackframeTest : BSGTestCase
 @property NSDictionary *frameDict;
 @property NSArray *binaryImages;
 @end
@@ -19,6 +19,7 @@
 @implementation BugsnagStackframeTest
 
 - (void)setUp {
+    [super setUp];
     self.frameDict = @{
             @"symbol_addr": @0x10b574fa0,
             @"instruction_addr": @0x10b5756bf,
