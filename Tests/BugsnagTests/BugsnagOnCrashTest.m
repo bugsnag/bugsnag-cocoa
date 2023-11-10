@@ -6,12 +6,12 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import <Bugsnag/Bugsnag.h>
 #import "BugsnagEvent+Private.h"
 
-@interface BugsnagOnCrashTest : XCTestCase
+@interface BugsnagOnCrashTest : BSGTestCase
 
 @end
 

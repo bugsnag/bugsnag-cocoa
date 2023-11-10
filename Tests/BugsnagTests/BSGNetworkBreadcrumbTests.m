@@ -5,11 +5,11 @@
 //  Created by Nick Dowell on 22/09/2021.
 //
 
+#import "BSGTestCase.h"
+
 #import "BSGNetworkBreadcrumb.h"
 
-#import <XCTest/XCTest.h>
-
-@interface BSGNetworkBreadcrumbTests : XCTestCase
+@interface BSGNetworkBreadcrumbTests : BSGTestCase
 
 @end
 

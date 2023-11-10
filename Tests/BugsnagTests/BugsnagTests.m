@@ -7,7 +7,7 @@
 //
 // Unit tests of global Bugsnag behaviour
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
@@ -18,7 +18,7 @@
 
 // MARK: - BugsnagTests
 
-@interface BugsnagTests : XCTestCase
+@interface BugsnagTests : BSGTestCase
 @end
 
 @implementation BugsnagTests

@@ -6,16 +6,18 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
+
 #import "BugsnagNotifier.h"
 
-@interface BugsnagNotifierTest : XCTestCase
+@interface BugsnagNotifierTest : BSGTestCase
 @property BugsnagNotifier *notifier;
 @end
 
 @implementation BugsnagNotifierTest
 
 - (void)setUp {
+    [super setUp];
     self.notifier = [BugsnagNotifier new];
     self.notifier.name = @"Foo Notifier";
     self.notifier.version = @"6.0.0";

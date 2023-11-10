@@ -1,4 +1,4 @@
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import <Bugsnag/Bugsnag.h>
 #import "BSGConfigurationBuilder.h"
@@ -6,7 +6,7 @@
 #import "BugsnagTestConstants.h"
 #import <TargetConditionals.h>
 
-@interface BSGConfigurationBuilderTests : XCTestCase
+@interface BSGConfigurationBuilderTests : BSGTestCase
 @end
 
 @implementation BSGConfigurationBuilderTests

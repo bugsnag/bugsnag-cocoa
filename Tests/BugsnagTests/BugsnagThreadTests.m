@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
@@ -15,7 +15,7 @@
 #import <pthread.h>
 #import <stdatomic.h>
 
-@interface BugsnagThreadTests : XCTestCase
+@interface BugsnagThreadTests : BSGTestCase
 @property NSArray *binaryImages;
 @property NSDictionary *thread;
 @end
@@ -23,11 +23,13 @@
 @implementation BugsnagThreadTests
 
 + (void)setUp {
+    [super setUp];
     bsg_mach_headers_initialize();
     bsg_mach_headers_get_images(); // Ensure call stack can be symbolicated
 }
 
 - (void)setUp {
+    [super setUp];
     self.thread = @{
             @"current_thread": @YES,
             @"crashed": @YES,

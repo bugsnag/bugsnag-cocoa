@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagEvent+Private.h"
 #import "BugsnagAppWithState.h"
@@ -22,7 +22,7 @@
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
 
-@interface BugsnagEventPersistLoadTest : XCTestCase
+@interface BugsnagEventPersistLoadTest : BSGTestCase
 @property NSDictionary *eventData;
 @end
 

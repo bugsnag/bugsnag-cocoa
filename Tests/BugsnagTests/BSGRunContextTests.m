@@ -6,18 +6,19 @@
 //  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
 
-@interface BSGRunContextTests : XCTestCase
+@interface BSGRunContextTests : BSGTestCase
 
 @end
 
 @implementation BSGRunContextTests
 
 - (void)setUp {
+    [super setUp];
     if (!bsg_runContext) {
         BSGRunContextInit(BSGFileLocations.current.runContext);
     }

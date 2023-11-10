@@ -6,10 +6,11 @@
 //  Copyright © 2019 Bugsnag. All rights reserved.
 //
 
-@import XCTest;
+#import "BSGTestCase.h"
+
 #import "BugsnagCollections.h"
 
-@interface BugsnagCollectionsTests : XCTestCase
+@interface BugsnagCollectionsTests : BSGTestCase
 @end
 
 @interface BugsnagCollectionsTests_DummyObject : NSObject

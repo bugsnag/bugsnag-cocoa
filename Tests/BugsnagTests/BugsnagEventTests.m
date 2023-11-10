@@ -6,8 +6,7 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
@@ -22,7 +21,7 @@
 #import "BugsnagTestConstants.h"
 #import "BugsnagTestsDummyClass.h"
 
-@interface BugsnagEventTests : XCTestCase
+@interface BugsnagEventTests : BSGTestCase
 @end
 
 @implementation BugsnagEventTests
