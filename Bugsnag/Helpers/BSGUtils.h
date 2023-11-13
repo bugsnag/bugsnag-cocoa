@@ -39,6 +39,12 @@ static inline NSString * _Nullable BSGStringFromClass(Class _Nullable cls) {
     return cls ? NSStringFromClass((Class _Nonnull)cls) : nil;
 }
 
+/**
+ * Copy characters from src to dst, up to a maximum of length bytes (including the NUL terminator).
+ * Unlike strncpy, this function always ensures that dst is NUL terminated (if length > 0).
+ */
+void bsg_safe_strncpy(char *dst, const char *src, size_t length);
+
 NS_ASSUME_NONNULL_END
 
 __END_DECLS

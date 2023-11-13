@@ -10,6 +10,13 @@
 
 #import "BugsnagLogger.h"
 
+void bsg_safe_strncpy(char *dst, const char *src, size_t length) {
+    if (length > 0) {
+        strncpy(dst, src, length);
+        dst[length-1] = 0;
+    }
+}
+
 char *_Nullable BSGCStringWithData(NSData *_Nullable data) {
     char *buffer;
     if (data.length && (buffer = calloc(1, data.length + 1))) {
