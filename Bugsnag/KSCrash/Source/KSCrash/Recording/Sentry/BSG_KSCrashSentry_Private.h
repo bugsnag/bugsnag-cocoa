@@ -27,12 +27,12 @@
 #ifndef HDR_BSG_KSCrashSentry_Private_h
 #define HDR_BSG_KSCrashSentry_Private_h
 
+#include "BSG_KSCrashSentry.h"
+#include "BSGDefines.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "BSG_KSCrashSentry.h"
-#include "BSGDefines.h"
 
 #if BSG_HAVE_MACH_THREADS
 /** Suspend all non-reserved threads.

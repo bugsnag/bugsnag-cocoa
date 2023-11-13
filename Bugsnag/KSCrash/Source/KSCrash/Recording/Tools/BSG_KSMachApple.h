@@ -19,13 +19,13 @@
 #ifndef HDR_BSG_KSMachApple_h
 #define HDR_BSG_KSMachApple_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <dispatch/dispatch.h>
 #include <sched.h>
 #include <sys/queue.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Avoid name clashes when copying structs from private headers
 #define pthread_t internal_pthread_t

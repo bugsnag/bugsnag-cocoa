@@ -31,10 +31,10 @@
 #ifndef HDR_BSG_KSCrashReportWriter_h
 #define HDR_BSG_KSCrashReportWriter_h
 
-#ifdef __cplusplus
 #include <stdbool.h>
 #include <sys/types.h>
 
+#ifdef __cplusplus
 extern "C" {
 #endif
 

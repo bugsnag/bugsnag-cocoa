@@ -30,15 +30,15 @@
 #ifndef HDR_BSG_KSCrashSentry_Signal_h
 #define HDR_BSG_KSCrashSentry_Signal_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSGDefines.h"
 
 #if BSG_HAVE_SIGNAL
 
 #include "BSG_KSCrashSentry.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** Install our custom signal handler.
  *

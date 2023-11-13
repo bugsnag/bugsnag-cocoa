@@ -25,11 +25,11 @@
 #ifndef HDR_BSG_KSCrashSentry_CPPException_h
 #define HDR_BSG_KSCrashSentry_CPPException_h
 
+#include "BSG_KSCrashSentry.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "BSG_KSCrashSentry.h"
 
 /** Install the C++ exception handler.
  *

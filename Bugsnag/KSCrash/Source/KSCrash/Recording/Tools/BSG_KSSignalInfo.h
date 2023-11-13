@@ -30,11 +30,11 @@
 #ifndef HDR_BSG_KSSignalInfo_h
 #define HDR_BSG_KSSignalInfo_h
 
+#include <mach/mach.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <mach/mach.h>
 
 /** Get the name of a signal.
  *

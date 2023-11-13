@@ -9,11 +9,11 @@
 #ifndef BSG_KSCrashNames_h
 #define BSG_KSCrashNames_h
 
+#include <mach/machine/vm_types.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <mach/machine/vm_types.h>
 
 const char *bsg_kscrashthread_state_name(integer_t state);
 

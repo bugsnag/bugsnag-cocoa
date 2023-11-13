@@ -30,10 +30,6 @@
 #ifndef HDR_BSG_KSMach_h
 #define HDR_BSG_KSMach_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSG_KSArchSpecific.h"
 #include "BSGDefines.h"
 
@@ -41,6 +37,10 @@ extern "C" {
 #include <pthread.h>
 #include <stdbool.h>
 #include <sys/ucontext.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ============================================================================
 #pragma mark - General Information -
