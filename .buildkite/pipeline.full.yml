@@ -32,6 +32,7 @@ steps:
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--fail-fast"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -56,6 +57,7 @@ steps:
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--fail-fast"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -268,6 +270,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
+          - "--fail-fast"
           - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
@@ -296,6 +299,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_14"
           - "--appium-version=1.21.0"
+          - "--fail-fast"
           - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
@@ -324,6 +328,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_13"
           - "--appium-version=1.21.0"
+          - "--fail-fast"
           - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
@@ -352,6 +357,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_12"
           - "--appium-version=1.21.0"
+          - "--fail-fast"
           - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'

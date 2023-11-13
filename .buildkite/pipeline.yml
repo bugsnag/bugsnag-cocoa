@@ -376,6 +376,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_16"
           - "--appium-version=1.21.0"
+          - "--fail-fast"
           - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
@@ -523,14 +524,14 @@ steps:
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - --app=@/app/build/ipa_url_bs.txt
-          - --farm=bs
-          - --device=IOS_17
-          - --appium-version=1.18.0
-          - --a11y-locator
-          - --fail-fast
-          - --exclude=features/[e-z].*.feature$
-          - --order=random
+          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--appium-version=1.18.0"
+          - "--a11y-locator"
+          - "--fail-fast"
+          - "--exclude=features/[e-z].*.feature$"
+          - "--order=random"
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -554,14 +555,14 @@ steps:
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - --app=@/app/build/ipa_url_bs.txt
-          - --farm=bs
-          - --device=IOS_17
-          - --appium-version=1.18.0
-          - --a11y-locator
-          - --fail-fast
-          - --exclude=features/[a-d].*.feature$
-          - --order=random
+          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--appium-version=1.18.0"
+          - "--a11y-locator"
+          - "--fail-fast"
+          - "--exclude=features/[a-d].*.feature$"
+          - "--order=random"
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -589,6 +590,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.16.0"
+          - "--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
