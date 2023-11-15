@@ -30,16 +30,16 @@
 #ifndef HDR_BSG_KSCrashContext_h
 #define HDR_BSG_KSCrashContext_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSG_KSCrashReportWriter.h"
 #include "BSG_KSCrashSentry.h"
 #include "BSG_KSCrashState.h"
 
 #include <signal.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct {
     /** A unique identifier (UUID). */

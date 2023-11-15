@@ -30,15 +30,15 @@
 #ifndef HDR_BSG_KSBacktrace_h
 #define HDR_BSG_KSBacktrace_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSG_Symbolicate.h"
 #include "BSGDefines.h"
 
 #include <mach/mach.h>
 #include <pthread.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Remove any pointer tagging from an instruction address

@@ -1,4 +1,4 @@
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
@@ -10,7 +10,7 @@
 #import "BugsnagSystemState.h"
 #import "BugsnagTestConstants.h"
 
-@interface BSGOutOfMemoryTests : XCTestCase
+@interface BSGOutOfMemoryTests : BSGTestCase
 @end
 
 @implementation BSGOutOfMemoryTests
@@ -133,6 +133,9 @@
     XCTAssertFalse(BSGRunContextWasKilled());
     uuid_copy(lastRunContext.machoUUID, bsg_runContext->machoUUID);
     
+    strncpy(lastRunContext.bundleVersion, "999.99", sizeof(lastRunContext.bundleVersion));
+    XCTAssertFalse(BSGRunContextWasKilled());
+
     lastRunContext.bootTime = 0;
     XCTAssertFalse(BSGRunContextWasKilled());
     lastRunContext.bootTime = bsg_runContext->bootTime;

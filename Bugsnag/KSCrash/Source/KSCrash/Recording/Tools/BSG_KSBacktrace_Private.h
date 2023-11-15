@@ -27,15 +27,15 @@
 #ifndef HDR_BSG_KSBacktrace_private_h
 #define HDR_BSG_KSBacktrace_private_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSG_KSArchSpecific.h"
 #include "BSG_KSBacktrace.h"
 
 #include <stdbool.h>
 #include <sys/ucontext.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** Point at which bsg_ksbt_backtraceLength() will give up trying to count.
  *

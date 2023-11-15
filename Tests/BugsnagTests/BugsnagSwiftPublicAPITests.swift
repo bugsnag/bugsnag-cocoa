@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-import XCTest
+import Bugsnag
 
 /**
  * Test all public APIs from Swift.  Purely existence tests, no attempt to verify correctness
@@ -34,7 +34,7 @@ class myMetadata: NSObject, BugsnagMetadataStore, BugsnagClassLevelMetadataStore
     func clearMetadata(section sectionName: String, key: String) {}
 }
 
-class BugsnagSwiftPublicAPITests: XCTestCase {
+class BugsnagSwiftPublicAPITests: BSGTestCase {
 
     let apiKey = "01234567890123456789012345678901"
     let ex = NSException(name: NSExceptionName("exception"),

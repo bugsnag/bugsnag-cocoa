@@ -53,6 +53,7 @@ const struct segment_command command2 = {
 @implementation BSG_KSMachHeadersTests
 
 - (void)setUp {
+    [super setUp];
     bsg_mach_headers_initialize();
 }
 

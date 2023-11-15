@@ -5,3 +5,4 @@
 #import <Bugsnag/Bugsnag.h>
 
 #import "BugsnagTestConstants.h"
+#import "BSGTestCase.h"

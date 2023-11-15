@@ -3,6 +3,7 @@
 // Copyright (c) 2018 Bugsnag. All rights reserved.
 //
 #import "Scenario.h"
+#import "Logging.h"
 
 #import <objc/runtime.h>
 
@@ -18,12 +19,6 @@
 #endif
 
 extern bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
-
-extern void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
-
-void kslog(const char *message) {
-    bsg_i_kslog_logCBasic("%s", message);
-}
 
 void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
     writer->addBooleanElement(writer, "unhandled", false);
@@ -65,7 +60,7 @@ static char ksLogPath[PATH_MAX];
             return;
         }
 #endif
-        NSLog(@"%@", notification.name);
+        logDebug(@"Received notification %@", notification.name);
     }];
 }
 
@@ -184,7 +179,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)clearPersistentData {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
+    logInfo(@"%s", __PRETTY_FUNCTION__);
     [NSUserDefaults.standardUserDefaults removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
     NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
     NSArray<NSString *> *entries = @[
@@ -200,7 +195,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         NSError *error = nil;
         if (![NSFileManager.defaultManager removeItemAtPath:path error:&error]) {
             if (![error.domain isEqualToString:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
-                NSLog(@"%@", error);
+                logError(@"Error removing path %@: %@", path, error);
             }
         }
     }
@@ -209,7 +204,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
     NSError *error = nil;
     if (![NSFileManager.defaultManager removeItemAtPath:rootDir error:&error]) {
         if (![error.domain isEqualToString:NSCocoaErrorDomain] && error.code != NSFileNoSuchFileError) {
-            NSLog(@"%@", error);
+            logError(@"Error removing path %@: %@", rootDir, error);
         }
     }
 #if !TARGET_OS_WATCH
@@ -218,26 +213,29 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)executeMazeRunnerCommand:(void (^)(NSString *scenarioName, NSString *scenarioMode))preHandler {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
+    logDebug(@"%s", __PRETTY_FUNCTION__);
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
     NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", theBaseMazeAddress];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:commandEndpoint]];
+    logDebug(@"%s: Sending command request to %@", __PRETTY_FUNCTION__, commandEndpoint);
     [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
-            NSLog(@"%s request failed with %@", __PRETTY_FUNCTION__, response ?: error);
+            logError(@"%s: command request failed with %@", __PRETTY_FUNCTION__, response ?: error);
+            preHandler(@"", NULL);
             return;
         }
-        NSLog(@"%s response body:  %@", __PRETTY_FUNCTION__, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+        logInfo(@"%s: command response body:  %@", __PRETTY_FUNCTION__, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         NSDictionary *command = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
         
         NSString *action = [command objectForKey:@"action"];
+        NSParameterAssert([action isKindOfClass:[NSString class]]);
+
         if ([action isEqualToString:@"noop"]) {
-            NSLog(@"No Maze Runner command queued at present");
+            logInfo(@"%s: No Maze Runner command queued at present", __PRETTY_FUNCTION__);
+            preHandler(@"", NULL);
             return;
         }
-        
-        NSParameterAssert([action isKindOfClass:[NSString class]]);
-        
+
         NSString *scenarioName = [command objectForKey:@"scenario_name"];
         NSParameterAssert([scenarioName isKindOfClass:[NSString class]]);
         
@@ -268,7 +266,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)runScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
-    NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
+    logDebug(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     [self startBugsnagForScenario:scenarioName eventMode:eventMode];
     
@@ -276,12 +274,12 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 }
 
 + (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
-    NSLog(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
+    logDebug(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
     
     theScenario = [Scenario createScenarioNamed:scenarioName withConfig:nil];
     theScenario.eventMode = eventMode;
     
-    NSLog(@"Starting scenario \"%@\"", NSStringFromClass([self class]));
+    logInfo(@"%s: Starting scenario \"%@\"", __PRETTY_FUNCTION__, NSStringFromClass([self class]));
     [theScenario startBugsnag];
 }
 

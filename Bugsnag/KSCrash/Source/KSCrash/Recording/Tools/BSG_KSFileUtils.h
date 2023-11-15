@@ -30,13 +30,13 @@
 #ifndef HDR_BSG_KSFileUtils_h
 #define HDR_BSG_KSFileUtils_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <sys/types.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** Get the last entry in a file path. Assumes UNIX style separators.
  *

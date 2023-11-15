@@ -30,10 +30,6 @@
 #ifndef HDR_BSG_KSCrashSentry_h
 #define HDR_BSG_KSCrashSentry_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSG_KSArchSpecific.h"
 #include "BSG_KSCrashType.h"
 
@@ -41,6 +37,10 @@ extern "C" {
 #include <mach/mach_types.h>
 #include <signal.h>
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Some structures must be pre-allocated, so we must set an upper limit.
 // Note: Memory usage = 16 bytes per thread, pre-allocated once.

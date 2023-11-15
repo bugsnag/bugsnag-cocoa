@@ -16,14 +16,6 @@
 
 @implementation KSCrashNames_Test
 
-- (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-}
-
 - (void)testValidStates {
     XCTAssertTrue(strcmp(bsg_kscrashthread_state_name(TH_STATE_RUNNING), "TH_STATE_RUNNING") == 0);
     XCTAssertTrue(strcmp(bsg_kscrashthread_state_name(TH_STATE_STOPPED), "TH_STATE_STOPPED") == 0);

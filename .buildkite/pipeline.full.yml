@@ -17,21 +17,24 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
+          # PLAT-11155: App hang scenarios run on BrowserStack
+          - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--fail-fast"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
 
   - label: ':bitbar: iOS 15 E2E tests batch 2'
@@ -41,7 +44,7 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
@@ -49,13 +52,14 @@ steps:
         service-ports: true
         command:
           - "--exclude=features/[a-d].*.feature$"
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--fail-fast"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
 
   - label: ':bitbar: iOS 14 E2E tests batch 1'
@@ -66,23 +70,24 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_14"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          # PLAT-11155: App hang scenarios run on BrowserStack
+          - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -97,23 +102,22 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_14"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -128,23 +132,24 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_13"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          # PLAT-11155: App hang scenarios run on BrowserStack
+          - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -159,23 +164,22 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_13"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -190,23 +194,24 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_12"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          # PLAT-11155: App hang scenarios run on BrowserStack
+          - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -221,23 +226,22 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/iOSTestApp.ipa"
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=/app/build/iOSTestApp.ipa"
+          - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_12"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -247,7 +251,124 @@ steps:
   #
   # BrowserStack
   #
+  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+  - label: ':browserstack: iOS 15 app hang tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_15"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "features/app_hangs.feature"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+  - label: ':browserstack: iOS 14 app hang tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "features/app_hangs.feature"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+  - label: ':browserstack: iOS 13 app hang tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_13"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "features/app_hangs.feature"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+  - label: ':browserstack: iOS 12 app hang tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_12"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "features/app_hangs.feature"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
   - label: ':browserstack: iOS 11 E2E tests batch 1'
+    skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
     depends_on:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
@@ -257,21 +378,20 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner-legacy
         run: cocoa-maze-runner-legacy
         command:
-          - "--app=@build/ipa_url.txt"
+          - "--app=@build/ipa_url_bs.txt"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.16.0"
           - "--fail-fast"
           - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -279,6 +399,7 @@ steps:
           limit: 2
 
   - label: ':browserstack: iOS 11 E2E tests batch 2'
+    skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
     depends_on:
       - cocoa_fixture
     # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
@@ -288,21 +409,20 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner-legacy
         run: cocoa-maze-runner-legacy
         command:
-          - "--app=@build/ipa_url.txt"
+          - "--app=@build/ipa_url_bs.txt"
           - "--farm=bs"
           - "--device=IOS_11_0_IPHONE_8_PLUS"
           - "--appium-version=1.16.0"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
     concurrency: 5
-    concurrency_group: browserstack-app
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -324,7 +444,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'ARM macOS 12 E2E tests'
     depends_on:
@@ -343,7 +462,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'macOS 10.13 E2E tests'
     depends_on:
@@ -360,7 +478,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   - label: 'macOS 10.14 E2E tests'
     depends_on:
@@ -377,7 +494,6 @@ steps:
       - bundle exec maze-runner
         --os=macos
         --fail-fast
-        --order=random
 
   ##############################################################################
   #

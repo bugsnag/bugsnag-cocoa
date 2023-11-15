@@ -4,6 +4,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Calls a non-existent method on an object

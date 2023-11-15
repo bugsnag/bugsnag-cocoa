@@ -6,17 +6,18 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
+#import "BSGTestCase.h"
+
 #import "BugsnagMetadata.h"
 #import "BugsnagMetadata+Private.h"
 #import "BSGDefines.h"
 
-#import <XCTest/XCTest.h>
 #import <mach/mach_init.h>
 #import <mach/thread_act.h>
 
 // MARK: - Expose tested-class internals
 
-@interface BugsnagMetadataTests : XCTestCase
+@interface BugsnagMetadataTests : BSGTestCase
 @property BOOL delegateCalled;
 @property BugsnagMetadata *metadata;
 @end
@@ -45,6 +46,7 @@
 @synthesize metadata;
 
 -(void) setUp {
+    [super setUp];
     metadata = [[BugsnagMetadata alloc] init];
 
     __weak __typeof__(self) weakSelf = self;

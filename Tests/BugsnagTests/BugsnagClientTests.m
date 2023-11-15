@@ -6,6 +6,8 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
+#import "BSGTestCase.h"
+
 #import "BSGInternalErrorReporter.h"
 #import "BSGKeys.h"
 #import "BSGRunContext.h"
@@ -19,7 +21,6 @@
 #import "BugsnagUser.h"
 
 #import <objc/runtime.h>
-#import <XCTest/XCTest.h>
 
 /**
  * Tests for BugsnagClient.
@@ -31,7 +32,7 @@
  *
  * For these reasons, test cases should only be added here as a matter of last resort.
  */
-@interface BugsnagClientTests : XCTestCase
+@interface BugsnagClientTests : BSGTestCase
 @end
 
 NSString *BSGFormatSeverity(BSGSeverity severity);

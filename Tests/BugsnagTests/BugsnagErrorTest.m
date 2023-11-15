@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSGKeys.h"
 #import "BugsnagError+Private.h"
@@ -17,13 +17,14 @@ NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType);
 
 NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType);
 
-@interface BugsnagErrorTest : XCTestCase
+@interface BugsnagErrorTest : BSGTestCase
 @property NSDictionary *event;
 @end
 
 @implementation BugsnagErrorTest
 
 - (void)setUp {
+    [super setUp];
     NSDictionary *thread = @{
             @"current_thread": @YES,
             @"crashed": @YES,

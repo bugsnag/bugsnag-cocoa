@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Don't set a user, don't change persistence (defaults to True).

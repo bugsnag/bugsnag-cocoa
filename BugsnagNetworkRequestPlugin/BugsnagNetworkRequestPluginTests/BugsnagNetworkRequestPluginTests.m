@@ -87,6 +87,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 }
 
 - (void)setUp {
+    [super setUp];
     [BSGURLSessionTracingDelegate setClient:(id)self];
     [self resetBreadcrumbs];
 }

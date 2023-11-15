@@ -7,6 +7,7 @@
 //
 
 #import "Scenario.h"
+#import "Logging.h"
 
 /**
  * Verifies that removing an OnSend callback does not affect other OnSend callbacks

@@ -19,7 +19,7 @@
 // During development this is not strictly necessary since last run's data will
 // not be loaded if the struct's size has changed.
 //
-#define BSGRUNCONTEXT_VERSION 4
+#define BSGRUNCONTEXT_VERSION 5
 
 struct BSGRunContext {
     long structVersion;
@@ -50,6 +50,7 @@ struct BSGRunContext {
     unsigned long long memoryAvailable;
     unsigned long long memoryFootprint;
     unsigned long long memoryLimit;
+    char bundleVersion[32]; // Won't actually get this long but just to be sure.
 };
 
 /// Information about the current run of the app / process.

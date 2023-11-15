@@ -6,13 +6,13 @@
 //  Copyright © 2019 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BugsnagSession+Private.h"
 #import "BugsnagSessionTracker.h"
 #import "BugsnagTestConstants.h"
 
-@interface BugsnagSessionTrackerStopTest : XCTestCase
+@interface BugsnagSessionTrackerStopTest : BSGTestCase
 @property BugsnagConfiguration *configuration;
 @property BugsnagSessionTracker *tracker;
 @end

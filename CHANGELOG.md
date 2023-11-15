@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## 6.27.3 (2023-11-15)
+
+### Bug fixes
+
+* Remove include directives from inside of extern "C" sections because newer Xcode versions have issues with it
+  [1608](https://github.com/bugsnag/bugsnag-cocoa/pull/1608)
+
+* Setting user fields to nil will now clear them fully.
+  [1599](https://github.com/bugsnag/bugsnag-cocoa/pull/1599)
+
+* Crash fix: Detect and handle when WatchOS is running as an app rather than an extension.
+  [1588](https://github.com/bugsnag/bugsnag-cocoa/pull/1588)
+
+* Removed deprecated NXArchInfo code that was causing build issues.
+  [1584](https://github.com/bugsnag/bugsnag-cocoa/pull/1584)
+
+* Removed deprecated syscall on macos that was causing build issues.
+  [1577](https://github.com/bugsnag/bugsnag-cocoa/pull/1577)
+
+* Check app version to avoid detecting an app upgrade as an OOM
+  [1597](https://github.com/bugsnag/bugsnag-cocoa/pull/1597)
+
 ## 6.27.2 (2023-07-24)
 
 ### Enhancements

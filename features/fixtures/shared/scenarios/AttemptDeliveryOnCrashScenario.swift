@@ -28,7 +28,14 @@ class AttemptDeliveryOnCrashScenario: Scenario {
             break
             
         case "NSException":
-            NSArray().object(at: 42)
+            NSException(
+                name: .rangeException,
+                reason: "Something is out of range",
+                userInfo: [
+                    "date": Date(timeIntervalSinceReferenceDate: 0),
+                    "scenario": "BareboneTestUnhandledErrorScenario",
+                    NSUnderlyingErrorKey: NSError(domain: "ErrorDomain", code: 0)])
+            .raise()
             break
             
         case "SwiftFatalError":

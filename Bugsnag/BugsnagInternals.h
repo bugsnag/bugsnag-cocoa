@@ -231,6 +231,8 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 - (NSDictionary *)toJson;
 
+- (NSDictionary *)toJsonWithNSNulls;
+
 @end
 
 #pragma mark -

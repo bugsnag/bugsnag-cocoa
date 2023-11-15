@@ -20,6 +20,7 @@
 @implementation BSG_KSFileTests
 
 - (void)setUp {
+    [super setUp];
     self.filePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[self description]];
     self.fileDescriptor = open(self.filePath.fileSystemRepresentation, O_RDWR | O_CREAT | O_EXCL, 0644);
 }

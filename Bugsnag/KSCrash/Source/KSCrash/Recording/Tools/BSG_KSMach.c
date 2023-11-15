@@ -43,11 +43,6 @@
 #pragma mark - General Information -
 // ============================================================================
 
-const char *bsg_ksmachcurrentCPUArch(void) {
-    const NXArchInfo *archInfo = NXGetLocalArchInfo();
-    return archInfo == NULL ? NULL : archInfo->name;
-}
-
 #define RETURN_NAME_FOR_ENUM(A)                                                \
     case A:                                                                    \
         return #A

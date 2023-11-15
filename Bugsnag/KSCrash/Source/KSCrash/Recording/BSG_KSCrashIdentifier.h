@@ -1,5 +1,6 @@
 #ifndef HDR_BSG_KSCrashIdentifier_h
 #define HDR_BSG_KSCrashIdentifier_h
+
 #include <stdbool.h>
 
 #ifdef __cplusplus

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagApp+Private.h"
@@ -16,7 +16,7 @@
 
 #include <sys/sysctl.h>
 
-@interface BugsnagAppTest : XCTestCase
+@interface BugsnagAppTest : BSGTestCase
 @property NSDictionary *data;
 @property BugsnagConfiguration *config;
 @property NSString *codeBundleId;

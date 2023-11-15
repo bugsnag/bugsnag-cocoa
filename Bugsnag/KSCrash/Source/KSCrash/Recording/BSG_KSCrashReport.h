@@ -30,11 +30,11 @@
 #ifndef HDR_BSG_KSCrashReport_h
 #define HDR_BSG_KSCrashReport_h
 
+#include "BSG_KSCrashContext.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "BSG_KSCrashContext.h"
 
 /** Write a standard crash report to a file.
  *
