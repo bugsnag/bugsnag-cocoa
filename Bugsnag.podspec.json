@@ -41,9 +41,6 @@
   "compiler_flags": [
     "-fvisibility=hidden"
   ],
-  "libraries": [
-    "c++", "z"
-  ],
   "platforms": {
     "ios": "9.0",
     "osx": "10.11",
