@@ -30,11 +30,11 @@
 #ifndef HDR_BSG_KSCrashSentry_NSException_h
 #define HDR_BSG_KSCrashSentry_NSException_h
 
+#include "BSG_KSCrashSentry.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "BSG_KSCrashSentry.h"
 
 /** Install our custom NSException handler.
  *

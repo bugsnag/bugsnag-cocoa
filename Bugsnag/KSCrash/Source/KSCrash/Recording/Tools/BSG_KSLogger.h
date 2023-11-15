@@ -27,13 +27,13 @@
 #ifndef HDR_BSG_KSLogger_h
 #define HDR_BSG_KSLogger_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <Bugsnag/BugsnagDefines.h>
 
 #include "BugsnagLogger.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Enables low-level logging.

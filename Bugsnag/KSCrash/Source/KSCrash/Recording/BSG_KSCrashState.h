@@ -31,12 +31,12 @@
 #ifndef HDR_BSG_KSCrashState_h
 #define HDR_BSG_KSCrashState_h
 
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
-#include <stdint.h>
 
 typedef struct {
 

@@ -30,13 +30,13 @@
 #ifndef HDR_BSG_KSCrashC_h
 #define HDR_BSG_KSCrashC_h
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "BSG_KSCrashContext.h"
 
 #include <stdbool.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** Initialize the KSCrash system. Call this once, before any other function.
  * Note: This gets called automatically by [BSG_KSCrash sharedInstance].

@@ -8,11 +8,11 @@
 #ifndef BSG_Symbolicate_h
 #define BSG_Symbolicate_h
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
 
 struct bsg_symbolicate_result {
     struct bsg_mach_image *image;

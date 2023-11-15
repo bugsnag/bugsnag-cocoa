@@ -9,13 +9,12 @@
 #ifndef BSG_KSCrashStringConversion_h
 #define BSG_KSCrashStringConversion_h
 
+#include <stddef.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-#include <stddef.h>
-#include <stdint.h>
 
 /**
  * Convert an unsigned integer to a string.
