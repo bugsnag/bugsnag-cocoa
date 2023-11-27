@@ -96,7 +96,7 @@ steps:
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-13-arm
+      queue: ms-arm-13-1
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0
     artifact_paths:
