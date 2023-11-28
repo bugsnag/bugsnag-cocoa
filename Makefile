@@ -35,7 +35,7 @@ else
    else
 	DEVICE?=iPhone 8
    endif
-	   
+
    DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-iphoneos
   else
@@ -127,7 +127,7 @@ endif
 test: ## Run unit tests
 	@sw_vers
 	@$(XCODEBUILD) -version
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test SUPPORTS_MACCATALYST=NO $(FORMATTER)
 
 test-fixtures: ## Build the end-to-end test fixture
 	@./features/scripts/export_ios_app.sh
