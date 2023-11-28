@@ -32,7 +32,7 @@ XCODEBUILD_EXTRA_ARGS=(-resultBundlePath "$xcresult")
 
 if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
 	# BugsnagNetworkRequestPlugin requires iOS/tvOS 10 or later
-	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests SUPPORTS_MACCATALYST=NO")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests")
 fi
 
 make test "$@" XCODEBUILD_EXTRA_ARGS="${XCODEBUILD_EXTRA_ARGS[*]}" || die
