@@ -35,7 +35,6 @@ else
    else
 	DEVICE?=iPhone 8
    endif
-	   
    DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-iphoneos
   else
