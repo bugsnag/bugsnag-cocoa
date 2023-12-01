@@ -12,12 +12,8 @@
 		0159747126BBE92D003BD715 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0159746F26BBE92D003BD715 /* LaunchScreen.storyboard */; };
 		01B9390826BBE17C00208C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01B9390726BBE17C00208C39 /* Assets.xcassets */; };
 		19B2907F523540B1194E89AC /* libPods-objective-c-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE12FD2EC7D212FA4CE8C14 /* libPods-objective-c-ios.a */; };
-		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
 		8A4882E5224BCD5D0035B94C /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */; };
 		A1F5109B249A5C4000AFF4DE /* CxxException.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1F51099249A5C4000AFF4DE /* CxxException.mm */; };
-		F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874A16AA233500676BB2 /* UIKit.framework */; };
-		F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874C16AA233500676BB2 /* Foundation.framework */; };
-		F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F40B874E16AA233500676BB2 /* CoreGraphics.framework */; };
 		F40B875716AA233500676BB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B875616AA233500676BB2 /* main.m */; };
 		F40B875B16AA233500676BB2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F40B875A16AA233500676BB2 /* AppDelegate.m */; };
 		F40B876416AA233500676BB2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F40B876216AA233500676BB2 /* Main.storyboard */; };
@@ -40,10 +36,6 @@
 		A1F51099249A5C4000AFF4DE /* CxxException.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxException.mm; sourceTree = "<group>"; };
 		A1F5109A249A5C4000AFF4DE /* CxxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CxxException.h; sourceTree = "<group>"; };
 		E7989EEC1F33619D007C37A4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
-		E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
-		E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		F2E14F3E5A46514C8F874A58 /* Pods-Bugsnag Test App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bugsnag Test App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bugsnag Test App/Pods-Bugsnag Test App.release.xcconfig"; sourceTree = "<group>"; };
 		F40B874616AA233500676BB2 /* objective-c-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "objective-c-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40B874A16AA233500676BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -63,10 +55,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */,
-				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
-				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
-				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
 				19B2907F523540B1194E89AC /* libPods-objective-c-ios.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,10 +96,6 @@
 			isa = PBXGroup;
 			children = (
 				8A4882E1224BCC130035B94C /* WebKit.framework */,
-				E7EC041E1F4CCA5B00C2E9D5 /* libc++.tbd */,
-				E7EC041C1F4CCA5500C2E9D5 /* libz.tbd */,
-				E7EC04121F4CC87300C2E9D5 /* libc++.1.dylib */,
-				E7EC04131F4CC87300C2E9D5 /* libz.1.dylib */,
 				E7989EEC1F33619D007C37A4 /* SystemConfiguration.framework */,
 				F40B874A16AA233500676BB2 /* UIKit.framework */,
 				F40B874C16AA233500676BB2 /* Foundation.framework */,
@@ -300,7 +284,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -344,7 +327,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -355,7 +337,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -392,8 +373,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -403,13 +382,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 30DA6BFF87D698AA4E0F2AF4 /* Pods-objective-c-ios.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
-				ENABLE_BITCODE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				INFOPLIST_FILE = "objective-c-ios/Info.plist";
@@ -417,10 +394,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.examples.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SEPARATE_STRIP = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_VERSION = 4.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -429,23 +404,19 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 369E8CF8CBEF9563CE2A1E09 /* Pods-objective-c-ios.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
-				ENABLE_BITCODE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				INFOPLIST_FILE = "objective-c-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.examples.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SEPARATE_STRIP = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_VERSION = 4.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
