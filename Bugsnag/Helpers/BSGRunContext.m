@@ -557,13 +557,14 @@ static int OpenFile(NSString *_Nonnull path) {
 /// Loads the contents of the state file into memory and sets the
 /// `bsg_lastRunContext` pointer if the contents are valid.
 static void LoadLastRunContext(int fd) {
-    struct stat sb;
+    static struct BSGRunContext context;
+    uint8_t buff[SIZEOF_STRUCT+1]; // +1 to detect if the size grew
+
     // Only expose previous state if size matches...
-    if (fstat(fd, &sb) == 0 && sb.st_size == SIZEOF_STRUCT) {
-        static struct BSGRunContext context;
-        if (read(fd, &context, SIZEOF_STRUCT) == SIZEOF_STRUCT &&
-            // ...and so does the structVersion
-            context.structVersion == BSGRUNCONTEXT_VERSION) {
+    if (read(fd, buff, sizeof(buff)) == SIZEOF_STRUCT) {
+        memcpy(&context, buff, SIZEOF_STRUCT);
+        // ...and so does the structVersion
+        if (context.structVersion == BSGRUNCONTEXT_VERSION) {
             bsg_lastRunContext = &context;
         }
     }
