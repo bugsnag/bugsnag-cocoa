@@ -56,7 +56,6 @@ NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *conte
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState new];
     device.id = json[@"id"];
     device.freeMemory = json[@"freeMemory"];
-    device.freeDisk = json[@"freeDisk"];
     device.locale = json[@"locale"];
     device.manufacturer = json[@"manufacturer"];
     device.model = json[@"model"];
@@ -84,7 +83,6 @@ NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *conte
     [self populateFields:device dictionary:event];
     device.orientation = [event valueForKeyPath:@"user.state.deviceState.orientation"];
     device.freeMemory = [event valueForKeyPath:@"system." BSG_KSSystemField_Memory "." BSG_KSCrashField_Free];
-    device.freeDisk = [event valueForKeyPath:@"system." BSG_KSSystemField_Disk "." BSG_KSCrashField_Free];
 
     NSString *val = [event valueForKeyPath:@"report.timestamp"];
 
@@ -103,7 +101,6 @@ NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *conte
 
 - (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [[super toDictionary] mutableCopy];
-    dict[@"freeDisk"] = self.freeDisk;
     dict[@"freeMemory"] = self.freeMemory;
     dict[@"orientation"] = self.orientation;
     dict[@"time"] = self.time ? [BSG_RFC3339DateTool stringFromDate:self.time] : nil;

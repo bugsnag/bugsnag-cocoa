@@ -381,19 +381,6 @@ BSG_OBJC_DIRECT_MEMBERS
         @BSG_KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
 
-    NSString *dir = NSSearchPathForDirectoriesInDomains(
-        NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-    const char *path = dir.fileSystemRepresentation;
-    if (path) {
-        uint64_t dfree, size;
-        if (bsg_ksfuStatfs(path, &dfree, &size)) {
-            sysInfo[@BSG_KSSystemField_Disk] = @{
-                @ BSG_KSCrashField_Free: @(dfree),
-                @ BSG_KSCrashField_Size: @(size)
-            };
-        }
-    }
-
     bsg_kscrashstate_updateDurationStats();
     BSG_KSCrash_State state = crashContext()->state;
     NSMutableDictionary *statsInfo = [NSMutableDictionary dictionary];
