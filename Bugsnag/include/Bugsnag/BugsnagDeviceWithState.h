@@ -19,11 +19,6 @@ BUGSNAG_EXTERN
 @interface BugsnagDeviceWithState : BugsnagDevice
 
 /**
- * The number of free bytes of storage available on the device
- */
-@property (strong, nullable, nonatomic) NSNumber *freeDisk;
-
-/**
  * The number of free bytes of memory available on the device
  */
 @property (strong, nullable, nonatomic) NSNumber *freeMemory;

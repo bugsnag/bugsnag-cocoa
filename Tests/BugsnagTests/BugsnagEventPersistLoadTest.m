@@ -135,7 +135,6 @@
 - (void)testDeviceFieldsOverride {
     BugsnagEvent *event = [self generateEventWithOverrides:@{
             @"device": @{
-                    @"freeDisk": @920234094,
                     @"freeMemory": @5092340923,
                     @"totalMemory": @92092340923,
                     @"orientation": @"landscape",
@@ -159,7 +158,6 @@
     formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
 
     BugsnagDeviceWithState *device = event.device;
-    XCTAssertEqualObjects(@920234094, device.freeDisk);
     XCTAssertEqualObjects(@5092340923, device.freeMemory);
     XCTAssertEqualObjects(@92092340923, device.totalMemory);
     XCTAssertEqualObjects(@"landscape", device.orientation);

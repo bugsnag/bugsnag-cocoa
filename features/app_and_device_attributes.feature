@@ -30,7 +30,6 @@ Feature: App and Device attributes present
 
     # DeviceWithState
 
-    And the error payload field "events.0.device.freeDisk" is an integer
     And the error payload field "events.0.device.freeMemory" is an integer
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the error payload field "events.0.device.time" is a date

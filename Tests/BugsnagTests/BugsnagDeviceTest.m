@@ -91,7 +91,6 @@
     XCTAssertEqualObjects(runtimeVersions, device.runtimeVersions);
 
     // verify stateful fields
-    XCTAssertGreaterThan(device.freeDisk.longLongValue, 0);
     XCTAssertEqualObjects(@742920192, device.freeMemory);
     XCTAssertEqualObjects(@"portrait", device.orientation);
 
@@ -153,7 +152,6 @@
 
     // verify stateless fields
     XCTAssertEqualObjects(@"portrait", dict[@"orientation"]);
-    XCTAssertTrue(dict[@"freeDisk"] > 0);
     XCTAssertEqualObjects(@742920192, dict[@"freeMemory"]);
 
     NSDateFormatter *formatter = [NSDateFormatter new];
@@ -190,7 +188,6 @@
                     @"osBuild": @"14B25",
                     @"clangVersion": @"10.0.0 (clang-1000.11.45.5)"
             },
-            @"freeDisk": @509234098,
             @"freeMemory": @742920192,
             @"orientation": @"portrait",
             @"time": @"2014-12-02T01:56:13Z"
@@ -215,7 +212,6 @@
     XCTAssertEqualObjects(runtimeVersions, device.runtimeVersions);
 
     // verify stateful fields
-    XCTAssertEqualObjects(@509234098, device.freeDisk);
     XCTAssertEqualObjects(@742920192, device.freeMemory);
     XCTAssertEqualObjects(@"portrait", device.orientation);
 

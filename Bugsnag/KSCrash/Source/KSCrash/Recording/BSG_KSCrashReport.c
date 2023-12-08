@@ -460,8 +460,7 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
 bool bsg_kscrw_i_exceedsBufferLen(const size_t length);
 
 void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
-                                          BSG_KSCrashReportWriter *writer,
-                                          const char *const path);
+                                          BSG_KSCrashReportWriter *writer);
 
 #pragma mark Backtrace
 
@@ -869,21 +868,6 @@ void bsg_kscrw_i_writeMemoryInfo(const BSG_KSCrashReportWriter *const writer,
     writer->endContainer(writer);
 }
 
-void bsg_kscrw_i_writeDiskInfo(const BSG_KSCrashReportWriter *const writer,
-                               const char *const key,
-                               const char *const path) {
-    uint64_t freeDisk, size;
-    if (!bsg_ksfuStatfs(path, &freeDisk, &size)) {
-        return;
-    }
-    writer->beginObject(writer, key);
-    {
-        bsg_kscrw_i_addUIntegerElement(writer, BSG_KSCrashField_Free, freeDisk);
-        bsg_kscrw_i_addUIntegerElement(writer, BSG_KSCrashField_Size, size);
-    }
-    writer->endContainer(writer);
-}
-
 /** Write information about the error leading to the crash to the report.
  *
  * @param writer The writer.
@@ -1261,7 +1245,7 @@ void bsg_kscrashreport_writeStandardReport(
                 writer, BSG_KSCrashField_Report, BSG_KSCrashReportType_Standard,
                 crashContext->config.crashID, crashContext->config.processName);
 
-        bsg_kscrashreport_writeKSCrashFields(crashContext, writer, path);
+        bsg_kscrashreport_writeKSCrashFields(crashContext, writer);
 
         if (crashContext->config.onCrashNotify != NULL) {
             // NOTE: The deny list for BSG_KSCrashField_UserAtCrash children in BugsnagEvent.m
@@ -1282,8 +1266,7 @@ void bsg_kscrashreport_writeStandardReport(
 }
 
 void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
-                                          BSG_KSCrashReportWriter *writer,
-                                          const char *const path) {
+                                          BSG_KSCrashReportWriter *writer) {
 
     bsg_kscrw_i_writeProcessState(writer, BSG_KSCrashField_ProcessState);
 
@@ -1298,7 +1281,6 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
         bsg_kscrw_i_writeMemoryInfo(writer, BSG_KSCrashField_Memory);
         bsg_kscrw_i_writeAppStats(writer, BSG_KSCrashField_AppStats,
                 &crashContext->state);
-        bsg_kscrw_i_writeDiskInfo(writer, BSG_KSCrashField_Disk, path);
     }
     writer->endContainer(writer);
 
