@@ -19,6 +19,9 @@ let package = Package(
             name: "Bugsnag",
             dependencies: [],
             path: "Bugsnag",
+            resources: [
+               .copy("resources/PrivacyInfo.xcprivacy")
+            ],
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("."),
