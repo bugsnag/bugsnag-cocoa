@@ -36,10 +36,10 @@
 #ifndef bsg_jailbreak_h
 #define bsg_jailbreak_h
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <TargetConditionals.h>
@@ -195,9 +195,10 @@ static inline bool bsg_local_is_insert_libraries_env_var(const char* str) {
     } \
  \
     const char* etc_apt_path = "/etc/apt"; \
-    struct stat st; \
-    if(stat(etc_apt_path, &st) == 0) { \
+    DIR *dirp = opendir(etc_apt_path); \
+    if(dirp) { \
         etc_apt_exists = true; \
+        closedir(dirp); \
     } \
  \
     for(int i = 0; environ[i] != NULL; i++) { \
