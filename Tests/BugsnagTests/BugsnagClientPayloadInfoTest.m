@@ -48,6 +48,7 @@
 - (void)testDeviceInfo {
     BugsnagClient *client = [Bugsnag client];
     NSDictionary *device = [[client generateDeviceWithState:BSGGetSystemInfo()] toDictionary];
+    XCTAssertNotNil(device[@"freeDisk"]);
     XCTAssertNotNil(device[@"freeMemory"]);
     XCTAssertNotNil(device[@"id"]);
     XCTAssertNotNil(device[@"jailbroken"]);
