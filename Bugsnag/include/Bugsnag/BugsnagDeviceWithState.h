@@ -19,7 +19,10 @@ BUGSNAG_EXTERN
 @interface BugsnagDeviceWithState : BugsnagDevice
 
 /**
- * The number of free bytes of storage available on the device
+ * The number of free bytes of storage available on the device.
+ *
+ * Note: This field is no longer auto-populated on iOS, watchOS, or tvOS in order to
+ * comply with Apple "grey API" guidelines. If you populate it manually, it will be reported.
  */
 @property (strong, nullable, nonatomic) NSNumber *freeDisk;
 
