@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add Privacy Manifest covering BugSnag data and API usage
+  [1616](https://github.com/bugsnag/bugsnag-cocoa/pull/1608)
+
 ## 6.27.3 (2023-11-15)
 
 ### Bug fixes

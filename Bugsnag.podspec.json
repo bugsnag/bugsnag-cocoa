@@ -53,6 +53,9 @@
   "source_files": [
     "Bugsnag/{**/,}*.{m,h,mm,c}"
   ],
+  "resources": [
+    "Bugsnag/resources/PrivacyInfo.xcprivacy"
+  ],
   "requires_arc": true,
   "prefix_header_file": false,
   "public_header_files": [
