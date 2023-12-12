@@ -141,6 +141,11 @@
     BugsnagDeviceWithState *device = self.event.device;
     XCTAssertNotNil(device);
 
+    device.freeDisk = nil;
+    XCTAssertNil(device.freeDisk);
+    device.freeDisk = @20983409;
+    XCTAssertEqualObjects(@20983409, device.freeDisk);
+
     device.freeMemory = nil;
     XCTAssertNil(device.freeMemory);
     device.freeMemory = @509234092;

@@ -329,6 +329,13 @@ class BugsnagSwiftPublicAPITests: BSGTestCase {
         
         // withState
         
+        device.freeDisk = nil
+        device.freeDisk = 0
+        device.freeDisk = 1.1
+        device.freeDisk = -45
+        device.freeDisk = NSNumber(booleanLiteral: true)
+        _ = device.freeDisk
+        
         device.freeMemory = nil
         device.freeMemory = 0
         device.freeMemory = 1.1
