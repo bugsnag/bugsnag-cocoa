@@ -18,7 +18,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
-        downstream_repo: ['bugsnag/bugsnag-unity']
+        downstream_repo: ['bugsnag/bugsnag-unity', 'bugsnag/bugsnag-flutter']
     steps:
       - name: Install libcurl4-openssl-dev and net-tools
         run: |
