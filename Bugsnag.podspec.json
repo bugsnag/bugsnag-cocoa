@@ -1,6 +1,6 @@
 {
   "name": "Bugsnag",
-  "version": "6.27.3",
+  "version": "6.28.0",
   "summary": "The Bugsnag crash reporting framework for Apple platforms.",
   "homepage": "https://bugsnag.com",
   "license": "MIT",
@@ -9,7 +9,7 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
-    "tag": "v6.27.3"
+    "tag": "v6.28.0"
   },
   "ios": {
     "frameworks": [
@@ -52,6 +52,9 @@
   },
   "source_files": [
     "Bugsnag/{**/,}*.{m,h,mm,c}"
+  ],
+  "resources": [
+    "Bugsnag/resources/PrivacyInfo.xcprivacy"
   ],
   "requires_arc": true,
   "prefix_header_file": false,

@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
@@ -19,6 +19,9 @@ let package = Package(
             name: "Bugsnag",
             dependencies: [],
             path: "Bugsnag",
+            resources: [
+               .copy("resources/PrivacyInfo.xcprivacy")
+            ],
             publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("."),

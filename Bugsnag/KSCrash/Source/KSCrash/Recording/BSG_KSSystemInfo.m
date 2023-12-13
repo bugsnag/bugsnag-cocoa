@@ -381,6 +381,7 @@ BSG_OBJC_DIRECT_MEMBERS
         @BSG_KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
 
+#if TARGET_OS_OSX
     NSString *dir = NSSearchPathForDirectoriesInDomains(
         NSCachesDirectory, NSUserDomainMask, YES).firstObject;
     const char *path = dir.fileSystemRepresentation;
@@ -393,6 +394,7 @@ BSG_OBJC_DIRECT_MEMBERS
             };
         }
     }
+#endif
 
     bsg_kscrashstate_updateDurationStats();
     BSG_KSCrash_State state = crashContext()->state;

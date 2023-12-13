@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## 6.28.0 (2023-12-13)
+
+### Enhancements
+
+* Free disk space is only sent on macOS, since the APIs to get it are now on the Apple grey list.
+  [1617](https://github.com/bugsnag/bugsnag-cocoa/pull/1617)
+
+* Remove calls to stat, which is now an API on the Apple grey list.
+  [1614](https://github.com/bugsnag/bugsnag-cocoa/pull/1614)
+
+* Add Privacy Manifest covering BugSnag data and API usage
+  [1616](https://github.com/bugsnag/bugsnag-cocoa/pull/1616)
+
 ## 6.27.3 (2023-11-15)
 
 ### Bug fixes

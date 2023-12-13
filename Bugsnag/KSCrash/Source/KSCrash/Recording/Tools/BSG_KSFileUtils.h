@@ -33,6 +33,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <sys/types.h>
+#include <TargetConditionals.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,6 +66,7 @@ bool bsg_ksfuwriteBytesToFD(const int fd, const char *bytes, ssize_t length);
  */
 bool bsg_ksfuflushWriteBuffer(const int fd);
 
+#if TARGET_OS_OSX
 /**
  * Get file system statistics.
  *
@@ -76,6 +78,7 @@ bool bsg_ksfuflushWriteBuffer(const int fd);
  *              should be written.
  */
 bool bsg_ksfuStatfs(const char *path, uint64_t *free, uint64_t *total);
+#endif
 
 #ifdef __cplusplus
 }

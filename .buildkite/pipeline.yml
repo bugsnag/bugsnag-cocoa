@@ -98,7 +98,7 @@ steps:
     agents:
       queue: macos-13-arm
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
     artifact_paths:
       - logs/*
 
@@ -120,33 +120,6 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: iOS 11 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-11
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
-    artifact_paths:
-      - logs/*
-
-  - label: iOS 10 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-10.15
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=10.3.1 DEVICE=iPhone\ 5s
-    artifact_paths:
-      - logs/*
-
-  - label: iOS 9 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa-10.13
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=9.0 DEVICE=iPhone\ 5s
-    artifact_paths:
-      - logs/*
-
   - label: tvOS 15 unit tests
     timeout_in_minutes: 10
     agents:
@@ -162,33 +135,6 @@ steps:
       queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
-    artifact_paths:
-      - logs/*
-
-  - label: tvOS 11 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-11
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=11.4
-    artifact_paths:
-      - logs/*
-
-  - label: tvOS 10 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-10.15
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=10.2
-    artifact_paths:
-      - logs/*
-
-  - label: tvOS 9 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: opensource-mac-cocoa-10.13
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=9.2
     artifact_paths:
       - logs/*
 
@@ -476,36 +422,6 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':bitbar: iOS 12 barebone tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
   #
   # BrowserStack
   #
@@ -564,63 +480,6 @@ steps:
           - "--exclude=features/[a-d].*.feature$"
           - "--order=random"
     concurrency: 25
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':browserstack: iOS 11 barebone tests'
-    skip: "https://smartbear.atlassian.net/browse/PLAT-11154"
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@build/ipa_url_bs.txt"
-          - "--farm=bs"
-          - "--device=IOS_11_0_IPHONE_8_PLUS"
-          - "--appium-version=1.16.0"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':browserstack: iOS 10 barebone tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@build/ipa_url_bs.txt"
-          - "--farm=bs"
-          - "--device=IOS_10"
-          - "--appium-version=1.15.0"
-          - "--fail-fast"
-          - "features/barebone_tests.feature"
-    concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
