@@ -307,7 +307,7 @@ steps:
   - label: ':browserstack: iOS 16 app hang tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
