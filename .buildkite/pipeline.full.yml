@@ -193,7 +193,7 @@ steps:
   - label: ':browserstack: iOS 15 app hang tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -222,7 +222,7 @@ steps:
   - label: ':browserstack: iOS 14 app hang tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -251,7 +251,7 @@ steps:
   - label: ':browserstack: iOS 13 app hang tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
