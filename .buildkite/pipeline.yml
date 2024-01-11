@@ -99,6 +99,8 @@ steps:
       queue: macos-13-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
+    env:
+      XCODE_VERSION: 15.0.1
     artifact_paths:
       - logs/*
 
