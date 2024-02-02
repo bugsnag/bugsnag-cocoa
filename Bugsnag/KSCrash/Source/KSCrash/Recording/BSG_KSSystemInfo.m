@@ -319,6 +319,8 @@ BSG_OBJC_DIRECT_MEMBERS
     NSString *systemName = @"tvOS";
 #elif TARGET_OS_WATCH
     NSString *systemName = @"watchOS";
+#elif TARGET_OS_VISION
+    NSString *systemName = @"visionOS";
 #endif
 
     sysInfo[@BSG_KSSystemField_SystemName] = systemName;
