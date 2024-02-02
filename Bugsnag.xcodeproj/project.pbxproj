@@ -1860,9 +1860,7 @@
 		3A700A9224A63A8E0068CD1B /* BugsnagDeviceWithState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagDeviceWithState.h; sourceTree = "<group>"; };
 		3A700A9324A63A8E0068CD1B /* BugsnagMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetadata.h; sourceTree = "<group>"; };
 		6AC56B1E2B6DB29C00D6E226 /* Bugsnag-visionOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Bugsnag-visionOS.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AC56B1F2B6DB29C00D6E226 /* Bugsnag-iOS copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bugsnag-iOS copy-Info.plist"; path = "/Users/bcherry/dev/bugsnag-cocoa/Bugsnag-iOS copy-Info.plist"; sourceTree = "<absolute>"; };
 		6AC56B832B6DB2AC00D6E226 /* Bugsnag-visionOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bugsnag-visionOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AC56B842B6DB2AC00D6E226 /* Bugsnag-iOSTests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bugsnag-iOSTests copy-Info.plist"; path = "/Users/bcherry/dev/bugsnag-cocoa/Bugsnag-iOSTests copy-Info.plist"; sourceTree = "<absolute>"; };
 		CB156240270707740097334C /* KSCrashNames_Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashNames_Test.m; sourceTree = "<group>"; };
 		CB28F11D282A71AB003AB200 /* BSGWatchKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGWatchKit.h; sourceTree = "<group>"; };
 		CB33CCFC2703438400C76656 /* BSG_KSCrashNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSCrashNames.h; sourceTree = "<group>"; };
@@ -2208,8 +2206,6 @@
 				01A617662733CF2D00024A0B /* Tests */,
 				00AD1C7324869B0E00A27979 /* Products */,
 				E746292324890BFE00F92D67 /* Frameworks */,
-				6AC56B1F2B6DB29C00D6E226 /* Bugsnag-iOS copy-Info.plist */,
-				6AC56B842B6DB2AC00D6E226 /* Bugsnag-iOSTests copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
