@@ -40,7 +40,7 @@
 static uint64_t GetBootTime(void);
 static bool GetIsActive(void);
 static bool GetIsForeground(void);
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_VISION
 static UIApplication * GetUIApplication(void);
 #endif
 static void InstallTimer(void);
@@ -112,7 +112,7 @@ static bool GetIsActive(void) {
     return GetIsForeground();
 #endif
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_VISION
     UIApplication *app = GetUIApplication();
     return app && app.applicationState == UIApplicationStateActive;
 #endif
@@ -160,7 +160,7 @@ static bool GetIsForeground(void) {
     }
 #endif
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_VISION
     UIApplication *application = GetUIApplication();
 
     // There will be no UIApplication if UIApplicationMain() has not yet been
@@ -195,7 +195,7 @@ static bool GetIsForeground(void) {
 #endif
 }
 
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_VISION
 
 static UIApplication * GetUIApplication(void) {
     // +sharedApplication is unavailable to app extensions
