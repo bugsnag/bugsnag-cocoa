@@ -1,3 +1,4 @@
+
 Feature: App hangs
 
   Background:

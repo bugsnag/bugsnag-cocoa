@@ -106,6 +106,16 @@ Before('@stress_test') do |_scenario|
   skip_this_scenario('Skipping: Run is not configured for stress tests') if ENV['STRESS_TEST'].nil?
 end
 
+# Handles app-hang test failures, enabling restarts if required
+After('@app_hang') do |scenario|
+  return unless scenario.failed?
+
+  # If an assertion has failed, conditionally skip the retry
+  unless scenario.result.exception.is_a?(Test::Unit::AssertionFailedError)
+    Maze::Hooks::ErrorCodeHook.exit_code = Maze::Api::ExitCode::APPIUM_APP_HANG_ERROR
+  end
+end
+
 Maze.hooks.before do |_scenario|
   # Reset to defaults in case previous scenario changed them
   Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
