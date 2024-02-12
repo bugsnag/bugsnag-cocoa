@@ -134,7 +134,7 @@ test-fixtures: ## Build the end-to-end test fixture
 
 e2e_ios_local:
 	@./features/scripts/export_ios_app.sh
-	bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa --farm=local --os=ios --apple-team-id=372ZUL2ZB7 --udid="$(shell idevice_id -l)" $(FEATURES)
+	bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa --farm=local --os=ios --apple-team-id=7W9PZ27Y5F --udid="$(shell idevice_id -l)" $(FEATURES)
 
 e2e_macos:
 	./features/scripts/export_mac_app.sh
