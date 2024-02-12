@@ -107,7 +107,7 @@ Before('@stress_test') do |_scenario|
 end
 
 # Handles app-hang test failures, enabling restarts if required
-After('@app_hang') do |scenario|
+After('@app_hang_test') do |scenario|
   return unless scenario.failed?
 
   # If an assertion has failed, conditionally skip the retry
