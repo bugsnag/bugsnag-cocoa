@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed the issue causing PrivacyInfo collisions when using Cocoapods
+  [1630](https://github.com/bugsnag/bugsnag-cocoa/pull/1630)
+
 ## 6.28.0 (2023-12-13)
 
 ### Enhancements
