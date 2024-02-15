@@ -112,7 +112,7 @@ After('@app_hang_test') do |scenario|
 
   # If an assertion has failed, conditionally skip the retry
   unless scenario.result.exception.is_a?(Test::Unit::AssertionFailedError)
-    Maze::Hooks::ErrorCodeHook.exit_code = Maze::Api::ExitCode::APPIUM_APP_HANG_ERROR
+    Maze::Hooks::ErrorCodeHook.exit_code = Maze::Api::ExitCode::APPIUM_APP_HANG_FAILURE
   end
 end
 
