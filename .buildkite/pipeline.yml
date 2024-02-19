@@ -335,6 +335,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 104 # App hang related error
+          limit: 2
 
   - label: ':bitbar: iOS 15 barebone tests'
     depends_on:

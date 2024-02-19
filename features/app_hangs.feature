@@ -1,3 +1,4 @@
+@app_hang_test
 Feature: App hangs
 
   Background:
