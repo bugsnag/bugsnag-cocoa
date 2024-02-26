@@ -352,6 +352,7 @@ steps:
     agents:
       queue: macos-12-arm
     commands:
+      - bundle install
       - cd examples/objective-c-ios
       - echo "--- Pod install"
       - pod install
@@ -367,6 +368,7 @@ steps:
     agents:
       queue: macos-12-arm
     commands:
+      - bundle install
       - cd examples/objective-c-osx
       - echo "--- Pod install"
       - pod install
@@ -380,6 +382,7 @@ steps:
     agents:
       queue: macos-12-arm
     commands:
+      - bundle install
       - cd examples/swift-ios
       - echo "--- Pod install"
       - pod install
@@ -393,6 +396,7 @@ steps:
     agents:
       queue: macos-12-arm
     commands:
+      - bundle install
       - cd examples/swift-package-manager
       - echo "--- Resolve Swift Package Dependencies"
       - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swift-package-manager.xcodeproj/project.pbxproj
@@ -407,6 +411,7 @@ steps:
     agents:
       queue: macos-12-arm
     commands:
+      - bundle install
       - cd examples/swiftui
       - echo "--- Resolve Swift Package Dependencies"
       - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swiftui.xcodeproj/project.pbxproj
