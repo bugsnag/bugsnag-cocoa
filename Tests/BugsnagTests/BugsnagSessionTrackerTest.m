@@ -170,4 +170,31 @@
     XCTAssertNotNil(self.sessionTracker.runningSession, @"There should be a running session after starting tracker in foreground");
 }
 
+- (void)testMultithreadedAddRuntimeVersionInfo {
+    NSCondition *endCondition = [NSCondition new];
+    __block int runningThreads = 0;
+    BugsnagConfiguration *config = nil;
+    BugsnagSessionTracker *sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:config client:nil];
+
+    for (int i = 0; i < 100; i++) {
+        NSString *info = [NSString stringWithFormat:@"Info %d", i];
+        NSString *key = [NSString stringWithFormat:@"Key %d", i];
+        NSThread *thread = [[NSThread alloc] initWithBlock:^{
+            runningThreads++;
+            for(int j = 0; j < 10000; j++) {
+                [sessionTracker addRuntimeVersionInfo:info withKey:key];
+            }
+            if (--runningThreads <= 0) {
+                [endCondition signal];
+            }
+        }];
+        [thread start];
+    }
+
+    [NSThread sleepForTimeInterval:0.1];
+    while (runningThreads > 0) {
+        [endCondition wait];
+    }
+}
+
 @end
