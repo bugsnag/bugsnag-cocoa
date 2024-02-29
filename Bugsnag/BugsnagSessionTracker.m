@@ -166,7 +166,9 @@ BSG_OBJC_DIRECT_MEMBERS
                                              config:self.config
                                        codeBundleId:self.codeBundleId];
     BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
-    [device appendRuntimeInfo:self.extraRuntimeInfo];
+    @synchronized (self.extraRuntimeInfo) {
+        [device appendRuntimeInfo:self.extraRuntimeInfo];
+    }
 
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startedAt:[NSDate date]
@@ -194,7 +196,9 @@ BSG_OBJC_DIRECT_MEMBERS
 - (void)addRuntimeVersionInfo:(NSString *)info
                       withKey:(NSString *)key {
     if (info != nil && key != nil) {
-        self.extraRuntimeInfo[key] = info;
+        @synchronized (self.extraRuntimeInfo) {
+            self.extraRuntimeInfo[key] = info;
+        }
     }
 }
 

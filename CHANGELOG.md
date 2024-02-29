@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.28.1 (2024-02-28)
+
+### Bug fixes
+
+* Fix race condition crash when calling BugsnagSessionTracker.addRuntimeVersionInfo from another thread.
+  [1632](https://github.com/bugsnag/bugsnag-cocoa/pull/1632)
+
+* Fixed the issue causing PrivacyInfo collisions when using Cocoapods
+  [1630](https://github.com/bugsnag/bugsnag-cocoa/pull/1630)
+
 ## 6.28.0 (2023-12-13)
 
 ### Enhancements
