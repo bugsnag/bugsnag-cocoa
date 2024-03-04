@@ -56,7 +56,7 @@ steps:
       - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swift-package-manager.xcodeproj/project.pbxproj
       - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -derivedDataPath DerivedData -resolvePackageDependencies
       - echo "+++ Build Release iOS"
-      - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Release -destination generic/platform=iOS -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
 #  ##############################################################################
 #  #
