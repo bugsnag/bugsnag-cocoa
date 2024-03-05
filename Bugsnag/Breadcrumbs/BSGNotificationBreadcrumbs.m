@@ -318,7 +318,7 @@ static NSString *nullStringIfBlank(NSString *str) {
 #endif
 
 - (BOOL)tryAddWindowNotification:(NSNotification *)notification {
-#if TARGET_OS_IOS || TARGET_OS_TV
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_VISION
     if ([notification.name hasPrefix:@"UIWindow"] && [notification.object isKindOfClass:UIWINDOW]) {
         UIWindow *window = notification.object;
         NSMutableDictionary *metadata = [NSMutableDictionary dictionary];
