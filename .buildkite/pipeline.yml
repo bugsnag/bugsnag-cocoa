@@ -13,7 +13,7 @@ steps:
     agents:
       queue: macos-13-arm
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.3.app
+      DEVELOPER_DIR: /Applications/Xcode15.app
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
@@ -30,7 +30,7 @@ steps:
     agents:
       queue: macos-13-arm
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.3.app
+      DEVELOPER_DIR: /Applications/Xcode15.app
     commands:
       - make build_swift
       - make build_ios_static
@@ -145,9 +145,9 @@ steps:
   - label: watchOS 8 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-13-arm
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.0.app
+      DEVELOPER_DIR: /Applications/Xcode15.app
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3 SDK=watchsimulator9.0
     artifact_paths:
@@ -156,9 +156,9 @@ steps:
   - label: watchOS 7 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-13-arm
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.0.app
+      DEVELOPER_DIR: /Applications/Xcode14.app
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.0
     artifact_paths:

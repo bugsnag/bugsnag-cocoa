@@ -350,7 +350,7 @@ steps:
   - label: 'examples/objective-c-ios'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-13-arm
     commands:
       - bundle install
       - cd examples/objective-c-ios
@@ -366,7 +366,7 @@ steps:
   - label: 'examples/objective-c-osx'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-13-arm
     commands:
       - bundle install
       - cd examples/objective-c-osx
@@ -380,7 +380,7 @@ steps:
   - label: 'examples/swift-ios'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-13-arm
     commands:
       - bundle install
       - cd examples/swift-ios
@@ -394,7 +394,7 @@ steps:
   - label: 'examples/swift-package-manager'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-13-arm
     commands:
       - bundle install
       - cd examples/swift-package-manager
@@ -409,7 +409,7 @@ steps:
   - label: 'examples/swiftui'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-13-arm
     commands:
       - bundle install
       - cd examples/swiftui
