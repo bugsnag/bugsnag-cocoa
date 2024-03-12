@@ -6,76 +6,119 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
-import UIKit
-import os
+import Foundation
 
 class CommandReaderThread: Thread {
-    
-    var action: (String, String) -> Void
-    init(action: @escaping (String, String) -> Void) {
-        self.action = action
+    var fixtureConfig: FixtureConfig
+    var commandReceiver: CommandReceiver
+    var lastCommandID: String = ""
+
+    init(fixtureConfig: FixtureConfig, commandReceiver: CommandReceiver) {
+        self.fixtureConfig = fixtureConfig
+        self.commandReceiver = commandReceiver
     }
-    
+
     override func main() {
-        if Scenario.baseMazeAddress.isEmpty {
-            Scenario.baseMazeAddress = self.loadMazeRunnerAddress()
+        while true {
+            if self.commandReceiver.canReceiveCommand() {
+                receiveNextCommand()
+            } else {
+                logDebug("A command is already in progress, waiting 1 second more...")
+            }
+            Thread.sleep(forTimeInterval: 1)
         }
-        
-        var isRunningCommand = false
+    }
+
+    func newStartedFetchTask() -> CommandFetchTask {
+        let fetchTask = CommandFetchTask(url: fixtureConfig.commandURL, afterCommandID: lastCommandID)
+        fetchTask.start()
+        return fetchTask
+    }
+
+    func receiveNextCommand() {
+        let maxWaitTime = 5.0
+        let pollingInterval = 1.0
+
+        var fetchTask = newStartedFetchTask()
+        let startTime = Date()
 
         while true {
-            if isRunningCommand {
-                logInfo("A command fetch is already in progress, waiting 1 second more...")
-            } else {
-                isRunningCommand = true
-                Scenario.executeMazeRunnerCommand() { scenarioName, eventMode in
-                    if (!scenarioName.isEmpty) {
-                        self.action(scenarioName, eventMode)
-                    }
-                    isRunningCommand = false
+            Thread.sleep(forTimeInterval: pollingInterval)
+            switch fetchTask.state {
+            case CommandFetchState.success:
+                logDebug("Command fetch: Request succeeded")
+                let command = fetchTask.command!
+                if (command.uuid != "") {
+                    lastCommandID = command.uuid
                 }
+                commandReceiver.receiveCommand(command: command)
+                return
+            case CommandFetchState.fetching:
+                let duration = Date() - startTime
+                if duration < maxWaitTime {
+                    logDebug("Command fetch: Server hasn't responded in \(duration)s (max \(maxWaitTime)). Waiting \(pollingInterval)s more...")
+                } else {
+                    fetchTask.cancel()
+                    logInfo("Command fetch: Server hasn't responded in \(duration)s (max \(maxWaitTime)). Trying again...")
+                    fetchTask = newStartedFetchTask()
+                }
+                break
+            case CommandFetchState.failed:
+                logInfo("Command fetch: Request failed. Trying again...")
+                fetchTask = newStartedFetchTask()
+                break
             }
-            Thread.sleep(forTimeInterval: 1)
         }
     }
-    
-    func loadMazeRunnerAddress() -> String {
+}
 
-        let bsAddress = "http://bs-local.com:9339"
+extension Date {
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
+    }
+}
 
-        // Only iOS 12 and above will run on BitBar for now
-        if #available(iOS 12.0, *) {} else {
-            return bsAddress;
-        }
-        
-        for n in 1...30 {
-            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+enum CommandFetchState {
+    case failed, fetching, success
+}
 
-            logInfo("Reading Maze Runner address from fixture_config.json")
-            do {
-                let fileUrl = URL(fileURLWithPath: "fixture_config",
-                                  relativeTo: documentsUrl).appendingPathExtension("json")
+class CommandFetchTask {
+    var url: URL
+    var state = CommandFetchState.failed
+    var command: MazeRunnerCommand?
+    var task: URLSessionTask?
 
-                let savedData = try Data(contentsOf: fileUrl)
+    init(url: URL, afterCommandID: String) {
+        self.url = URL(string: "\(url.absoluteString)?after=\(afterCommandID)")!
+    }
 
-                if let contents = String(data: savedData, encoding: .utf8) {
-                    logInfo(String(format: "Found fixture_config.json after %d seconds", n))
-                    let decoder = JSONDecoder()
-                    let jsonData = contents.data(using: .utf8)
-                    let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
-                    let address = "http://" + config.maze_address
-                    logInfo("Using Maze Runner address: " + address)
-                    return address
+    func cancel() {
+        task?.cancel()
+    }
+
+    func start() {
+        logInfo("Fetching next command from \(url)")
+        state = CommandFetchState.fetching
+        let request = URLRequest(url: url)
+        task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                do {
+                    let command = try decoder.decode(MazeRunnerCommand.self, from: data)
+                    logInfo("Command fetched and decoded")
+                    self.command = command;
+                    self.state = CommandFetchState.success
+                } catch {
+                    self.state = CommandFetchState.failed
+                    let dataAsString = String(data: data, encoding: .utf8)
+                    logError("Failed to fetch command: Invalid Response from \(String(describing: self.url)): [\(String(describing: dataAsString))]: Error is: \(error)")
                 }
+            } else if let error = error {
+                self.state = CommandFetchState.failed
+                logError("Failed to fetch command: HTTP Request to \(String(describing: self.url)) failed: \(error)")
             }
-            catch let error as NSError {
-                logWarn("Failed to read fixture_config.json: \(error)")
-            }
-            logInfo("Waiting for fixture_config.json to appear")
-            Thread.sleep(forTimeInterval: 1)
         }
-
-        logError("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
-        return bsAddress;
+        task?.resume()
     }
 }

@@ -9,34 +9,16 @@
 import UIKit
 import os
 
-class FixtureConfig: Codable {
-    var maze_address: String
-}
-
 class ViewController: UIViewController {
 
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
     @IBOutlet var apiKeyField: UITextField!
-    var mazeRunnerAddress: String = ""
+    var fixture: Fixture = Fixture()
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing(_:))))
-        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        apiKeyField.text = UserDefaults.standard.string(forKey: "apiKey")
-        logInfo("Read API key from UserDefaults: \(apiKeyField.text!)")
-
-        // Poll for commands to run
-        if #available(iOS 10.0, *) {
-            let uiUpdater = { (scenarioName: String, eventMode: String) in
-                self.scenarioNameField.text = scenarioName
-                self.scenarioMetaDataField.text = eventMode
-            }
-
-            let thread = CommandReaderThread(action: uiUpdater)
-            thread.start()
-        }
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        fixture.start()
     }
 
     @IBAction func runTestScenario() {

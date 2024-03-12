@@ -4,6 +4,7 @@
 //
 #import "Scenario.h"
 #import "Logging.h"
+#import "FixtureConfig-Swift.h"
 
 #import <objc/runtime.h>
 
