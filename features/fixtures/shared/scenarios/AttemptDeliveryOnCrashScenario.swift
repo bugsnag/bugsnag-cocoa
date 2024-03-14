@@ -8,19 +8,18 @@
 
 class AttemptDeliveryOnCrashScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         BSGCrashSentryDeliveryTimeout = 15
         config.attemptDeliveryOnCrash = true
         config.addOnSendError { event in
             event.context = "OnSendError"
             return true
         }
-        super.startBugsnag()
     }
     
     override func run() {
-        guard let eventMode = eventMode else { return } 
-        switch eventMode {
+        switch args[0] {
         case "BadAccess":
             if let ptr = UnsafePointer<CChar>(bitPattern: 42) {
                 strlen(ptr)

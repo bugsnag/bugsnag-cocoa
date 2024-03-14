@@ -14,25 +14,24 @@
 
 @implementation MaxPersistedSessionsScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = NO;
     self.config.maxPersistedSessions = 1;
-
-    [super startBugsnag];
-
-    [self performBlockAndWaitForSessionDelivery:^{
-        [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
-        [Bugsnag startSession];
-    }];
 }
 
 - (void)run {
-    // Filesystem timestamps have a resolution of 1 second, so wait to ensure
-    // that the first persisted session will have an older file creation date.
-    [NSThread sleepForTimeInterval:1];
+    [self waitForSessionDelivery:^{
+        [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
+        [Bugsnag startSession];
+    } andThen:^{
+        // Filesystem timestamps have a resolution of 1 second, so wait to ensure
+        // that the first persisted session will have an older file creation date.
+        [NSThread sleepForTimeInterval:1];
 
-    [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
-    [Bugsnag startSession];
+        [Bugsnag setUser:[self nextUserId] withEmail:nil andName:nil];
+        [Bugsnag startSession];
+    }];
 }
 
 - (NSString *)nextUserId {

@@ -13,10 +13,10 @@ import Foundation
  */
 internal class AutoDetectFalseHandledScenario: Scenario {
 
-    override func startBugsnag() {
-      self.config.autoTrackSessions = false
-      self.config.autoDetectErrors = false
-      super.startBugsnag()
+    override func configure() {
+        super.configure()
+        self.config.autoTrackSessions = false
+        self.config.autoDetectErrors = false
     }
 
     override func run() {

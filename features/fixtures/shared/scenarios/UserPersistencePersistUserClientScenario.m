@@ -17,9 +17,9 @@
 
 @implementation UserPersistencePersistUserClientScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.persistUser = YES;
-    [super startBugsnag];
 }
 
 - (void)run {

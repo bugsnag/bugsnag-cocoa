@@ -10,9 +10,9 @@ import Foundation
  */
 class HandledExceptionScenario: Scenario {
 
-    override func startBugsnag() {
-      self.config.autoTrackSessions = false;
-      super.startBugsnag()
+    override func configure() {
+        super.configure()
+        self.config.autoTrackSessions = false;
     }
 
     override func run() {

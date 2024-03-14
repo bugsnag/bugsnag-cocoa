@@ -10,7 +10,8 @@ import Foundation
 
 class BreadcrumbCallbackOrderScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.enabledBreadcrumbTypes = []
 
@@ -26,7 +27,6 @@ class BreadcrumbCallbackOrderScenario : Scenario {
             count += 1
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

@@ -10,16 +10,20 @@ class SendLaunchCrashesSynchronouslyScenario: Scenario {
     
     var startDuration: CFAbsoluteTime = 0
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
         config.sendThreads = .never
+    }
+
+    override func startBugsnag() {
         let startedAt = CFAbsoluteTimeGetCurrent()
         super.startBugsnag()
         startDuration = CFAbsoluteTimeGetCurrent() - startedAt
     }
     
     override func run() {
-        if eventMode == "report" {
+        if args[0] == "report" {
             logDebug(">>> Delaying to allow previous run's crash report to be sent")
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [startDuration] in
                 NSLog(">>> Calling notify() with startDuration = \(startDuration)")

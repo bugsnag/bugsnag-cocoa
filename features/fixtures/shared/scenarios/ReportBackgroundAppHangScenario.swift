@@ -2,7 +2,8 @@ import UIKit
 
 class ReportBackgroundAppHangScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.appHangThresholdMillis = 1_000
         self.config.reportBackgroundAppHangs = true
         self.config.addOnSendError { event in
@@ -11,7 +12,6 @@ class ReportBackgroundAppHangScenario: Scenario {
                 stackframe.method == "CABackingStoreCollectBlocking"
             }
         }
-        super.startBugsnag()
     }
 
     override func run() {

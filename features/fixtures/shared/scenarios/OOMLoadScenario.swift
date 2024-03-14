@@ -10,12 +10,12 @@ import Foundation
 
 class OOMLoadScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = true
         config.enabledErrorTypes.ooms = true
         config.addMetadata(["bar": "foo"], section: "custom")
         config.setUser("foobar", withEmail: "foobar@example.com", andName: "Foo Bar")
-        Bugsnag.start(with: config)
     }
 
     override func run() {

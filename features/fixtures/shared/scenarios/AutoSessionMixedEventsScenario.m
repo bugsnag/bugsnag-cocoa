@@ -31,13 +31,15 @@
 
 - (void)run {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self performBlockAndWaitForEventDelivery:^{
+        [self waitForEventDelivery:^{
             [Bugsnag notifyError:[FirstErr errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+        } andThen:^{
+            [self waitForEventDelivery:^{
+                [Bugsnag notifyError:[SecondErr errorWithDomain:@"com.bugsnag" code:831 userInfo:nil]];
+            } andThen:^{
+                @throw [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
+            }];
         }];
-        [self performBlockAndWaitForEventDelivery:^{
-            [Bugsnag notifyError:[SecondErr errorWithDomain:@"com.bugsnag" code:831 userInfo:nil]];
-        }];
-        @throw [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
     });
 }
 

@@ -1,7 +1,7 @@
 class SendLaunchCrashesSynchronouslyLaunchCompletedScenario: SendLaunchCrashesSynchronouslyScenario {
     
     override func run() {
-        if eventMode != "report" {
+        if args[0] != "report" {
             logDebug(">>> Calling markLaunchCompleted()")
             Bugsnag.markLaunchCompleted()
         }

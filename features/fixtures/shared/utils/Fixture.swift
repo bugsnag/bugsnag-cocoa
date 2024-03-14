@@ -15,16 +15,19 @@ protocol CommandReceiver {
 
 class Fixture: NSObject, CommandReceiver {
     static let defaultMazeRunnerURL = URL(string: "http://bs-local.com:9339")!
+    static let defaultApiKey = "12312312312312312312312312312312"
+    @objc static var baseMazeRunnerAddress: URL?
 
     var readyToReceiveCommand = false
     var commandReaderThread: CommandReaderThread?
-    var fixtureConfig: FixtureConfig = FixtureConfig(mazeRunnerBaseAddress: defaultMazeRunnerURL)
-    var scenario: Scenario? = nil
+    var fixtureConfig: FixtureConfig = FixtureConfig(apiKey: defaultApiKey, mazeRunnerBaseAddress: defaultMazeRunnerURL)
+    var currentScenario: Scenario? = nil
 
     func start() {
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadMazeRunnerAddress { address in
-                self.fixtureConfig = FixtureConfig(mazeRunnerBaseAddress: address)
+                Fixture.baseMazeRunnerAddress = address
+                self.fixtureConfig = FixtureConfig(apiKey: Fixture.defaultApiKey, mazeRunnerBaseAddress: address)
                 self.beginReceivingCommands(fixtureConfig: self.fixtureConfig)
             }
         }
@@ -47,13 +50,22 @@ class Fixture: NSObject, CommandReceiver {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
             switch command.action {
             case "run_scenario":
-                self.runScenario(scenarioName: command.args[0], completion: {
+                self.runScenario(scenarioName: command.args[0], args: Array(command.args[1...]), completion: {
+                    self.readyToReceiveCommand = true
+                })
+                isReady = false;
+                break
+            case "start_bugsnag":
+                self.startBugsnagForScenario(scenarioName: command.args[0], args: Array(command.args[1...]), completion: {
                     self.readyToReceiveCommand = true
                 })
                 isReady = false;
                 break
             case "invoke_method":
                 self.invokeMethod(methodName: command.args[0], args: Array(command.args[1...]))
+                break
+            case "reset_data":
+                self.clearPersistentData()
                 break
             case "noop":
                 break
@@ -66,42 +78,74 @@ class Fixture: NSObject, CommandReceiver {
         }
     }
 
-    private func runScenario(scenarioName: String, completion: @escaping () -> ()) {
-        logInfo("========== Running scenario \(scenarioName) ==========")
-        let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
-        logInfo("Loaded scenario class: \(scenarioClass)")
-        scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig) as Scenario?
-        logInfo("Configuring scenario in class \(scenarioClass)")
-        scenario!.configure()
-        logInfo("Clearing persistent data")
-        scenario!.clearPersistentData()
-        logInfo("Starting bugsnag performance")
-        scenario!.startBugsnag()
-        logInfo("Starting scenario in class \(scenarioClass)")
-        scenario!.run()
-        logInfo("========== Completed scenario \(scenarioName) ==========")
+    @objc func clearPersistentData() {
+        Scenario.clearPersistentData()
+    }
+
+    @objc func startBugsnagForScenario(scenarioName: String, args: [String], completion: @escaping () -> ()) {
+        logInfo("========== Starting Bugsnag for scenario \(scenarioName) ==========")
+        loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
+        logInfo("========== Completed scenario \(String(describing: currentScenario.self)) ==========")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.scenario!.reportMeasurements()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                completion()
-            }
+            completion()
         }
     }
 
+    @objc func runScenario(scenarioName: String, args: [String], completion: @escaping () -> ()) {
+        logInfo("========== Running scenario \(scenarioName) ==========")
+        loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
+        logInfo("Starting scenario in class \(String(describing: currentScenario.self))")
+        currentScenario!.run()
+        logInfo("========== Completed scenario \(String(describing: currentScenario.self)) ==========")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            completion()
+        }
+    }
+
+    @objc func setApiKey(apiKey: String) {
+        self.fixtureConfig.apiKey = apiKey
+    }
+
+    @objc func setNotifyEndpoint(endpoint: String) {
+        self.fixtureConfig.notifyURL = URL(string: endpoint)!
+    }
+
+    @objc func setSessionEndpoint(endpoint: String) {
+        self.fixtureConfig.sessionsURL = URL(string: endpoint)!
+    }
+
+    func didEnterBackgroundNotification() {
+        currentScenario?.didEnterBackgroundNotification()
+    }
+
+    private func loadScenarioAndStartBugsnag(scenarioName: String, args: [String]) {
+        logInfo("Loading scenario from class named: \(scenarioName)")
+        let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
+        logInfo("Initializing scenario class: \(scenarioClass)")
+        let scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig, args:args)
+        currentScenario = scenario
+        logInfo("Configuring scenario in class \(String(describing: scenario.self))")
+        scenario.configure()
+        logInfo("Clearing persistent data")
+        Scenario.clearPersistentData()
+        logInfo("Starting bugsnag")
+        scenario.startBugsnag()
+    }
+
     private func invokeMethod(methodName: String, args: Array<String>) {
-        logInfo("Invoking method \(methodName) with args \(args) on \(String(describing: scenario!.self))")
+        logInfo("Invoking method \(methodName) with args \(args) on \(String(describing: currentScenario!.self))")
 
         let sel = NSSelectorFromString(methodName)
-        if (!scenario!.responds(to: sel)) {
-            fatalError("\(String(describing: scenario!.self)) does not respond to \(methodName). Did you set the @objcMembers annotation on \(String(describing: scenario!.self))?")
+        if (!currentScenario!.responds(to: sel)) {
+            fatalError("\(String(describing: currentScenario!.self)) does not respond to \(methodName). Did you set the @objcMembers annotation on \(String(describing: currentScenario!.self))?")
         }
 
         switch args.count {
         case 0:
-            scenario!.perform(sel)
+            currentScenario!.perform(sel)
         case 1:
             // Note: Parameter must accept a string
-            scenario!.perform(sel, with: args[0])
+            currentScenario!.perform(sel, with: args[0])
         default:
             fatalError("invoking \(methodName) with args \(args): Fixture currently only supports up to 1 argument")
         }

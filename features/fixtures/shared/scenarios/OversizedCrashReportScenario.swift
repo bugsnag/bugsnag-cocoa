@@ -1,6 +1,7 @@
 class OversizedCrashReportScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
         config.enabledErrorTypes.ooms = false
         config.maxStringValueLength = UInt.max
@@ -12,7 +13,6 @@ class OversizedCrashReportScenario: Scenario {
             $0.addMetadata(data.base64EncodedString(), key: "random", section: "test")
             return true
         }
-        super.startBugsnag()
     }
     
     override func run() {

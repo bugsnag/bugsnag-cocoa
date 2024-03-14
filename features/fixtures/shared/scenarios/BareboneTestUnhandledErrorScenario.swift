@@ -2,8 +2,9 @@ class BareboneTestUnhandledErrorScenario: Scenario {
     
     private var payload: Payload!
     
-    override func startBugsnag() {
-        if eventMode == "report" {
+    override func configure() {
+        super.configure()
+        if args[0] == "report" {
             // The version of the app at report time.
             config.appVersion = "23.4"
             config.bundleVersion = "23401"
@@ -26,7 +27,6 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             config.context = "Something"
             config.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
         }
-        super.startBugsnag()
     }
     
     override func run() {

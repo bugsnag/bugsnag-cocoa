@@ -10,7 +10,8 @@ import Foundation
 
 class SessionCallbackOverrideScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.addOnSession { (session) -> Bool in
             session.app.id = "customAppId"
@@ -18,7 +19,6 @@ class SessionCallbackOverrideScenario : Scenario {
             session.setUser("customUserId", withEmail: nil, andName: nil)
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

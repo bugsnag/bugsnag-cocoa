@@ -10,7 +10,8 @@ import Foundation
 
 class OnSendErrorCallbackCrashScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.addOnSendError { (event) -> Bool in
             event.addMetadata(true, key: "beforeCrash", section: "callbacks")
@@ -27,7 +28,6 @@ class OnSendErrorCallbackCrashScenario : Scenario {
             event.addMetadata(true, key: "secondCallback", section: "callbacks")
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

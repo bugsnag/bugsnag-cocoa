@@ -1,7 +1,7 @@
 class SendLaunchCrashesSynchronouslyFalseScenario: SendLaunchCrashesSynchronouslyScenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.sendLaunchCrashesSynchronously = false
-        super.startBugsnag()
     }
 }

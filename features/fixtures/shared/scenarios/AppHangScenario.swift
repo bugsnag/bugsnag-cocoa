@@ -8,16 +8,16 @@
 
 class AppHangScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.appHangThresholdMillis = 2_000
         config.enabledBreadcrumbTypes = [.user]
         config.addFeatureFlag(name: "Testing")
-        super.startBugsnag()
     }
     
     override func run() {
         Bugsnag.setContext("App Hang Scenario")
-        let timeInterval = TimeInterval(eventMode!)!
+        let timeInterval = TimeInterval(args[0])!
         logDebug("Simulating an app hang of \(timeInterval) seconds...")
         if timeInterval > 2 {
             Thread.sleep(forTimeInterval: 1.5)

@@ -8,16 +8,18 @@
 
 import Foundation
 
-@objc class FixtureConfig: NSObject {
+@objcMembers class FixtureConfig: NSObject {
+    var apiKey: String
     let mazeRunnerURL: URL
     let tracesURL: URL
     let commandURL: URL
     let metricsURL: URL
     let reflectURL: URL
-    let notifyURL: URL
-    let sessionsURL: URL
+    var notifyURL: URL
+    var sessionsURL: URL
 
-    init(mazeRunnerBaseAddress: URL) {
+    init(apiKey: String, mazeRunnerBaseAddress: URL) {
+        self.apiKey = apiKey
         mazeRunnerURL = mazeRunnerBaseAddress
         tracesURL = mazeRunnerBaseAddress.appendingPathComponent("traces")
         commandURL = mazeRunnerBaseAddress.appendingPathComponent("command")

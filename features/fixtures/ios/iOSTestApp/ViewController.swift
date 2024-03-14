@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import os
 
 class ViewController: UIViewController {
 
@@ -18,49 +17,33 @@ class ViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        apiKeyField.text = Fixture.defaultApiKey
         fixture.start()
     }
 
     @IBAction func runTestScenario() {
-        // Cater for multiple calls to run()
-        if Scenario.current == nil {
-            prepareScenario()
+        let apiKey = apiKeyField.text!
+        let scenarioName = scenarioNameField.text!
+        let args = scenarioMetaDataField.text!.count > 0 ? [scenarioMetaDataField.text!] : []
 
-            logInfo("Starting Bugsnag for scenario: \(Scenario.current!)")
-            Scenario.current!.startBugsnag()
-        }
-        
-        logInfo("Running scenario: \(Scenario.current!)")
-        Scenario.current!.run()
+        fixture.setApiKey(apiKey: apiKey)
+        fixture.runScenario(scenarioName: scenarioName, args: args) {}
     }
 
     @IBAction func startBugsnag() {
-        prepareScenario()
-
-        logInfo("Starting Bugsnag for scenario: \(Scenario.current!)")
-        Scenario.current!.startBugsnag()
+        let apiKey = apiKeyField.text!
+        let scenarioName = scenarioNameField.text!
+        let args = scenarioMetaDataField.text!.count > 0 ? [scenarioMetaDataField.text!] : []
+        
+        fixture.setApiKey(apiKey: apiKey)
+        fixture.startBugsnagForScenario(scenarioName: scenarioName, args: args) {}
     }
 
     @IBAction func clearPersistentData(_ sender: Any) {
-        Scenario.clearPersistentData()
-    }
-
-    internal func prepareScenario() {
-        var config: BugsnagConfiguration?
-        if (apiKeyField.text!.count > 0) {
-            // Manual testing mode - use the real dashboard and the API key provided
-            let apiKey = apiKeyField.text!
-            logInfo("Running in manual mode with API key: \(apiKey)")
-            UserDefaults.standard.setValue(apiKey, forKey: "apiKey")
-            config = BugsnagConfiguration(apiKeyField.text!)
-        }
-        
-        Scenario.createScenarioNamed(scenarioNameField.text!,
-                                     withConfig: config)
-        Scenario.current!.eventMode = scenarioMetaDataField.text
+        fixture.clearPersistentData()
     }
 
     @objc func didEnterBackgroundNotification() {
-        Scenario.current?.didEnterBackgroundNotification()
+        fixture.didEnterBackgroundNotification()
     }
 }

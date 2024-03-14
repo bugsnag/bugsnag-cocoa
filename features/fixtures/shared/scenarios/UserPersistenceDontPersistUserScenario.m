@@ -17,10 +17,10 @@
 
 @implementation UserPersistenceDontPersistUserScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.persistUser = NO;
     [self.config setUser:@"john" withEmail:@"george@ringo.com" andName:@"paul"];
-    [super startBugsnag];
 }
 
 - (void)run {

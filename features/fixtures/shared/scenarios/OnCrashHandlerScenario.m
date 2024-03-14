@@ -41,10 +41,10 @@ void HandleCrashedThread(const BSG_KSCrashReportWriter *writer) {
 
 @implementation OnCrashHandlerScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = NO;
     self.config.onCrashHandler = &HandleCrashedThread;
-    [super startBugsnag];
 }
 
 - (void)run {

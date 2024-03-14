@@ -1,8 +1,8 @@
 class AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
-        super.startBugsnag()
     }
 
     override func run() {

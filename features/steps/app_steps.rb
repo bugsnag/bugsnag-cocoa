@@ -1,5 +1,5 @@
 When('I run {string}') do |scenario_name|
-  execute_command :run_scenario, scenario_name
+  execute_command "run_scenario", [scenario_name, $scenario_mode]
 end
 
 When("I run {string} and relaunch the crashed app") do |event_type|
@@ -11,11 +11,11 @@ When("I run {string} and relaunch the crashed app") do |event_type|
 end
 
 When('I clear all persistent data') do
-  $reset_data = true
+  execute_command "reset_data", []
 end
 
 When('I configure Bugsnag for {string}') do |scenario_name|
-  execute_command :start_bugsnag, scenario_name
+  execute_command "start_bugsnag", [scenario_name, $scenario_mode]
 end
 
 When('I kill and relaunch the app') do
@@ -84,19 +84,12 @@ When('I clear the error queue') do
   Maze::Server.errors.clear
 end
 
-def execute_command(action, scenario_name)
-  platform = Maze::Helper.get_current_platform
-  command = { action: action, scenario_name: scenario_name, scenario_mode: $scenario_mode, reset_data: $reset_data }
-  Maze::Server.commands.add command
-  trigger_app_command
-  $scenario_mode = nil
-  $reset_data = false
+
+def execute_command(action, args)
+  Maze::Server.commands.add({ action: action, args: args })
   # Ensure fixture has read the command
   count = 100
-  # Launching the fixture via xcdebug is slow
-  count = 600 if Maze::Helper.get_current_platform == 'watchos'
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 def trigger_app_command
