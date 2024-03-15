@@ -118,10 +118,27 @@ class Fixture: NSObject, CommandReceiver {
         currentScenario?.didEnterBackgroundNotification()
     }
 
-    private func loadScenarioAndStartBugsnag(scenarioName: String, args: [String]) {
-        logInfo("Loading scenario from class named: \(scenarioName)")
+    private func loadScenarioClass(named: String) -> AnyClass {
+        let scenarioName = named
         let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
-        let scenarioClass: AnyClass = NSClassFromString("\(namespace).\(scenarioName)")!
+        var scenarioClass: AnyClass?
+
+        scenarioClass = NSClassFromString("\(namespace).\(scenarioName)")
+        if scenarioClass != nil {
+            return scenarioClass!
+        }
+
+        scenarioClass = NSClassFromString(scenarioName)
+        if scenarioClass != nil {
+            return scenarioClass!
+        }
+
+        fatalError("Could not find class \(scenarioName) or \(namespace).\(scenarioName). Aborting scenario load...")
+    }
+
+    private func loadScenarioAndStartBugsnag(scenarioName: String, args: [String]) {
+        logInfo("Loading scenario: \(scenarioName)")
+        let scenarioClass: AnyClass = loadScenarioClass(named: scenarioName)
         logInfo("Initializing scenario class: \(scenarioClass)")
         let scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig, args:args)
         currentScenario = scenario
