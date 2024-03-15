@@ -17,8 +17,11 @@ class ViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        apiKeyField.text = Fixture.defaultApiKey
         fixture.start()
+    }
+
+    override func viewDidLoad() {
+        apiKeyField.text = Fixture.defaultApiKey
     }
 
     @IBAction func runTestScenario() {

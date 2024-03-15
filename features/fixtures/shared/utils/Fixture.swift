@@ -86,7 +86,7 @@ class Fixture: NSObject, CommandReceiver {
         logInfo("========== Starting Bugsnag for scenario \(scenarioName) ==========")
         loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
         logInfo("========== Completed scenario \(String(describing: currentScenario.self)) ==========")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             completion()
         }
     }
@@ -97,7 +97,7 @@ class Fixture: NSObject, CommandReceiver {
         logInfo("Starting scenario in class \(String(describing: currentScenario.self))")
         currentScenario!.run()
         logInfo("========== Completed scenario \(String(describing: currentScenario.self)) ==========")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             completion()
         }
     }
@@ -120,14 +120,13 @@ class Fixture: NSObject, CommandReceiver {
 
     private func loadScenarioAndStartBugsnag(scenarioName: String, args: [String]) {
         logInfo("Loading scenario from class named: \(scenarioName)")
-        let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
+        let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
+        let scenarioClass: AnyClass = NSClassFromString("\(namespace).\(scenarioName)")!
         logInfo("Initializing scenario class: \(scenarioClass)")
         let scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig, args:args)
         currentScenario = scenario
         logInfo("Configuring scenario in class \(String(describing: scenario.self))")
         scenario.configure()
-        logInfo("Clearing persistent data")
-        Scenario.clearPersistentData()
         logInfo("Starting bugsnag")
         scenario.startBugsnag()
     }

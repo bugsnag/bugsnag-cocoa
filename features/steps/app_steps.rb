@@ -1,5 +1,5 @@
 When('I run {string}') do |scenario_name|
-  execute_command "run_scenario", [scenario_name, $scenario_mode]
+  execute_command "run_scenario", [scenario_name, $scenario_mode || '']
 end
 
 When("I run {string} and relaunch the crashed app") do |event_type|
@@ -15,7 +15,7 @@ When('I clear all persistent data') do
 end
 
 When('I configure Bugsnag for {string}') do |scenario_name|
-  execute_command "start_bugsnag", [scenario_name, $scenario_mode]
+  execute_command "start_bugsnag", [scenario_name, $scenario_mode || '']
 end
 
 When('I kill and relaunch the app') do
