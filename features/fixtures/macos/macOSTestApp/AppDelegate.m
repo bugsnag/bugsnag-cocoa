@@ -38,7 +38,7 @@
     static BOOL once;
     if (!once && [self launchedByMazeRunner]) {
         once = YES;
-        [self.mainWindowController executeMazeRunnerCommand:self];
+        [self.mainWindowController startFixture];
     }
 }
 

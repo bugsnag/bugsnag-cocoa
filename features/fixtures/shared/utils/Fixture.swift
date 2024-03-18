@@ -23,7 +23,7 @@ class Fixture: NSObject, CommandReceiver {
     var fixtureConfig: FixtureConfig = FixtureConfig(apiKey: defaultApiKey, mazeRunnerBaseAddress: defaultMazeRunnerURL)
     var currentScenario: Scenario? = nil
 
-    func start() {
+    @objc func start() {
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadMazeRunnerAddress { address in
                 Fixture.baseMazeRunnerAddress = address

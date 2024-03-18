@@ -39,6 +39,10 @@
     self.fixture = [[Fixture alloc] init];
 }
 
+- (void)startFixture {
+    [self.fixture start];
+}
+
 - (BugsnagConfiguration *)configuration {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:self.apiKey];
     if (self.notifyEndpoint) {
@@ -57,8 +61,11 @@
     [self.fixture setNotifyEndpointWithEndpoint:self.notifyEndpoint];
     [self.fixture setSessionEndpointWithEndpoint:self.sessionEndpoint];
     NSString *scenarioName = self.scenarioName;
-    NSArray<NSString *> *args = @[self.scenarioMetadata];
-    
+    NSArray<NSString *> *args = @[];
+    if (self.scenarioMetadata != nil) {
+        args = @[self.scenarioMetadata];
+    }
+
     // Using dispatch_async to prevent AppleEvents swallowing exceptions.
     // For more info see https://www.chimehq.com/blog/sad-state-of-exceptions
     // 0.1s delay allows accessibility APIs to finish handling the mouse click and returns control to the tests framework.
