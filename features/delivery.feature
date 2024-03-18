@@ -137,11 +137,13 @@ Feature: Delivery of errors
     And I discard the oldest session
     When I set the HTTP status code to 200
     And I kill and relaunch the app
-    And I configure Bugsnag for "MaxPersistedSessionsScenario"
-    And I wait to receive 2 sessions
+    And I run "MaxPersistedSessionsScenario"
+    And I wait to receive 3 sessions
     Then the session "user.id" equals "3"
     And I discard the oldest session
     And the session "user.id" equals "2"
+    And I discard the oldest session
+    And the session "user.id" equals "4"
 
   Scenario: Breadcrumbs should be trimmed if payload is oversized
     When I run "OversizedBreadcrumbsScenario"
