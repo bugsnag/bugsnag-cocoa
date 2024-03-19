@@ -14,22 +14,35 @@ protocol CommandReceiver {
 }
 
 class Fixture: NSObject, CommandReceiver {
-    static let defaultMazeRunnerURL = URL(string: "http://bs-local.com:9339")!
     static let defaultApiKey = "12312312312312312312312312312312"
     @objc static var baseMazeRunnerAddress: URL?
 
+    let defaultMazeRunnerURL: URL
+    let shouldLoadMazeRunnerURL: Bool
     var readyToReceiveCommand = false
     var commandReaderThread: CommandReaderThread?
-    var fixtureConfig: FixtureConfig = FixtureConfig(apiKey: defaultApiKey, mazeRunnerBaseAddress: defaultMazeRunnerURL)
+    var fixtureConfig: FixtureConfig
     var currentScenario: Scenario? = nil
 
+    @objc init(defaultMazeRunnerURL: URL, shouldLoadMazeRunnerURL: Bool) {
+        self.defaultMazeRunnerURL = defaultMazeRunnerURL
+        self.shouldLoadMazeRunnerURL = shouldLoadMazeRunnerURL
+        fixtureConfig = FixtureConfig(apiKey: Fixture.defaultApiKey, mazeRunnerBaseAddress: defaultMazeRunnerURL)
+    }
+
     @objc func start() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.loadMazeRunnerAddress { address in
-                Fixture.baseMazeRunnerAddress = address
-                self.fixtureConfig = FixtureConfig(apiKey: Fixture.defaultApiKey, mazeRunnerBaseAddress: address)
-                self.beginReceivingCommands(fixtureConfig: self.fixtureConfig)
+        let startFunc: (URL)->() = { address in
+            Fixture.baseMazeRunnerAddress = address
+            self.fixtureConfig = FixtureConfig(apiKey: Fixture.defaultApiKey, mazeRunnerBaseAddress: address)
+            self.beginReceivingCommands(fixtureConfig: self.fixtureConfig)
+        }
+
+        if shouldLoadMazeRunnerURL {
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.loadMazeRunnerAddress(completion: startFunc)
             }
+        } else {
+            startFunc(fixtureConfig.mazeRunnerURL)
         }
     }
 
@@ -168,7 +181,7 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     func loadMazeRunnerAddress(completion: (URL)->()) {
-        let defaultUrl = Fixture.defaultMazeRunnerURL
+        let defaultUrl = defaultMazeRunnerURL
 
         // Only iOS 12 and above will run on BitBar for now
         if #available(iOS 12.0, *) {} else {

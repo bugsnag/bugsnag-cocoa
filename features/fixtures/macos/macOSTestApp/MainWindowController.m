@@ -22,36 +22,33 @@
 @property (copy) NSString *scenarioMetadata;
 @property (copy) NSString *scenarioName;
 @property (copy) NSString *sessionEndpoint;
+
+@property (nonatomic,strong) FixtureConfig *fixtureConfig;
 @property (nonatomic,strong) Fixture *fixture;
 
 @end
 
 #pragma mark -
 
+static NSString *defaultAPIKey = @"12312312312312312312312312312312";
+static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
+
 @implementation MainWindowController
 
 - (void)windowDidLoad {
     [super windowDidLoad];
 
-    self.apiKey = @"12312312312312312312312312312312";
-    self.notifyEndpoint = @"http://localhost:9339/notify";
-    self.sessionEndpoint = @"http://localhost:9339/sessions";
-    self.fixture = [[Fixture alloc] init];
+    self.fixtureConfig = [[FixtureConfig alloc] initWithApiKey:defaultAPIKey
+                                         mazeRunnerBaseAddress:[NSURL URLWithString:defaultMazeRunnerURLString]];
+    self.fixture = [[Fixture alloc] initWithDefaultMazeRunnerURL:self.fixtureConfig.mazeRunnerURL
+                                         shouldLoadMazeRunnerURL:NO];
+    self.apiKey = self.fixtureConfig.apiKey;
+    self.notifyEndpoint = self.fixtureConfig.notifyURL.absoluteString;
+    self.sessionEndpoint = self.fixtureConfig.sessionsURL.absoluteString;
 }
 
 - (void)startFixture {
     [self.fixture start];
-}
-
-- (BugsnagConfiguration *)configuration {
-    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:self.apiKey];
-    if (self.notifyEndpoint) {
-        configuration.endpoints.notify = self.notifyEndpoint;
-    }
-    if (self.sessionEndpoint) {
-        configuration.endpoints.sessions = self.sessionEndpoint;
-    }
-    return configuration;
 }
 
 - (IBAction)runScenario:(id)sender {

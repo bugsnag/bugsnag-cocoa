@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet var scenarioNameField : UITextField!
     @IBOutlet var scenarioMetaDataField : UITextField!
     @IBOutlet var apiKeyField: UITextField!
-    var fixture: Fixture = Fixture()
+    var fixture: Fixture = Fixture(defaultMazeRunnerURL: URL(string: "http://bs-local.com:9339")!, shouldLoadMazeRunnerURL: true)
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
