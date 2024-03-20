@@ -121,6 +121,8 @@ Maze.hooks.before do |_scenario|
   # Reset to defaults in case previous scenario changed them
   Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
 
+  launch_app
+
   $started_at = Time.now
 end
 

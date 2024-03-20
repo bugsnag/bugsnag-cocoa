@@ -232,6 +232,7 @@ steps:
       - echo "--- Test"
       - bundle exec maze-runner
         features/stress_test.feature
+        --os=macos
         --no-log-requests
     artifact_paths:
       - features/fixtures/macos-stress-test/*.log

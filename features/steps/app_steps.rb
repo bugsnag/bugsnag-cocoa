@@ -1,5 +1,6 @@
 When('I run {string}') do |scenario_name|
   execute_command "run_scenario", [scenario_name, $scenario_mode || '']
+  $scenario_mode = nil
 end
 
 When("I run {string} and relaunch the crashed app") do |event_type|
@@ -16,36 +17,15 @@ end
 
 When('I configure Bugsnag for {string}') do |scenario_name|
   execute_command "start_bugsnag", [scenario_name, $scenario_mode || '']
+  $scenario_mode = nil
 end
 
 When('I kill and relaunch the app') do
-  case Maze::Helper.get_current_platform
-  when 'ios'
-    Maze.driver.close_app
-    Maze.driver.launch_app
-  when 'macos'
-    # noop
-  when 'watchos'
-    # noop
-  else
-    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
-  end
+  kill_and_relaunch_app
 end
 
 When("I relaunch the app after a crash") do
-  case Maze::Helper.get_current_platform
-  when 'ios'
-    # Wait for the app to stop running before relaunching
-    step 'the app is not running'
-    Maze.driver.launch_app
-  when 'macos'
-    # Wait for the app to stop running before relaunching
-    step 'the app is not running'
-  when 'watchos'
-    sleep 5 # We have no way to poll the app state on watchOS
-  else
-    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
-  end
+  relaunch_crashed_app
 end
 
 #
@@ -87,10 +67,9 @@ end
 
 def execute_command(action, args)
   Maze::Server.commands.add({ action: action, args: args })
-  trigger_app_command
 end
 
-def trigger_app_command
+def launch_app
   case Maze::Helper.get_current_platform
   when 'ios'
     # Do nothing
@@ -98,6 +77,41 @@ def trigger_app_command
     run_macos_app
   when 'watchos'
     run_watchos_app
+  else
+    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
+  end
+end
+
+def relaunch_crashed_app
+  # Give it time to settle down
+  sleep 1
+
+  case Maze::Helper.get_current_platform
+  when 'ios'
+    # Wait for the app to stop running before relaunching
+    step 'the app is not running'
+    Maze.driver.launch_app
+  when 'macos'
+    # Wait for the app to stop running before relaunching
+    step 'the app is not running'
+    launch_app
+  when 'watchos'
+    sleep 5 # We have no way to poll the app state on watchOS
+    launch_app
+  else
+    raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
+  end
+end
+
+def kill_and_relaunch_app
+  case Maze::Helper.get_current_platform
+  when 'ios'
+    Maze.driver.close_app
+    Maze.driver.launch_app
+  when 'macos'
+    # noop
+  when 'watchos'
+    # noop
   else
     raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
