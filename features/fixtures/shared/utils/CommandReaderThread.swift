@@ -44,13 +44,13 @@ class CommandReaderThread: Thread {
 
     func receiveNextCommand() {
         let maxWaitTime = 5.0
-        let pollingInterval = 1.0
+        let pollingInterval = 0.2
 
         var fetchTask = newStartedFetchTask()
         let startTime = Date()
 
+        logDebug("Command fetch: Command request sent. Waiting for response...")
         while true {
-            Thread.sleep(forTimeInterval: pollingInterval)
             switch fetchTask.state {
             case CommandFetchState.success:
                 logDebug("Command fetch: Request succeeded")
@@ -62,9 +62,7 @@ class CommandReaderThread: Thread {
                 return
             case CommandFetchState.fetching:
                 let duration = Date() - startTime
-                if duration < maxWaitTime {
-                    logDebug("Command fetch: Server hasn't responded in \(duration)s (max \(maxWaitTime)). Waiting \(pollingInterval)s more...")
-                } else {
+                if duration >= maxWaitTime {
                     fetchTask.cancel()
                     logInfo("Command fetch: Server hasn't responded in \(duration)s (max \(maxWaitTime)). Trying again...")
                     fetchTask = newStartedFetchTask()
@@ -81,6 +79,7 @@ class CommandReaderThread: Thread {
                 fetchTask = newStartedFetchTask()
                 break
             }
+            Thread.sleep(forTimeInterval: pollingInterval)
         }
     }
 }
@@ -118,6 +117,7 @@ class CommandFetchTask {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 do {
+                    logDebug("Command response: \(String(describing: String(data: data, encoding: .utf8)))")
                     let command = try decoder.decode(MazeRunnerCommand.self, from: data)
                     logInfo("Command fetched and decoded")
                     self.command = command;
