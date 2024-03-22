@@ -58,6 +58,21 @@ Then('the app is not running') do
   end
 end
 
+When('I invoke {string}') do |method_name|
+  Maze::Server.commands.add({ action: "invoke_method", args: [method_name] })
+  # Ensure fixture has read the command
+  count = 100
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+end
+
+When('I invoke {string} with parameter {string}') do |method_name, arg1|
+  # Note: The method will usually be of the form "xyzWithParam:"
+  Maze::Server.commands.add({ action: "invoke_method", args: [method_name, arg1] })
+  # Ensure fixture has read the command
+  count = 100
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+end
+
 # No platform relevance
 
 When('I clear the error queue') do

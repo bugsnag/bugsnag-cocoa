@@ -89,7 +89,7 @@ Before('@skip_below_ios_13') do |_scenario|
   skip_below('ios', 13)
 end
 
-Before('@skip_below_ios_13') do |_scenario|
+Before('@skip_below_ios_17') do |_scenario|
   skip_below('ios', 17)
 end
 

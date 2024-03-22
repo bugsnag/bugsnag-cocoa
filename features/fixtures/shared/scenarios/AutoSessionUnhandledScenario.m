@@ -25,11 +25,10 @@
 
 - (void)run {
     if (![self.args[0] isEqualToString:@"noevent"]) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-            NSException *ex = [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
-
-            @throw ex;
-        });    
+        // Just sleep because dispatching the code never runs.
+        sleep(2);
+        NSException *ex = [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
+        @throw ex;
     }
 }
 
