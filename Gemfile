@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'cocoapods'
-
 # A reference to Maze Runner is only needed for running tests locally and if committed it must be
 # portable for CI, e.g. a specific release.  However, leaving it commented out would mean quicker CI.
 gem 'bugsnag-maze-runner', '~> 9.0'
