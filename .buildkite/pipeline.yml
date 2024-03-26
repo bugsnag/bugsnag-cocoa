@@ -218,10 +218,10 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 12 stress test'
+  - label: 'macOS 14 stress test'
     timeout_in_minutes: 3
     agents:
-      queue: macos-12-arm
+      queue: macos-14
     env:
       STRESS_TEST: "true"
     commands:

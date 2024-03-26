@@ -118,6 +118,8 @@ After('@app_hang_test') do |scenario|
 end
 
 Maze.hooks.before do |_scenario|
+  next unless ENV['STRESS_TEST'].nil?
+
   # Reset to defaults in case previous scenario changed them
   Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
 
