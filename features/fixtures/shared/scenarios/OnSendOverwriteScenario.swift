@@ -12,7 +12,9 @@ import Foundation
  * Verifies that an OnSend callback can overwrite information for an unhandled error
  */
 class OnSendOverwriteScenario : Scenario {
-    override func startBugsnag() {
+
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.addOnSendError { (event) -> Bool in
             event.app.id = "customAppId"
@@ -23,7 +25,6 @@ class OnSendOverwriteScenario : Scenario {
             event.setUser("customId", withEmail: "customEmail", andName: "customName")
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

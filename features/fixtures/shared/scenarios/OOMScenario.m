@@ -28,7 +28,8 @@ void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
     assert(!"onCrashHandler should not be called for OOMs");
 }
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = YES;
     self.config.enabledErrorTypes.ooms = YES;
     self.config.onCrashHandler = onCrashHandler;
@@ -51,7 +52,6 @@ void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
         }
         return true;
     }];
-    [super startBugsnag];
 }
 
 - (void)run {

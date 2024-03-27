@@ -17,7 +17,8 @@
 
 @implementation OnSendCallbackRemovalScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     id block = ^BOOL(BugsnagEvent * _Nonnull event) {
         [event addMetadata:@"this should never happen" withKey:@"config" toSection:@"callbacks"];
         return true;
@@ -30,7 +31,6 @@
         return true;
     }];
     [self.config removeOnSendError:block];
-    [super startBugsnag];
 }
 
 - (void)run {

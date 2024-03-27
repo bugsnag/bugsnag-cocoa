@@ -15,10 +15,10 @@
 
 @implementation OOMSessionlessScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = NO;
     self.config.enabledErrorTypes.ooms = YES;
-    [super startBugsnag];
 }
 
 - (void)run {

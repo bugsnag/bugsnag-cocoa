@@ -10,10 +10,10 @@ import Foundation
 
 class ManualContextConfigurationScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.context = "contextFromConfig"
-        super.startBugsnag()
     }
 
     override func run() {

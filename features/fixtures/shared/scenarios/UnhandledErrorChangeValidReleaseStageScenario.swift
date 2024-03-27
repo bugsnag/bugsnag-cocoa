@@ -1,8 +1,9 @@
 class UnhandledErrorChangeValidReleaseStageScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
-        if (self.eventMode == "noevent") {
+        if (args[0] == "noevent") {
           // The event is evaluated whether to be sent
           self.config.releaseStage = "test"
         } else {
@@ -10,7 +11,6 @@ class UnhandledErrorChangeValidReleaseStageScenario : Scenario {
           self.config.releaseStage = "prod"
         }
         self.config.enabledReleaseStages = ["dev", "prod"]
-        super.startBugsnag()
     }
 
     override func run() {

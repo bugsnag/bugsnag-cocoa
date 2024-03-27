@@ -13,10 +13,10 @@ import Foundation
  */
 class MetadataRedactionNestedScenario: Scenario {
 
-    override func startBugsnag() {
-      self.config.autoTrackSessions = false;
-      self.config.redactedKeys = ["name", "age"]
-      super.startBugsnag()
+    override func configure() {
+        super.configure()
+        self.config.autoTrackSessions = false;
+        self.config.redactedKeys = ["name", "age"]
     }
 
     override func run() {

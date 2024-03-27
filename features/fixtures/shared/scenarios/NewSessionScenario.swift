@@ -9,9 +9,10 @@
 import Foundation
 
 internal class NewSessionScenario: Scenario {
-    override func startBugsnag() {
+
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
-        super.startBugsnag()
     }
 
     override func run() {

@@ -20,7 +20,8 @@
 
 @implementation DisableAllExceptManualExceptionsAndCrashScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.cppExceptions = false;
     errorTypes.machExceptions = false;
@@ -29,18 +30,17 @@
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
-    [super startBugsnag];
 }
 
 - (void)run {
-    // Notify error so that mazerunner sees something
-    [self performBlockAndWaitForEventDelivery:^{
+    [self waitForEventDelivery:^{
+        // Notify error so that mazerunner sees something
         [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    } andThen:^{
+        // From null ptr scenario
+        volatile char *ptr = NULL;
+        (void) *ptr;
     }];
-
-    // From null prt scenario
-    volatile char *ptr = NULL;
-    (void) *ptr;
 }
 
 @end

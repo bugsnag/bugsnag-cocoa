@@ -14,7 +14,8 @@
 
 @implementation BreadcrumbCallbackRemovalScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = false;
     self.config.enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeUser;
 
@@ -31,8 +32,6 @@
     };
     BugsnagOnBreadcrumbRef onBreadcrumb = [self.config addOnBreadcrumbBlock:block];
     [self.config removeOnBreadcrumb:onBreadcrumb];
-
-    [super startBugsnag];
 }
 
 - (void)run {

@@ -32,9 +32,9 @@
 
 @implementation AbortScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = NO;
-    [super startBugsnag];
 }
 
 - (void)run {

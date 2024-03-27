@@ -14,7 +14,8 @@
 
 @implementation SessionCallbackRemovalScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = false;
 
     [self.config addOnSessionBlock:^BOOL(BugsnagSession * _Nonnull session) {
@@ -30,7 +31,6 @@
     };
     BugsnagOnSessionRef onSession = [self.config addOnSessionBlock:block];
     [self.config removeOnSession:onSession];
-    [super startBugsnag];
 }
 
 - (void)run {

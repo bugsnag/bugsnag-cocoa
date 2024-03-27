@@ -1,8 +1,8 @@
 class AppHangDisabledScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.enabledErrorTypes.appHangs = false
-        super.startBugsnag()
     }
     
     override func run() {

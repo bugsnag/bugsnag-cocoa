@@ -16,10 +16,10 @@ extension NSExceptionName {
 
 class DiscardClassesHandledExceptionRegexScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
         config.discardClasses = try! [NSRegularExpression(pattern: #"NS\w+Exception"#)]
-        super.startBugsnag()
     }
 
     override func run() {

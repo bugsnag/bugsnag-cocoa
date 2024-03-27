@@ -13,10 +13,10 @@ import Foundation
  */
 internal class UserFromConfigScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.setUser("abc", withEmail: "fake@gmail.com", andName: "Fay K")
-        super.startBugsnag()
     }
 
     override func run() {

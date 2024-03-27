@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MainWindowController : NSWindowController
 
-- (IBAction)executeMazeRunnerCommand:(id)sender;
+- (void)startFixture;
 
 @end
 

@@ -16,24 +16,24 @@
 
 @implementation DisableSignalsExceptionScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.signals = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
-    [super startBugsnag];
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
-    // Notify error so that mazerunner sees something
-    [self performBlockAndWaitForEventDelivery:^{
+    [self waitForEventDelivery:^{
+        // Notify error so that mazerunner sees something
         [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    } andThen:^{
+        raise(SIGINT);
     }];
-
-    raise(SIGINT);
 }
 #pragma  clang pop
 

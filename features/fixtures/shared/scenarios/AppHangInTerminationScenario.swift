@@ -14,9 +14,9 @@ import AppKit
 
 class AppHangInTerminationScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.appHangThresholdMillis = 2_000
-        super.startBugsnag()
     }
     
     override func run() {

@@ -10,12 +10,11 @@ import Foundation
 
 class OOMAutoDetectErrorsScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false
         self.config.enabledErrorTypes.ooms = true
         self.config.autoDetectErrors = false
-        
-        super.startBugsnag()
     }
 
     override func run() {

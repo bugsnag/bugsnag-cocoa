@@ -16,7 +16,8 @@
 
 @implementation DisableMachExceptionScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.machExceptions = false;
     errorTypes.ooms = false;
@@ -26,18 +27,17 @@
         // Suppress the SIGSEGV caused by EXC_BAD_ACCESS (https://flylib.com/books/en/3.126.1.110/1/)
         return ![@"SIGSEGV" isEqualToString:event.errors[0].errorClass];
     }];
-    [super startBugsnag];
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Winvalid-noreturn"
 - (void)run  __attribute__((noreturn)) {
-    // Notify error so that mazerunner sees something
-    [self performBlockAndWaitForEventDelivery:^{
+    [self waitForEventDelivery:^{
+        // Notify error so that mazerunner sees something
         [Bugsnag notifyError:[NSError errorWithDomain:@"com.bugsnag" code:833 userInfo:nil]];
+    } andThen:^{
+        strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)
     }];
-
-    strcmp(0, ""); // Generate EXC_BAD_ACCESS (see e.g. https://stackoverflow.com/q/22488358/2431627)
 }
 #pragma clang diagnostic pop
 

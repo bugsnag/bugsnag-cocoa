@@ -9,11 +9,10 @@
 @available(iOS 11.0, tvOS 11.0, *)
 class ThermalStateBreadcrumbScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
         config.enabledBreadcrumbTypes = [.state]
-        
-        super.startBugsnag()
     }
     
     override func run() {

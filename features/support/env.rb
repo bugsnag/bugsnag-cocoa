@@ -89,7 +89,7 @@ Before('@skip_below_ios_13') do |_scenario|
   skip_below('ios', 13)
 end
 
-Before('@skip_below_ios_13') do |_scenario|
+Before('@skip_below_ios_17') do |_scenario|
   skip_below('ios', 17)
 end
 
@@ -118,8 +118,12 @@ After('@app_hang_test') do |scenario|
 end
 
 Maze.hooks.before do |_scenario|
+  next unless ENV['STRESS_TEST'].nil?
+
   # Reset to defaults in case previous scenario changed them
   Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
+
+  launch_app
 
   $started_at = Time.now
 end

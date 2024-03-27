@@ -13,19 +13,19 @@ void logInternal(const char* level, NSString *format, va_list args);
 
 void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
+@class FixtureConfig;
+
 @interface Scenario : NSObject
 
+@property (strong, nonatomic, nonnull) FixtureConfig *fixtureConfig;
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
+@property (strong, nonatomic, nonnull) NSArray<NSString *> *args;
 
-+ (Scenario *)createScenarioNamed:(NSString *)className
-                       withConfig:(nullable BugsnagConfiguration *)config;
-    
-@property (class, readwrite) NSString *baseMazeAddress;
-@property (class, readonly, nullable) Scenario *currentScenario;
+- (instancetype)initWithFixtureConfig:(FixtureConfig *)config args:( NSArray<NSString *> * _Nonnull )args;
 
-- (instancetype)initWithConfig:(nullable BugsnagConfiguration *)config;
+- (void)configure;
 
-/**
+    /**
  * Executes the test case
  */
 - (void)run;
@@ -34,15 +34,13 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 - (void)didEnterBackgroundNotification;
 
-@property (nonatomic, strong, nullable) NSString *eventMode;
+// Wait for the next event to be delivered, and then run a block on the main thread.
+- (void)waitForEventDelivery:(dispatch_block_t)deliveryBlock andThen:(dispatch_block_t)thenBlock;
 
-- (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForEventDelivery(_:));
-
-- (void)performBlockAndWaitForSessionDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForSessionDelivery(_:));
+// Wait for the next session to be delivered, and then run a block on the main thread.
+- (void)waitForSessionDelivery:(dispatch_block_t)deliveryBlock andThen:(dispatch_block_t)thenBlock;
 
 + (void)clearPersistentData;
-
-+ (void)executeMazeRunnerCommand:(nullable void (^)(NSString *scenarioName, NSString *scenarioMode))preHandler;
 
 @end
 

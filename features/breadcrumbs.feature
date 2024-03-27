@@ -43,9 +43,15 @@ Feature: Attaching a series of notable events leading up to errors
   @skip_below_ios_13
   @skip_macos
   Scenario: State breadcrumbs
-    When I configure Bugsnag for "HandledErrorScenario"
+    When I configure Bugsnag for "DelayedNotifyErrorScenario"
+    # Do this just to sync up client and server
+    And I invoke "notify_error"
+    And I wait to receive an error
+    And I discard the oldest error
+    # Now we know that the backgrounding will occur at an appropriate time
     And I send the app to the background for 2 seconds
-    And I click the element "run_scenario"
+    # This next error should have the notification breadcrumbs
+    And I invoke "notify_error"
     And I wait to receive an error
     Then the event has a "state" breadcrumb named "Bugsnag loaded"
     # Bugsnag has been started too late to capture some early notifications

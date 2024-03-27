@@ -14,12 +14,12 @@
 
 @implementation AutoSessionCustomVersionScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     [self.config addOnSessionBlock:^BOOL(BugsnagSession * _Nonnull session) {
         session.app.version = @"2.0.14";
         return true;
     }];
-    [super startBugsnag];
 }
 
 - (void)run {

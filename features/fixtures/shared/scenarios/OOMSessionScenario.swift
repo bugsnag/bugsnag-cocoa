@@ -10,10 +10,10 @@ import Foundation
 
 class OOMSessionScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.enabledErrorTypes.ooms = true
         config.autoTrackSessions = false
-        Bugsnag.start(with: config)
     }
 
     override func run() {

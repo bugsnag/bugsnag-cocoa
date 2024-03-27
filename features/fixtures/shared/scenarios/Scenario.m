@@ -9,8 +9,11 @@
 
 #if TARGET_OS_IOS
 #define SWIFT_MODULE "iOSTestApp"
+#import <UIKit/UIKit.h>
+#import "iOSTestApp-Swift.h"
 #elif TARGET_OS_OSX
 #define SWIFT_MODULE "macOSTestApp"
+#import "macOSTestApp-Swift.h"
 #elif TARGET_OS_WATCH
 #import "watchos_maze_host.h"
 #define SWIFT_MODULE "watchOSTestApp_WatchKit_Extension"
@@ -26,12 +29,11 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
 
 // MARK: -
 
-static Scenario *theScenario;
-static NSString *theBaseMazeAddress = @"";
-
 #if !TARGET_OS_WATCH
 static char ksLogPath[PATH_MAX];
 #endif
+
+static __weak Scenario *currentScenario;
 
 @implementation Scenario {
     dispatch_block_t _onEventDelivery;
@@ -64,43 +66,22 @@ static char ksLogPath[PATH_MAX];
     }];
 }
 
-+ (Scenario *)createScenarioNamed:(NSString *)className withConfig:(BugsnagConfiguration *)config {
-    Class class = NSClassFromString(className) ?:
-    NSClassFromString([@SWIFT_MODULE "." stringByAppendingString:className]);
-
-    if (!class) {
-        [NSException raise:NSInvalidArgumentException format:@"Failed to find scenario class named %@", className];
-    }
-
-    return (theScenario = [(Scenario *)[class alloc] initWithConfig:config]);
-}
-
-+ (Scenario *)currentScenario {
-    return theScenario;
-}
-
-+ (NSString *)baseMazeAddress {
-    return theBaseMazeAddress;
-}
-
-+ (void)setBaseMazeAddress:(NSString *)baseMazeAddress {
-    theBaseMazeAddress = baseMazeAddress;
-}
-
-- (instancetype)initWithConfig:(BugsnagConfiguration *)config {
+- (instancetype)initWithFixtureConfig:(FixtureConfig *)fixtureConfig args:(NSArray<NSString *> *)args {
     if (self = [super init]) {
-        if (config) {
-            _config = config;
-        } else {
-            _config = [[BugsnagConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-            _config.endpoints.notify = [NSString stringWithFormat:@"%@/notify", theBaseMazeAddress];
-            _config.endpoints.sessions = [NSString stringWithFormat:@"%@/sessions", theBaseMazeAddress];
-        }
-#if !TARGET_OS_WATCH
-        _config.enabledErrorTypes.ooms = NO;
-#endif
+        _fixtureConfig = fixtureConfig;
+        _args = args;
+        currentScenario = self;
     }
     return self;
+}
+
+- (void)configure {
+    self.config = [[BugsnagConfiguration alloc] initWithApiKey:self.fixtureConfig.apiKey];
+    self.config.endpoints.notify = self.fixtureConfig.notifyURL.absoluteString;
+    self.config.endpoints.sessions = self.fixtureConfig.sessionsURL.absoluteString;
+#if !TARGET_OS_WATCH
+    self.config.enabledErrorTypes.ooms = NO;
+#endif
 }
 
 - (void)run {
@@ -115,22 +96,18 @@ static char ksLogPath[PATH_MAX];
 - (void)didEnterBackgroundNotification {
 }
 
-- (void)performBlockAndWaitForEventDelivery:(dispatch_block_t)block {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+-(void)waitForEventDelivery:(dispatch_block_t)deliveryBlock andThen:(dispatch_block_t)thenBlock {
     _onEventDelivery = ^{
-        dispatch_semaphore_signal(semaphore);
+        dispatch_async(dispatch_get_main_queue(), thenBlock);
     };
-    block();
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    deliveryBlock();
 }
 
-- (void)performBlockAndWaitForSessionDelivery:(dispatch_block_t)block NS_SWIFT_NAME(performBlockAndWaitForSessionDelivery(_:)) {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+-(void)waitForSessionDelivery:(dispatch_block_t)deliveryBlock andThen:(dispatch_block_t)thenBlock {
     _onSessionDelivery = ^{
-        dispatch_semaphore_signal(semaphore);
+        dispatch_async(dispatch_get_main_queue(), thenBlock);
     };
-    block();
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    deliveryBlock();
 }
 
 - (void)requestDidComplete:(NSURLRequest *)request {
@@ -156,7 +133,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
      return NSURLSession_uploadTaskWithRequest_fromData_completionHandler(session, _cmd, request, fromData,
                                                                           ^(NSData *responseData, NSURLResponse *response, NSError *error) {
          completionHandler(responseData, response, error);
-         [theScenario requestDidComplete:request];
+         [currentScenario requestDidComplete:request];
      });
  }
 
@@ -210,77 +187,6 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 #if !TARGET_OS_WATCH
     bsg_kslog_setLogFilename(ksLogPath, true);
 #endif
-}
-
-+ (void)executeMazeRunnerCommand:(void (^)(NSString *scenarioName, NSString *scenarioMode))preHandler {
-    logDebug(@"%s", __PRETTY_FUNCTION__);
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
-    NSString *commandEndpoint = [NSString stringWithFormat:@"%@/command", theBaseMazeAddress];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:commandEndpoint]];
-    logDebug(@"%s: Sending command request to %@", __PRETTY_FUNCTION__, commandEndpoint);
-    [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (![response isKindOfClass:[NSHTTPURLResponse class]] || [(NSHTTPURLResponse *)response statusCode] != 200) {
-            logError(@"%s: command request failed with %@", __PRETTY_FUNCTION__, response ?: error);
-            preHandler(@"", NULL);
-            return;
-        }
-        logInfo(@"%s: command response body:  %@", __PRETTY_FUNCTION__, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-        NSDictionary *command = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        
-        NSString *action = [command objectForKey:@"action"];
-        NSParameterAssert([action isKindOfClass:[NSString class]]);
-
-        if ([action isEqualToString:@"noop"]) {
-            logInfo(@"%s: No Maze Runner command queued at present", __PRETTY_FUNCTION__);
-            preHandler(@"", NULL);
-            return;
-        }
-
-        NSString *scenarioName = [command objectForKey:@"scenario_name"];
-        NSParameterAssert([scenarioName isKindOfClass:[NSString class]]);
-        
-        NSString *eventMode = [command objectForKey:@"scenario_mode"];
-        if ([eventMode isKindOfClass:[NSNull class]]) {
-            eventMode = nil;
-        }
-
-        if ([[command objectForKey:@"reset_data"] isEqual:@YES]) {
-            [self clearPersistentData];
-        }
-
-        // Display the scenario name/data on the UI
-        if (preHandler) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                preHandler(scenarioName, eventMode);
-            });
-        }
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if ([action isEqualToString:@"run_scenario"]) {
-                [self runScenario:scenarioName eventMode:eventMode];
-            } else if ([action isEqualToString:@"start_bugsnag"]) {
-                [self startBugsnagForScenario:scenarioName eventMode:eventMode];
-            }
-        });
-    }] resume];
-}
-
-+ (void)runScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
-    logDebug(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
-    
-    [self startBugsnagForScenario:scenarioName eventMode:eventMode];
-    
-    [theScenario run];
-}
-
-+ (void)startBugsnagForScenario:(NSString *)scenarioName eventMode:(NSString *)eventMode {
-    logDebug(@"%s %@ %@", __PRETTY_FUNCTION__, scenarioName, eventMode);
-    
-    theScenario = [Scenario createScenarioNamed:scenarioName withConfig:nil];
-    theScenario.eventMode = eventMode;
-    
-    logInfo(@"%s: Starting scenario \"%@\"", __PRETTY_FUNCTION__, NSStringFromClass([self class]));
-    [theScenario startBugsnag];
 }
 
 @end

@@ -14,10 +14,10 @@
 
 @implementation HandledErrorThreadSendUnhandledOnlyScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = false;
     self.config.sendThreads = BSGThreadSendPolicyUnhandledOnly;
-    [super startBugsnag];
 }
 
 - (void)run {

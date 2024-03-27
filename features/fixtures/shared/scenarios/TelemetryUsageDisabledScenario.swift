@@ -1,8 +1,8 @@
 class TelemetryUsageDisabledScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.telemetry.remove(.usage)
-        super.startBugsnag()
     }
     
     override func run() {

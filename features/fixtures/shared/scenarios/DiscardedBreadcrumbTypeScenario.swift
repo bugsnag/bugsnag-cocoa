@@ -2,10 +2,10 @@ import Foundation
 
 class DiscardedBreadcrumbTypeScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.enabledBreadcrumbTypes = [.error, .process];
-        super.startBugsnag()
     }
 
     override func run() {

@@ -10,13 +10,13 @@ import Foundation
 
 class ManualContextOnErrorScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.addOnSendError { (event) -> Bool in
             event.context = "OnErrorContext"
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

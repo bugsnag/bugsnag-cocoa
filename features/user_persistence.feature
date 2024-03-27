@@ -8,12 +8,14 @@ Feature: Persisting User Information
 
     # User is set and comes through
     And I wait to receive a session
+    And I wait to receive an error
     And I kill and relaunch the app
     Then the session is valid for the session reporting API
     And the session "user.id" equals "foo"
     And the session "user.email" equals "baz@grok.com"
     And the session "user.name" equals "bar"
     And I discard the oldest session
+    And I discard the oldest error
 
     # Generate session and event
     Then I run "UserPersistenceNoUserScenario"
@@ -38,7 +40,7 @@ Scenario: User Info is persisted from client across app runs
 
     # Session is captured before the user can be set on the Client
     And I wait to receive a session
-    And I wait for 1 second
+    And I wait to receive an error
     And I kill and relaunch the app
 
     Then the session is valid for the session reporting API
@@ -46,6 +48,7 @@ Scenario: User Info is persisted from client across app runs
     And the session "user.email" is null
     And the session "user.name" is null
     And I discard the oldest session
+    And I discard the oldest error
 
     # Generate session and event
     Then I run "UserPersistenceNoUserScenario"

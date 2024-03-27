@@ -14,7 +14,8 @@ class BareboneTestHandledScenario: Scenario {
     
     var afterSendErrorBlock: (() -> Void)?
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.addOnBreadcrumb {
             NSLog("OnBreadcrumb: \"\($0.message)\"")
             self.onBreadcrumbCount += 1
@@ -57,7 +58,6 @@ class BareboneTestHandledScenario: Scenario {
         ])
         config.appVersion = "12.3"
         config.bundleVersion = "12301"
-        super.startBugsnag()
     }
     
     override func run() {
