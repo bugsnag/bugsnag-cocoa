@@ -124,7 +124,7 @@ def kill_and_relaunch_app
     Maze.driver.close_app
     Maze.driver.launch_app
   when 'macos'
-    # noop
+    run_macos_app # This will kill the app if it's running
   when 'watchos'
     # noop
   else
