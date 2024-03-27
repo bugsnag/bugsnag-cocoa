@@ -96,20 +96,20 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     @objc func startBugsnagForScenario(scenarioName: String, args: [String], completion: @escaping () -> ()) {
-        logInfo("========== Starting Bugsnag for scenario \(scenarioName) ==========")
+        logInfo("---- Starting Bugsnag for scenario \(scenarioName) ----")
         loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
-        logInfo("========== Completed starting Bugsnag for scenario \(String(describing: currentScenario.self)) ==========")
+        logInfo("---- Completed starting Bugsnag for scenario \(String(describing: currentScenario.self)) ----")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             completion()
         }
     }
 
     @objc func runScenario(scenarioName: String, args: [String], completion: @escaping () -> ()) {
-        logInfo("========== Running scenario \(scenarioName) ==========")
+        logInfo("---- Running scenario \(scenarioName) ----")
         loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
         logInfo("Starting scenario in class \(String(describing: currentScenario.self))")
         currentScenario!.run()
-        logInfo("========== Completed running scenario \(String(describing: currentScenario.self)) ==========")
+        logInfo("---- Completed running scenario \(String(describing: currentScenario.self)) ----")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             completion()
         }

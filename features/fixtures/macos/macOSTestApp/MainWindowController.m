@@ -76,7 +76,10 @@ static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
     logDebug(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
 
     NSString *scenarioName = self.scenarioName;
-    NSArray<NSString *> *args = @[self.scenarioMetadata];
+    NSArray<NSString *> *args = @[];
+    if (self.scenarioMetadata != nil) {
+        args = @[self.scenarioMetadata];
+    }
 
     [self.fixture startBugsnagForScenarioWithScenarioName:scenarioName args:args completion:^{}];
 }

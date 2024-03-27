@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Logging.h"
 
 #import "MainWindowController.h"
 
@@ -26,6 +27,7 @@
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
+    logInfo(@"==== MACOS FIXTURE DID FINISH LAUNCHING ====");
     self.mainWindowController = [[MainWindowController alloc] initWithWindowNibName:@"MainWindowController"];
     [self.mainWindowController showWindow:self];
     
