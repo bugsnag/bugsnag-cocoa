@@ -156,9 +156,9 @@ steps:
   - label: watchOS 7 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: macos-13-arm
+      queue: macos-12-arm
     env:
-      XCODE_VERSION: 15.2.0
+      DEVELOPER_DIR: /Applications/Xcode14.0.app
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator10.2
     artifact_paths:
