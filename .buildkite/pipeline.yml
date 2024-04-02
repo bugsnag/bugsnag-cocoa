@@ -102,7 +102,7 @@ steps:
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 15.0.1
+      XCODE_VERSION: 15.3.0
     artifact_paths:
       - logs/*
 
@@ -147,9 +147,9 @@ steps:
     agents:
       queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode-15.app
+      XCODE_VERSION: 15.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator9.0
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator10.4
     artifact_paths:
       - logs/*
 
@@ -158,9 +158,9 @@ steps:
     agents:
       queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.app
+      XCODE_VERSION: 15.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.0
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator10.4
     artifact_paths:
       - logs/*
 
