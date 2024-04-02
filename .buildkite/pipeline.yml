@@ -38,7 +38,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -98,7 +98,7 @@ steps:
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
     env:
