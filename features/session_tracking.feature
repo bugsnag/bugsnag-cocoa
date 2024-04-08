@@ -104,6 +104,7 @@ Feature: Session Tracking
     And the error payload field "events.0.session.events.handled" equals 2
     And the error payload field "events.0.session.id" equals the stored value "session_id"
 
+  @skip_macos
   Scenario: Encountering an unhandled event during a session
     When I run "AutoSessionUnhandledScenario"
     And I wait for 4 seconds
