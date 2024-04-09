@@ -11,9 +11,9 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 30
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.3.app
+      DEVELOPER_DIR: /Applications/Xcode-15.app
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
@@ -28,9 +28,9 @@ steps:
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.3.app
+      DEVELOPER_DIR: /Applications/Xcode-15.app
     commands:
       - make build_swift
       - make build_ios_static
@@ -38,7 +38,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -98,11 +98,11 @@ steps:
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 15.0.1
+      XCODE_VERSION: 15.3.0
     artifact_paths:
       - logs/*
 
@@ -145,18 +145,18 @@ steps:
   - label: watchOS 8 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.0.app
+      XCODE_VERSION: 15.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3 SDK=watchsimulator9.0
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator10.4
     artifact_paths:
       - logs/*
 
   - label: watchOS 7 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     env:
       DEVELOPER_DIR: /Applications/Xcode14.0.app
     commands:
@@ -197,7 +197,7 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'ARM macOS 12 barebones E2E tests'
     depends_on:
