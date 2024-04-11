@@ -50,6 +50,24 @@ steps:
   # Unit tests
   #
 
+  - label: ARM macOS 14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-14
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
+
+  - label: ARM macOS 13 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-13-arm
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
+
   - label: ARM macOS 12 unit tests
     timeout_in_minutes: 10
     agents:
@@ -183,7 +201,26 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.15 E2E tests'
+  - label: 'macOS 10.14 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 10.15 barebones E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -196,8 +233,26 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
+        features/barebone_tests.feature
         --os=macos
-#        --fail-fast
+        --fail-fast
+
+  - label: 'macOS 11 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-11
+    plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
 
   - label: 'ARM macOS 12 barebones E2E tests'
     depends_on:
@@ -237,6 +292,43 @@ steps:
     artifact_paths:
       - features/fixtures/macos-stress-test/*.log
       - features/fixtures/macos-stress-test/*.crash
+
+  - label: 'ARM macOS 13 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-13-arm
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
+  - label: 'ARM macOS 14 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-14
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --os=macos
+        --fail-fast
 
   ##############################################################################
   #
@@ -346,6 +438,36 @@ steps:
   #
   # BitBar
   #
+
+  - label: ':bitbar: iOS 16 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/barebone_tests.feature"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':bitbar: iOS 15 barebone tests'
     depends_on:
