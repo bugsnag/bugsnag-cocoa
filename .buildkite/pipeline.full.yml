@@ -369,28 +369,48 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'macOS 10.13 E2E tests'
+  - label: 'ARM macOS 13 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: macos-13-arm
     plugins:
       artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
     commands:
       - bundle install
       - bundle exec maze-runner
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.14 E2E tests'
+  - label: 'ARM macOS 12 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa-10.14
+      queue: macos-12-arm
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 11 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-11
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
@@ -417,12 +437,12 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 11 E2E tests'
+  - label: 'macOS 10.14 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: macos-11
+      queue: opensource-mac-cocoa-10.14
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
@@ -433,36 +453,16 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'ARM macOS 12 E2E tests'
+  - label: 'macOS 10.13 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: macos-12-arm
+      queue: opensource-mac-cocoa-10.13
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp.zip"
-        upload:
-          - "macOSTestApp.log"
-          - "maze_output/failed/**/*"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        --os=macos
-        --fail-fast
-
-  - label: 'ARM macOS 13 E2E tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-13-arm
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp.zip"
-        upload:
-          - "macOSTestApp.log"
-          - "maze_output/failed/**/*"
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
