@@ -63,13 +63,13 @@ class Fixture: NSObject, CommandReceiver {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
             switch command.action {
             case "run_scenario":
-                self.runScenario(scenarioName: command.args[0], args: Array(command.args[1...]), completion: {
+                self.runScenario(scenarioName: command.args[0], args: Array(command.args[1...]), launchCount: command.launchCount, completion: {
                     self.readyToReceiveCommand = true
                 })
                 isReady = false;
                 break
             case "start_bugsnag":
-                self.startBugsnagForScenario(scenarioName: command.args[0], args: Array(command.args[1...]), completion: {
+                self.startBugsnagForScenario(scenarioName: command.args[0], args: Array(command.args[1...]), launchCount: command.launchCount, completion: {
                     self.readyToReceiveCommand = true
                 })
                 isReady = false;
@@ -95,18 +95,18 @@ class Fixture: NSObject, CommandReceiver {
         Scenario.clearPersistentData()
     }
 
-    @objc func startBugsnagForScenario(scenarioName: String, args: [String], completion: @escaping () -> ()) {
+    @objc func startBugsnagForScenario(scenarioName: String, args: [String], launchCount: Int, completion: @escaping () -> ()) {
         logInfo("---- Starting Bugsnag for scenario \(scenarioName) ----")
-        loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
+        loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args, launchCount: launchCount)
         logInfo("---- Completed starting Bugsnag for scenario \(String(describing: currentScenario.self)) ----")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             completion()
         }
     }
 
-    @objc func runScenario(scenarioName: String, args: [String], completion: @escaping () -> ()) {
+    @objc func runScenario(scenarioName: String, args: [String], launchCount: Int, completion: @escaping () -> ()) {
         logInfo("---- Running scenario \(scenarioName) ----")
-        loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args)
+        loadScenarioAndStartBugsnag(scenarioName: scenarioName, args: args, launchCount: launchCount)
         logInfo("Starting scenario in class \(String(describing: currentScenario.self))")
         currentScenario!.run()
         logInfo("---- Completed running scenario \(String(describing: currentScenario.self)) ----")
@@ -149,11 +149,11 @@ class Fixture: NSObject, CommandReceiver {
         fatalError("Could not find class \(scenarioName) or \(namespace).\(scenarioName). Aborting scenario load...")
     }
 
-    private func loadScenarioAndStartBugsnag(scenarioName: String, args: [String]) {
+    private func loadScenarioAndStartBugsnag(scenarioName: String, args: [String], launchCount: Int) {
         logInfo("Loading scenario: \(scenarioName)")
         let scenarioClass: AnyClass = loadScenarioClass(named: scenarioName)
         logInfo("Initializing scenario class: \(scenarioClass)")
-        let scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig, args:args)
+        let scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig, args:args, launchCount: launchCount)
         currentScenario = scenario
         logInfo("Configuring scenario in class \(String(describing: scenario.self))")
         scenario.configure()

@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         let args = scenarioMetaDataField.text!.count > 0 ? [scenarioMetaDataField.text!] : []
 
         fixture.setApiKey(apiKey: apiKey)
-        fixture.runScenario(scenarioName: scenarioName, args: args) {}
+        fixture.runScenario(scenarioName: scenarioName, args: args, launchCount: 1) {}
     }
 
     @IBAction func startBugsnag() {
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         let args = scenarioMetaDataField.text!.count > 0 ? [scenarioMetaDataField.text!] : []
         
         fixture.setApiKey(apiKey: apiKey)
-        fixture.startBugsnagForScenario(scenarioName: scenarioName, args: args) {}
+        fixture.startBugsnagForScenario(scenarioName: scenarioName, args: args, launchCount: 1) {}
     }
 
     @IBAction func clearPersistentData(_ sender: Any) {

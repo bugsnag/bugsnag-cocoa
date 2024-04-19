@@ -16,20 +16,15 @@
 
 - (void)configure {
     [super configure];
-    if ([self.args[0] isEqualToString:@"noevent"]) {
-        self.config.autoTrackSessions = NO;
-    } else {
-        self.config.autoTrackSessions = YES;
-    }
+    // Only track sessions on the first launch
+    self.config.autoTrackSessions = self.launchCount == 1;
 }
 
 - (void)run {
-    if (![self.args[0] isEqualToString:@"noevent"]) {
-        // Just sleep because dispatching the code never runs.
-        sleep(2);
-        NSException *ex = [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
-        @throw ex;
-    }
+    // Wait for the session to be sent
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        @throw [NSException exceptionWithName:@"Kaboom" reason:@"The connection exploded" userInfo:nil];
+    });
 }
 
 @end

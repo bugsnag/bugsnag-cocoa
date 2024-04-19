@@ -13,8 +13,10 @@ class MazeRunnerCommand: Codable {
     let action: String
     let uuid: String
     let args: Array<String>
+    let launchCount: Int
     
-    init(uuid: String, action: String, args: Array<String>, message: String) {
+    init(launchCount: Int, uuid: String, action: String, args: Array<String>, message: String) {
+        self.launchCount = launchCount
         self.uuid = uuid
         self.message = message
         self.action = action
@@ -23,6 +25,7 @@ class MazeRunnerCommand: Codable {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.launchCount = try container.decodeIfPresent(Int.self, forKey: .launchCount) ?? 0
         self.uuid = try container.decodeIfPresent(String.self, forKey: .uuid) ?? ""
         self.message = try container.decodeIfPresent(String.self, forKey: .message) ?? ""
         self.action = try container.decodeIfPresent(String.self, forKey: .action) ?? ""
