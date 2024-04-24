@@ -20,8 +20,9 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 @property (strong, nonatomic, nonnull) FixtureConfig *fixtureConfig;
 @property (strong, nonatomic, nonnull) BugsnagConfiguration *config;
 @property (strong, nonatomic, nonnull) NSArray<NSString *> *args;
+@property (nonatomic) NSInteger launchCount;
 
-- (instancetype)initWithFixtureConfig:(FixtureConfig *)config args:( NSArray<NSString *> * _Nonnull )args;
+- (instancetype)initWithFixtureConfig:(FixtureConfig *)config args:( NSArray<NSString *> * _Nonnull )args launchCount:(NSInteger)launchCount;
 
 - (void)configure;
 

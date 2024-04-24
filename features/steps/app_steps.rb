@@ -59,7 +59,7 @@ Then('the app is not running') do
 end
 
 When('I invoke {string}') do |method_name|
-  Maze::Server.commands.add({ action: "invoke_method", args: [method_name] })
+  execute_command "invoke_method", [method_name]
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
@@ -67,7 +67,7 @@ end
 
 When('I invoke {string} with parameter {string}') do |method_name, arg1|
   # Note: The method will usually be of the form "xyzWithParam:"
-  Maze::Server.commands.add({ action: "invoke_method", args: [method_name, arg1] })
+  execute_command "invoke_method", [method_name, arg1]
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
@@ -81,7 +81,7 @@ end
 
 
 def execute_command(action, args)
-  Maze::Server.commands.add({ action: action, args: args })
+  Maze::Server.commands.add({ action: action, args: args, launch_count: $launch_count })
 end
 
 def launch_app
@@ -116,6 +116,7 @@ def relaunch_crashed_app
   else
     raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
+  $launch_count += 1
 end
 
 def kill_and_relaunch_app
@@ -130,6 +131,7 @@ def kill_and_relaunch_app
   else
     raise "Unsupported platform: #{Maze::Helper.get_current_platform}"
   end
+  $launch_count += 1
 end
 
 def wait_for_true(description)

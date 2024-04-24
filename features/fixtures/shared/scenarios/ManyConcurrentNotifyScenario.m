@@ -13,8 +13,8 @@
 
 @implementation ManyConcurrentNotifyScenario
 
-- (instancetype)initWithFixtureConfig:(FixtureConfig *)config args:( NSArray<NSString *> * _Nonnull )args {
-    if (self = [super initWithFixtureConfig:config args:args]) {
+- (instancetype)initWithFixtureConfig:(FixtureConfig *)config args:( NSArray<NSString *> * _Nonnull )args launchCount:(NSInteger)launchCount {
+    if (self = [super initWithFixtureConfig:config args:args launchCount:launchCount]) {
         _queue1 = dispatch_queue_create("Log Queue 1", DISPATCH_QUEUE_CONCURRENT);
         _queue2 = dispatch_queue_create("Log Queue 2", DISPATCH_QUEUE_CONCURRENT);
     }

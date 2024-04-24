@@ -68,7 +68,7 @@ static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
     // 0.1s delay allows accessibility APIs to finish handling the mouse click and returns control to the tests framework.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         logInfo(@"Running scenario: %@", scenarioName);
-        [self.fixture runScenarioWithScenarioName:scenarioName args:args completion:^{}];
+        [self.fixture runScenarioWithScenarioName:scenarioName args:args launchCount:1 completion:^{}];
     });
 }
 
@@ -81,7 +81,7 @@ static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
         args = @[self.scenarioMetadata];
     }
 
-    [self.fixture startBugsnagForScenarioWithScenarioName:scenarioName args:args completion:^{}];
+    [self.fixture startBugsnagForScenarioWithScenarioName:scenarioName args:args launchCount:1 completion:^{}];
 }
 
 - (IBAction)clearPersistentData:(id)sender {

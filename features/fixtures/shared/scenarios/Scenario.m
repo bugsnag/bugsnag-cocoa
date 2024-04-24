@@ -66,11 +66,12 @@ static __weak Scenario *currentScenario;
     }];
 }
 
-- (instancetype)initWithFixtureConfig:(FixtureConfig *)fixtureConfig args:(NSArray<NSString *> *)args {
+- (instancetype)initWithFixtureConfig:(FixtureConfig *)fixtureConfig args:(NSArray<NSString *> *)args launchCount:(NSInteger)launchCount {
     if (self = [super init]) {
         _fixtureConfig = fixtureConfig;
         _args = args;
         currentScenario = self;
+        _launchCount = launchCount;
     }
     return self;
 }
