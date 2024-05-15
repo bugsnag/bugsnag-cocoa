@@ -53,6 +53,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
@@ -71,6 +72,7 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 #import "BSGPersistentDeviceID.h"
+#import "BugsnagCocoaPerformanceFromBugsnagCocoa.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -236,6 +238,9 @@ BSG_OBJC_DIRECT_MEMBERS
 
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
+
+    // Map our bridged API early on.
+    [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
 
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
 
@@ -649,7 +654,18 @@ BSG_OBJC_DIRECT_MEMBERS
 
 // MARK: - Notify (Internal)
 
+- (BugsnagCorrelation *)getCurrentCorrelation {
+    NSArray *correlation = [BugsnagCocoaPerformanceFromBugsnagCocoa.sharedInstance getCurrentTraceAndSpanId];
+    if (correlation.count != 2) {
+        return nil;
+    }
+    NSString *traceId = correlation[0];
+    NSString *spanId = correlation[1];
+    return [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
+}
+
 - (void)notifyErrorOrException:(id)errorOrException block:(BugsnagOnErrorBlock)block {
+    BugsnagCorrelation *correlation = [self getCurrentCorrelation];
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagMetadata *metadata = [self.metadata copy];
     
@@ -691,7 +707,7 @@ BSG_OBJC_DIRECT_MEMBERS
         bsg_log_warn(@"Unsupported error type passed to notify: %@", NSStringFromClass([errorOrException class]));
         return;
     }
-    
+
     /**
      * Stack frames starting from this one are removed by setting the depth.
      * This helps remove bugsnag frames from showing in NSErrors as their
@@ -738,6 +754,7 @@ BSG_OBJC_DIRECT_MEMBERS
     event.apiKey = self.configuration.apiKey;
     event.context = context;
     event.originalError = errorOrException;
+    event.correlation = correlation;
 
     [self notifyInternal:event block:block];
 }

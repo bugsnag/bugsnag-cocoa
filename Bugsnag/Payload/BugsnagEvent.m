@@ -23,6 +23,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagHandledState.h"
@@ -187,6 +188,8 @@ BSG_OBJC_DIRECT_MEMBERS
         }) ?: @[];
 
         _context = BSGDeserializeString(json[BSGKeyContext]);
+
+        _correlation = [[BugsnagCorrelation alloc] initWithJsonDictionary:json[BSGKeyCorrelation]];
 
         _device = BSGDeserializeObject(json[BSGKeyDevice], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagDeviceWithState deviceFromJson:dict];
@@ -592,6 +595,7 @@ BSG_OBJC_DIRECT_MEMBERS
     event[BSGKeyApp] = [self.app toDict];
 
     event[BSGKeyContext] = [self context];
+    event[BSGKeyCorrelation] = [self.correlation toJsonDictionary];
     event[BSGKeyFeatureFlags] = BSGFeatureFlagStoreToJSON(self.featureFlagStore);
     event[BSGKeyGroupingHash] = self.groupingHash;
 

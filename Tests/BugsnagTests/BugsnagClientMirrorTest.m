@@ -64,6 +64,7 @@
             @"generateOutOfMemoryEvent @16@0:8",
             @"generateThermalKillEvent @16@0:8",
             @"generateThreads @16@0:8",
+            @"getCurrentCorrelation @16@0:8",
             @"initWithConfiguration: @24@0:8@16",
             @"initializeNotificationNameMap v16@0:8",
             @"leaveBreadcrumbForEvent: v24@0:8@16",

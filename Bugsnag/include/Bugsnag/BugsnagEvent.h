@@ -11,6 +11,7 @@
 #import <Bugsnag/BugsnagDefines.h>
 #import <Bugsnag/BugsnagFeatureFlagStore.h>
 #import <Bugsnag/BugsnagMetadataStore.h>
+#import <Bugsnag/BugsnagCorrelation.h>
 
 @class BugsnagConfiguration;
 @class BugsnagHandledState;
@@ -112,6 +113,7 @@ BUGSNAG_EXTERN
  */
 @property (strong, nullable, nonatomic) id originalError;
 
+@property (readwrite, nonatomic, strong, nullable) BugsnagCorrelation *correlation;
 
 // =============================================================================
 // MARK: - User
