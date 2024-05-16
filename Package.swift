@@ -20,7 +20,7 @@ let package = Package(
             dependencies: [],
             path: "Bugsnag",
             resources: [
-               .copy("resources/PrivacyInfo.xcprivacy")
+               .process("resources/PrivacyInfo.xcprivacy")
             ],
             publicHeadersPath: "include",
             cSettings: [
