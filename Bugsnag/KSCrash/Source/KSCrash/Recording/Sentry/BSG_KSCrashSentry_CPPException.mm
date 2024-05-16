@@ -221,6 +221,7 @@ after_rethrow:
 #endif
 
         bsg_g_context->crashType = BSG_KSCrashTypeCPPException;
+        bsg_g_context->requiresAsyncSafety = true;
         bsg_g_context->registersAreValid = false;
         bsg_g_context->stackTrace =
             bsg_g_stackTrace + 1; // Don't record __cxa_throw stack entry

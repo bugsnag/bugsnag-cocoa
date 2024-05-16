@@ -96,9 +96,9 @@ static char *crashSentinelPath;
  *
  *  @param writer report writer which will receive updated metadata
  */
-static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
+static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, bool requiresAsyncSafety) {
     BOOL isCrash = YES;
-    BSGSessionWriteCrashReport(writer);
+    BSGSessionWriteCrashReport(writer, requiresAsyncSafety);
 
     if (isCrash) {
         writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
@@ -116,6 +116,19 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         }
         writer->endContainer(writer);
 
+        if (!requiresAsyncSafety) {
+            NSArray *correlation = [BugsnagCocoaPerformanceFromBugsnagCocoa.sharedInstance getCurrentTraceAndSpanId];
+            if (correlation.count == 2) {
+                NSString *traceId = correlation[0];
+                NSString *spanId = correlation[1];
+                writer->beginObject(writer, "correlation"); {
+                    writer->addStringElement(writer, "traceid", traceId.UTF8String);
+                    writer->addStringElement(writer, "spanid", spanId.UTF8String);
+                }
+                writer->endContainer(writer);
+            }
+        }
+
 #if BSG_HAVE_BATTERY
         if (BSGIsBatteryStateKnown(bsg_runContext->batteryState)) {
             writer->addFloatingPointElement(writer, "batteryLevel", bsg_runContext->batteryLevel);
@@ -128,7 +141,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addBooleanElement(writer, "isLaunching", bsg_runContext->isLaunching);
         writer->addIntegerElement(writer, "thermalState", bsg_runContext->thermalState);
 
-        BugsnagBreadcrumbsWriteCrashReport(writer);
+        BugsnagBreadcrumbsWriteCrashReport(writer, requiresAsyncSafety);
 
         // Create a file to indicate that the crash has been handled by
         // the library. This exists in case the subsequent `onCrash` handler

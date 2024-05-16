@@ -54,7 +54,7 @@ void BSGSessionUpdateRunContext(BugsnagSession *_Nullable session);
 BugsnagSession *_Nullable BSGSessionFromLastRunContext(BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user);
 
 /// Saves current session information (from bsg_runContext) into a crash report.
-void BSGSessionWriteCrashReport(const BSG_KSCrashReportWriter *writer);
+void BSGSessionWriteCrashReport(const BSG_KSCrashReportWriter *writer, bool requiresAsyncSafety);
 
 /// Returns session information from a crash report previously written to by BSGSessionWriteCrashReport or BSSerializeDataCrashHandler.
 BugsnagSession *_Nullable BSGSessionFromCrashReport(NSDictionary *report, BugsnagApp *app, BugsnagDevice *device, BugsnagUser *user);

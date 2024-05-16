@@ -60,4 +60,5 @@ NS_ASSUME_NONNULL_END
  * This function is async-signal-safe, but requires that any threads that could be adding
  * breadcrumbs are suspended.
  */
-void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter * _Nonnull writer);
+void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter * _Nonnull writer,
+                                        bool requiresAsyncSafety);

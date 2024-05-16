@@ -111,6 +111,7 @@ void bsg_kssighndl_i_handleSignal(int sigNum, siginfo_t *signalInfo,
 
         BSG_KSLOG_DEBUG("Filling out context.");
         bsg_g_context->crashType = BSG_KSCrashTypeSignal;
+        bsg_g_context->requiresAsyncSafety = true;
         bsg_g_context->registersAreValid = true;
         bsg_g_context->faultAddress = (uintptr_t)signalInfo->si_addr;
         bsg_g_context->signal.userContext = userContext;

@@ -1271,7 +1271,7 @@ void bsg_kscrashreport_writeStandardReport(
 
             // Write handled exception report info
             writer->beginObject(writer, BSG_KSCrashField_UserAtCrash);
-            crashContext->config.onCrashNotify(writer);
+            crashContext->config.onCrashNotify(writer, crashContext->crash.requiresAsyncSafety);
             writer->endContainer(writer);
         }
     }
