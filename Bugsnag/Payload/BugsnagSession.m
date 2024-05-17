@@ -132,7 +132,7 @@ BugsnagSession * BSGSessionFromLastRunContext(BugsnagApp *app, BugsnagDevice *de
     }
 }
 
-void BSGSessionWriteCrashReport(const BSG_KSCrashReportWriter *writer) {
+void BSGSessionWriteCrashReport(const BSG_KSCrashReportWriter *writer, bool __unused requiresAsyncSafety) {
     if (bsg_runContext->sessionId[0] && bsg_runContext->sessionStartTime > 0) {
         writer->addStringElement(writer, "id", bsg_runContext->sessionId);
         writer->addFloatingPointElement(writer, "startedAt", bsg_runContext->sessionStartTime);

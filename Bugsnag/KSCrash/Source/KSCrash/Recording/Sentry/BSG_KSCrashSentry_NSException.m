@@ -136,6 +136,7 @@ void bsg_recordException(NSException *exception) {
         }
 
         bsg_g_context->crashType = BSG_KSCrashTypeNSException;
+        bsg_g_context->requiresAsyncSafety = false;
         bsg_g_context->offendingThread = bsg_ksmachthread_self();
         bsg_g_context->registersAreValid = false;
         bsg_g_context->NSException.name = CopyUTF8String([exception name]);

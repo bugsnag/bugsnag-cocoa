@@ -77,6 +77,9 @@ typedef struct BSG_KSCrash_SentryContext {
      */
     bool handlingCrash;
 
+    /** If true, any code called via the crash handler MUST be async-safe. */
+    bool requiresAsyncSafety;
+
     /** If true, a second crash occurred while handling a crash. */
     bool crashedDuringCrashHandling;
 
