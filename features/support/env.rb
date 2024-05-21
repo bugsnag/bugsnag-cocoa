@@ -9,6 +9,7 @@ BeforeAll do
   }
 
   Maze.config.receive_no_requests_wait = 15
+  Maze.config.document_server_root = 'features/fixtures/docs'
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
   Maze.config.receive_requests_wait = 180 unless ENV['STRESS_TEST'].nil?

@@ -107,6 +107,7 @@ Feature: Delivery of errors
     Given I set the HTTP status code for the next request to 500
     And I run "AutoSessionScenario"
     And I wait to receive a session
+    And I wait for 10 seconds
     And I wait for the fixture to process the response
     And I kill and relaunch the app
     When I run "AutoSessionScenario"
