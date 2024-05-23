@@ -150,7 +150,7 @@ Feature: App hangs
   Scenario: Fatal app hangs should be reported if the app hangs before going to the background
     When I run "AppHangFatalOnlyScenario"
     And I wait for 10 seconds
-    And I send the app to the background
+    And I switch to the web browser
     And I kill and relaunch the app
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
@@ -159,7 +159,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Fatal app hangs should not be reported if they occur once the app is in the background
     When I run "AppHangDidEnterBackgroundScenario"
-    And I send the app to the background for 10 seconds
+    And I switch to the web browser for 10 seconds
     And I kill and relaunch the app
     And I configure Bugsnag for "AppHangDidEnterBackgroundScenario"
     Then I should receive no errors
@@ -167,7 +167,7 @@ Feature: App hangs
   @skip_macos
   Scenario: App hangs should be reported if the app hangs after resuming from the background
     When I run "AppHangDidBecomeActiveScenario"
-    And I send the app to the background for 3 seconds
+    And I switch to the web browser for 3 seconds
     And I wait to receive an error
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
 
@@ -185,7 +185,7 @@ Feature: App hangs
   @skip_macos
   Scenario: Background app hangs should be reported if reportBackgroundAppHangs = true
     When I run "ReportBackgroundAppHangScenario"
-    And I send the app to the background
+    And I switch to the web browser
     And I wait to receive an error
     Then the exception "errorClass" equals "App Hang"
     And the exception "message" equals "The app's main thread failed to respond to an event within 1000 milliseconds"

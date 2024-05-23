@@ -97,6 +97,26 @@ static __weak Scenario *currentScenario;
 - (void)didEnterBackgroundNotification {
 }
 
+- (void)enterBackgroundForSeconds:(NSInteger)seconds {
+#if __has_include(<UIKit/UIKit.h>)
+    if (@available(iOS 10.0, *)) {
+        NSString *documentName = @"background_forever.html";
+        if (seconds >= 0) {
+            documentName = [NSString stringWithFormat:@"background_for_%ld_sec.html", (long)seconds];
+        }
+        NSURL *url = [self.fixtureConfig.docsURL URLByAppendingPathComponent:documentName];
+
+        logInfo(@"Backgrounding the app using %@", documentName);
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
+            NSLog(@"Opened %@ %@", url, success ? @"successfully" : @"unsuccessfully");
+        }];
+    }
+#else
+    [NSException raise:@"Mazerunner fixture error"
+                format:@"This e2e test requires UIApplication, which is not available on this platform."];
+#endif
+}
+
 -(void)waitForEventDelivery:(dispatch_block_t)deliveryBlock andThen:(dispatch_block_t)thenBlock {
     _onEventDelivery = ^{
         dispatch_async(dispatch_get_main_queue(), thenBlock);

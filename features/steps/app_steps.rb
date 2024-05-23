@@ -28,6 +28,14 @@ When("I relaunch the app after a crash") do
   relaunch_crashed_app
 end
 
+When('I switch to the web browser for {int} second(s)') do |duration|
+  execute_command "background", [duration.to_s]
+end
+
+When('I switch to the web browser') do
+  execute_command "background", ["-1"]
+end
+
 #
 # Setting scenario mode
 #
