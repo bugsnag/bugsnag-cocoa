@@ -80,6 +80,9 @@ class Fixture: NSObject, CommandReceiver {
             case "reset_data":
                 self.clearPersistentData()
                 break
+            case "background":
+                self.currentScenario?.enterBackground(forSeconds: Int(command.args[0])!)
+                break
             case "noop":
                 break
             default:

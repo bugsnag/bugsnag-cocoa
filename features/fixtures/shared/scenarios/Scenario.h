@@ -35,6 +35,12 @@ void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
 
 - (void)didEnterBackgroundNotification;
 
+/**
+ * Background the app for the specified number of seconds.
+ * If the value is < 0, background forever.
+ */
+- (void)enterBackgroundForSeconds:(NSInteger)seconds;
+
 // Wait for the next event to be delivered, and then run a block on the main thread.
 - (void)waitForEventDelivery:(dispatch_block_t)deliveryBlock andThen:(dispatch_block_t)thenBlock;
 

@@ -10,4 +10,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         logInfo("==== IOS FIXTURE DID FINISH LAUNCHING ====");
         return true
     }
+
+    func application(_ application: UIApplication,
+                     open url: URL,
+                     options: [UIApplication.OpenURLOptionsKey : Any] = [:] ) -> Bool {
+        logInfo("App has been opened via its registered URL");
+        return true
+    }
 }
