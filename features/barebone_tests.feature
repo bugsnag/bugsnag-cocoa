@@ -19,7 +19,7 @@ Feature: Barebone tests
     And the event "app.binaryArch" matches "(arm|x86)"
     And the event "app.bundleVersion" equals "12301"
     And the event "app.id" equals the platform-dependent string:
-      | ios     | com.bugsnag.fixtures.iOSTestApp                                   |
+      | ios     | com.bugsnag.fixtures.cocoa                                   |
       | macos   | com.bugsnag.fixtures.macOSTestApp                                 |
       | watchos | com.bugsnag.fixtures.watchOSTestApp.watchkitapp.watchkitextension |
     And the event "app.inForeground" is true
@@ -271,7 +271,7 @@ Feature: Barebone tests
     And the event "app.bundleVersion" equals "321.123"
     And the event "app.dsymUUIDs" is not null
     And the event "app.id" equals the platform-dependent string:
-      | ios   | com.bugsnag.fixtures.iOSTestApp   |
+      | ios   | com.bugsnag.fixtures.cocoa   |
       | macos | com.bugsnag.fixtures.macOSTestApp |
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true

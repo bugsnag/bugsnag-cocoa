@@ -339,8 +339,6 @@ steps:
   # BrowserStack
   #
   - label: ':browserstack: iOS 17 E2E tests batch 1'
-    # TODO Skipped pending PLAT-12209
-    skip: Skipped pending PLAT-12209
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -372,8 +370,6 @@ steps:
           limit: 2
 
   - label: ':browserstack: iOS 17 E2E tests batch 2'
-    # TODO Skipped pending PLAT-12209
-    skip: Skipped pending PLAT-12209
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -405,8 +401,6 @@ steps:
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 17 app hang tests'
-    # TODO Skipped pending PLAT-12209
-    skip: Skipped pending PLAT-12209
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 30

@@ -57,7 +57,7 @@ Then('the app is not running') do
   wait_for_true('the app is not running') do
     case Maze::Helper.get_current_platform
     when 'ios'
-      Maze.driver.app_state('com.bugsnag.fixtures.iOSTestApp') == :not_running
+      Maze.driver.app_state('com.bugsnag.fixtures.cocoa') == :not_running
     when 'macos'
       `lsappinfo info -only pid -app com.bugsnag.fixtures.macOSTestApp`.empty?
     else
