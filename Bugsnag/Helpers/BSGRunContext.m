@@ -128,6 +128,10 @@ static bool GetIsActive(void) {
         return true;
     }
 #endif
+
+#if TARGET_OS_VISION
+    return true;
+#endif
 }
 
 static bool GetIsForeground(void) {
@@ -192,6 +196,10 @@ static bool GetIsForeground(void) {
     } else {
         return true;
     }
+#endif
+
+#if TARGET_OS_VISION
+    return true;
 #endif
 }
 

@@ -17,7 +17,7 @@
 
 #pragma mark Device
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
 static inline UIDevice *BSGGetDevice(void) {
     return [UIDEVICE currentDevice];
 }
@@ -32,7 +32,7 @@ static inline WKInterfaceDevice *BSGGetDevice(void) {
 #if BSG_HAVE_BATTERY
 
 static inline BOOL BSGIsBatteryStateKnown(long battery_state) {
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     const long state_unknown = UIDeviceBatteryStateUnknown;
 #elif TARGET_OS_WATCH
     const long state_unknown = WKInterfaceDeviceBatteryStateUnknown;
@@ -41,7 +41,7 @@ static inline BOOL BSGIsBatteryStateKnown(long battery_state) {
 }
 
 static inline BOOL BSGIsBatteryCharging(long battery_state) {
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     const long state_charging = UIDeviceBatteryStateCharging;
 #elif TARGET_OS_WATCH
     const long state_charging = WKInterfaceDeviceBatteryStateCharging;
