@@ -10,6 +10,11 @@
 
 #include <TargetConditionals.h>
 
+#ifndef TARGET_OS_VISION
+    // For older Xcode that doesn't have VisionOS support...
+    #define TARGET_OS_VISION 0
+#endif
+
 // Capabilities dependent upon system defines and files
 #define BSG_HAVE_BATTERY                      (                 TARGET_OS_IOS                 || TARGET_OS_WATCH || TARGET_OS_VISION)
 #define BSG_HAVE_MACH_EXCEPTIONS              (TARGET_OS_OSX || TARGET_OS_IOS                                   )
