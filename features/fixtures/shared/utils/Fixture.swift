@@ -83,6 +83,10 @@ class Fixture: NSObject, CommandReceiver {
             case "background":
                 self.currentScenario?.enterBackground(forSeconds: Int(command.args[0])!)
                 break
+            case "wait":
+                self.pauseCommandReader(forSeconds: Int(command.args[0])!)
+                isReady = false;
+                break
             case "noop":
                 break
             default:
@@ -118,6 +122,16 @@ class Fixture: NSObject, CommandReceiver {
         }
     }
 
+    func pauseCommandReader(forSeconds: Int) {
+        logInfo("Pausing command reader for \(forSeconds) seconds")
+
+        self.readyToReceiveCommand = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(forSeconds)) {
+            self.readyToReceiveCommand = true
+            logInfo("Resuming command reader")
+        }
+    }
+    
     @objc func setApiKey(apiKey: String) {
         self.fixtureConfig.apiKey = apiKey
     }

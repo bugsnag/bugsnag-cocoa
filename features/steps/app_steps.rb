@@ -32,6 +32,10 @@ When('I switch to the web browser for {int} second(s)') do |duration|
   execute_command "background", [duration.to_s]
 end
 
+When('I make the test fixture wait for {int} second(s)') do |duration|
+  execute_command "wait", [duration.to_s]
+end
+
 When('I switch to the web browser') do
   execute_command "background", ["-1"]
 end
