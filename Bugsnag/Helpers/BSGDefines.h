@@ -10,18 +10,23 @@
 
 #include <TargetConditionals.h>
 
+#ifndef TARGET_OS_VISION
+    // For older Xcode that doesn't have VisionOS support...
+    #define TARGET_OS_VISION 0
+#endif
+
 // Capabilities dependent upon system defines and files
-#define BSG_HAVE_BATTERY                      (                 TARGET_OS_IOS                 || TARGET_OS_WATCH)
+#define BSG_HAVE_BATTERY                      (                 TARGET_OS_IOS                 || TARGET_OS_WATCH || TARGET_OS_VISION)
 #define BSG_HAVE_MACH_EXCEPTIONS              (TARGET_OS_OSX || TARGET_OS_IOS                                   )
-#define BSG_HAVE_MACH_THREADS                 (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
+#define BSG_HAVE_MACH_THREADS                 (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                    || TARGET_OS_VISION)
 #define BSG_HAVE_OOM_DETECTION                (                 TARGET_OS_IOS || TARGET_OS_TV                   ) && !TARGET_OS_SIMULATOR && !TARGET_OS_MACCATALYST
-#define BSG_HAVE_REACHABILITY                 (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
+#define BSG_HAVE_REACHABILITY                 (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                    || TARGET_OS_VISION)
 #define BSG_HAVE_REACHABILITY_WWAN            (                 TARGET_OS_IOS || TARGET_OS_TV                   )
-#define BSG_HAVE_SIGNAL                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
+#define BSG_HAVE_SIGNAL                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                    || TARGET_OS_VISION)
 #define BSG_HAVE_SIGALTSTACK                  (TARGET_OS_OSX || TARGET_OS_IOS                                   )
 #define BSG_HAVE_SYSCALL                      (TARGET_OS_IOS || TARGET_OS_TV                   )
 #define BSG_HAVE_UIDEVICE                     __has_include(<UIKit/UIDevice.h>)
-#define BSG_HAVE_WINDOW                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                   )
+#define BSG_HAVE_WINDOW                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                    || TARGET_OS_VISION)
 
 // Capabilities dependent upon previously defined capabilities
 #define BSG_HAVE_APP_HANG_DETECTION           (BSG_HAVE_MACH_THREADS)

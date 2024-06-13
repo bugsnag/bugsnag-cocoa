@@ -289,6 +289,8 @@ BSG_OBJC_DIRECT_MEMBERS
     sysInfo[@BSG_KSSystemField_SystemName] = @"tvOS";
 #elif TARGET_OS_WATCH
     sysInfo[@BSG_KSSystemField_SystemName] = @"watchOS";
+#elif TARGET_OS_VISION
+    sysInfo[@BSG_KSSystemField_SystemName] = @"visionOS";
 #endif // TARGET_OS_IOS
 
     NSDictionary *env = NSProcessInfo.processInfo.environment;
@@ -319,6 +321,8 @@ BSG_OBJC_DIRECT_MEMBERS
     NSString *systemName = @"tvOS";
 #elif TARGET_OS_WATCH
     NSString *systemName = @"watchOS";
+#elif TARGET_OS_VISION
+    NSString *systemName = @"visionOS";
 #endif
 
     sysInfo[@BSG_KSSystemField_SystemName] = systemName;
