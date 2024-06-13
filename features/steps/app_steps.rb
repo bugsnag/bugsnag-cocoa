@@ -62,8 +62,6 @@ Then('the app is not running') do
     case Maze::Helper.get_current_platform
     when 'ios'
       Maze.driver.app_state('com.bugsnag.fixtures.cocoa') == :not_running
-    when 'macos'
-      `lsappinfo info -only pid -app com.bugsnag.fixtures.macOSTestApp`.empty?
     else
       raise "Don't know how to query app state on this platform"
     end
@@ -119,8 +117,7 @@ def relaunch_crashed_app
     step 'the app is not running'
     Maze.driver.launch_app
   when 'macos'
-    # Wait for the app to stop running before relaunching
-    step 'the app is not running'
+    sleep 4
     launch_app
   when 'watchos'
     sleep 5 # We have no way to poll the app state on watchOS
