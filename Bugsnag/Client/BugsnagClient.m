@@ -641,28 +641,37 @@ BSG_OBJC_DIRECT_MEMBERS
 
 // MARK: - Notify
 
+// Prevent the compiler from inlining or optimizing, which would reduce
+// the number of bugsnag-only stack entries and mess up our pruning.
+// We have to do it this way because you can't mark Objective-C methods noinline or optnone.
+// We leave it externable to further dissuade the optimizer.
+__attribute__((optnone))
+void bsg_notifyErrorOrException(BugsnagClient *self, id errorOrException, BugsnagOnErrorBlock block) {
+    [self notifyErrorOrException:errorOrException block:block];
+}
+
 // note - some duplication between notifyError calls is required to ensure
 // the same number of stackframes are used for each call.
 // see notify:handledState:block for further info
 
 - (void)notifyError:(NSError *)error {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
-    [self notifyErrorOrException:error block:nil];
+    bsg_notifyErrorOrException(self, error, nil);
 }
 
 - (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
-    [self notifyErrorOrException:error block:block];
+    bsg_notifyErrorOrException(self, error, block);
 }
 
 - (void)notify:(NSException *)exception {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
-    [self notifyErrorOrException:exception block:nil];
+    bsg_notifyErrorOrException(self, exception, nil);
 }
 
 - (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
-    [self notifyErrorOrException:exception block:block];
+    bsg_notifyErrorOrException(self, exception, block);
 }
 
 // MARK: - Notify (Internal)
@@ -731,9 +740,10 @@ BSG_OBJC_DIRECT_MEMBERS
      *
      * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
-     * 3. -[BugsnagClient notify:handledState:block:]
+     * 3. bsg_notifyErrorOrException()
+     * 4. -[BugsnagClient notifyErrorOrException:block:]
      */
-    NSUInteger depth = 3;
+    NSUInteger depth = 4;
     
     if (!callStack.count) {
         // If the NSException was not raised by the Objective-C runtime, it will be missing a call stack.

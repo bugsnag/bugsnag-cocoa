@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Prevent inlining of Bugsnag stack trace entries that are marked to be pruned away (to promote a consistent number of those frames).
+  [1661](https://github.com/bugsnag/bugsnag-cocoa/pull/1661)
+
 * Fix off-by-1 error when fetching register values on arm64 that could potentially run off the array.
   [1635](https://github.com/bugsnag/bugsnag-cocoa/pull/1635)
 
