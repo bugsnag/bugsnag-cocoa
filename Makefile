@@ -89,6 +89,9 @@ build_ios_static: ## Build the static library target
 build_carthage: ## Build the latest pushed commit with Carthage
 	@./scripts/build-carthage.sh
 
+build_xcframework: ## Build as a multiplatform xcframework
+	@./scripts/build-xcframework.sh
+
 build_swift: ## Build with Swift Package Manager
 	@swift build
 
