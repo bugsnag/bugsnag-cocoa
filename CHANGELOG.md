@@ -1,7 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 6.29.0 (2024-06-19)
+
+### Enhancements
+
+* Adds basic support for visionOS with SPM projects
+  [1660](https://github.com/bugsnag/bugsnag-cocoa/pull/1660)
 
 ### Bug fixes
 
