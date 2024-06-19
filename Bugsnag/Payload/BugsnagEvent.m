@@ -380,8 +380,8 @@ BSG_OBJC_DIRECT_MEMBERS
                                     [configDict isKindOfClass:[NSDictionary class]] ? configDict : @{}];
 
     NSDictionary *correlationDict = [event valueForKeyPath:@"user.correlation"];
-    NSString *traceId = correlationDict[@"traceid"];
-    NSString *spanId = correlationDict[@"spanid"];
+    NSString *traceId = correlationDict[@"traceId"];
+    NSString *spanId = correlationDict[@"spanId"];
 
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
 
