@@ -221,6 +221,10 @@ void bsg_kscrw_i_addUUIDElement(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_addJSONElement(const BSG_KSCrashReportWriter *const writer,
                                 const char *const key,
                                 const char *const jsonElement) {
+    if (jsonElement == NULL) {
+        BSG_KSLOG_ERROR("JSON element for key %s is null", key);
+        return;
+    }
     int jsonResult = bsg_ksjsonaddJSONElement(bsg_getJsonContext(writer), key,
                                               jsonElement, strlen(jsonElement));
     if (jsonResult != BSG_KSJSON_OK) {
@@ -242,6 +246,10 @@ void bsg_kscrw_i_addJSONElement(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_addJSONElementFromFile(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const char *const filePath) {
+    if (filePath == NULL) {
+        BSG_KSLOG_ERROR("JSON file path for key %s is null", key);
+        return;
+    }
     const int fd = open(filePath, O_RDONLY);
     if (fd < 0) {
         BSG_KSLOG_ERROR("Could not open file %s: %s", filePath,
@@ -1271,7 +1279,7 @@ void bsg_kscrashreport_writeStandardReport(
 
             // Write handled exception report info
             writer->beginObject(writer, BSG_KSCrashField_UserAtCrash);
-            crashContext->config.onCrashNotify(writer);
+            crashContext->config.onCrashNotify(writer, crashContext->crash.requiresAsyncSafety);
             writer->endContainer(writer);
         }
     }

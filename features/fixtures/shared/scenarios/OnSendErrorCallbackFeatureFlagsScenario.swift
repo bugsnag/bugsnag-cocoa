@@ -7,14 +7,14 @@ import Foundation
 
 class OnSendErrorCallbackFeatureFlagsScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.addOnSendError { (event) -> Bool in
             event.addFeatureFlag(name: "fromCallback", variant: event.featureFlags[0].variant)
             event.clearFeatureFlag(name: "deleteMe")
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

@@ -1,9 +1,9 @@
 class AppAndDeviceAttributesInfiniteLaunchDurationScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
         config.launchDurationMillis = 0
-        super.startBugsnag()
     }
 
     override func run() {

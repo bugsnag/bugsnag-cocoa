@@ -15,10 +15,10 @@
 
 @implementation SIGPIPEIgnoredScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     sigignore(SIGPIPE);
     self.config.autoTrackSessions = NO;
-    [super startBugsnag];
 }
 
 - (void)run {

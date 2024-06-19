@@ -10,7 +10,8 @@ import Foundation
 
 class BreadcrumbCallbackOverrideScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.enabledBreadcrumbTypes = .log
 
@@ -20,7 +21,6 @@ class BreadcrumbCallbackOverrideScenario : Scenario {
             crumb.metadata["foo"] = "wham"
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

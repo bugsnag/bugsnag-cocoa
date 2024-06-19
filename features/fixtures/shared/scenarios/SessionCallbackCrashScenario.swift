@@ -10,7 +10,8 @@ import Foundation
 
 class SessionCallbackCrashScenario : Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
         self.config.addOnSession { (session) -> Bool in
             session.app.id = "someAppId"
@@ -30,7 +31,6 @@ class SessionCallbackCrashScenario : Scenario {
             session.app.id = "customAppId"
             return true
         }
-        super.startBugsnag()
     }
 
     override func run() {

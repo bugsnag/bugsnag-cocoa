@@ -14,9 +14,9 @@
 
 @implementation UnhandledErrorThreadSendAlwaysScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = false;
-    [super startBugsnag];
 }
 
 - (void)run {

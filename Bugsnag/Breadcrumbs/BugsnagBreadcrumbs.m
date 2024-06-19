@@ -289,7 +289,8 @@ BSG_OBJC_DIRECT_MEMBERS
 
 #pragma mark -
 
-void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter *writer) {
+void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
+                                        bool __unused requiresAsyncSafety) {
     atomic_store(&g_writing_crash_report, true);
     
     writer->beginArray(writer, "breadcrumbs");

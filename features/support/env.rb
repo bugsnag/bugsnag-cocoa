@@ -9,13 +9,14 @@ BeforeAll do
   }
 
   Maze.config.receive_no_requests_wait = 15
+  Maze.config.document_server_root = 'features/fixtures/docs'
 
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
   Maze.config.receive_requests_wait = 180 unless ENV['STRESS_TEST'].nil?
 
   if Maze.config.os == 'ios' && Maze.config.farm == :local
     # Recent Appium versions don't always uninstall the old version of the app ¯\_(ツ)_/¯
-    system('ideviceinstaller --uninstall com.bugsnag.fixtures.iOSTestApp')
+    system('ideviceinstaller --uninstall com.bugsnag.fixtures.cocoa')
   end
 
   if Maze.config.os == 'ios'
@@ -89,7 +90,7 @@ Before('@skip_below_ios_13') do |_scenario|
   skip_below('ios', 13)
 end
 
-Before('@skip_below_ios_13') do |_scenario|
+Before('@skip_below_ios_17') do |_scenario|
   skip_below('ios', 17)
 end
 
@@ -118,8 +119,13 @@ After('@app_hang_test') do |scenario|
 end
 
 Maze.hooks.before do |_scenario|
+  next unless ENV['STRESS_TEST'].nil?
+
   # Reset to defaults in case previous scenario changed them
   Maze.config.captured_invalid_requests = Set[:errors, :sessions, :builds, :uploads, :sourcemaps]
+
+  $launch_count = 1
+  launch_app
 
   $started_at = Time.now
 end
@@ -153,7 +159,7 @@ Maze.hooks.after do |scenario|
     end
   when 'ios'
     begin
-      data = Maze.driver.pull_file '@com.bugsnag.fixtures.iOSTestApp/Documents/kscrash.log'
+      data = Maze.driver.pull_file '@com.bugsnag.fixtures.cocoa/Documents/kscrash.log'
       File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
     rescue StandardError
       puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"

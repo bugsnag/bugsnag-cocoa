@@ -14,12 +14,12 @@
 
 @implementation OldSessionScenario
 
-- (void)startBugsnag {
-    if ([self.eventMode isEqualToString:@"new"]) {
+- (void)configure {
+    [super configure];
+    if ([self.args[0] isEqualToString:@"new"]) {
         [self modifySessionCreationDate];
     }
-    [self.config setUser:self.eventMode withEmail:nil andName:nil];
-    [super startBugsnag];
+    [self.config setUser:self.args[0] withEmail:nil andName:nil];
 }
 
 - (void)run {

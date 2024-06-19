@@ -3,15 +3,14 @@
  */
 class AppAndDeviceAttributesConfigOverrideScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false
 
         self.config.appType = "iLeet"
         self.config.bundleVersion = "12345"
         self.config.context = "myContext"
         self.config.releaseStage = "secondStage"
-
-        super.startBugsnag()
     }
 
     override func run() {

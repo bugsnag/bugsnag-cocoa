@@ -36,7 +36,7 @@ static const char *bsg_g_registerNames[] = {
     "x0",  "x1",  "x2",  "x3",  "x4",  "x5",  "x6",  "x7",  "x8",
     "x9",  "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17",
     "x18", "x19", "x20", "x21", "x22", "x23", "x24", "x25", "x26",
-    "x27", "x28", "x29", "fp",  "lr",  "sp",  "pc",  "cpsr"};
+    "x27", "x28", "fp",  "lr",  "sp",  "pc",  "cpsr"};
 static const int bsg_g_registerNamesCount =
     sizeof(bsg_g_registerNames) / sizeof(*bsg_g_registerNames);
 
@@ -100,20 +100,32 @@ const char *bsg_ksmachregisterName(const int regNumber) {
 uint64_t
 bsg_ksmachregisterValue(const BSG_STRUCT_MCONTEXT_L *const machineContext,
                         const int regNumber) {
-    if (regNumber <= 29) {
+// _structs.h:
+//    _STRUCT_ARM_THREAD_STATE64
+//    {
+//        __uint64_t __x[29]; /* General purpose registers x0-x28 */
+//        __uint64_t __fp;    /* Frame pointer x29 */
+//        __uint64_t __lr;    /* Link register x30 */
+//        __uint64_t __sp;    /* Stack pointer x31 */
+//        __uint64_t __pc;    /* Program counter */
+//        __uint32_t __cpsr;  /* Current program status register */
+//        __uint32_t __pad;   /* Same size for 32-bit or 64-bit clients */
+//    };
+
+    if (regNumber <= 28) {
         return machineContext->__ss.__x[regNumber];
     }
 
     switch (regNumber) {
-    case 30:
+    case 29:
         return machineContext->__ss.__fp;
-    case 31:
+    case 30:
         return machineContext->__ss.__lr;
-    case 32:
+    case 31:
         return machineContext->__ss.__sp;
-    case 33:
+    case 32:
         return machineContext->__ss.__pc;
-    case 34:
+    case 33:
         return machineContext->__ss.__cpsr;
     }
 

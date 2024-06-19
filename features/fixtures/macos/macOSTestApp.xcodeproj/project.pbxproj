@@ -184,6 +184,10 @@
 		01FA9EC626D64FFF0059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC526D64FFF0059FF4A /* AppHangInTerminationScenario.swift */; };
 		095E095F2AF3C98F00273F1F /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095E095E2AF3C98F00273F1F /* Logging.swift */; };
 		095E09622AF3C9A500273F1F /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E09612AF3C9A500273F1F /* Logging.m */; };
+		09F0250E2BA301FD007D9F73 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F0250C2BA301FD007D9F73 /* FixtureConfig.swift */; };
+		09F0250F2BA301FD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F0250D2BA301FD007D9F73 /* Fixture.swift */; };
+		09F025112BA30225007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025102BA30225007D9F73 /* MazeRunnerCommand.swift */; };
+		09F025132BA30240007D9F73 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025122BA30240007D9F73 /* CommandReaderThread.swift */; };
 		8A096DF827C7E63A00DB6ECC /* CxxUnexpectedScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF727C7E63A00DB6ECC /* CxxUnexpectedScenario.mm */; };
 		8A096DFA27C7E6D800DB6ECC /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */; };
 		967F6F1629B767CE0054EED8 /* InternalWorkingsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1529B767CE0054EED8 /* InternalWorkingsScenario.swift */; };
@@ -393,6 +397,10 @@
 		095E095E2AF3C98F00273F1F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		095E09602AF3C9A500273F1F /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		095E09612AF3C9A500273F1F /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
+		09F0250C2BA301FD007D9F73 /* FixtureConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
+		09F0250D2BA301FD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
+		09F025102BA30225007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
+		09F025122BA30240007D9F73 /* CommandReaderThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
 		2C49722B331FF4B0DC477462 /* Pods-macOSTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-macOSTestApp.release.xcconfig"; path = "Target Support Files/Pods-macOSTestApp/Pods-macOSTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		5C65BFC9838298CFA8A35072 /* Pods_macOSTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_macOSTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A096DF727C7E63A00DB6ECC /* CxxUnexpectedScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxUnexpectedScenario.mm; sourceTree = "<group>"; };
@@ -499,8 +507,6 @@
 				01B6BB7125D56CBF00FC4DE6 /* LastRunInfoScenario.swift */,
 				01F47C23254B1B2C00B184AD /* LoadConfigFromFileAutoScenario.swift */,
 				01F47C94254B1B2F00B184AD /* LoadConfigFromFileScenario.swift */,
-				095E09602AF3C9A500273F1F /* Logging.h */,
-				095E09612AF3C9A500273F1F /* Logging.m */,
 				01F47C3B254B1B2D00B184AD /* ManualContextClientScenario.swift */,
 				01F47C47254B1B2D00B184AD /* ManualContextConfigurationScenario.swift */,
 				01F47C82254B1B2F00B184AD /* ManualContextOnErrorScenario.swift */,
@@ -665,7 +671,13 @@
 			isa = PBXGroup;
 			children = (
 				AA4C7F1729AEA31D009B09A9 /* BugsnagWrapper.swift */,
+				09F025122BA30240007D9F73 /* CommandReaderThread.swift */,
+				09F0250D2BA301FD007D9F73 /* Fixture.swift */,
+				09F0250C2BA301FD007D9F73 /* FixtureConfig.swift */,
+				095E09602AF3C9A500273F1F /* Logging.h */,
+				095E09612AF3C9A500273F1F /* Logging.m */,
 				095E095E2AF3C98F00273F1F /* Logging.swift */,
+				09F025102BA30225007D9F73 /* MazeRunnerCommand.swift */,
 			);
 			name = utils;
 			path = ../shared/utils;
@@ -802,6 +814,7 @@
 				01F47D31254B1B3100B184AD /* OverwriteLinkRegisterScenario.m in Sources */,
 				01F47D08254B1B3100B184AD /* AutoSessionCustomVersionScenario.m in Sources */,
 				01F47CC6254B1B3100B184AD /* HandledExceptionScenario.swift in Sources */,
+				09F0250E2BA301FD007D9F73 /* FixtureConfig.swift in Sources */,
 				01F47D0D254B1B3100B184AD /* LoadConfigFromFileScenario.swift in Sources */,
 				095E09622AF3C9A500273F1F /* Logging.m in Sources */,
 				01F47CF5254B1B3100B184AD /* StoppedSessionScenario.swift in Sources */,
@@ -849,6 +862,7 @@
 				0184DBDE28C6317C006AF50B /* CouldNotCreateDirectoryScenario.swift in Sources */,
 				01F47CCC254B1B3100B184AD /* OnSendCallbackOrderScenario.swift in Sources */,
 				017D9D042833C81100B0AA87 /* HandledErrorThreadSendAlwaysScenario.m in Sources */,
+				09F025132BA30240007D9F73 /* CommandReaderThread.swift in Sources */,
 				01F47D04254B1B3100B184AD /* ModifyBreadcrumbScenario.swift in Sources */,
 				01F47CD3254B1B3100B184AD /* EnabledBreadcrumbTypesIsNilScenario.swift in Sources */,
 				01F47CC4254B1B3100B184AD /* OriginalErrorNSExceptionScenario.swift in Sources */,
@@ -940,6 +954,7 @@
 				010BAB752833D34A0003FF36 /* SendLaunchCrashesSynchronouslyFalseScenario.swift in Sources */,
 				01F47D1D254B1B3100B184AD /* DiscardedBreadcrumbTypeScenario.swift in Sources */,
 				01F47CC5254B1B3100B184AD /* LoadConfigFromFileAutoScenario.swift in Sources */,
+				09F0250F2BA301FD007D9F73 /* Fixture.swift in Sources */,
 				01F47CCB254B1B3100B184AD /* BreadcrumbCallbackCrashScenario.swift in Sources */,
 				01F47D02254B1B3100B184AD /* CustomPluginNotifierDescriptionScenario.m in Sources */,
 				01F47D2C254B1B3100B184AD /* SIGSYSScenario.m in Sources */,
@@ -969,6 +984,7 @@
 				967F6F1629B767CE0054EED8 /* InternalWorkingsScenario.swift in Sources */,
 				010BAB672833D34A0003FF36 /* HandledErrorValidReleaseStageScenario.swift in Sources */,
 				01F47CD1254B1B3100B184AD /* ManualContextClientScenario.swift in Sources */,
+				09F025112BA30225007D9F73 /* MazeRunnerCommand.swift in Sources */,
 				010BAB732833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift in Sources */,
 				01BB5D2628A1463C00A7F322 /* OversizedBreadcrumbsScenario.swift in Sources */,
 				01F47CC9254B1B3100B184AD /* BuiltinTrapScenario.m in Sources */,

@@ -16,13 +16,13 @@
 
 @implementation DisableNSExceptionScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.unhandledExceptions = false;
     errorTypes.ooms = false;
     self.config.enabledErrorTypes = errorTypes;
     self.config.autoTrackSessions = NO;
-    [super startBugsnag];
 }
 
 // Suppress the warning.  The async confuses the compiler.

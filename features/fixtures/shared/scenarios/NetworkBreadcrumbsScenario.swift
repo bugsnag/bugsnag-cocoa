@@ -11,15 +11,14 @@ import Foundation
 @available(iOS 10.0, macOS 10.12, *)
 class NetworkBreadcrumbsScenario : Scenario {
         
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false;
         config.add(BugsnagNetworkRequestPlugin())
         config.addOnBreadcrumb {
             let url = $0.metadata["url"] as? String ?? ""
-            return url.hasPrefix(Scenario.baseMazeAddress) && url.contains("/reflect")
+            return url.hasPrefix(self.fixtureConfig.mazeRunnerURL.absoluteString) && url.contains("/reflect")
         }
-
-        super.startBugsnag()
     }
 
     override func run() {
@@ -33,7 +32,7 @@ class NetworkBreadcrumbsScenario : Scenario {
     }
 
     func query(string: String) {
-        let url = URL(string: Scenario.baseMazeAddress + string)!
+        let url = URL(string: fixtureConfig.mazeRunnerURL.absoluteString + string)!
         let semaphore = DispatchSemaphore(value: 0)
 
         let task = URLSession.shared.dataTask(with: url) {(data, response, error) in

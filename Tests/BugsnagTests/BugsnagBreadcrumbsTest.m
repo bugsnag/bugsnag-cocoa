@@ -452,7 +452,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 - (void)testCrashReportWriter {
     NSDictionary<NSString *, id> *object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
         writer->beginObject(writer, "");
-        BugsnagBreadcrumbsWriteCrashReport(writer);
+        BugsnagBreadcrumbsWriteCrashReport(writer, true);
         writer->endContainer(writer);
     });
     
@@ -527,7 +527,7 @@ static void * executeBlock(void *ptr) {
         bsg_kscrw_i_prepareReportWriter(&writer, &context);
         bsg_ksjsonbeginEncode(&context, false, (BSG_KSJSONAddDataFunc)json_buffer_append, &buffer);
         writer.beginObject(&writer, "");
-        BugsnagBreadcrumbsWriteCrashReport(&writer);
+        BugsnagBreadcrumbsWriteCrashReport(&writer, true);
         writer.endContainer(&writer);
         
         NSError *error = nil;

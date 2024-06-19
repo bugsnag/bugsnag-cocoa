@@ -11,9 +11,9 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 30
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.3.app
+      DEVELOPER_DIR: /Applications/Xcode-15.app
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp.ipa
       - features/fixtures/macos/output/macOSTestApp.zip
@@ -28,9 +28,9 @@ steps:
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.3.app
+      DEVELOPER_DIR: /Applications/Xcode-15.app
     commands:
       - make build_swift
       - make build_ios_static
@@ -38,7 +38,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -49,6 +49,24 @@ steps:
   #
   # Unit tests
   #
+
+  - label: ARM macOS 14 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-14
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
+
+  - label: ARM macOS 13 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-13-arm
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
 
   - label: ARM macOS 12 unit tests
     timeout_in_minutes: 10
@@ -98,11 +116,11 @@ steps:
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-13-arm
+      queue: macos-14
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 15.0.1
+      XCODE_VERSION: 15.3.0
     artifact_paths:
       - logs/*
 
@@ -145,18 +163,18 @@ steps:
   - label: watchOS 8 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode14.0.app
+      XCODE_VERSION: 15.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.3 SDK=watchsimulator9.0
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator10.4
     artifact_paths:
       - logs/*
 
   - label: watchOS 7 unit tests
     timeout_in_minutes: 60
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: macos-12-arm
     env:
       DEVELOPER_DIR: /Applications/Xcode14.0.app
     commands:
@@ -164,12 +182,30 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: 'macOS 10.13 barebones E2E tests'
+  - label: 'ARM macOS 14 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-14
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --os=macos
+        --fail-fast
+
+  - label: 'ARM macOS 13 barebones E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: macos-13-arm
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp.zip"
@@ -180,22 +216,6 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/barebone_tests.feature
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 10.15 E2E tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-10.15
-    plugins:
-      artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
-    commands:
-      - bundle install
-      - bundle exec maze-runner
         --os=macos
         --fail-fast
 
@@ -232,75 +252,147 @@ steps:
       - echo "--- Test"
       - bundle exec maze-runner
         features/stress_test.feature
+        --os=macos
         --no-log-requests
     artifact_paths:
       - features/fixtures/macos-stress-test/*.log
       - features/fixtures/macos-stress-test/*.crash
 
+  - label: 'macOS 11 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-11
+    plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 10.15 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-10.15
+    plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 10.14 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.14
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 10.13 barebones E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
   ##############################################################################
   #
-  # Basic build E2E tests
+  # Full set of E2E tests on one iOS version
   #
 
   #
-  # BitBar
+  # BrowserStack
   #
-  - label: ':bitbar: iOS 16 E2E tests batch 1'
+  - label: ':browserstack: iOS 17 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_16"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--appium-version=1.21.0"
+          - "--a11y-locator"
           - "--fail-fast"
-          # PLAT-11155: App hang scenarios run on BrowserStack
           - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
     concurrency: 25
-    concurrency_group: 'bitbar'
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':bitbar: iOS 16 E2E tests batch 2'
+  - label: ':browserstack: iOS 17 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_16"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--appium-version=1.21.0"
+          - "--a11y-locator"
           - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
     concurrency: 25
-    concurrency_group: 'bitbar'
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -308,7 +400,7 @@ steps:
           limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
-  - label: ':browserstack: iOS 16 app hang tests'
+  - label: ':browserstack: iOS 17 app hang tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 30
@@ -324,7 +416,7 @@ steps:
         command:
           - "--app=@build/ipa_url_bs.txt"
           - "--farm=bs"
-          - "--device=IOS_16"
+          - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
@@ -336,6 +428,45 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
         - exit_status: 104 # App hang related error
+          limit: 2
+
+  ##############################################################################
+  #
+  # Basic build E2E tests
+  #
+
+  #
+  # BitBar
+  #
+
+  - label: ':bitbar: iOS 16 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/barebone_tests.feature"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
           limit: 2
 
   - label: ':bitbar: iOS 15 barebone tests'
@@ -428,70 +559,6 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  #
-  # BrowserStack
-  #
-  - label: ':browserstack: iOS 17 E2E tests batch 1'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bs.txt"
-          - "--farm=bs"
-          - "--device=IOS_17"
-          - "--appium-version=1.18.0"
-          - "--a11y-locator"
-          - "--fail-fast"
-          - "--exclude=features/[e-z].*.feature$"
-          - "--order=random"
-    concurrency: 25
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':browserstack: iOS 17 E2E tests batch 2'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bs.txt"
-          - "--farm=bs"
-          - "--device=IOS_17"
-          - "--appium-version=1.18.0"
-          - "--a11y-locator"
-          - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
-          - "--order=random"
-    concurrency: 25
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
 
   ##############################################################################
   #

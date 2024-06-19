@@ -104,6 +104,20 @@ void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
 }
 }
 
+static const char *getExceptionTypeName(std::type_info *tinfo) {
+    static char buff[sizeof(*tinfo)];
+    // Runtime bug workaround: In some situations, __cxa_current_exception_type returns an invalid address.
+    // Check to make sure it's in valid memory before we try to call tinfo->name().
+    if (tinfo != NULL && bsg_ksmachcopyMem(tinfo, buff, sizeof(buff)) == KERN_SUCCESS) {
+        const char *name = tinfo->name();
+        // Also make sure the name pointer is valid.
+        if (name != NULL && bsg_ksmachcopyMem(name, buff, 1) == KERN_SUCCESS) {
+            return name;
+        }
+    }
+    return NULL;
+}
+
 static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Trapped c++ exception");
 
@@ -113,9 +127,7 @@ static void CPPExceptionTerminate(void) {
 
     BSG_KSLOG_DEBUG("Get exception type name.");
     std::type_info *tinfo = __cxxabiv1::__cxa_current_exception_type();
-    if (tinfo != NULL) {
-        name = tinfo->name();
-    } else {
+    if (tinfo == NULL) {
         name = "std::terminate";
         crashReason = "throw may have been called without an exception";
         if (!bsg_g_stackTraceCount) {
@@ -125,6 +137,13 @@ static void CPPExceptionTerminate(void) {
                       sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
         }
         goto after_rethrow; // Using goto to avoid indenting code below
+    }
+
+    name = getExceptionTypeName(tinfo);
+    if (name == NULL) {
+        name = "unknown";
+        crashReason = "unable to determine C++ exception type";
+        goto after_rethrow;
     }
 
     BSG_KSLOG_DEBUG("Discovering what kind of exception was thrown.");
@@ -202,6 +221,7 @@ after_rethrow:
 #endif
 
         bsg_g_context->crashType = BSG_KSCrashTypeCPPException;
+        bsg_g_context->requiresAsyncSafety = true;
         bsg_g_context->registersAreValid = false;
         bsg_g_context->stackTrace =
             bsg_g_stackTrace + 1; // Don't record __cxa_throw stack entry

@@ -17,7 +17,8 @@ NSString * const HasNotifiedKey = @"OnSendErrorPersistenceScenario.hasNotified";
 
 @implementation OnSendErrorPersistenceScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = NO;
     
     if (!self.hasNotified) {
@@ -26,8 +27,6 @@ NSString * const HasNotifiedKey = @"OnSendErrorPersistenceScenario.hasNotified";
             return YES;
         }];
     }
-    
-    [super startBugsnag];
 }
 
 - (void)run {

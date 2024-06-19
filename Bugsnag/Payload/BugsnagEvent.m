@@ -23,6 +23,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagHandledState.h"
@@ -187,6 +188,8 @@ BSG_OBJC_DIRECT_MEMBERS
         }) ?: @[];
 
         _context = BSGDeserializeString(json[BSGKeyContext]);
+
+        _correlation = [[BugsnagCorrelation alloc] initWithJsonDictionary:json[BSGKeyCorrelation]];
 
         _device = BSGDeserializeObject(json[BSGKeyDevice], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagDeviceWithState deviceFromJson:dict];
@@ -376,6 +379,10 @@ BSG_OBJC_DIRECT_MEMBERS
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithDictionaryRepresentation:
                                     [configDict isKindOfClass:[NSDictionary class]] ? configDict : @{}];
 
+    NSDictionary *correlationDict = [event valueForKeyPath:@"user.correlation"];
+    NSString *traceId = correlationDict[@"traceid"];
+    NSString *spanId = correlationDict[@"spanid"];
+
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
 
     BugsnagSession *session = BSGSessionFromCrashReport(event, app, device, user);
@@ -399,6 +406,11 @@ BSG_OBJC_DIRECT_MEMBERS
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.depth = depth;
     obj.usage = [event valueForKeyPath:@"user._usage"];
+
+    if (traceId.length > 0 || spanId.length > 0) {
+        obj.correlation = [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
+    }
+
     return obj;
 }
 
@@ -592,6 +604,7 @@ BSG_OBJC_DIRECT_MEMBERS
     event[BSGKeyApp] = [self.app toDict];
 
     event[BSGKeyContext] = [self context];
+    event[BSGKeyCorrelation] = [self.correlation toJsonDictionary];
     event[BSGKeyFeatureFlags] = BSGFeatureFlagStoreToJSON(self.featureFlagStore);
     event[BSGKeyGroupingHash] = self.groupingHash;
 

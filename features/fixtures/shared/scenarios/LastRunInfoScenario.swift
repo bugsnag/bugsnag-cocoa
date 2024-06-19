@@ -8,7 +8,8 @@
 
 class LastRunInfoScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.launchDurationMillis = 0
         config.sendLaunchCrashesSynchronously = false
         config.addOnSendError {
@@ -21,7 +22,6 @@ class LastRunInfoScenario: Scenario {
             }
             return true
         }
-        super.startBugsnag()
     }
     
     override func run() {

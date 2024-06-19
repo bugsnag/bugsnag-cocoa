@@ -10,6 +10,68 @@ steps:
   #
   # BitBar
   #
+  - label: ':bitbar: iOS 16 E2E tests batch 1'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          # PLAT-11155: App hang scenarios run on BrowserStack
+          - "--exclude=features/app_hangs.feature"
+          - "--exclude=features/[e-z].*.feature$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':bitbar: iOS 16 E2E tests batch 2'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "--exclude=features/[a-d].*.feature$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
   - label: ':bitbar: iOS 15 E2E tests batch 1'
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 90
@@ -190,6 +252,37 @@ steps:
   # BrowserStack
   #
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+  - label: ':browserstack: iOS 16 app hang tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v3.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@build/ipa_url_bs.txt"
+          - "--farm=bs"
+          - "--device=IOS_16"
+          - "--appium-version=1.21.0"
+          - "--fail-fast"
+          - "features/app_hangs.feature"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 104 # App hang related error
+          limit: 2
+
+  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 15 app hang tests'
     depends_on:
       - cocoa_fixture
@@ -276,16 +369,18 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: 'macOS 11 E2E tests'
+  - label: 'ARM macOS 13 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: macos-11
+      queue: macos-13-arm
     plugins:
       artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -310,12 +405,28 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.13 E2E tests'
+  - label: 'macOS 11 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: macos-11
+    plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 10.15 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-10.15
     plugins:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp.zip"]
@@ -342,6 +453,22 @@ steps:
         --os=macos
         --fail-fast
 
+  - label: 'macOS 10.13 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        --os=macos
+        --fail-fast
+
   ##############################################################################
   #
   # Build example apps
@@ -350,7 +477,7 @@ steps:
   - label: 'examples/objective-c-ios'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-14
     commands:
       - bundle install
       - cd examples/objective-c-ios
@@ -366,7 +493,7 @@ steps:
   - label: 'examples/objective-c-osx'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-14
     commands:
       - bundle install
       - cd examples/objective-c-osx
@@ -380,7 +507,7 @@ steps:
   - label: 'examples/swift-ios'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-14
     commands:
       - bundle install
       - cd examples/swift-ios
@@ -394,7 +521,7 @@ steps:
   - label: 'examples/swift-package-manager'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-14
     commands:
       - bundle install
       - cd examples/swift-package-manager
@@ -409,7 +536,7 @@ steps:
   - label: 'examples/swiftui'
     timeout_in_minutes: 30
     agents:
-      queue: macos-12-arm
+      queue: macos-14
     commands:
       - bundle install
       - cd examples/swiftui

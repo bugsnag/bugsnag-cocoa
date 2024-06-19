@@ -14,10 +14,10 @@
 
 @implementation ManualSessionWithUserScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     [self.config setUser:@"123" withEmail:@"joe@example.com" andName:@"Joe Bloggs"];
     self.config.autoTrackSessions = NO;
-    [super startBugsnag];
 }
 
 - (void)run {

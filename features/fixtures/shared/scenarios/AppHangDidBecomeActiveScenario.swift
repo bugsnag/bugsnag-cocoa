@@ -2,10 +2,10 @@ import UIKit
 
 class AppHangDidBecomeActiveScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.appHangThresholdMillis = 2_000
         self.config.autoTrackSessions = false;
-        super.startBugsnag()
     }
     
     override func run() {

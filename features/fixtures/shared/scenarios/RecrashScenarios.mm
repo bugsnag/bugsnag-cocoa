@@ -31,9 +31,9 @@ extern "C" void OnCrashBadAccess(const BSG_KSCrashReportWriter *writer) {
 @interface NAME : Scenario \
 @end \
 @implementation NAME \
-- (void)startBugsnag { \
+- (void)configure { \
+    [super configure]; \
     self.config.onCrashHandler = HANDLER; \
-    [super startBugsnag]; \
 } \
 - (void)run { \
     CRASH; \

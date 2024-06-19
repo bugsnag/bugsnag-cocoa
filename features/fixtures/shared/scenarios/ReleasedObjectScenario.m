@@ -40,11 +40,11 @@
 - (NSString *)category { return @"Objective-C"; }
 - (NSString *)title { return @"Message a released object"; }
 - (NSString *)desc { return @""; }
-- (void)startBugsnag {
-    self.config.autoTrackSessions = NO;
-    [super startBugsnag];
-}
 
+- (void)configure {
+    [super configure];
+    self.config.autoTrackSessions = NO;
+}
 
 - (void)run
 {

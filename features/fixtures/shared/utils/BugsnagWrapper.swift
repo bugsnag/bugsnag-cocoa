@@ -29,8 +29,8 @@ class BugsnagWrapper : Bugsnag {
         }
         
         // Overwrite the configuration endpoints
-        configuration.endpoints.notify = String(format: "%@/notify", Scenario.baseMazeAddress);
-        configuration.endpoints.sessions = String(format: "%@/sessions", Scenario.baseMazeAddress);
+        configuration.endpoints.notify = String(format: "%@/notify", Fixture.baseMazeRunnerAddress!.absoluteString);
+        configuration.endpoints.sessions = String(format: "%@/sessions", Fixture.baseMazeRunnerAddress!.absoluteString);
         
         return Bugsnag.start(with: configuration);
     }

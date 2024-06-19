@@ -1,6 +1,7 @@
 class AppAndDeviceAttributesCallbackOverrideScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false
 
         self.config.addOnSendError { (event) -> Bool in
@@ -13,8 +14,6 @@ class AppAndDeviceAttributesCallbackOverrideScenario: Scenario {
 
             return true
         }
-
-        super.startBugsnag()
     }
 
     override func run() {

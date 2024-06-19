@@ -2,7 +2,8 @@ import Foundation
 
 class ModifyBreadcrumbScenario: Scenario {
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         self.config.autoTrackSessions = false;
 
         self.config.addOnSendError(block: { event in
@@ -13,7 +14,6 @@ class ModifyBreadcrumbScenario: Scenario {
             })
             return true
         })
-        super.startBugsnag()
     }
 
     override func run() {

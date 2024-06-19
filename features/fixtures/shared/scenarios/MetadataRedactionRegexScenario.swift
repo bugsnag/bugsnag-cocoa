@@ -13,11 +13,11 @@ import Foundation
  */
 class MetadataRedactionRegexScenario: Scenario {
 
-    override func startBugsnag() {
-      self.config.autoTrackSessions = false;
-      let regex = try! NSRegularExpression(pattern: "[a-z]at")
-      self.config.redactedKeys = [regex]
-      super.startBugsnag()
+    override func configure() {
+        super.configure()
+        self.config.autoTrackSessions = false;
+        let regex = try! NSRegularExpression(pattern: "[a-z]at")
+        self.config.redactedKeys = [regex]
     }
 
     override func run() {

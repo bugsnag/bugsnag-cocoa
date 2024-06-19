@@ -277,6 +277,7 @@ void *ksmachexc_i_handleExceptions(void *const userData) {
 
         BSG_KSLOG_DEBUG("Filling out context.");
         bsg_g_context->crashType = BSG_KSCrashTypeMachException;
+        bsg_g_context->requiresAsyncSafety = true;
         bsg_g_context->registersAreValid = true;
         bsg_g_context->mach.type = exceptionMessage.exception;
         bsg_g_context->mach.code = exceptionMessage.code[0] & (int64_t)MACH_ERROR_CODE_MASK;

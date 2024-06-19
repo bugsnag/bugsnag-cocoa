@@ -105,10 +105,7 @@ Feature: Session Tracking
     And the error payload field "events.0.session.id" equals the stored value "session_id"
 
   Scenario: Encountering an unhandled event during a session
-    When I run "AutoSessionUnhandledScenario"
-    And I wait for 4 seconds
-    And I kill and relaunch the app
-    And I set the app to "noevent" mode
+    When I run "AutoSessionUnhandledScenario" and relaunch the crashed app
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
     And I wait to receive a session
     And I wait to receive an error
@@ -125,9 +122,7 @@ Feature: Session Tracking
     And the error payload field "events.0.session.id" equals the stored value "session_id"
 
   Scenario: Encountering handled and unhandled events during a session
-    When I run "AutoSessionMixedEventsScenario"
-    And I wait for 5 seconds
-    And I kill and relaunch the app
+    When I run "AutoSessionMixedEventsScenario" and relaunch the crashed app
     And I configure Bugsnag for "AutoSessionMixedEventsScenario"
     And I wait to receive 2 sessions
     Then the session is valid for the session reporting API

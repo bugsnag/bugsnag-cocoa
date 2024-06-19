@@ -12,9 +12,9 @@ import UIKit
 
 class OOMInactiveScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.enabledErrorTypes.ooms = true
-        Bugsnag.start(with: config)
     }
     
     override func run() {

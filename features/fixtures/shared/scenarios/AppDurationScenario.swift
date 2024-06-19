@@ -12,12 +12,12 @@ class AppDurationScenario: Scenario {
     var startDate: Date!
     var startTime: DispatchTime!
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoTrackSessions = false
         config.sendThreads = .never
         startDate = Date()
         startTime = .now()
-        super.startBugsnag()
     }
     
     override func run() {

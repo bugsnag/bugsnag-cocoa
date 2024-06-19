@@ -19,13 +19,13 @@ static void CrashHandler(const BSG_KSCrashReportWriter *writer) {
 
 @implementation InvalidCrashReportScenario
 
-- (void)startBugsnag {
+- (void)configure {
+    [super configure];
     self.config.autoTrackSessions = NO;
     self.config.onCrashHandler = CrashHandler;
-    if ([self.eventMode isEqualToString:@"internalErrorsDisabled"]) {
+    if ([self.args[0] isEqualToString:@"internalErrorsDisabled"]) {
         self.config.telemetry &= ~BSGTelemetryInternalErrors;
     }
-    [super startBugsnag];
 }
 
 - (void)run {

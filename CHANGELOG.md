@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 6.29.0 (2024-06-19)
+
+### Enhancements
+
+* Adds basic support for visionOS with SPM projects
+  [1660](https://github.com/bugsnag/bugsnag-cocoa/pull/1660)
+
+### Bug fixes
+
+* Prevent inlining of Bugsnag stack trace entries that are marked to be pruned away (to promote a consistent number of those frames).
+  [1661](https://github.com/bugsnag/bugsnag-cocoa/pull/1661)
+
+* Fix off-by-1 error when fetching register values on arm64 that could potentially run off the array.
+  [1635](https://github.com/bugsnag/bugsnag-cocoa/pull/1635)
+
 ## 6.28.1 (2024-02-28)
 
 ### Bug fixes

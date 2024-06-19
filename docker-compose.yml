@@ -18,10 +18,11 @@ x-common-environment: &common-environment
   BUILDKITE_STEP_KEY:
   MAZE_BUGSNAG_API_KEY:
   MAZE_REPEATER_API_KEY:
+  MAZE_SCENARIO_BUGSNAG_API_KEY:
 
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:
@@ -32,13 +33,14 @@ services:
       - ./maze_output:/app/maze_output
 
   cocoa-maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
       BITBAR_ACCESS_KEY:
     ports:
       - "9000-9499:9339"
+      - "9000-9499:9340"
     volumes:
       - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/
@@ -46,7 +48,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   cocoa-maze-runner-legacy:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli-legacy
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli-legacy
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:

@@ -1,10 +1,10 @@
 class OldHandledErrorScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         modifyEventCreationDate()
         config.autoTrackSessions = false
         config.enabledErrorTypes.ooms = false
-        super.startBugsnag()
     }
     
     override func run() {

@@ -42,7 +42,7 @@ Feature: App and Device attributes present
     And the error payload field "events.0.app.bundleVersion" is not null
     #And the error payload field "events.0.app.dsymUUIDs" is a non-empty array # Fails, == nil
     And the error payload field "events.0.app.id" equals the platform-dependent string:
-      | ios   | com.bugsnag.fixtures.iOSTestApp   |
+      | ios   | com.bugsnag.fixtures.cocoa   |
       | macos | com.bugsnag.fixtures.macOSTestApp |
     And the error payload field "events.0.app.isLaunching" is true
     And the error payload field "events.0.app.releaseStage" equals "development"

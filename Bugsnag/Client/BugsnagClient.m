@@ -53,6 +53,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
@@ -71,6 +72,7 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 #import "BSGPersistentDeviceID.h"
+#import "BugsnagCocoaPerformanceFromBugsnagCocoa.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -94,9 +96,9 @@ static char *crashSentinelPath;
  *
  *  @param writer report writer which will receive updated metadata
  */
-static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
+static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, bool requiresAsyncSafety) {
     BOOL isCrash = YES;
-    BSGSessionWriteCrashReport(writer);
+    BSGSessionWriteCrashReport(writer, requiresAsyncSafety);
 
     if (isCrash) {
         writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
@@ -114,6 +116,19 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         }
         writer->endContainer(writer);
 
+        if (!requiresAsyncSafety) {
+            NSArray *correlation = [BugsnagCocoaPerformanceFromBugsnagCocoa.sharedInstance getCurrentTraceAndSpanId];
+            if (correlation.count == 2) {
+                NSString *traceId = correlation[0];
+                NSString *spanId = correlation[1];
+                writer->beginObject(writer, "correlation"); {
+                    writer->addStringElement(writer, "traceid", traceId.UTF8String);
+                    writer->addStringElement(writer, "spanid", spanId.UTF8String);
+                }
+                writer->endContainer(writer);
+            }
+        }
+
 #if BSG_HAVE_BATTERY
         if (BSGIsBatteryStateKnown(bsg_runContext->batteryState)) {
             writer->addFloatingPointElement(writer, "batteryLevel", bsg_runContext->batteryLevel);
@@ -126,7 +141,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer) {
         writer->addBooleanElement(writer, "isLaunching", bsg_runContext->isLaunching);
         writer->addIntegerElement(writer, "thermalState", bsg_runContext->thermalState);
 
-        BugsnagBreadcrumbsWriteCrashReport(writer);
+        BugsnagBreadcrumbsWriteCrashReport(writer, requiresAsyncSafety);
 
         // Create a file to indicate that the crash has been handled by
         // the library. This exists in case the subsequent `onCrash` handler
@@ -236,6 +251,9 @@ BSG_OBJC_DIRECT_MEMBERS
 
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
+
+    // Map our bridged API early on.
+    [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
 
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
 
@@ -623,33 +641,53 @@ BSG_OBJC_DIRECT_MEMBERS
 
 // MARK: - Notify
 
+// Prevent the compiler from inlining or optimizing, which would reduce
+// the number of bugsnag-only stack entries and mess up our pruning.
+// We have to do it this way because you can't mark Objective-C methods noinline or optnone.
+// We leave it externable to further dissuade the optimizer.
+__attribute__((optnone))
+void bsg_notifyErrorOrException(BugsnagClient *self, id errorOrException, BugsnagOnErrorBlock block) {
+    [self notifyErrorOrException:errorOrException block:block];
+}
+
 // note - some duplication between notifyError calls is required to ensure
 // the same number of stackframes are used for each call.
 // see notify:handledState:block for further info
 
 - (void)notifyError:(NSError *)error {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
-    [self notifyErrorOrException:error block:nil];
+    bsg_notifyErrorOrException(self, error, nil);
 }
 
 - (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
-    [self notifyErrorOrException:error block:block];
+    bsg_notifyErrorOrException(self, error, block);
 }
 
 - (void)notify:(NSException *)exception {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
-    [self notifyErrorOrException:exception block:nil];
+    bsg_notifyErrorOrException(self, exception, nil);
 }
 
 - (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
-    [self notifyErrorOrException:exception block:block];
+    bsg_notifyErrorOrException(self, exception, block);
 }
 
 // MARK: - Notify (Internal)
 
+- (BugsnagCorrelation *)getCurrentCorrelation {
+    NSArray *correlation = [BugsnagCocoaPerformanceFromBugsnagCocoa.sharedInstance getCurrentTraceAndSpanId];
+    if (correlation.count != 2) {
+        return nil;
+    }
+    NSString *traceId = correlation[0];
+    NSString *spanId = correlation[1];
+    return [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
+}
+
 - (void)notifyErrorOrException:(id)errorOrException block:(BugsnagOnErrorBlock)block {
+    BugsnagCorrelation *correlation = [self getCurrentCorrelation];
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagMetadata *metadata = [self.metadata copy];
     
@@ -691,7 +729,7 @@ BSG_OBJC_DIRECT_MEMBERS
         bsg_log_warn(@"Unsupported error type passed to notify: %@", NSStringFromClass([errorOrException class]));
         return;
     }
-    
+
     /**
      * Stack frames starting from this one are removed by setting the depth.
      * This helps remove bugsnag frames from showing in NSErrors as their
@@ -702,9 +740,10 @@ BSG_OBJC_DIRECT_MEMBERS
      *
      * 1. +[Bugsnag notifyError:block:]
      * 2. -[BugsnagClient notifyError:block:]
-     * 3. -[BugsnagClient notify:handledState:block:]
+     * 3. bsg_notifyErrorOrException()
+     * 4. -[BugsnagClient notifyErrorOrException:block:]
      */
-    NSUInteger depth = 3;
+    NSUInteger depth = 4;
     
     if (!callStack.count) {
         // If the NSException was not raised by the Objective-C runtime, it will be missing a call stack.
@@ -738,6 +777,7 @@ BSG_OBJC_DIRECT_MEMBERS
     event.apiKey = self.configuration.apiKey;
     event.context = context;
     event.originalError = errorOrException;
+    event.correlation = correlation;
 
     [self notifyInternal:event block:block];
 }
