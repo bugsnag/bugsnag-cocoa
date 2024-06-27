@@ -100,25 +100,25 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (void)notify:(NSException *)exception {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notify:exception];
+        [self.client notifyErrorOrException:exception bugsnagStackDepth:2 block:nil];
     }
 }
 
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notify:exception block:block];
+        [self.client notifyErrorOrException:exception bugsnagStackDepth:2 block:block];
     }
 }
 
 + (void)notifyError:(NSError *)error {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notifyError:error];
+        [self.client notifyErrorOrException:error bugsnagStackDepth:2 block:nil];
     }
 }
 
 + (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notifyError:error block:block];
+        [self.client notifyErrorOrException:error bugsnagStackDepth:2 block:block];
     }
 }
 
