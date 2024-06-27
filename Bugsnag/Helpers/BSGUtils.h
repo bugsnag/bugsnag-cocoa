@@ -45,6 +45,8 @@ static inline NSString * _Nullable BSGStringFromClass(Class _Nullable cls) {
  */
 void bsg_safe_strncpy(char *dst, const char *src, size_t length);
 
+NSString * _Nullable BSGPreventInlining(NSString * _Nullable someValue);
+
 NS_ASSUME_NONNULL_END
 
 __END_DECLS
