@@ -75,6 +75,17 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)start;
 
+/**
+ * Notify an error or exception.
+ *
+ * @param errorOrException what to report
+ * @param bugsnagStackDepth The depth of the expected bugsnag portion of the stack trace (including the call to this method)
+ * @param block The block to call afterwards (if any)
+ */
+- (void)notifyErrorOrException:(_Nullable id)errorOrException
+             bugsnagStackDepth:(NSUInteger)bugsnagStackDepth
+                         block:(_Nullable BugsnagOnErrorBlock)block;
+
 @end
 
 NS_ASSUME_NONNULL_END

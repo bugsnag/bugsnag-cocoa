@@ -132,6 +132,7 @@
             @"systemState @16@0:8",
             @"thermalStateDidChange: v24@0:8@16",
             @"updateSession: v24@0:8@?16",
+            @"notifyErrorOrException:bugsnagStackDepth:block: v40@0:8@16Q24@?32",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
