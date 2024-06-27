@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -71,7 +71,6 @@
 		01B6BB7525D5748800FC4DE6 /* LastRunInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */; };
 		01B6BBB625DA82B800FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B6BBB525DA82B700FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift */; };
 		01BA54FC28699BC100EC14E0 /* OOMInactiveScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BA54FB28699BC100EC14E0 /* OOMInactiveScenario.swift */; };
-		01CD103926690463007FA5F0 /* libBugsnagStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 01CD103826690463007FA5F0 /* libBugsnagStatic.a */; };
 		01DCB82B27985D690048640A /* ConcurrentCrashesScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01DCB82A27985D2C0048640A /* ConcurrentCrashesScenario.mm */; };
 		01DE903826CE99B800455213 /* CriticalThermalStateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */; };
 		01DF442C2798044E00C31104 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DF442B2798044E00C31104 /* SystemConfiguration.framework */; };
@@ -88,6 +87,7 @@
 		01FA9EC426D63BB20059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC326D63BB20059FF4A /* AppHangInTerminationScenario.swift */; };
 		095E095A2AF3BE8D00273F1F /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095E09592AF3BE8D00273F1F /* Logging.swift */; };
 		095E095D2AF3BFDA00273F1F /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E095C2AF3BFDA00273F1F /* Logging.m */; };
+		09DF0DE92C2D81BE00D94BD0 /* Bugsnag.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09DF0DE82C2D81BE00D94BD0 /* Bugsnag.xcframework */; };
 		09F024FA2B9F3ACD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024F92B9F3ACD007D9F73 /* Fixture.swift */; };
 		09F024FC2B9F3B16007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */; };
 		09F0250B2BA1E640007D9F73 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F0250A2BA1E640007D9F73 /* FixtureConfig.swift */; };
@@ -292,6 +292,7 @@
 		095E09592AF3BE8D00273F1F /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		095E095B2AF3BFDA00273F1F /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		095E095C2AF3BFDA00273F1F /* Logging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
+		09DF0DE82C2D81BE00D94BD0 /* Bugsnag.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Bugsnag.xcframework; path = ../../../build/xcframeworks/products/Bugsnag.xcframework; sourceTree = "<group>"; };
 		09F024F92B9F3ACD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09F0250A2BA1E640007D9F73 /* FixtureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
@@ -422,8 +423,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				01DF442C2798044E00C31104 /* SystemConfiguration.framework in Frameworks */,
+				09DF0DE92C2D81BE00D94BD0 /* Bugsnag.xcframework in Frameworks */,
 				CB42FF9026F1EDB500E8D5D2 /* libBugsnagNetworkRequestPluginStatic.a in Frameworks */,
-				01CD103926690463007FA5F0 /* libBugsnagStatic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +434,7 @@
 		8AB8865720404DD30003E444 = {
 			isa = PBXGroup;
 			children = (
+				09DF0DE82C2D81BE00D94BD0 /* Bugsnag.xcframework */,
 				8AB8866220404DD30003E444 /* iOSTestApp */,
 				AA4C7F1329AEA060009B09A9 /* utils */,
 				F42953DE2BB41023C0B07F41 /* scenarios */,
@@ -1102,7 +1104,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1127,7 +1130,10 @@
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				OTHER_SWIFT_FLAGS = "-Onone";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
@@ -1169,7 +1175,10 @@
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_SWIFT_FLAGS = "-Onone";
