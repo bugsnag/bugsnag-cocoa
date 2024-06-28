@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#ifndef BugsnagCorrelation_h
-#define BugsnagCorrelation_h
+#import <Bugsnag/BugsnagDefines.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+BUGSNAG_EXTERN
 @interface BugsnagCorrelation: NSObject
 
 @property (readwrite, nonatomic, strong, nullable) NSString *traceId;
@@ -22,5 +21,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif /* BugsnagCorrelation_h */
