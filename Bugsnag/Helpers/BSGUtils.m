@@ -89,3 +89,10 @@ NSString *_Nullable BSGStringFromThermalState(NSProcessInfoThermalState thermalS
     }
     return nil;
 }
+
+NSString * _Nullable BSGPreventInlining(NSString * _Nullable someValue) {
+    static NSString *lastValue = nil;
+    NSString *returnValue = lastValue;
+    lastValue = someValue;
+    return returnValue;
+}
