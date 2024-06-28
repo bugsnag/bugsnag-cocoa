@@ -237,6 +237,14 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 #pragma mark -
 
+@interface BugsnagCorrelation ()
+
+- (instancetype)initWithTraceId:(NSString * _Nullable) traceId spanId:(NSString * _Nullable)spanId;
+
+@end
+
+#pragma mark -
+
 BUGSNAG_EXTERN NSString * BSGGetDefaultDeviceId(void);
 
 BUGSNAG_EXTERN NSDictionary * BSGGetSystemInfo(void);

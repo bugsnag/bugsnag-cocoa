@@ -7,6 +7,7 @@
 //
 
 #import "BugsnagCorrelation.h"
+#import "BugsnagInternals.h"
 
 #ifndef BugsnagCorrelation_Private_h
 #define BugsnagCorrelation_Private_h
@@ -14,8 +15,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagCorrelation ()
-
-- (instancetype) initWithTraceId:(NSString * _Nullable) traceId spanId:(NSString * _Nullable)spanId;
 
 - (instancetype) initWithJsonDictionary:(NSDictionary<NSString *, NSObject *> * _Nullable) dict;
 
