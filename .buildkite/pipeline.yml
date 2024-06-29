@@ -66,7 +66,7 @@ steps:
       - unzip Bugsnag.xcframework.zip
       - bundle install
       - make xcframework-test-fixtures
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframeworkipa_url_bb.txt
+      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt
 
   - label: ':bitbar: iOS 16 XcFramework E2E tests batch 1'
     depends_on:
