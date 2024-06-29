@@ -88,7 +88,6 @@ steps:
           - "--device=IOS_16"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
@@ -120,7 +119,6 @@ steps:
           - "--device=IOS_16"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
