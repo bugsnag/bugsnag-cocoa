@@ -5,6 +5,6 @@
       location = "group:../../../BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:/Users/steve/git/bugsnag-cocoa/features/fixtures/ios/iOSTestAppXcFramework.xcodeproj">
+      location = "group:iOSTestAppXcFramework.xcodeproj">
    </FileRef>
 </Workspace>
