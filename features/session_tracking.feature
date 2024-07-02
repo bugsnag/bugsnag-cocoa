@@ -10,7 +10,7 @@ Feature: Session Tracking
     And the session payload field "sessions" is an array with 1 elements
     And the session payload field "app.version" equals "1.0.3"
     And the session payload field "app.bundleVersion" equals "5"
-    And the session payload field "app.releaseStage" equals "development"
+    And the session payload field "app.releaseStage" equals "production"
     And the session payload field "app.type" equals the platform-dependent string:
       | ios   | iOS   |
       | macos | macOS |
@@ -32,7 +32,7 @@ Feature: Session Tracking
     And the session payload field "sessions" is an array with 1 elements
     And the session payload field "app.version" equals "2.0.14"
     And the session payload field "app.bundleVersion" equals "5"
-    And the session payload field "app.releaseStage" equals "development"
+    And the session payload field "app.releaseStage" equals "production"
     And the session payload field "app.type" equals the platform-dependent string:
       | ios   | iOS   |
       | macos | macOS |
