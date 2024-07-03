@@ -32,8 +32,8 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           # PLAT-11155: App hang scenarios run on BrowserStack
-          - "--exclude=features/app_hangs.feature"
-          - "--exclude=features/[e-z].*.feature$"
+          - "--exclude=features/release/app_hangs.feature"
+          - "--exclude=features/release/[e-z].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -63,7 +63,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
+          - "--exclude=features/release/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -87,8 +87,8 @@ steps:
         service-ports: true
         command:
           # PLAT-11155: App hang scenarios run on BrowserStack
-          - "--exclude=features/app_hangs.feature"
-          - "--exclude=features/[e-z].*.feature$"
+          - "--exclude=features/release/app_hangs.feature"
+          - "--exclude=features/release/[e-z].*.feature$"
           - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_15"
@@ -113,7 +113,7 @@ steps:
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--exclude=features/[a-d].*.feature$"
+          - "--exclude=features/release/[a-d].*.feature$"
           - "--app=@/app/build/ipa_url_bb.txt"
           - "--farm=bb"
           - "--device=IOS_15"
@@ -146,8 +146,8 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           # PLAT-11155: App hang scenarios run on BrowserStack
-          - "--exclude=features/app_hangs.feature"
-          - "--exclude=features/[e-z].*.feature$"
+          - "--exclude=features/release/app_hangs.feature"
+          - "--exclude=features/release/[e-z].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -177,7 +177,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
+          - "--exclude=features/release/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -208,8 +208,8 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           # PLAT-11155: App hang scenarios run on BrowserStack
-          - "--exclude=features/app_hangs.feature"
-          - "--exclude=features/[e-z].*.feature$"
+          - "--exclude=features/release/app_hangs.feature"
+          - "--exclude=features/release/[e-z].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -239,7 +239,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
+          - "--exclude=features/release/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -271,7 +271,7 @@ steps:
           - "--device=IOS_16"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "features/app_hangs.feature"
+          - "features/release/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -302,7 +302,7 @@ steps:
           - "--device=IOS_15"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "features/app_hangs.feature"
+          - "features/release/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -331,7 +331,7 @@ steps:
           - "--device=IOS_14"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "features/app_hangs.feature"
+          - "features/release/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -360,7 +360,7 @@ steps:
           - "--device=IOS_13"
           - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "features/app_hangs.feature"
+          - "features/release/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager

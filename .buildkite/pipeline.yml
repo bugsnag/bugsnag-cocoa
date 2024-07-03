@@ -215,7 +215,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
+        features/release/barebone_tests.feature
         --os=macos
 #        --fail-fast
 
@@ -234,7 +234,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
+        features/release/barebone_tests.feature
         --os=macos
 #        --fail-fast
 
@@ -251,7 +251,7 @@ steps:
       - make -C features/fixtures/macos-stress-test
       - echo "--- Test"
       - bundle exec maze-runner
-        features/stress_test.feature
+        features/release/stress_test.feature
         --os=macos
         --no-log-requests
     artifact_paths:
@@ -271,7 +271,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
+        features/release/barebone_tests.feature
         --os=macos
 #        --fail-fast
 
@@ -288,7 +288,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
+        features/release/barebone_tests.feature
         --os=macos
 #        --fail-fast
 
@@ -307,7 +307,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
+        features/release/barebone_tests.feature
         --os=macos
 #        --fail-fast
 
@@ -326,7 +326,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/barebone_tests.feature
+        features/release/barebone_tests.feature
         --os=macos
 #        --fail-fast
 
@@ -358,9 +358,9 @@ steps:
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
-          - "#--fail-fast"
-          - "--exclude=features/app_hangs.feature"
-          - "--exclude=features/[e-z].*.feature$"
+          #- "--fail-fast"
+          - "--exclude=features/release/app_hangs.feature"
+          - "--exclude=features/release/[e-z].*.feature$"
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -389,8 +389,8 @@ steps:
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
-          - "#--fail-fast"
-          - "--exclude=features/[a-d].*.feature$"
+          #- "--fail-fast"
+          - "--exclude=features/release/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -418,8 +418,8 @@ steps:
           - "--farm=bs"
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
-          - "#--fail-fast"
-          - "features/app_hangs.feature"
+          #- "--fail-fast"
+          - "features/release/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -459,8 +459,8 @@ steps:
           - "--device=IOS_16"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "#--fail-fast"
-          - "features/barebone_tests.feature"
+          #- "--fail-fast"
+          - "features/release/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -489,8 +489,8 @@ steps:
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "#--fail-fast"
-          - "features/barebone_tests.feature"
+          #- "--fail-fast"
+          - "features/release/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -519,8 +519,8 @@ steps:
           - "--device=IOS_14"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "#--fail-fast"
-          - "features/barebone_tests.feature"
+          #- "--fail-fast"
+          - "features/release/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -549,8 +549,8 @@ steps:
           - "--device=IOS_13"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "#--fail-fast"
-          - "features/barebone_tests.feature"
+          #- "--fail-fast"
+          - "features/release/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
