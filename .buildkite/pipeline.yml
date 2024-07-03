@@ -198,7 +198,7 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'ARM macOS 13 barebones E2E tests'
     depends_on:
@@ -217,7 +217,7 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'ARM macOS 12 barebones E2E tests'
     depends_on:
@@ -236,7 +236,7 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'macOS 12 stress test'
     timeout_in_minutes: 3
@@ -273,7 +273,7 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'macOS 10.15 barebones E2E tests'
     depends_on:
@@ -290,7 +290,7 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'macOS 10.14 barebones E2E tests'
     depends_on:
@@ -309,7 +309,7 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   - label: 'macOS 10.13 barebones E2E tests'
     depends_on:
@@ -328,7 +328,7 @@ steps:
       - bundle exec maze-runner
         features/barebone_tests.feature
         --os=macos
-        --fail-fast
+#        --fail-fast
 
   ##############################################################################
   #
@@ -358,7 +358,7 @@ steps:
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "--exclude=features/app_hangs.feature"
           - "--exclude=features/[e-z].*.feature$"
     concurrency: 25
@@ -389,7 +389,7 @@ steps:
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "--exclude=features/[a-d].*.feature$"
     concurrency: 25
     concurrency_group: 'browserstack-app'
@@ -418,7 +418,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
@@ -459,7 +459,7 @@ steps:
           - "--device=IOS_16"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
@@ -489,7 +489,7 @@ steps:
           - "--device=IOS_15"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
@@ -519,7 +519,7 @@ steps:
           - "--device=IOS_14"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
@@ -549,7 +549,7 @@ steps:
           - "--device=IOS_13"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
+          - "#--fail-fast"
           - "features/barebone_tests.feature"
     concurrency: 25
     concurrency_group: 'bitbar'
