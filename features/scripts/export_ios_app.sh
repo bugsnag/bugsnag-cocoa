@@ -2,33 +2,44 @@
 
 set -o errexit
 
-cd features/fixtures/ios
+# "Release" or "Debug" must be specified
+if [ "$1" != "Release" ] && [ "$1" != "Debug" ]; then
+  echo "Usage: $0 [release|debug]"
+  exit 1
+fi
 
-echo "--- iOSTestApp: xcodebuild archive"
+pushd features/fixtures/ios
 
-#
-# Using CLANG_ENABLE_MODULES=NO to surface build errors
-# https://github.com/bugsnag/bugsnag-cocoa/pull/1284
-#
+  echo "--- iOSTestApp: xcodebuild archive"
 
-xcrun xcodebuild \
-  -scheme iOSTestApp \
-  -workspace iOSTestApp.xcworkspace \
-  -destination generic/platform=iOS \
-  -configuration Release \
-  -archivePath archive/iosTestApp.xcarchive \
-  -allowProvisioningUpdates \
-  -quiet \
-  archive \
-  CLANG_ENABLE_MODULES=NO \
-  GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG BSG_KSLOG_ENABLED=1'
+  #
+  # Using CLANG_ENABLE_MODULES=NO to surface build errors
+  # https://github.com/bugsnag/bugsnag-cocoa/pull/1284
+  #
 
-echo "--- iOSTestApp: xcodebuild -exportArchive"
+  xcrun xcodebuild \
+    -scheme iOSTestApp \
+    -workspace iOSTestApp.xcworkspace \
+    -destination generic/platform=iOS \
+    -configuration $1 \
+    -archivePath archive/iosTestApp.xcarchive \
+    -allowProvisioningUpdates \
+    -quiet \
+    archive \
+    CLANG_ENABLE_MODULES=NO \
+    GCC_PREPROCESSOR_DEFINITIONS='$(inherited) BSG_LOG_LEVEL=BSG_LOGLEVEL_DEBUG BSG_KSLOG_ENABLED=1'
 
-xcrun xcodebuild \
-  -exportArchive \
-  -archivePath archive/iosTestApp.xcarchive \
-  -destination generic/platform=iOS \
-  -exportPath output/ \
-  -quiet \
-  -exportOptionsPlist exportOptions.plist
+  echo "--- iOSTestApp: xcodebuild -exportArchive"
+
+  xcrun xcodebuild \
+    -exportArchive \
+    -archivePath archive/iosTestApp.xcarchive \
+    -destination generic/platform=iOS \
+    -exportPath output/ \
+    -quiet \
+    -exportOptionsPlist exportOptions.plist
+
+  pushd output
+    mv iOSTestApp.ipa iOSTestApp_$1.ipa
+  popd
+popd

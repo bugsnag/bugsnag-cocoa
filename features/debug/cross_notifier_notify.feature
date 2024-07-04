@@ -28,6 +28,12 @@ Feature: Communicating events between notifiers
     And the "method" of stack frame 0 equals "foo()"
     And the "file" of stack frame 0 equals "src/Giraffe.mm"
     And the "lineNumber" of stack frame 0 equals 200
+    And the "method" of stack frame 1 equals "bar()"
+    And the "file" of stack frame 1 equals "parser.js"
+    And the "lineNumber" of stack frame 1 is null
+    And the "method" of stack frame 2 equals "yes()"
+    And the "file" of stack frame 2 is null
+    And the "lineNumber" of stack frame 2 is null
     And the event "unhandled" is false
 
     And the error payload field "events" is an array with 1 elements
@@ -55,6 +61,12 @@ Feature: Communicating events between notifiers
     And the "method" of stack frame 0 equals "bar()"
     And the "file" of stack frame 0 equals "foo.js"
     And the "lineNumber" of stack frame 0 equals 43
+    And the "method" of stack frame 1 equals "baz()"
+    And the "file" of stack frame 1 equals "[native code]"
+    And the "lineNumber" of stack frame 1 is null
+    And the "method" of stack frame 2 equals "is_done()"
+    And the "file" of stack frame 2 is null
+    And the "lineNumber" of stack frame 2 is null
     And the event "unhandled" is true
     And the event "severityReason.unhandledOverridden" is true
 

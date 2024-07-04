@@ -15,6 +15,8 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[PrivilegedInstructionScenario run]"
     And the "isPC" of stack frame 0 is true
     And on x86, the "isLR" of stack frame 0 is null
+    And on x86, the "isLR" of stack frame 1 is null
+    And on x86, the "isPC" of stack frame 1 is null
 
   Scenario: Calling __builtin_trap()
     When I run "BuiltinTrapScenario" and relaunch the crashed app
@@ -28,6 +30,8 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[BuiltinTrapScenario run]"
     And the "isPC" of stack frame 0 is true
     And on x86, the "isLR" of stack frame 0 is null
+    And on x86, the "isPC" of stack frame 1 is null
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Calling non-existent method
     When I run "NonExistentMethodScenario" and relaunch the crashed app
@@ -65,6 +69,9 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[OverwriteLinkRegisterScenario run]"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Attempt to write into a read-only page
     When I run "ReadOnlyPageScenario" and relaunch the crashed app
@@ -75,6 +82,9 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[ReadOnlyPageScenario run]"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Stack overflow
     When I run "StackOverflowScenario" and relaunch the crashed app
@@ -106,6 +116,9 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "objc_msgSend"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Attempt to execute an instruction undefined on the current architecture
     When I run "UndefinedInstructionScenario" and relaunch the crashed app
@@ -116,6 +129,8 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[UndefinedInstructionScenario run]"
     And the "isPC" of stack frame 0 is true
     And on x86, the "isLR" of stack frame 0 is null
+    And on x86, the "isPC" of stack frame 1 is null
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Send a message to an object whose memory has already been freed
     When I run "ReleasedObjectScenario" and relaunch the crashed app
@@ -129,7 +144,9 @@ Feature: Reporting crash events
       | -[ReleasedObjectScenario run]                  |
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
-
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Crash within Swift code
     When I run "SwiftCrashScenario" and relaunch the crashed app
@@ -141,6 +158,8 @@ Feature: Reporting crash events
     And the event "metaData.error.crashInfo" matches "Fatal error: Unexpectedly found nil while unwrapping an Optional value"
     And the "isPC" of stack frame 0 is true
     And on x86, the "isLR" of stack frame 0 is null
+    And on x86, the "isPC" of stack frame 1 is null
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Assertion failure in Swift code
     When I run "SwiftAssertionScenario" and relaunch the crashed app
@@ -152,6 +171,8 @@ Feature: Reporting crash events
     And the event "metaData.error.crashInfo" matches "Fatal error: several unfortunate things just happened"
     And the "isPC" of stack frame 0 is true
     And on x86, the "isLR" of stack frame 0 is null
+    And on x86, the "isPC" of stack frame 1 is null
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Dereference a null pointer
     When I run "NullPointerScenario" and relaunch the crashed app
@@ -163,6 +184,9 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Trigger a crash with libsystem_pthread's _pthread_list_lock held
     When I run "AsyncSafeThreadScenario" and relaunch the crashed app
@@ -177,6 +201,9 @@ Feature: Reporting crash events
       | -[AsyncSafeThreadScenario run] |
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Trigger a crash with simulated malloc() lock held
     When I run "AsyncSafeMallocScenario" and relaunch the crashed app
@@ -185,6 +212,9 @@ Feature: Reporting crash events
     And the exception "errorClass" equals "SIGABRT"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Read a garbage pointer
     When I run "ReadGarbagePointerScenario" and relaunch the crashed app
@@ -196,6 +226,9 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "-[ReadGarbagePointerScenario run]"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Access a non-object as an object
     When I run "AccessNonObjectScenario" and relaunch the crashed app
@@ -207,6 +240,9 @@ Feature: Reporting crash events
     And the "method" of stack frame 0 equals "objc_msgSend"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
+    And on arm, the "isLR" of stack frame 1 is true
+    And on x86, the "isLR" of stack frame 1 is null
 
   Scenario: Misuse of libdispatch
     When I run "DispatchCrashScenario" and relaunch the crashed app
@@ -220,6 +256,7 @@ Feature: Reporting crash events
     And the event "metaData.error.crashInfo" starts with "BUG IN CLIENT OF LIBDISPATCH: dispatch_"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
+    And the "isPC" of stack frame 1 is null
 
   Scenario: Concurrent crashes should result in a single valid crash report
     Given I run "ConcurrentCrashesScenario" and relaunch the crashed app

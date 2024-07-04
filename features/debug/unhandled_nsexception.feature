@@ -13,6 +13,8 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     And the "method" of stack frame 0 equals the platform-dependent string:
       | ios   | <redacted>            |
       | macos | __exceptionPreprocess |
+    And the "method" of stack frame 1 equals "objc_exception_throw"
+    And the "method" of stack frame 2 equals "-[ObjCExceptionScenario run]"
     And the error payload field "events.0.device.time" is a date
     And the event "severity" equals "error"
     And the event "unhandled" is true
@@ -30,6 +32,8 @@ Feature: Uncaught NSExceptions are captured by Bugsnag
     And the "method" of stack frame 0 equals the platform-dependent string:
       | ios   | <redacted>            |
       | macos | __exceptionPreprocess |
+    And the "method" of stack frame 1 equals "objc_exception_throw"
+    And the "method" of stack frame 2 equals "-[ObjCExceptionOverrideScenario run]"
     And the error payload field "events.0.device.time" is a date
     And the event "severity" equals "error"
     And the event "unhandled" is false

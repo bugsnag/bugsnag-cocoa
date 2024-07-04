@@ -15,15 +15,21 @@ steps:
     env:
       DEVELOPER_DIR: /Applications/Xcode-15.app
     artifact_paths:
-      - features/fixtures/ios/output/iOSTestApp.ipa
-      - features/fixtures/macos/output/macOSTestApp.zip
-      - features/fixtures/ios/output/ipa_url_bb.txt
-      - features/fixtures/ios/output/ipa_url_bs.txt
+      - features/fixtures/ios/output/iOSTestApp_Release.ipa
+      - features/fixtures/ios/output/iOSTestApp_Debug.ipa
+      - features/fixtures/macos/output/macOSTestApp_Release.zip
+      - features/fixtures/macos/output/macOSTestApp_Debug.zip
+      - features/fixtures/ios/output/ipa_url_bb_release.txt
+      - features/fixtures/ios/output/ipa_url_bs_release.txt
+      - features/fixtures/ios/output/ipa_url_bb_debug.txt
+      - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
       - bundle install
       - make test-fixtures
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs.txt
+      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt
+      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
+      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
+      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
 
   - label: Static framework and Swift Package Manager builds
     timeout_in_minutes: 10
@@ -190,13 +196,14 @@ steps:
       queue: macos-14
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
     commands:
       - bundle install
       - bundle exec maze-runner
+        featuress/release
         --os=macos
 #        --fail-fast
 
@@ -346,20 +353,20 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--app=@/app/build/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
           #- "--fail-fast"
-          - "--exclude=features/release/app_hangs.feature"
+          - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
     concurrency: 25
     concurrency_group: 'browserstack-app'
@@ -377,14 +384,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs.txt"
+          - "--app=@/app/build/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
@@ -408,18 +415,18 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=@build/ipa_url_bs.txt"
+          - "--app=@build/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           #- "--fail-fast"
-          - "features/release/app_hangs.feature"
+          - "features/app_hangs.feature"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -447,14 +454,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
           - "--device=IOS_16"
           - "--no-tunnel"
@@ -477,14 +484,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
           - "--device=IOS_15"
           - "--no-tunnel"
@@ -507,14 +514,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
           - "--device=IOS_14"
           - "--no-tunnel"
@@ -537,14 +544,14 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.0:
-        download: "features/fixtures/ios/output/ipa_url_bb.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bb.txt"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
           - "--device=IOS_13"
           - "--no-tunnel"

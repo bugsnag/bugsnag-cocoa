@@ -2,6 +2,12 @@
 
 set -euo pipefail
 
+# "Release" or "Debug" must be specified
+if [ "$1" != "Release" ] && [ "$1" != "Debug" ]; then
+  echo "Usage: $0 [release|debug]"
+  exit 1
+fi
+
 cd features/fixtures/macos
 
 echo "--- macOSTestApp: pod install"
@@ -45,4 +51,4 @@ cd output
 
 echo "--- macOSTestApp: zip"
 
-zip -qr macOSTestApp.zip macOSTestApp.app
+zip -qr macOSTestApp_$1.zip macOSTestApp.app
