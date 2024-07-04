@@ -1,19 +1,22 @@
 //
-//  BugsnagCorrelation+Private.h
+//  BugsnagCorrelation.h
 //  Bugsnag
 //
-//  Created by Karl Stenerud on 14.05.24.
+//  Created by Karl Stenerud on 13.05.24.
 //  Copyright © 2024 Bugsnag Inc. All rights reserved.
 //
 
-#import "BugsnagCorrelation.h"
-
-#ifndef BugsnagCorrelation_Private_h
-#define BugsnagCorrelation_Private_h
+#import <Foundation/Foundation.h>
+#import <Bugsnag/BugsnagDefines.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BugsnagCorrelation ()
+BUGSNAG_EXTERN
+@interface BugsnagCorrelation: NSObject
+
+@property (readonly, nonatomic, strong, nullable) NSString *traceId;
+
+@property (readonly, nonatomic, strong, nullable) NSString *spanId;
 
 - (instancetype) initWithTraceId:(NSString * _Nullable) traceId spanId:(NSString * _Nullable)spanId;
 
@@ -24,5 +27,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif /* BugsnagCorrelation_Private_h */

@@ -53,7 +53,6 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
