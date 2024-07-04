@@ -6,7 +6,7 @@
 //  Copyright © 2024 Bugsnag Inc. All rights reserved.
 //
 
-#import "BugsnagCorrelation+Private.h"
+#import "BugsnagCorrelation.h"
 
 @implementation BugsnagCorrelation
 
