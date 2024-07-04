@@ -134,7 +134,8 @@ test: ## Run unit tests
 test-fixtures: ## Build the end-to-end test fixture
 	@./features/scripts/export_ios_app.sh Release
 	@./features/scripts/export_ios_app.sh Debug
-	@./features/scripts/export_mac_app.sh
+	@./features/scripts/export_mac_app.sh Release
+	@./features/scripts/export_mac_app.sh Debug
 
 e2e_ios_local:
 	@./features/scripts/export_ios_app.sh
