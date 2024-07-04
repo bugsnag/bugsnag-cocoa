@@ -21,6 +21,7 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagStackframe.h"
 #import "BugsnagThread.h"
+#import "BugsnagInternals.h"
 
 @interface BugsnagEventPersistLoadTest : BSGTestCase
 @property NSDictionary *eventData;
@@ -358,6 +359,28 @@
     XCTAssertEqual(event.errors.count, 2);
     XCTAssertEqualObjects([[event toJsonWithRedactedKeys:nil] valueForKeyPath:@"exceptions.@count"], @(2),
                           @"JSON representation of event should have the same number of errors / exceptions");
+}
+
+- (void)testCorrelationOverride {
+    NSString *traceId = @"123456789abcdef0123456789abcdef0";
+    NSString *spanId = @"fedcba9876543210";
+    BugsnagEvent *event = [self generateEventWithOverrides:@{
+            @"correlation": @{
+                    @"traceId": traceId,
+                    @"spanId": spanId,
+            }
+    }];
+
+    XCTAssertEqualObjects(traceId, event.correlation.traceId);
+    XCTAssertEqualObjects(spanId, event.correlation.spanId);
+
+    traceId = @"fedcba9876543210fedcba9876543210";
+    spanId = @"123456789abcdef0";
+    [event setCorrelationTraceId:traceId spanId:spanId];
+    NSDictionary *dict = [event toJsonWithRedactedKeys:nil];
+    event = [[BugsnagEvent alloc] initWithJson:dict];
+    XCTAssertEqualObjects(traceId, event.correlation.traceId);
+    XCTAssertEqualObjects(spanId, event.correlation.spanId);
 }
 
 @end

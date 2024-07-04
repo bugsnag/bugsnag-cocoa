@@ -23,7 +23,6 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagHandledState.h"
@@ -380,8 +379,8 @@ BSG_OBJC_DIRECT_MEMBERS
                                     [configDict isKindOfClass:[NSDictionary class]] ? configDict : @{}];
 
     NSDictionary *correlationDict = [event valueForKeyPath:@"user.correlation"];
-    NSString *traceId = correlationDict[@"traceid"];
-    NSString *spanId = correlationDict[@"spanid"];
+    NSString *traceId = correlationDict[@"traceId"];
+    NSString *spanId = correlationDict[@"spanId"];
 
     BugsnagAppWithState *app = [BugsnagAppWithState appWithDictionary:event config:config codeBundleId:self.codeBundleId];
 
@@ -543,6 +542,10 @@ BSG_OBJC_DIRECT_MEMBERS
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name {
     self.user = [[BugsnagUser alloc] initWithId:userId name:name emailAddress:email];
+}
+
+- (void) setCorrelationTraceId:(NSString *_Nonnull)traceId spanId:(NSString *_Nonnull)spanId {
+    self.correlation = [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
 }
 
 /**

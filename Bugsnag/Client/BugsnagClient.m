@@ -53,7 +53,6 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration+Private.h"
-#import "BugsnagCorrelation+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagError+Private.h"
 #import "BugsnagErrorTypes.h"
@@ -641,37 +640,35 @@ BSG_OBJC_DIRECT_MEMBERS
 
 // MARK: - Notify
 
-// Prevent the compiler from inlining or optimizing, which would reduce
-// the number of bugsnag-only stack entries and mess up our pruning.
-// We have to do it this way because you can't mark Objective-C methods noinline or optnone.
-// We leave it externable to further dissuade the optimizer.
-__attribute__((optnone))
-void bsg_notifyErrorOrException(BugsnagClient *self, id errorOrException, BugsnagOnErrorBlock block) {
-    [self notifyErrorOrException:errorOrException block:block];
-}
-
-// note - some duplication between notifyError calls is required to ensure
-// the same number of stackframes are used for each call.
-// see notify:handledState:block for further info
+// Here, we pass all public notify APIs to a common handling method
+// (notifyErrorOrException) and then prevent the compiler from performing
+// any inlining or outlining that would change the number of Bugsnag handler
+// methods on the stack and break our stack stripping.
+// Note: Each BSGPreventInlining call site within a module MUST pass a different
+//       string to prevent outlining!
 
 - (void)notifyError:(NSError *)error {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
-    bsg_notifyErrorOrException(self, error, nil);
+    BSGPreventInlining(@"Prevent");
+    [self notifyErrorOrException:error stackStripDepth:2 block:nil];
 }
 
 - (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
-    bsg_notifyErrorOrException(self, error, block);
+    BSGPreventInlining(@"inlining");
+    [self notifyErrorOrException:error stackStripDepth:2 block:block];
 }
 
 - (void)notify:(NSException *)exception {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
-    bsg_notifyErrorOrException(self, exception, nil);
+    BSGPreventInlining(@"and");
+    [self notifyErrorOrException:exception stackStripDepth:2 block:nil];
 }
 
 - (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
-    bsg_notifyErrorOrException(self, exception, block);
+    BSGPreventInlining(@"outlining");
+    [self notifyErrorOrException:exception stackStripDepth:2 block:block];
 }
 
 // MARK: - Notify (Internal)
@@ -686,7 +683,9 @@ void bsg_notifyErrorOrException(BugsnagClient *self, id errorOrException, Bugsna
     return [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
 }
 
-- (void)notifyErrorOrException:(id)errorOrException block:(BugsnagOnErrorBlock)block {
+- (void)notifyErrorOrException:(id)errorOrException
+               stackStripDepth:(NSUInteger)stackStripDepth
+                         block:(_Nullable BugsnagOnErrorBlock)block {
     BugsnagCorrelation *correlation = [self getCurrentCorrelation];
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagMetadata *metadata = [self.metadata copy];
@@ -730,25 +729,10 @@ void bsg_notifyErrorOrException(BugsnagClient *self, id errorOrException, Bugsna
         return;
     }
 
-    /**
-     * Stack frames starting from this one are removed by setting the depth.
-     * This helps remove bugsnag frames from showing in NSErrors as their
-     * trace is synthesized.
-     *
-     * For example, for [Bugsnag notifyError:block:], bugsnag adds the following
-     * frames which must be removed:
-     *
-     * 1. +[Bugsnag notifyError:block:]
-     * 2. -[BugsnagClient notifyError:block:]
-     * 3. bsg_notifyErrorOrException()
-     * 4. -[BugsnagClient notifyErrorOrException:block:]
-     */
-    NSUInteger depth = 4;
-    
     if (!callStack.count) {
         // If the NSException was not raised by the Objective-C runtime, it will be missing a call stack.
         // Use the current call stack instead.
-        callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, depth);
+        callStack = BSGArraySubarrayFromIndex(NSThread.callStackReturnAddresses, stackStripDepth);
     }
     
 #if BSG_HAVE_MACH_THREADS

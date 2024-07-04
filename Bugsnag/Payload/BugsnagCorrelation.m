@@ -6,7 +6,7 @@
 //  Copyright © 2024 Bugsnag Inc. All rights reserved.
 //
 
-#import "BugsnagCorrelation+Private.h"
+#import "BugsnagCorrelation.h"
 
 @implementation BugsnagCorrelation
 
@@ -25,12 +25,12 @@
 
     if ((self = [super init])) {
         id nsnull = NSNull.null;
-        _traceId = (NSString *)dict[@"traceid"];
+        _traceId = (NSString *)dict[@"traceId"];
         if (_traceId == nsnull) {
             _traceId = nil;
         }
 
-        _spanId = (NSString *)dict[@"spanid"];
+        _spanId = (NSString *)dict[@"spanId"];
         if (_spanId == nsnull) {
             _spanId = nil;
         }
@@ -41,8 +41,8 @@
 
 - (NSDictionary<NSString *, NSObject *> *) toJsonDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
-    dict[@"traceid"] = self.traceId;
-    dict[@"spanid"] = self.spanId;
+    dict[@"traceId"] = self.traceId;
+    dict[@"spanId"] = self.spanId;
     return dict;
 }
 

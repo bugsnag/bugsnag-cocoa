@@ -32,6 +32,7 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
+#import "BSGUtils.h"
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
@@ -98,27 +99,38 @@ BSG_OBJC_DIRECT_MEMBERS
     }
 }
 
+// Here, we pass all public notify APIs to a common handling method
+// (notifyErrorOrException) and then prevent the compiler from performing
+// any inlining or outlining that would change the number of Bugsnag handler
+// methods on the stack and break our stack stripping.
+// Note: Each BSGPreventInlining call site within a module MUST pass a different
+//       string to prevent outlining!
+
 + (void)notify:(NSException *)exception {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notify:exception];
+        BSGPreventInlining(@"Prevent");
+        [self.client notifyErrorOrException:exception stackStripDepth:2 block:nil];
     }
 }
 
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notify:exception block:block];
+        BSGPreventInlining(@"inlining");
+        [self.client notifyErrorOrException:exception stackStripDepth:2 block:block];
     }
 }
 
 + (void)notifyError:(NSError *)error {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notifyError:error];
+        BSGPreventInlining(@"and");
+        [self.client notifyErrorOrException:error stackStripDepth:2 block:nil];
     }
 }
 
 + (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagReadyForInternalCalls]) {
-        [self.client notifyError:error block:block];
+        BSGPreventInlining(@"outlining");
+        [self.client notifyErrorOrException:error stackStripDepth:2 block:block];
     }
 }
 

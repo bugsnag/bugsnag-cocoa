@@ -737,10 +737,10 @@
 		09E312F42BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312EE2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m */; };
 		09E312F52BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312EE2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m */; };
 		09E312F62BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312EE2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m */; };
-		09E312F82BF248E70081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		09E312F92BF248E80081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		09E312FA2BF248E90081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		09E312FB2BF248E90081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		09E312F82BF248E70081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; };
+		09E312F92BF248E80081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; };
+		09E312FA2BF248E90081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; };
+		09E312FB2BF248E90081F219 /* BugsnagCorrelation.h in Headers */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; };
 		09E312FC2BF2492C0081F219 /* BugsnagCorrelation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */; };
 		09E312FE2BF34D6D0081F219 /* BugsnagCorrelation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312FD2BF34D6D0081F219 /* BugsnagCorrelation.m */; };
 		09E312FF2BF34D6D0081F219 /* BugsnagCorrelation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312FD2BF34D6D0081F219 /* BugsnagCorrelation.m */; };
@@ -1577,9 +1577,8 @@
 		093EB6652AFE4580006EB7E3 /* BSGTestCase.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGTestCase.mm; sourceTree = "<group>"; };
 		09E312ED2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagCocoaPerformanceFromBugsnagCocoa.h; sourceTree = "<group>"; };
 		09E312EE2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagCocoaPerformanceFromBugsnagCocoa.m; sourceTree = "<group>"; };
-		09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagCorrelation.h; sourceTree = "<group>"; };
+		09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BugsnagCorrelation.h; path = ../include/Bugsnag/BugsnagCorrelation.h; sourceTree = "<group>"; };
 		09E312FD2BF34D6D0081F219 /* BugsnagCorrelation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagCorrelation.m; sourceTree = "<group>"; };
-		09E313022BF34E5E0081F219 /* BugsnagCorrelation+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagCorrelation+Private.h"; sourceTree = "<group>"; };
 		09E3132E2BF3867C0081F219 /* BugsnagPerformanceBridgeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceBridgeTests.m; sourceTree = "<group>"; };
 		3A700A8024A63A8E0068CD1B /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagThread.h; sourceTree = "<group>"; };
 		3A700A8124A63A8E0068CD1B /* BugsnagSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSession.h; sourceTree = "<group>"; };
@@ -2178,8 +2177,8 @@
 				0126DED7257A87F40031A70C /* BugsnagAppWithState+Private.h */,
 				0089684B2486DA9400DC48C2 /* BugsnagBreadcrumb.m */,
 				0126DEDF257A89490031A70C /* BugsnagBreadcrumb+Private.h */,
+				09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */,
 				09E312FD2BF34D6D0081F219 /* BugsnagCorrelation.m */,
-				09E313022BF34E5E0081F219 /* BugsnagCorrelation+Private.h */,
 				008968482486DA9400DC48C2 /* BugsnagDevice.m */,
 				0126DEE7257A8B0F0031A70C /* BugsnagDevice+Private.h */,
 				0089685A2486DA9500DC48C2 /* BugsnagDeviceWithState.m */,
@@ -2261,7 +2260,6 @@
 				3A700A8524A63A8E0068CD1B /* BugsnagBreadcrumb.h */,
 				3A700A8924A63A8E0068CD1B /* BugsnagClient.h */,
 				3A700A8D24A63A8E0068CD1B /* BugsnagConfiguration.h */,
-				09E312F72BF248DD0081F219 /* BugsnagCorrelation.h */,
 				01C41A27288FD3EA00BAE31A /* BugsnagDefines.h */,
 				3A700A8F24A63A8E0068CD1B /* BugsnagDevice.h */,
 				3A700A9224A63A8E0068CD1B /* BugsnagDeviceWithState.h */,

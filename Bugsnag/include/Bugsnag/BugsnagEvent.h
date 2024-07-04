@@ -11,7 +11,6 @@
 #import <Bugsnag/BugsnagDefines.h>
 #import <Bugsnag/BugsnagFeatureFlagStore.h>
 #import <Bugsnag/BugsnagMetadataStore.h>
-#import <Bugsnag/BugsnagCorrelation.h>
 
 @class BugsnagConfiguration;
 @class BugsnagHandledState;
@@ -113,8 +112,6 @@ BUGSNAG_EXTERN
  */
 @property (strong, nullable, nonatomic) id originalError;
 
-@property (readwrite, nonatomic, strong, nullable) BugsnagCorrelation *correlation;
-
 // =============================================================================
 // MARK: - User
 // =============================================================================
@@ -134,5 +131,7 @@ BUGSNAG_EXTERN
 - (void)setUser:(NSString *_Nullable)userId
       withEmail:(NSString *_Nullable)email
         andName:(NSString *_Nullable)name;
+
+- (void) setCorrelationTraceId:(NSString *_Nonnull)traceId spanId:(NSString *_Nonnull)spanId;
 
 @end
