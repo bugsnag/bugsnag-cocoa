@@ -381,7 +381,7 @@ steps:
       queue: macos-13-arm
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
@@ -400,7 +400,7 @@ steps:
       queue: macos-12-arm
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp.zip"
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
@@ -419,7 +419,7 @@ steps:
       queue: macos-11
     plugins:
       artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
@@ -436,7 +436,7 @@ steps:
       queue: macos-10.15
     plugins:
       artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
@@ -453,7 +453,7 @@ steps:
       queue: opensource-mac-cocoa-10.14
     plugins:
       artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
@@ -470,7 +470,7 @@ steps:
       queue: opensource-mac-cocoa-10.13
     plugins:
       artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp.zip"]
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
