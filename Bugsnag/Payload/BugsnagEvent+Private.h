@@ -9,6 +9,7 @@
 #import "BSGDefines.h"
 #import "BSGFeatureFlagStore.h"
 #import "BugsnagInternals.h"
+#import "BugsnagCorrelation.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -46,6 +47,8 @@ BSG_OBJC_DIRECT_MEMBERS
 @property (readwrite, nullable, nonatomic) NSDictionary *usage;
 
 @property (readwrite, nonnull, nonatomic) BugsnagUser *user;
+
+@property (readwrite, nonatomic, strong, nullable) BugsnagCorrelation *correlation;
 
 - (instancetype)initWithKSReport:(NSDictionary *)KSReport;
 

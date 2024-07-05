@@ -231,6 +231,7 @@ steps:
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
+        upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar

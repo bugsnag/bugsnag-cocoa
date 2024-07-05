@@ -7,13 +7,28 @@ steps:
   # Build
   #
 
+  - label: Static framework and Swift Package Manager builds
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-14
+    env:
+      XCODE_VERSION: 15.3.0
+    commands:
+      - make build_xcframework
+      - make build_swift
+      - make build_ios_static
+    plugins:
+      - artifacts#v1.9.3:
+          upload: "build/xcframeworks/products/Bugsnag.xcframework"
+          compressed: xcframework.zip
+
   - label: Build test fixtures
     key: cocoa_fixture
     timeout_in_minutes: 30
     agents:
       queue: macos-14
     env:
-      DEVELOPER_DIR: /Applications/Xcode-15.app
+      XCODE_VERSION: 15.3.0
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp_Release.ipa
       - features/fixtures/ios/output/iOSTestApp_Debug.ipa
@@ -30,16 +45,6 @@ steps:
       - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
       - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
-
-  - label: Static framework and Swift Package Manager builds
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-14
-    env:
-      DEVELOPER_DIR: /Applications/Xcode-15.app
-    commands:
-      - make build_swift
-      - make build_ios_static
 
   - label: Carthage
     timeout_in_minutes: 15

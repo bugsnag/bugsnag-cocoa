@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 6.30.0 (2024-07-04)
+
+### Enhancements
+
+* Allow setting the correlation trace ID and span ID in an event, and harmonize the API with bugsnag-android. Note: This moves BugsnagCorrelation to a private API, which might cause minor breakage.
+  [1671](https://github.com/bugsnag/bugsnag-cocoa/pull/1671)
+
+### Bug Fixes
+
+* Ensure that all Bugsnag.notifyXYZ and BugsnagClient.notifyXYZ calls strip the correct number of stack frames, regardless of compiler optimization level.
+  [1668](https://github.com/bugsnag/bugsnag-cocoa/pull/1668)
+
 ## 6.29.0 (2024-06-19)
 
 ### Enhancements

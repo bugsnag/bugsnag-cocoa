@@ -7,20 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#ifndef BugsnagCorrelation_h
-#define BugsnagCorrelation_h
+#import <Bugsnag/BugsnagDefines.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+BUGSNAG_EXTERN
 @interface BugsnagCorrelation: NSObject
 
-@property (readwrite, nonatomic, strong, nullable) NSString *traceId;
+@property (readonly, nonatomic, strong, nullable) NSString *traceId;
 
-@property (readwrite, nonatomic, strong, nullable) NSString *spanId;
+@property (readonly, nonatomic, strong, nullable) NSString *spanId;
+
+- (instancetype) initWithTraceId:(NSString * _Nullable) traceId spanId:(NSString * _Nullable)spanId;
+
+- (instancetype) initWithJsonDictionary:(NSDictionary<NSString *, NSObject *> * _Nullable) dict;
+
+- (NSDictionary<NSString *, NSObject *> *) toJsonDictionary;
 
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif /* BugsnagCorrelation_h */
