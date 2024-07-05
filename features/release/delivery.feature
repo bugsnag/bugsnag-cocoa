@@ -160,6 +160,8 @@ Feature: Delivery of errors
     And the event "usage.system.stringsTruncated" is not null
 
   @skip_ios_17
+  # TODO: Skipped Pending PLAT-12396
+  @skip_macos
   Scenario Outline: Attempt Delivery On Crash
     When I set the app to "<scenario_mode>" mode
     And I run "AttemptDeliveryOnCrashScenario"
