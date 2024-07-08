@@ -130,7 +130,7 @@ Feature: Reporting crash events
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
 
-  # TODO: Skipped Pending PLAT-12396
+  # TODO: Skipped Pending PLAT-12398
   @skip_macos
   Scenario: Crash within Swift code
     When I run "SwiftCrashScenario" and relaunch the crashed app
