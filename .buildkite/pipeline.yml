@@ -588,8 +588,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url_bs_debug.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bs_debug.txt"
@@ -618,7 +618,6 @@ steps:
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
-        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_debug.txt"
           - "--farm=bb"

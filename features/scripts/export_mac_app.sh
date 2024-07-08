@@ -20,7 +20,7 @@ BUILD_ARGS=(
   -workspace macOSTestApp.xcworkspace
   -scheme macOSTestApp
   -destination generic/platform=macOS
-  -configuration Release
+  -configuration $1
   -archivePath archive/macOSTestApp.xcarchive
   -quiet
   archive
