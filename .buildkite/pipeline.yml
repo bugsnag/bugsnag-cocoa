@@ -590,7 +590,6 @@ steps:
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
-        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bs_debug.txt"
           - "--farm=bs"
@@ -618,6 +617,7 @@ steps:
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
+        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_debug.txt"
           - "--farm=bb"
