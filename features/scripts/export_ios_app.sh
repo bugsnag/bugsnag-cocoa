@@ -8,6 +8,7 @@ if [ "$1" != "Release" ] && [ "$1" != "Debug" ]; then
   exit 1
 fi
 
+BUILD_CONFIGURATION=$1
 pushd features/fixtures/ios
 
   echo "--- iOSTestApp: xcodebuild archive"
@@ -21,7 +22,7 @@ pushd features/fixtures/ios
     -scheme iOSTestApp \
     -workspace iOSTestApp.xcworkspace \
     -destination generic/platform=iOS \
-    -configuration $1 \
+    -configuration ${BUILD_CONFIGURATION} \
     -archivePath archive/iosTestApp.xcarchive \
     -allowProvisioningUpdates \
     -quiet \
@@ -40,6 +41,6 @@ pushd features/fixtures/ios
     -exportOptionsPlist exportOptions.plist
 
   pushd output
-    mv iOSTestApp.ipa iOSTestApp_$1.ipa
+    mv iOSTestApp.ipa iOSTestApp_$BUILD_CONFIGURATION.ipa
   popd
 popd

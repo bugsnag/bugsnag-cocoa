@@ -8,47 +8,49 @@ if [ "$1" != "Release" ] && [ "$1" != "Debug" ]; then
   exit 1
 fi
 
-cd features/fixtures/macos
+BUILD_CONFIGURATION=$1
 
-echo "--- macOSTestApp: pod install"
+pushd features/fixtures/macos
 
-pod install
+  echo "--- macOSTestApp: pod install"
 
-echo "--- macOSTestApp: xcodebuild archive"
+  pod install
 
-BUILD_ARGS=(
-  -workspace macOSTestApp.xcworkspace
-  -scheme macOSTestApp
-  -destination generic/platform=macOS
-  -configuration Release
-  -archivePath archive/macOSTestApp.xcarchive
-  -quiet
-  archive
-  ONLY_ACTIVE_ARCH=NO
-)
+  echo "--- macOSTestApp: xcodebuild archive"
 
-if [ "${ENABLE_CODE_COVERAGE:-}" = YES ]; then
-  BUILD_ARGS+=(
-    OTHER_CFLAGS='$(inherited) -fprofile-instr-generate -fcoverage-mapping'
-    OTHER_LDFLAGS='$(inherited) -fprofile-instr-generate'
-    OTHER_SWIFT_FLAGS='$(inherited) -profile-generate -profile-coverage-mapping'
+  BUILD_ARGS=(
+    -workspace macOSTestApp.xcworkspace
+    -scheme macOSTestApp
+    -destination generic/platform=macOS
+    -configuration ${BUILD_CONFIGURATION}
+    -archivePath archive/macOSTestApp.xcarchive
+    -quiet
+    archive
+    ONLY_ACTIVE_ARCH=NO
   )
-fi
 
-xcodebuild "${BUILD_ARGS[@]}"
+  if [ "${ENABLE_CODE_COVERAGE:-}" = YES ]; then
+    BUILD_ARGS+=(
+      OTHER_CFLAGS='$(inherited) -fprofile-instr-generate -fcoverage-mapping'
+      OTHER_LDFLAGS='$(inherited) -fprofile-instr-generate'
+      OTHER_SWIFT_FLAGS='$(inherited) -profile-generate -profile-coverage-mapping'
+    )
+  fi
 
-echo "--- macOSTestApp: xcodebuild -exportArchive"
+  xcodebuild "${BUILD_ARGS[@]}"
 
-xcrun xcodebuild \
-  -exportArchive \
-  -exportPath output/ \
-  -exportOptionsPlist exportOptions.plist \
-  -archivePath archive/macOSTestApp.xcarchive \
-  -destination generic/platform=macOS \
-  -quiet
+  echo "--- macOSTestApp: xcodebuild -exportArchive"
 
-cd output
+  xcrun xcodebuild \
+    -exportArchive \
+    -exportPath output/ \
+    -exportOptionsPlist exportOptions.plist \
+    -archivePath archive/macOSTestApp.xcarchive \
+    -destination generic/platform=macOS \
+    -quiet
 
-echo "--- macOSTestApp: zip"
-
-zip -qr macOSTestApp_$1.zip macOSTestApp.app
+  pushd output
+    echo "--- macOSTestApp: zip"
+    zip -qr macOSTestApp_$BUILD_CONFIGURATION.zip macOSTestApp.app
+  popd
+popd

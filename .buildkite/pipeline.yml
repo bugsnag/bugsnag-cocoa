@@ -445,7 +445,7 @@ steps:
 
   ##############################################################################
   #
-  # Basic build E2E tests
+  # Basic build E2E tests - Release Configuration
   #
 
   #
@@ -572,6 +572,105 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
+  ##############################################################################
+  #
+  # Debug configration E2E tests
+  #
+
+  - label: ':browserstack: iOS 17 debug configuration tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/ipa_url_bs_debug.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        command:
+          - "--app=@/app/build/ipa_url_bs_debug.txt"
+          - "--farm=bs"
+          - "--device=IOS_17"
+          - "--fail-fast"
+          - "features/debug"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':bitbar: iOS 13 debug configuration tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_debug.txt"
+          - "--farm=bb"
+          - "--device=IOS_13"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/debug"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: 'macOS 14 debug E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-14
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/debug
+        --os=macos
+        --fail-fast
+
+  - label: 'macOS 10.13 debug E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/debug
+        --os=macos
+        --fail-fast
 
   ##############################################################################
   #
