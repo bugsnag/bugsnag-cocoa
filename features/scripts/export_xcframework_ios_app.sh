@@ -15,7 +15,7 @@ xcrun xcodebuild \
   -scheme iOSTestAppXcFramework \
   -workspace iOSTestAppXcFramework.xcworkspace \
   -destination generic/platform=iOS \
-  -configuration Debug \
+  -configuration Release \
   -archivePath archive/iosTestAppXcFramework.xcarchive \
   -allowProvisioningUpdates \
   -quiet \
