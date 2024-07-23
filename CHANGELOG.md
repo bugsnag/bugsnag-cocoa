@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Removed duplicate BugsnagCorrelation.h header file that was causing warnings when building an app.
+  [1662](https://github.com/bugsnag/bugsnag-cocoa/pull/1662)
+
 ## 6.30.0 (2024-07-04)
 
 ### Enhancements
