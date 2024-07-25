@@ -4,10 +4,10 @@ on: [pull_request]
 jobs:
 
   analyze:
-    runs-on: macos-11
+    runs-on: macos-14
     env:
       # Infer 1.0.1 cannot parse the iOS 15 SDK headers
-      DEVELOPER_DIR: /Applications/Xcode_12.5.1.app
+      DEVELOPER_DIR: /Applications/Xcode_15.4.app
     steps:
     - name: Checkout pull request HEAD
       uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
       run: make oclint
 
   danger:
-    runs-on: macos-11
+    runs-on: macos-14
     steps:
     - name: Checkout target branch
       uses: actions/checkout@v2
@@ -31,7 +31,7 @@ jobs:
       run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO && mv build build.base
     - name: Checkout pull request merge branch
       uses: actions/checkout@v2
-      with: 
+      with:
         clean: false
         fetch-depth: 100
     - name: Build framework

@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.30.1 (2024-07-25)
+
+### Bug Fixes
+
+* Removed duplicate BugsnagCorrelation.h header file that was causing warnings when building an app.
+  [1682](https://github.com/bugsnag/bugsnag-cocoa/pull/1682)
+
+* Mac Catalyst targets now only attempt to call os_proc_available_memory() from version 13.1.
+  [1680](https://github.com/bugsnag/bugsnag-cocoa/pull/1680)
+
 ## 6.30.0 (2024-07-04)
 
 ### Enhancements

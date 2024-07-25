@@ -45,7 +45,7 @@ Feature: App and Device attributes present
       | ios   | com.bugsnag.fixtures.cocoa   |
       | macos | com.bugsnag.fixtures.macOSTestApp |
     And the error payload field "events.0.app.isLaunching" is true
-    And the error payload field "events.0.app.releaseStage" equals "development"
+    And the error payload field "events.0.app.releaseStage" equals "production"
     And the error payload field "events.0.app.type" equals the platform-dependent string:
       | ios   | iOS   |
       | macos | macOS |

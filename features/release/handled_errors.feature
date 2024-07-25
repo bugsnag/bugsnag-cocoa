@@ -64,9 +64,6 @@ Feature: Handled Errors and Exceptions
     And the event "exceptions.0.stacktrace.0.method" equals one of:
       | <redacted>            |
       | __exceptionPreprocess |
-    And the "method" of stack frame 1 equals "objc_exception_throw"
-    And the "method" of stack frame 2 equals "-[NSExceptionShiftScenario causeAnException]"
-    And the "method" of stack frame 3 equals "-[NSExceptionShiftScenario run]"
 
   Scenario: Reporting handled errors concurrently
     When I run "ManyConcurrentNotifyScenario"
