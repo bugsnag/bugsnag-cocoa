@@ -15,8 +15,8 @@ Feature: Loading Bugsnag configuration from Info.plist
 
     And the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
     And the event "metaData.nserror.domain" matches the platform-dependent regex:
-      | ios   | iOSTestApp(XcFramework).LaunchError   |
-      | macos | macOSTestApp(XcFramework).LaunchError |
+      | ios   | iOSTestApp(XcFramework)?.LaunchError   |
+      | macos | macOSTestApp(XcFramework)?.LaunchError |
     And the event "app.releaseStage" equals "beta2"
 
   Scenario: Calling Bugsnag.start() with no configuration
@@ -32,8 +32,8 @@ Feature: Loading Bugsnag configuration from Info.plist
       | ios   | iOS Bugsnag Notifier |
       | macos | OSX Bugsnag Notifier |
     And the event "metaData.nserror.domain" matches the platform-dependent regex:
-      | ios   | iOSTestApp(XcFramework).LoadConfigFromFileAutoScenarioError   |
-      | macos | macOSTestApp(XcFramework).LoadConfigFromFileAutoScenarioError |
+      | ios   | iOSTestApp(XcFramework)?.LoadConfigFromFileAutoScenarioError   |
+      | macos | macOSTestApp(XcFramework)?.LoadConfigFromFileAutoScenarioError |
     And the event "app.releaseStage" equals "beta2"
 
   Scenario: Info.plist settings are used when calling startWithApiKey

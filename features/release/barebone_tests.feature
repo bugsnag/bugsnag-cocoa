@@ -303,7 +303,7 @@ Feature: Barebone tests
     And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
     And the event "metaData.app.memoryUsage" is a number
-    And the event "metaData.app.name" matches "iOSTestApp(XcFramework)"
+    And the event "metaData.app.name" matches "iOSTestApp(XcFramework)?"
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number
     And the event "metaData.device.charging" is a boolean

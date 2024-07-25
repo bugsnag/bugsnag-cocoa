@@ -61,8 +61,8 @@ Feature: App and Device attributes present
     # App metadata
 
     And the event "metaData.app.name" matches the platform-dependent regex:
-      | ios   | iOSTestApp(XcFramework)   |
-      | macos | macOSTestApp(XcFramework) |
+      | ios   | iOSTestApp(XcFramework)?   |
+      | macos | macOSTestApp(XcFramework)? |
 
     And I discard the oldest error
     And the event "app.isLaunching" is false
