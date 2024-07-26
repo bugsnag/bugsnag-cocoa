@@ -461,7 +461,7 @@ static void UpdateTaskMemory(void) {
         setMemoryUsage(footprint, task_vm.limit_bytes_remaining);
     } else {
 #if !TARGET_OS_OSX
-    if (@available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
+    if (@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macCatalyst 13.1, *)) {
         setMemoryUsage(footprint, os_proc_available_memory());
     }
 #endif
