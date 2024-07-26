@@ -68,74 +68,6 @@ steps:
       - make xcframework-test-fixtures
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt
 
-  - label: ':bitbar: iOS 16 XcFramework E2E tests batch 1'
-    depends_on:
-      - xcframework_cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.3:
-        download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=@/app/build/xcframework_ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_16"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          # PLAT-11155: App hang scenarios run on BrowserStack
-          - "--exclude=features/app_hangs.feature"
-          - "--exclude=features/[e-z].*.feature$"
-    concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-  - label: ':bitbar: iOS 16 XcFramework E2E tests batch 2'
-    depends_on:
-      - xcframework_cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.9.3:
-        download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
-        command:
-          - "--app=@/app/build/xcframework_ipa_url_bb.txt"
-          - "--farm=bb"
-          - "--device=IOS_16"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--exclude=features/[a-d].*.feature$"
-    concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-
-
-
-
-
-
-
-
-
   - label: Carthage
     timeout_in_minutes: 15
     agents:
@@ -431,6 +363,73 @@ steps:
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
+
+  ##############################################################################
+  #
+  # XcFramework E2E tests
+  #
+
+  - label: ':bitbar: iOS 16 XcFramework E2E tests batch 1'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/xcframework_ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          # PLAT-11155: App hang scenarios run on BrowserStack
+          - "features/release"
+          - "--exclude=features/release/app_hangs.feature"
+          - "--exclude=features/release/[e-z].*.feature$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
+  - label: ':bitbar: iOS 16 XcFramework E2E tests batch 2'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/xcframework_ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "features/release"
+          - "--exclude=features/release/[a-d].*.feature$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   ##############################################################################
   #
