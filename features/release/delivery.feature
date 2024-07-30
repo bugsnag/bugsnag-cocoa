@@ -173,6 +173,10 @@ Feature: Delivery of errors
     And the event "metaData.error.type" equals "<error_type>"
     And the event "unhandled" is true
     And the event "usage.config.attemptDeliveryOnCrash" is true
+    And the event "usage.config.staticallyLinked" equals the platform-dependent boolean:
+      | ios     | true  |
+      | macos   | @null |
+      | watchos | @null |
     And I discard the oldest error
     And I relaunch the app after a crash
     And I configure Bugsnag for "AttemptDeliveryOnCrashScenario"
@@ -197,6 +201,10 @@ Feature: Delivery of errors
     And the event "metaData.error.type" equals "<error_type>"
     And the event "unhandled" is true
     And the event "usage.config.attemptDeliveryOnCrash" is true
+    And the event "usage.config.staticallyLinked" equals the platform-dependent boolean:
+      | ios     | true  |
+      | macos   | @null |
+      | watchos | @null |
     And I discard the oldest error
     And I relaunch the app after a crash
     And I configure Bugsnag for "AttemptDeliveryOnCrashScenario"
