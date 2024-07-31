@@ -3,19 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
 		01575CF826C12B2F00BD56D7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */; };
 		378BA2CD24229CBB00123123 /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* OutOfMemoryController.m */; };
-		379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
+		729E56CA2C5A51A800D9394E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
+		729E56CB2C5A71C700D9394E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C41ACDBD81009AFFB7 /* Assets.xcassets */; };
 		99E0BFB5118D8734EE28789F /* Pods_swift_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C150B6F7F4565C76CCBBFE1 /* Pods_swift_ios.framework */; };
 		D175F4BE1ACDBD81009AFFB7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */; };
 		D175F4C01ACDBD81009AFFB7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */; };
 		D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C11ACDBD81009AFFB7 /* Main.storyboard */; };
-		D175F4C51ACDBD81009AFFB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D175F4C41ACDBD81009AFFB7 /* Assets.xcassets */; };
 		D175F4DF1ACDBEFA009AFFB7 /* AnotherClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D175F4DE1ACDBEFA009AFFB7 /* AnotherClass.swift */; };
 		D175F4E21ACDBFD9009AFFB7 /* AnObjCClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = D175F4E11ACDBFD9009AFFB7 /* AnObjCClass.mm */; };
 		E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E75E62DE1F4CE1D8000C44C0 /* libc++.tbd */; };
@@ -186,8 +186,8 @@
 			files = (
 				D175F4C31ACDBD81009AFFB7 /* Main.storyboard in Resources */,
 				00C3ED5C23F2DA4900757DBD /* README.md in Resources */,
-				379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */,
-				D175F4C51ACDBD81009AFFB7 /* Assets.xcassets in Resources */,
+				729E56CA2C5A51A800D9394E /* LaunchScreen.storyboard in Resources */,
+				729E56CB2C5A71C700D9394E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,18 +214,19 @@
 		};
 		9AFEEED933DC82BFDDB374F6 /* Upload Bugsnag dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)",
 			);
 			name = "Upload Bugsnag dSYM";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env ruby";
-			shellScript = "dsyms = Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"]\n\nfork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  dsyms.each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
+			shellPath = /usr/bin/ruby;
+			shellScript = "api_key = '91b91acefad3652c939706e5ae1c2450'\n\nif ENV['ENABLE_USER_SCRIPT_SANDBOXING'] == 'YES'\n  count = ENV['SCRIPT_INPUT_FILE_COUNT'].to_i\n  abort 'error: dSYMs must be specified as build phase \"Input Files\" because ENABLE_USER_SCRIPT_SANDBOXING is enabled' unless count > 0\n  dsyms = []\n  for i in 0 .. count - 1\n    dsym = ENV[\"SCRIPT_INPUT_FILE_#{i}\"]\n    if File.exist? dsym\n      dsyms.append dsym\n    else\n      abort \"error: cannot read #{dsym}\" unless ENV['DEBUG_INFORMATION_FORMAT'] != 'dwarf-with-dsym'\n    end\n  end\nelse\n  dsyms = Dir[\"#{ENV['DWARF_DSYM_FOLDER_PATH']}/*/Contents/Resources/DWARF/*\"]\nend\n\ndsyms.each do |dsym|\n  Process.detach Process.spawn('/usr/bin/curl', '--http1.1',\n    '-F', \"apiKey=#{api_key}\",\n    '-F', \"dsym=@#{dsym}\",\n    '-F', \"projectRoot=#{ENV['PROJECT_DIR']}\",\n    'https://upload.bugsnag.com/dsym'\n  )\nend\n";
 			showEnvVarsInLog = 0;
 		};
 		B2D2057DB5069AFE4AD142D4 /* [CP] Embed Pods Frameworks */ = {
@@ -387,7 +388,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -397,21 +399,47 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AF44D2DB9E8B3F9694E25083 /* Pods-swift-ios.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COMPILER_INDEX_STORE_ENABLE = YES;
+				CURRENT_PROJECT_VERSION = 5.77.0.0;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG_VIEW=1",
+				);
 				INFOPLIST_FILE = "swift-ios/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_MAP_FILE_PATH = "$(TARGET_TEMP_DIR)/$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 5.77.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				OTHER_LDFLAGS = "";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.examples.swiftui-ios";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "swift-ios";
 				PROVISIONING_PROFILE = "";
+				STRIP_SWIFT_SYMBOLS = NO;
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG DEBUG_VIEW";
 				SWIFT_OBJC_BRIDGING_HEADER = "swift-ios/swift-ios-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = NO;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -419,21 +447,43 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8DE88172D3F6AC031966E9B0 /* Pods-swift-ios.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 5.77.0.0;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				GCC_PREPROCESSOR_DEFINITIONS = "STORE=1";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include;
 				INFOPLIST_FILE = "swift-ios/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_GENERATE_MAP_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 5.77.0;
+				OTHER_LDFLAGS = "-WI,-exported_symbols_list,/dev/null";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.examples.swiftui-ios";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "swift-ios";
 				PROVISIONING_PROFILE = "";
+				STRIP_SWIFT_SYMBOLS = NO;
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = STORE;
 				SWIFT_OBJC_BRIDGING_HEADER = "swift-ios/swift-ios-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = NO;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
