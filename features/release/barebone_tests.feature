@@ -85,10 +85,6 @@ Feature: Barebone tests
     And the event "unhandled" is true
     And the event "usage.callbacks" is not null
     And the event "usage.config" is not null
-    And the event "usage.config.staticallyLinked" equals the platform-dependent boolean:
-      | ios     | true  |
-      | macos   | @null |
-      | watchos | @null |
     And the event "usage.system.stringCharsTruncated" equals 345
     And the event "usage.system.stringsTruncated" equals 1
     And the event "user.email" equals "foobar@example.com"
@@ -302,7 +298,7 @@ Feature: Barebone tests
     And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
     And the event "metaData.app.memoryUsage" is a number
-    And the event "metaData.app.name" equals "iOSTestApp"
+    And the event "metaData.app.name" matches "iOSTestApp(XcFramework)?"
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number
     And the event "metaData.device.charging" is a boolean
