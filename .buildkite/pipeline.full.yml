@@ -430,33 +430,36 @@ steps:
           limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
-  - label: ':browserstack: iOS 13 app hang tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@build/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_13"
-          - "--appium-version=1.21.0"
-          - "--fail-fast"
-          - "features/app_hangs.feature"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
+  #
+  # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
+  #
+  # - label: ':browserstack: iOS 13 app hang tests'
+  #   depends_on:
+  #     - cocoa_fixture
+  #   timeout_in_minutes: 30
+  #   agents:
+  #     queue: opensource
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+  #       upload: "maze_output/failed/**/*"
+  #     docker-compose#v3.7.0:
+  #       pull: cocoa-maze-runner
+  #       run: cocoa-maze-runner
+  #       command:
+  #         - "--app=@build/ipa_url_bs_release.txt"
+  #         - "--farm=bs"
+  #         - "--device=IOS_13"
+  #         - "--appium-version=1.21.0"
+  #         - "--fail-fast"
+  #         - "features/app_hangs.feature"
+  #   concurrency: 5
+  #   concurrency_group: 'browserstack-app'
+  #   concurrency_method: eager
+  #   retry:
+  #     automatic:
+  #       - exit_status: -1  # Agent was lost
+  #         limit: 2
 
   - label: 'ARM macOS 13 E2E tests'
     depends_on:

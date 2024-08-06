@@ -1,5 +1,5 @@
 @app_hang_test
-@skip # TODO: Investigate app hang flakes
+
 Feature: App hangs
 
   Background:
