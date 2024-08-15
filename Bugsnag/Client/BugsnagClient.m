@@ -455,7 +455,7 @@ BSG_OBJC_DIRECT_MEMBERS
     BSGGetDevice().batteryMonitoringEnabled = FALSE;
 #endif
 
-#if TARGET_OS_IOS
+#if !TARGET_OS_XR && TARGET_OS_IOS
     [[UIDEVICE currentDevice] endGeneratingDeviceOrientationNotifications];
 #endif
 }
