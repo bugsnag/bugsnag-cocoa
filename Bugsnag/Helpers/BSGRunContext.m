@@ -460,8 +460,10 @@ static void UpdateTaskMemory(void) {
     if (task_vm.limit_bytes_remaining) {
         setMemoryUsage(footprint, task_vm.limit_bytes_remaining);
     } else {
-#if !TARGET_OS_OSX
-    if (@available(iOS 13.0, tvOS 13.0, watchOS 6.0, macCatalyst 13.1, *)) {
+#if !TARGET_OS_OSX && !TARGET_OS_MACCATALYST
+        // We disable access to os_proc_available_memory() entirely on Catalyst
+        // because earlier versions are missing the API, causing linker errors on launch.
+    if (@available(iOS 13.0, tvOS 13.0, watchOS 6.0, *)) {
         setMemoryUsage(footprint, os_proc_available_memory());
     }
 #endif

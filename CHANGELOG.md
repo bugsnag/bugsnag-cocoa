@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Disable calls to os_proc_available_memory() on Catalyst due to missing API in earlier versions.
+  [1689](https://github.com/bugsnag/bugsnag-cocoa/pull/1689)
+
 ## 6.30.1 (2024-07-25)
 
 ### Bug Fixes
