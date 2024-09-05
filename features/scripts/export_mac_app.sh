@@ -12,10 +12,6 @@ BUILD_CONFIGURATION=$1
 
 pushd features/fixtures/macos
 
-  echo "--- macOSTestApp: pod install"
-
-  pod install
-
   echo "--- macOSTestApp: xcodebuild archive"
 
   BUILD_ARGS=(
