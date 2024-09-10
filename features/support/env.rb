@@ -155,7 +155,6 @@ Maze.hooks.after do |scenario|
         out: File.open(File.join(path, 'device.log'), 'w')
       )
       Process.wait log
-      FileUtils.mv '/tmp/kscrash.log', path
     end
   when 'ios'
     begin
