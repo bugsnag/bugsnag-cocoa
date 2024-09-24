@@ -201,6 +201,10 @@ steps:
     agents:
       queue: macos-14
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
@@ -220,6 +224,10 @@ steps:
     agents:
       queue: macos-13-arm
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
@@ -239,6 +247,10 @@ steps:
     agents:
       queue: macos-12-arm
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
@@ -278,6 +290,10 @@ steps:
     agents:
       queue: macos-11
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
@@ -295,6 +311,10 @@ steps:
     agents:
       queue: macos-10.15
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
@@ -312,6 +332,10 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.14
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
@@ -331,6 +355,10 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
@@ -358,6 +386,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
@@ -389,6 +421,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
@@ -421,6 +457,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
@@ -460,6 +500,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -490,6 +534,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -520,6 +568,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -550,6 +602,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -585,6 +641,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_debug.txt"
         upload: "maze_output/failed/**/*"
@@ -612,6 +672,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
         upload: "maze_output/failed/**/*"
@@ -642,6 +706,10 @@ steps:
     agents:
       queue: macos-14
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
         upload:
@@ -661,6 +729,10 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
         upload:
