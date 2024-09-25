@@ -41,10 +41,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
@@ -59,6 +55,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -74,10 +74,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
         upload: "maze_output/failed/**/*"
@@ -92,6 +88,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -110,10 +110,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -131,6 +127,10 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -146,10 +146,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -166,6 +162,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -180,10 +180,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -201,6 +197,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -211,10 +211,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -231,6 +227,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -242,10 +242,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -263,6 +259,10 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -278,10 +278,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -298,6 +294,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -313,10 +313,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -334,6 +330,10 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -349,10 +349,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
@@ -369,6 +365,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -388,10 +388,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
@@ -405,6 +401,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -423,10 +423,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
@@ -440,6 +436,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -456,10 +456,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
@@ -473,6 +469,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -492,10 +492,6 @@ steps:
   #   agents:
   #     queue: opensource
   #   plugins:
-  #     test-collector#v1.10.2:
-  #       files: "reports/TEST-*.xml"
-  #       format: "junit"
-  #       branch: "^master|next$$"
   #     artifacts#v1.5.0:
   #       download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
   #       upload: "maze_output/failed/**/*"
@@ -509,6 +505,10 @@ steps:
   #         - "--appium-version=1.21.0"
   #         - "--fail-fast"
   #         - "features/app_hangs.feature"
+  #     test-collector#v1.10.2:
+  #       files: "reports/TEST-*.xml"
+  #       format: "junit"
+  #       branch: "^master|next$$"
   #   concurrency: 5
   #   concurrency_group: 'browserstack-app'
   #   concurrency_method: eager
@@ -524,18 +524,18 @@ steps:
     agents:
       queue: macos-13-arm
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner 
+      - bundle exec maze-runner
         features/release
         --os=macos
         --fail-fast
@@ -547,15 +547,15 @@ steps:
     agents:
       queue: macos-12-arm
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner 
@@ -570,13 +570,13 @@ steps:
     agents:
       queue: macos-11
     plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
       test-collector#v1.10.2:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-      artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -591,13 +591,13 @@ steps:
     agents:
       queue: macos-10.15
     plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
       test-collector#v1.10.2:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-      artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -612,13 +612,13 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.14
     plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
       test-collector#v1.10.2:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-      artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -633,13 +633,13 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
+      artifacts#v1.5.0:
+        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
+        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
       test-collector#v1.10.2:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-      artifacts#v1.5.0:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
       - bundle exec maze-runner
