@@ -85,11 +85,11 @@
 		01F6B75E2832757F00B75C5D /* OversizedCrashReportScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6B75C2832757F00B75C5D /* OversizedCrashReportScenario.swift */; };
 		01F6B75F2832757F00B75C5D /* OversizedHandledErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6B75D2832757F00B75C5D /* OversizedHandledErrorScenario.swift */; };
 		01FA9EC426D63BB20059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC326D63BB20059FF4A /* AppHangInTerminationScenario.swift */; };
+		0915E1062CA57ABA006B1815 /* FixtureConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 0915E1042CA57ABA006B1815 /* FixtureConfig.m */; };
 		095E095A2AF3BE8D00273F1F /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095E09592AF3BE8D00273F1F /* Logging.swift */; };
 		095E095D2AF3BFDA00273F1F /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E095C2AF3BFDA00273F1F /* Logging.m */; };
 		09F024FA2B9F3ACD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024F92B9F3ACD007D9F73 /* Fixture.swift */; };
 		09F024FC2B9F3B16007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */; };
-		09F0250B2BA1E640007D9F73 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F0250A2BA1E640007D9F73 /* FixtureConfig.swift */; };
 		09F025172BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A096DF627C7E56C00DB6ECC /* CxxUnexpectedScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF527C7E56C00DB6ECC /* CxxUnexpectedScenario.mm */; };
@@ -304,12 +304,15 @@
 		01F6B75C2832757F00B75C5D /* OversizedCrashReportScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedCrashReportScenario.swift; sourceTree = "<group>"; };
 		01F6B75D2832757F00B75C5D /* OversizedHandledErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedHandledErrorScenario.swift; sourceTree = "<group>"; };
 		01FA9EC326D63BB20059FF4A /* AppHangInTerminationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHangInTerminationScenario.swift; sourceTree = "<group>"; };
+		0915E1042CA57ABA006B1815 /* FixtureConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FixtureConfig.m; sourceTree = "<group>"; };
+		0915E1052CA57ABA006B1815 /* FixtureConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixtureConfig.h; sourceTree = "<group>"; };
+		0915E1072CA57AC3006B1815 /* Bridge_PublicAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bridge_PublicAPI.h; path = ../Bridge_PublicAPI.h; sourceTree = "<group>"; };
+		0915E1082CA57AC3006B1815 /* Bridge_InternalAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bridge_InternalAPI.h; path = ../Bridge_InternalAPI.h; sourceTree = "<group>"; };
 		095E09592AF3BE8D00273F1F /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		095E095B2AF3BFDA00273F1F /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		095E095C2AF3BFDA00273F1F /* Logging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		09F024F92B9F3ACD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
-		09F0250A2BA1E640007D9F73 /* FixtureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
 		09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedNotifyErrorScenario.swift; sourceTree = "<group>"; };
 		6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
 		8A096DF527C7E56C00DB6ECC /* CxxUnexpectedScenario.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxUnexpectedScenario.mm; sourceTree = "<group>"; };
@@ -481,10 +484,13 @@
 		AA4C7F1329AEA060009B09A9 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				0915E1082CA57AC3006B1815 /* Bridge_InternalAPI.h */,
+				0915E1072CA57AC3006B1815 /* Bridge_PublicAPI.h */,
 				AA4C7F1429AEA0C4009B09A9 /* BugsnagWrapper.swift */,
 				AA8BAEE22A4DD90E00A8BEA7 /* CommandReaderThread.swift */,
 				09F024F92B9F3ACD007D9F73 /* Fixture.swift */,
-				09F0250A2BA1E640007D9F73 /* FixtureConfig.swift */,
+				0915E1052CA57ABA006B1815 /* FixtureConfig.h */,
+				0915E1042CA57ABA006B1815 /* FixtureConfig.m */,
 				095E095B2AF3BFDA00273F1F /* Logging.h */,
 				095E095C2AF3BFDA00273F1F /* Logging.m */,
 				095E09592AF3BE8D00273F1F /* Logging.swift */,
@@ -883,6 +889,7 @@
 				010BAB0B2833CE570003FF36 /* CxxExceptionOverrideScenario.mm in Sources */,
 				01DE903826CE99B800455213 /* CriticalThermalStateScenario.swift in Sources */,
 				01B6BBB625DA82B800FC4DE6 /* SendLaunchCrashesSynchronouslyScenario.swift in Sources */,
+				0915E1062CA57ABA006B1815 /* FixtureConfig.m in Sources */,
 				095E095D2AF3BFDA00273F1F /* Logging.m in Sources */,
 				F4295836C8AF75547C675E8D /* ReleasedObjectScenario.m in Sources */,
 				01E5EAD225B713990066EA8A /* OOMScenario.m in Sources */,
@@ -921,7 +928,6 @@
 				A1117E552535A59100014FDA /* OOMLoadScenario.swift in Sources */,
 				8A840FBA21AF5C450041DBFA /* SwiftAssertionScenario.swift in Sources */,
 				E753F24824927412001FB671 /* OnSendErrorCallbackCrashScenario.swift in Sources */,
-				09F0250B2BA1E640007D9F73 /* FixtureConfig.swift in Sources */,
 				01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */,
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				0104085F258CA0A100933C60 /* DispatchCrashScenario.swift in Sources */,
@@ -1159,7 +1165,7 @@
 				STRIP_STYLE = all;
 				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/Bridge_InternalAPI.h;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "iOSTestApp-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -1206,7 +1212,7 @@
 				STRIP_STYLE = all;
 				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_INSTALL_OBJC_HEADER = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/Bridge_InternalAPI.h;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "iOSTestApp-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
