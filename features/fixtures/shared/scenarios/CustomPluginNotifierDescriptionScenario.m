@@ -1,5 +1,6 @@
 #import "Scenario.h"
 #import "Logging.h"
+#import "Bridge_InternalAPI.h"
 
 @interface CustomPluginNotifierDescriptionScenario : Scenario
 @end
