@@ -403,6 +403,7 @@
 		0915E0F92CA57647006B1815 /* FixtureConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FixtureConfig.m; sourceTree = "<group>"; };
 		0915E0FD2CA57849006B1815 /* Bridge_InternalAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bridge_InternalAPI.h; path = ../Bridge_InternalAPI.h; sourceTree = "<group>"; };
 		0915E0FE2CA5785A006B1815 /* Bridge_PublicAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bridge_PublicAPI.h; path = ../Bridge_PublicAPI.h; sourceTree = "<group>"; };
+		0915E2BB2CA5A1FF006B1815 /* ReverseBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReverseBridge.h; sourceTree = "<group>"; };
 		095E095E2AF3C98F00273F1F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		095E09602AF3C9A500273F1F /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		095E09612AF3C9A500273F1F /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
@@ -666,6 +667,7 @@
 				017FBFB5254B09C300809042 /* MainWindowController.h */,
 				017FBFB6254B09C300809042 /* MainWindowController.m */,
 				017FBFB7254B09C300809042 /* MainWindowController.xib */,
+				0915E2BB2CA5A1FF006B1815 /* ReverseBridge.h */,
 			);
 			path = macOSTestApp;
 			sourceTree = "<group>";

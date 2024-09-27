@@ -12,8 +12,6 @@
 #import <UIKit/UIKit.h>
 #import "iOSTestApp-Swift.h"
 #elif TARGET_OS_OSX
-#define SWIFT_MODULE "macOSTestApp"
-#import "macOSTestApp-Swift.h"
 #elif TARGET_OS_WATCH
 #import "watchos_maze_host.h"
 #define SWIFT_MODULE "watchOSTestApp_WatchKit_Extension"
