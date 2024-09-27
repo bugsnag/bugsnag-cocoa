@@ -293,10 +293,6 @@ steps:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -314,10 +310,6 @@ steps:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -337,10 +329,6 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -360,10 +348,6 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -734,10 +718,6 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
