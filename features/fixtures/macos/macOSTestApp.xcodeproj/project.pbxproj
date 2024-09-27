@@ -182,13 +182,13 @@
 		01F6B74F2832381300B75C5D /* OversizedCrashReportScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6B74B2832381300B75C5D /* OversizedCrashReportScenario.swift */; };
 		01F7365A278D90440000113C /* NetworkBreadcrumbsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F73659278D90440000113C /* NetworkBreadcrumbsScenario.swift */; };
 		01FA9EC626D64FFF0059FF4A /* AppHangInTerminationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FA9EC526D64FFF0059FF4A /* AppHangInTerminationScenario.swift */; };
+		0915E0FA2CA57647006B1815 /* FixtureConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 0915E0F92CA57647006B1815 /* FixtureConfig.m */; };
 		095E095F2AF3C98F00273F1F /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095E095E2AF3C98F00273F1F /* Logging.swift */; };
 		095E09622AF3C9A500273F1F /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 095E09612AF3C9A500273F1F /* Logging.m */; };
 		09E045582C89A334003882D3 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E045572C89A334003882D3 /* Bugsnag.framework */; };
 		09E045592C89A334003882D3 /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 09E045572C89A334003882D3 /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		09E0455C2C89A33B003882D3 /* BugsnagNetworkRequestPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09E0455B2C89A33B003882D3 /* BugsnagNetworkRequestPlugin.framework */; };
 		09E0455D2C89A33B003882D3 /* BugsnagNetworkRequestPlugin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 09E0455B2C89A33B003882D3 /* BugsnagNetworkRequestPlugin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		09F0250E2BA301FD007D9F73 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F0250C2BA301FD007D9F73 /* FixtureConfig.swift */; };
 		09F0250F2BA301FD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F0250D2BA301FD007D9F73 /* Fixture.swift */; };
 		09F025112BA30225007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025102BA30225007D9F73 /* MazeRunnerCommand.swift */; };
 		09F025132BA30240007D9F73 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025122BA30240007D9F73 /* CommandReaderThread.swift */; };
@@ -399,6 +399,10 @@
 		01F6B74B2832381300B75C5D /* OversizedCrashReportScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OversizedCrashReportScenario.swift; sourceTree = "<group>"; };
 		01F73659278D90440000113C /* NetworkBreadcrumbsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkBreadcrumbsScenario.swift; sourceTree = "<group>"; };
 		01FA9EC526D64FFF0059FF4A /* AppHangInTerminationScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHangInTerminationScenario.swift; sourceTree = "<group>"; };
+		0915E0F82CA57647006B1815 /* FixtureConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FixtureConfig.h; sourceTree = "<group>"; };
+		0915E0F92CA57647006B1815 /* FixtureConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FixtureConfig.m; sourceTree = "<group>"; };
+		0915E0FD2CA57849006B1815 /* Bridge_InternalAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bridge_InternalAPI.h; path = ../Bridge_InternalAPI.h; sourceTree = "<group>"; };
+		0915E0FE2CA5785A006B1815 /* Bridge_PublicAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bridge_PublicAPI.h; path = ../Bridge_PublicAPI.h; sourceTree = "<group>"; };
 		095E095E2AF3C98F00273F1F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		095E09602AF3C9A500273F1F /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		095E09612AF3C9A500273F1F /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
@@ -406,7 +410,6 @@
 		09E045542C89A230003882D3 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E045572C89A334003882D3 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E0455B2C89A33B003882D3 /* BugsnagNetworkRequestPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BugsnagNetworkRequestPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		09F0250C2BA301FD007D9F73 /* FixtureConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
 		09F0250D2BA301FD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		09F025102BA30225007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09F025122BA30240007D9F73 /* CommandReaderThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
@@ -670,10 +673,13 @@
 		AA4C7F1629AEA1F2009B09A9 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				0915E0FD2CA57849006B1815 /* Bridge_InternalAPI.h */,
+				0915E0FE2CA5785A006B1815 /* Bridge_PublicAPI.h */,
 				AA4C7F1729AEA31D009B09A9 /* BugsnagWrapper.swift */,
 				09F025122BA30240007D9F73 /* CommandReaderThread.swift */,
 				09F0250D2BA301FD007D9F73 /* Fixture.swift */,
-				09F0250C2BA301FD007D9F73 /* FixtureConfig.swift */,
+				0915E0F82CA57647006B1815 /* FixtureConfig.h */,
+				0915E0F92CA57647006B1815 /* FixtureConfig.m */,
 				095E09602AF3C9A500273F1F /* Logging.h */,
 				095E09612AF3C9A500273F1F /* Logging.m */,
 				095E095E2AF3C98F00273F1F /* Logging.swift */,
@@ -767,7 +773,6 @@
 				01F47D31254B1B3100B184AD /* OverwriteLinkRegisterScenario.m in Sources */,
 				01F47D08254B1B3100B184AD /* AutoSessionCustomVersionScenario.m in Sources */,
 				01F47CC6254B1B3100B184AD /* HandledExceptionScenario.swift in Sources */,
-				09F0250E2BA301FD007D9F73 /* FixtureConfig.swift in Sources */,
 				01F47D0D254B1B3100B184AD /* LoadConfigFromFileScenario.swift in Sources */,
 				095E09622AF3C9A500273F1F /* Logging.m in Sources */,
 				01F47CF5254B1B3100B184AD /* StoppedSessionScenario.swift in Sources */,
@@ -820,6 +825,7 @@
 				01F47CD3254B1B3100B184AD /* EnabledBreadcrumbTypesIsNilScenario.swift in Sources */,
 				01F47CC4254B1B3100B184AD /* OriginalErrorNSExceptionScenario.swift in Sources */,
 				01F47D0C254B1B3100B184AD /* UserEventOverrideScenario.swift in Sources */,
+				0915E0FA2CA57647006B1815 /* FixtureConfig.m in Sources */,
 				01F47CD6254B1B3100B184AD /* SIGILLScenario.m in Sources */,
 				01F47D32254B1B3100B184AD /* ResumeSessionOOMScenario.m in Sources */,
 				010BAB722833D34A0003FF36 /* BareboneTestHandledScenario.swift in Sources */,
@@ -1087,7 +1093,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_SWIFT_SYMBOLS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/Bridge_InternalAPI.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 			};
@@ -1112,7 +1118,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_SWIFT_SYMBOLS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = ../shared/scenarios/Scenario.h;
+				SWIFT_OBJC_BRIDGING_HEADER = ../shared/Bridge_InternalAPI.h;
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;

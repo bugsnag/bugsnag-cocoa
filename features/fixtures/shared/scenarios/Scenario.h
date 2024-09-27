@@ -5,15 +5,13 @@
 
 #import <Bugsnag/Bugsnag.h>
 #import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.h>
-#import "BugsnagInternals.h"
+#import "FixtureConfig.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 void logInternal(const char* level, NSString *format, va_list args);
 
 void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
-
-@class FixtureConfig;
 
 @interface Scenario : NSObject
 
