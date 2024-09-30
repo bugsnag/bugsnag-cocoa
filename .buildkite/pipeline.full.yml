@@ -55,6 +55,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -84,6 +88,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -119,6 +127,10 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -150,6 +162,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -181,6 +197,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -207,6 +227,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -235,6 +259,10 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -266,6 +294,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -298,6 +330,10 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -329,6 +365,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -361,6 +401,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -392,6 +436,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -421,6 +469,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -453,6 +505,10 @@ steps:
   #         - "--appium-version=1.21.0"
   #         - "--fail-fast"
   #         - "features/app_hangs.feature"
+  #     test-collector#v1.10.2:
+  #       files: "reports/TEST-*.xml"
+  #       format: "junit"
+  #       branch: "^master|next$$"
   #   concurrency: 5
   #   concurrency_group: 'browserstack-app'
   #   concurrency_method: eager
@@ -473,9 +529,13 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner 
+      - bundle exec maze-runner
         features/release
         --os=macos
         --fail-fast
@@ -492,9 +552,13 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner 
+      - bundle exec maze-runner
         features/release
         --os=macos
         --fail-fast
@@ -509,6 +573,10 @@ steps:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner

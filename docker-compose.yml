@@ -4,6 +4,7 @@ x-common-environment: &common-environment
   DEBUG:
   VERBOSE:
   BUILDKITE:
+  BUILDKITE_ANALYTICS_TOKEN:
   BUILDKITE_BRANCH:
   BUILDKITE_BUILD_CREATOR:
   BUILDKITE_BUILD_NUMBER:
@@ -19,6 +20,7 @@ x-common-environment: &common-environment
   MAZE_BUGSNAG_API_KEY:
   MAZE_REPEATER_API_KEY:
   MAZE_SCENARIO_BUGSNAG_API_KEY:
+  MAZE_NO_FAIL_FAST:
 
 services:
   cocoa-maze-runner:
@@ -31,6 +33,7 @@ services:
       - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
+      - ./reports/:/app/reports/
 
   cocoa-maze-runner-bitbar:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
@@ -46,3 +49,4 @@ services:
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./reports/:/app/reports/

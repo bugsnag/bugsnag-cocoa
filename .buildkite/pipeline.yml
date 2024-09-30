@@ -206,6 +206,10 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -225,6 +229,10 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -244,6 +252,10 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -281,6 +293,10 @@ steps:
       artifacts#v1.5.0:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -374,6 +390,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -405,6 +425,10 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -434,6 +458,10 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -475,6 +503,10 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -505,6 +537,10 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -535,6 +571,10 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -565,6 +605,10 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -597,6 +641,10 @@ steps:
           - "--device=IOS_17"
           - "--fail-fast"
           - "features/debug"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -627,6 +675,10 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/debug"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
@@ -647,6 +699,10 @@ steps:
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     commands:
       - bundle install
       - bundle exec maze-runner
