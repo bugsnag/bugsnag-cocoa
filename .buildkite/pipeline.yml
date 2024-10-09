@@ -36,16 +36,14 @@ steps:
       - features/fixtures/macos/output/macOSTestApp_Release.zip
       - features/fixtures/macos/output/macOSTestApp_Debug.zip
       - features/fixtures/ios/output/ipa_url_bb_release.txt
-      - features/fixtures/ios/output/ipa_url_bs_release.txt
+      - features/fixtures/ios/output/ipa_url_bb_release.txt
       - features/fixtures/ios/output/ipa_url_bb_debug.txt
-      - features/fixtures/ios/output/ipa_url_bs_debug.txt
+      - features/fixtures/ios/output/ipa_url_bb_debug.txt
     commands:
       - bundle install
       - make test-fixtures
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
 
   - label: Carthage
     timeout_in_minutes: 15
@@ -367,7 +365,7 @@ steps:
   #
   # BrowserStack
   #
-  - label: ':browserstack: iOS 17 E2E tests batch 1'
+  - label: ':bitbar: iOS 17 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -375,18 +373,20 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs_release.txt"
-          - "--farm=bs"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
           - "--device=IOS_17"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
+          - "--no-tunnel"
+          - "--aws-public-ip"
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
@@ -402,7 +402,7 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':browserstack: iOS 17 E2E tests batch 2'
+  - label: ':bitbar: iOS 17 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -410,18 +410,19 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs_release.txt"
-          - "--farm=bs"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
           - "--device=IOS_17"
-          - "--appium-version=1.21.0"
           - "--a11y-locator"
+          - "--no-tunnel"
+          - "--aws-public-ip"
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
@@ -438,7 +439,7 @@ steps:
           limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
-  - label: ':browserstack: iOS 17 app hang tests'
+  - label: ':bitbar: iOS 17 app hang tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 30
@@ -446,16 +447,17 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=@build/ipa_url_bs_release.txt"
-          - "--farm=bs"
+          - "--app=@build/ipa_url_bb_release.txt"
+          - "--farm=bb"
           - "--device=IOS_17"
-          - "--appium-version=1.21.0"
+          - "--no-tunnel"
+          - "--aws-public-ip"
           - "--fail-fast"
           - "features/app_hangs.feature"
       test-collector#v1.10.2:
@@ -622,7 +624,7 @@ steps:
   # Debug configration E2E tests
   #
 
-  - label: ':browserstack: iOS 17 debug configuration tests'
+  - label: ':bitbar: iOS 17 debug configuration tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -630,15 +632,17 @@ steps:
       queue: opensource
     plugins:
       artifacts#v1.9.3:
-        download: "features/fixtures/ios/output/ipa_url_bs_debug.txt"
+        download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=@/app/build/ipa_url_bs_debug.txt"
-          - "--farm=bs"
+          - "--app=@/app/build/ipa_url_bb_debug.txt"
+          - "--farm=bb"
           - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
           - "--fail-fast"
           - "features/debug"
       test-collector#v1.10.2:
