@@ -376,8 +376,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
@@ -395,7 +395,7 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'browserstack-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -413,8 +413,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
@@ -431,7 +431,7 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'browserstack-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -450,8 +450,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
         command:
           - "--app=@build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -465,7 +465,7 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 5
-    concurrency_group: 'browserstack-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -635,8 +635,8 @@ steps:
         download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v4.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
         command:
           - "--app=@/app/build/ipa_url_bb_debug.txt"
           - "--farm=bb"
@@ -650,7 +650,7 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 5
-    concurrency_group: 'browserstack-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
