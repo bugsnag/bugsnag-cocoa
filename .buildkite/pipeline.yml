@@ -370,10 +370,10 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+      docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
@@ -381,7 +381,6 @@ steps:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
           - "--device=IOS_17"
-          - "--a11y-locator"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
