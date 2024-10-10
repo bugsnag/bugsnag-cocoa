@@ -380,6 +380,7 @@ steps:
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
+          - "--appium-version=1.22"
           - "--device=IOS_17"
           - "--no-tunnel"
           - "--aws-public-ip"
