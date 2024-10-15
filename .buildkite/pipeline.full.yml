@@ -391,7 +391,7 @@ steps:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+      docker-compose#v4.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -426,7 +426,7 @@ steps:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+      docker-compose#v4.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -459,7 +459,7 @@ steps:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+      docker-compose#v4.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:

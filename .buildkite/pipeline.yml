@@ -35,13 +35,18 @@ steps:
       - features/fixtures/ios/output/iOSTestApp_Debug.ipa
       - features/fixtures/macos/output/macOSTestApp_Release.zip
       - features/fixtures/macos/output/macOSTestApp_Debug.zip
+
       - features/fixtures/ios/output/ipa_url_bb_release.txt
+      - features/fixtures/ios/output/ipa_url_bs_release.txt
       - features/fixtures/ios/output/ipa_url_bb_debug.txt
+      - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
       - bundle install
       - make test-fixtures
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt
+      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
+      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
 
   - label: Carthage
     timeout_in_minutes: 15
@@ -408,7 +413,7 @@ steps:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+      docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
         service-ports: true
@@ -416,7 +421,6 @@ steps:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
           - "--device=IOS_17"
-          - "--a11y-locator"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
@@ -435,7 +439,7 @@ steps:
           limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
-  - label: ':bitbar: iOS 17 app hang tests'
+  - label: ':browserstack: iOS 17 app hang tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 30
@@ -445,12 +449,12 @@ steps:
       artifacts#v1.5.0:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
         command:
-          - "--app=@build/ipa_url_bb_release.txt"
-          - "--farm=bb"
+          - "--app=@build/ipa_url_bs_release.txt"
+          - "--farm=bs"
           - "--device=IOS_17"
           - "--no-tunnel"
           - "--aws-public-ip"
@@ -461,7 +465,7 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 5
-    concurrency_group: 'bitbar'
+    concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
       automatic:
@@ -645,7 +649,7 @@ steps:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-    concurrency: 5
+    concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
