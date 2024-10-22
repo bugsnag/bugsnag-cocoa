@@ -9,6 +9,7 @@ on:
         description: 'Version of the submodule to update downstream repos to'
         required: true
         type: string
+permissions: read-all
 
 jobs:
   update-dependencies:

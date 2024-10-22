@@ -2,16 +2,17 @@ name: "Update Docs"
 on:
   release:
     types: [published]
+permissions: read-all
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
       - name: Checkout bugsnag-cocoa
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
       - name: Checkout docs branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
         with:
           ref: gh-pages
           path: docs
