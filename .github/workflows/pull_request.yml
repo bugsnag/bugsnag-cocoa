@@ -1,16 +1,19 @@
 name: "Pull Request"
 on: [pull_request]
+permissions: read-all
 
 jobs:
 
   analyze:
+    permissions:
+      statuses: write
     runs-on: macos-14
     env:
       # Infer 1.0.1 cannot parse the iOS 15 SDK headers
       DEVELOPER_DIR: /Applications/Xcode_15.4.app
     steps:
     - name: Checkout pull request HEAD
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       with:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Install dependencies
@@ -21,16 +24,19 @@ jobs:
       run: make oclint
 
   danger:
+    permissions:
+      pull-requests: write
+      statuses: write
     runs-on: macos-14
     steps:
     - name: Checkout target branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       with:
         ref: ${{ github.base_ref }}
     - name: Build framework
       run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO && mv build build.base
     - name: Checkout pull request merge branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       with:
         clean: false
         fetch-depth: 100
