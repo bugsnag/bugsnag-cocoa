@@ -16,8 +16,8 @@ steps:
           download: "Bugsnag.xcframework.zip"
           upload:
             - features/fixtures/ios/output/iOSTestAppXcFramework.ipa
-            #      - features/fixtures/macos/output/macOSTestApp.zip
             - features/fixtures/ios/output/xcframework_ipa_url_bb.txt
+            - features/fixtures/macos/output/macOSTestAppXcFramework.zip
     commands:
       - unzip Bugsnag.xcframework.zip
       - bundle install

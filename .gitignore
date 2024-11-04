@@ -35,3 +35,4 @@ Package.resolved
 bb.ready
 /maze_output
 Gemfile.lock
+Bugsnag.xcframework.zip
