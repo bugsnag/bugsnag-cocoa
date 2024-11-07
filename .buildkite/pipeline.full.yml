@@ -13,13 +13,16 @@ steps:
       XCODE_VERSION: 15.3.0
     plugins:
       - artifacts#v1.9.3:
-          download: "Bugsnag.xcframework.zip"
+          download:
+            - "Bugsnag.xcframework.zip"
+            - "BugsnagNetworkRequestPlugin.xcframework.zip"
           upload:
             - features/fixtures/ios/output/iOSTestAppXcFramework.ipa
             - features/fixtures/ios/output/xcframework_ipa_url_bb.txt
             - features/fixtures/macos/output/macOSTestAppXcFramework.zip
     commands:
       - unzip Bugsnag.xcframework.zip
+      - unzip BugsnagNetworkRequestPlugin.xcframework.zip
       - bundle install
       - make xcframework-test-fixtures
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt

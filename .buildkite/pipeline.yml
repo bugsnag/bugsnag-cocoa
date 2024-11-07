@@ -19,9 +19,12 @@ steps:
       - make build_swift
       - make build_ios_static
       - zip -ry Bugsnag.xcframework.zip build/xcframeworks/products/Bugsnag.xcframework
+      - zip -ry BugsnagNetworkRequestPlugin.xcframework.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework
     plugins:
       - artifacts#v1.9.3:
-          upload: "Bugsnag.xcframework.zip"
+          upload:
+            - "Bugsnag.xcframework.zip"
+            - "BugsnagNetworkRequestPlugin.xcframework.zip"
 
   - label: Build test fixtures
     key: cocoa_fixture
