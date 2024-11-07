@@ -45,9 +45,9 @@ Feature: Discarding reports based on release stage
     When I run "HandledErrorValidReleaseStageScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the exception "errorClass" equals the platform-dependent string:
-      | ios   | iOSTestApp.MagicError   |
-      | macos | macOSTestApp.MagicError |
+    And the exception "errorClass" matches the platform-dependent regex:
+      | ios   | iOSTestApp(XcFramework)?.MagicError   |
+      | macos | macOSTestApp(XcFramework)?.MagicError |
     And the exception "message" equals "incoming!"
     And the event "unhandled" is false
     And the event "app.releaseStage" equals "prod"

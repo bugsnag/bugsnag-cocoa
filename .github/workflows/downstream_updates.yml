@@ -9,6 +9,7 @@ on:
         description: 'Version of the submodule to update downstream repos to'
         required: true
         type: string
+permissions: read-all
 
 jobs:
   update-dependencies:
@@ -17,7 +18,7 @@ jobs:
       RELEASE_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.target_version || github.event.release.tag_name }}
     strategy:
       matrix:
-        downstream_repo: ['bugsnag/bugsnag-unity', 'bugsnag/bugsnag-flutter']
+        downstream_repo: ['bugsnag/bugsnag-unity', 'bugsnag/bugsnag-flutter', 'bugsnag/bugsnag-js', 'bugsnag/bugsnag-unreal']
     steps:
       - name: Install libcurl4-openssl-dev and net-tools
         run: |

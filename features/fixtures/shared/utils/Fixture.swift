@@ -13,6 +13,7 @@ protocol CommandReceiver {
     func receiveCommand(command: MazeRunnerCommand)
 }
 
+@objc
 class Fixture: NSObject, CommandReceiver {
     static let defaultApiKey = "12312312312312312312312312312312"
     @objc static var baseMazeRunnerAddress: URL?
