@@ -398,6 +398,7 @@
 		09F1E1C92CDCBD10007F5933 /* macOSTestAppXcFramework.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOSTestAppXcFramework.entitlements; sourceTree = "<group>"; };
 		09F1E3562CDCCA8D007F5933 /* BugsnagNetworkRequestPlugin.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagNetworkRequestPlugin.xcframework; path = ../../../../build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework; sourceTree = "<group>"; };
 		09F1E3572CDCCA8D007F5933 /* Bugsnag.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Bugsnag.xcframework; path = ../../../../build/xcframeworks/products/Bugsnag.xcframework; sourceTree = "<group>"; };
+		710618F62CF0BBCE00423249 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -637,6 +638,7 @@
 		09F1E1BE2CDCBD0E007F5933 /* macOSTestAppXcFramework */ = {
 			isa = PBXGroup;
 			children = (
+				710618F62CF0BBCE00423249 /* Info.plist */,
 				09F1E1BF2CDCBD0E007F5933 /* AppDelegate.h */,
 				09F1E1C02CDCBD0E007F5933 /* AppDelegate.m */,
 				09F1E1C22CDCBD10007F5933 /* Assets.xcassets */,
@@ -1047,6 +1049,7 @@
 					../../../Bugsnag,
 					../../../Bugsnag/Payload,
 				);
+				INFOPLIST_FILE = macOSTestAppXcFramework/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -1078,6 +1081,7 @@
 					../../../Bugsnag,
 					../../../Bugsnag/Payload,
 				);
+				INFOPLIST_FILE = macOSTestAppXcFramework/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
