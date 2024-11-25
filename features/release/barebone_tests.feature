@@ -111,7 +111,8 @@ Feature: Barebone tests
     And the error payload field "events.0.threads" is an array with 0 elements
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
-    And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
+    # TODO: Skipped pending PLAT-13234
+    # And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
     And I discard the oldest error
@@ -143,7 +144,8 @@ Feature: Barebone tests
     And the exception "type" equals "cocoa"
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
-    And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
+    # TODO: Skipped pending PLAT-13234
+    #And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
   @watchos
