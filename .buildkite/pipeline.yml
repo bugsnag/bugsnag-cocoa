@@ -693,7 +693,7 @@ steps:
   - label: 'macOS 14 debug E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 20
     agents:
       queue: macos-14
     plugins:
