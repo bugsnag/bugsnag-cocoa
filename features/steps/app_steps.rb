@@ -161,7 +161,12 @@ def run_macos_app
     Process.waitpid $fixture_pid
   end
   dir = 'features/fixtures/macos/output'
-  exe = "#{dir}/macOSTestApp.app/Contents/MacOS/macOSTestApp"
+  if ENV['RUN_XCFRAMEWORK_APP']
+    exe = "#{dir}/macOSTestAppXcFramework.app/Contents/MacOS/macOSTestAppXcFramework"
+  else
+    exe = "#{dir}/macOSTestApp.app/Contents/MacOS/macOSTestApp"
+  end
+
   system("unzip -qd #{dir} #{dir}/macOSTestApp*.zip", exception: true) unless File.exist? exe
   $fixture_pid = Process.spawn($app_env, exe, %i[err out] => '/dev/null')
 end

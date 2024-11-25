@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>0192837465afbecd0192837465afbecd</string>
+		<key>endpoints</key>
+		<dict>
+			<key>notify</key>
+			<string>http://example.com/notify</string>
+			<key>sessions</key>
+			<string>http://example.com/sessions</string>
+		</dict>
+		<key>releaseStage</key>
+		<string>beta2</string>
+	</dict>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.3</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

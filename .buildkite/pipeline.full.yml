@@ -13,13 +13,16 @@ steps:
       XCODE_VERSION: 15.3.0
     plugins:
       - artifacts#v1.9.3:
-          download: "Bugsnag.xcframework.zip"
+          download:
+            - "Bugsnag.xcframework.zip"
+            - "BugsnagNetworkRequestPlugin.xcframework.zip"
           upload:
             - features/fixtures/ios/output/iOSTestAppXcFramework.ipa
-            #      - features/fixtures/macos/output/macOSTestApp.zip
             - features/fixtures/ios/output/xcframework_ipa_url_bb.txt
+            - features/fixtures/macos/output/macOSTestAppXcFramework.zip
     commands:
       - unzip Bugsnag.xcframework.zip
+      - unzip BugsnagNetworkRequestPlugin.xcframework.zip
       - bundle install
       - make xcframework-test-fixtures
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt
@@ -99,6 +102,54 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+
+  - label: 'macOS 14 XcFramework barebone E2E tests'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: macos-14
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+        upload:
+          - "*.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    env:
+      RUN_XCFRAMEWORK_APP: "true"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release/barebone_tests.feature
+        --os=macos
+
+  - label: 'macOS 10.13 XcFramework barebone E2E tests'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+        upload:
+          - "*.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    env:
+      RUN_XCFRAMEWORK_APP: "true"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release/barebone_tests.feature
+        --os=macos
 
   #
   # BitBar
@@ -387,7 +438,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -422,7 +473,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -457,7 +508,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -492,7 +543,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -527,7 +578,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -560,7 +611,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -596,7 +647,7 @@ steps:
   #   agents:
   #     queue: opensource
   #   plugins:
-  #     artifacts#v1.5.0:
+  #     artifacts#v1.9.3:
   #       download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
   #       upload: "maze_output/failed/**/*"
   #     docker-compose#v3.7.0:
@@ -628,7 +679,7 @@ steps:
     agents:
       queue: macos-13-arm
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
@@ -651,7 +702,7 @@ steps:
     agents:
       queue: macos-12-arm
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
@@ -674,7 +725,7 @@ steps:
     agents:
       queue: macos-11
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
       test-collector#v1.10.2:
@@ -695,7 +746,7 @@ steps:
     agents:
       queue: macos-10.15
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
@@ -712,7 +763,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.14
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
@@ -729,7 +780,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
