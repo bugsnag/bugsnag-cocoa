@@ -115,7 +115,7 @@ def relaunch_crashed_app
   when 'ios'
     # Wait for the app to stop running before relaunching
     step 'the app is not running'
-    Maze.driver.launch_app
+    Maze.driver.activate_app Maze.driver.app_id
   when 'macos'
     sleep 4
     launch_app
@@ -131,8 +131,8 @@ end
 def kill_and_relaunch_app
   case Maze::Helper.get_current_platform
   when 'ios'
-    Maze.driver.close_app
-    Maze.driver.launch_app
+    Maze.driver.terminate_app Maze.driver&.app_id
+    Maze.driver.activate_app Maze.driver.app_id
   when 'macos'
     run_macos_app # This will kill the app if it's running
   when 'watchos'
