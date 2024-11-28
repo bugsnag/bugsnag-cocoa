@@ -1,17 +1,17 @@
-*       @robert-smartbear @kstenerud @tomlongridge
+*                   @robert-smartbear @kstenerud @tomlongridge
 
-features/*  @bugsnag/platforms-test-automation
+features/*          @joshedney @twometresteve @cawllec
 
-scripts/*   @bugsnag/platforms-test-automation
+scripts/*           @joshedney @twometresteve @cawllec
 
-.buildkite/*    @bugsnag/platforms-test-automation
+.buildkite/*        @joshedney @twometresteve @cawllec
 
-.github/*   @bugsnag/platforms-test-automation
+.github/*           @joshedney @twometresteve @cawllec
 
-Makefile    @bugsnag/platforms-test-automation
+Makefile            @joshedney @twometresteve @cawllec
 
-Gemfile @bugsnag/platforms-test-automation
+Gemfile             @joshedney @twometresteve @cawllec
 
-docker-compose.yml  @bugsnag/platforms-test-automation
+docker-compose.yml  @joshedney @twometresteve @cawllec
 
-TESTING.md  @bugsnag/platforms-test-automation
+TESTING.md          @joshedney @twometresteve @cawllec
