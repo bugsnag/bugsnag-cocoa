@@ -131,7 +131,7 @@ end
 def kill_and_relaunch_app
   case Maze::Helper.get_current_platform
   when 'ios'
-    Maze.driver.close_app
+    Maze.driver.terminate_app Maze.driver&.app_id
     Maze.driver.activate_app Maze.driver.app_id
   when 'macos'
     run_macos_app # This will kill the app if it's running
