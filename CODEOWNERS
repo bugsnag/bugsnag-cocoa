@@ -1,1 +1,17 @@
 *       @robert-smartbear @kstenerud @tomlongridge
+
+features/*  @bugsnag/platforms-test-automation
+
+scripts/*   @bugsnag/platforms-test-automation
+
+.buildkite/*    @bugsnag/platforms-test-automation
+
+.github/*   @bugsnag/platforms-test-automation
+
+Makefile    @bugsnag/platforms-test-automation
+
+Gemfile @bugsnag/platforms-test-automation
+
+docker-compose.yml  @bugsnag/platforms-test-automation
+
+TESTING.md  @bugsnag/platforms-test-automation
