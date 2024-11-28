@@ -484,6 +484,40 @@ steps:
   # BitBar
   #
 
+  - label: ':bitbar: iOS 17 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
   - label: ':bitbar: iOS 16 barebone tests'
     depends_on:
       - cocoa_fixture

@@ -37,6 +37,39 @@ steps:
   # XcFramework E2E tests
   #
 
+  - label: ':bitbar: iOS 17 XcFramework barebone E2E tests'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 20
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/xcframework_ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+
   - label: ':bitbar: iOS 16 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
