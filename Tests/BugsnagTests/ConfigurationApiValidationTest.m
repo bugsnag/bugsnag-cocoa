@@ -225,6 +225,14 @@
     XCTAssertEqual(0, [self.config.onSessionBlocks count]);
 }
 
+- (void)testValidOnSendFailureBlock {
+    void (^block)(BugsnagEvent *) = ^(BugsnagEvent *event) {};
+    BugsnagOnSendFailureRef callback = [self.config addOnSendFailureBlock:block];
+    XCTAssertEqual(1, [self.config.onFailureBlocks count]);
+    [self.config removeOnSendFailure:callback];
+    XCTAssertEqual(0, [self.config.onFailureBlocks count]);
+}
+
 - (void)testValidOnSendErrorBlock {
     BOOL (^block)(BugsnagEvent *) = ^BOOL(BugsnagEvent *event) {
         return NO;

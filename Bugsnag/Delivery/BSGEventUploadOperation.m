@@ -46,8 +46,21 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     return self;
 }
 
+- (void)_sendFailureForEvent:(BugsnagEvent *)event configuration:(BugsnagConfiguration *)configuration {
+    NSArray<BugsnagOnSendFailureBlock> *failureBlocks = [configuration.onFailureBlocks copy];
+    for (BugsnagOnSendFailureBlock block in failureBlocks) {
+        @try {
+            block(event);
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Ignoring exception thrown by onFailure callback: %@", exception);
+        }
+    }
+}
+
 - (void)runWithDelegate:(id<BSGEventUploadOperationDelegate>)delegate completionHandler:(nonnull void (^)(void))completionHandler {
     bsg_log_debug(@"Preparing event %@", self.name);
+    
+    BugsnagConfiguration *configuration = delegate.configuration;
     
     NSError *error = nil;
     BugsnagEvent *event = [self loadEventAndReturnError:&error];
@@ -55,12 +68,13 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         bsg_log_err(@"Failed to load event %@ due to error %@", self.name, error);
         if (!(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError)) {
             [self deleteEvent];
+            // If this happens, there will be no event, but at least we'll notify
+            // the client that an event wasn't sent.
+            [self _sendFailureForEvent:event configuration:configuration];
         }
         completionHandler();
         return;
     }
-    
-    BugsnagConfiguration *configuration = delegate.configuration;
     
     if (!configuration.shouldSendReports || ![event shouldBeSent]) {
         bsg_log_info(@"Discarding event %@ because releaseStage not in enabledReleaseStages", self.name);
@@ -107,6 +121,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
          [NSString stringWithFormat:@"BSGEventUploadOperation -[runWithDelegate:completionHandler:] %@ %@",
           exception.name, exception.reason]];
         [self deleteEvent];
+        [self _sendFailureForEvent:event configuration:configuration];
         completionHandler();
         return;
     }
@@ -135,6 +150,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     if (!data) {
         bsg_log_debug(@"Encoding failed; will discard event %@", self.name);
         [self deleteEvent];
+        [self _sendFailureForEvent:event configuration:configuration];
         completionHandler();
         return;
     }
@@ -154,6 +170,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
              [NSString stringWithFormat:@"BSGEventUploadOperation -[runWithDelegate:completionHandler:] %@ %@",
               exception.name, exception.reason]];
             [self deleteEvent];
+            [self _sendFailureForEvent:event configuration:configuration];
             completionHandler();
             return;
         }
@@ -174,6 +191,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
             case BSGDeliveryStatusUndeliverable:
                 bsg_log_debug(@"Upload failed; will discard event %@", self.name);
                 [self deleteEvent];
+                [self _sendFailureForEvent:event configuration:configuration];
                 break;
         }
         

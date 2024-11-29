@@ -116,6 +116,7 @@ NSDictionary * BSGTelemetryCreateUsage(BugsnagConfiguration *configuration) {
     callbacks[@"onBreadcrumb"] = IntegerValue(configuration.onBreadcrumbBlocks.count, 0);
     callbacks[@"onCrashHandler"] = configuration.onCrashHandler ? @1 : nil;
     callbacks[@"onSendError"] = IntegerValue(configuration.onSendBlocks.count, 0);
+    callbacks[@"onFailure"] = IntegerValue(configuration.onFailureBlocks.count, 0);
     callbacks[@"onSession"] = IntegerValue(configuration.onSessionBlocks.count, 0);
     
     return @{

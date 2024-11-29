@@ -119,6 +119,7 @@ BSG_OBJC_DIRECT_MEMBERS
     // as creating a copy of the array would prevent this
     [copy setOnBreadcrumbBlocks:self.onBreadcrumbBlocks];
     [copy setOnSendBlocks:self.onSendBlocks];
+    [copy setOnFailureBlocks:self.onFailureBlocks];
     [copy setOnSessionBlocks:self.onSessionBlocks];
     [copy setTelemetry:self.telemetry];
     return copy;
@@ -174,6 +175,7 @@ BSG_OBJC_DIRECT_MEMBERS
     _appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
 #endif
     _onSendBlocks = [NSMutableArray new];
+    _onFailureBlocks = [NSMutableArray new];
     _onSessionBlocks = [NSMutableArray new];
     _onBreadcrumbBlocks = [NSMutableArray new];
     _plugins = [NSMutableSet new];
@@ -282,6 +284,24 @@ BSG_OBJC_DIRECT_MEMBERS
 - (NSURLSession *)sessionOrDefault {
     NSURLSession *session = self.session;
     return session ? session : getConfigDefaultURLSession();
+}
+
+// =============================================================================
+// MARK: - onSendFailure
+// =============================================================================
+
+- (BugsnagOnSendFailureRef)addOnSendFailureBlock:(BugsnagOnSendFailureBlock)block {
+    BugsnagOnSendFailureBlock callback = [block copy];
+    [self.onFailureBlocks addObject:callback];
+    return callback;
+}
+
+- (void)removeOnSendFailure:(BugsnagOnSendFailureRef)callback {
+    if (![callback isKindOfClass:NSClassFromString(@"NSBlock")]) {
+        bsg_log_err(@"Invalid object type passed to %@", NSStringFromSelector(_cmd));
+        return;
+    }
+    [self.onFailureBlocks removeObject:(id)callback];
 }
 
 // =============================================================================
