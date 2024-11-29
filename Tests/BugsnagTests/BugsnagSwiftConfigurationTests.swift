@@ -20,6 +20,29 @@ class BugsnagSwiftConfigurationTests: BSGTestCase {
         XCTAssertEqual(config.apiKey, DUMMY_APIKEY_16CHAR)
     }
     
+    func testRemoveOnFailureError() {
+        let config = BugsnagConfiguration(DUMMY_APIKEY_16CHAR)
+        let onFailureBlocks: NSMutableArray = config.value(forKey: "onFailureBlocks") as! NSMutableArray
+        XCTAssertEqual(onFailureBlocks.count, 0)
+        
+        let onFailureError = config.addOnSendFailure { _ in }
+        XCTAssertEqual(onFailureBlocks.count, 1)
+        
+        config.removeOnSendFailure(onFailureError)
+        XCTAssertEqual(onFailureBlocks.count, 0)
+    }
+    
+    func testRemoveInvalidOnFailureDoesNotCrash() {
+        let config = BugsnagConfiguration(DUMMY_APIKEY_16CHAR)
+        let onSendFailureBlock: (BugsnagEvent?) -> Void = { _ in }
+        config.addOnSendFailure(block: onSendFailureBlock)
+        
+        // This does not compile:
+        // config.removeOnSendFailure(onSendErrorBlock)
+        
+        config.removeOnSendFailure("" as NSString)
+    }
+
     func testRemoveOnSendError() {
         let config = BugsnagConfiguration(DUMMY_APIKEY_16CHAR)
         let onSendBlocks: NSMutableArray = config.value(forKey: "onSendBlocks") as! NSMutableArray

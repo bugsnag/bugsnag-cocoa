@@ -803,25 +803,44 @@
 #endif
 
 /**
- * Test that removeOnSendBlock() performs as expected.
- * Note: We don't test that set blocks are executed since this is tested elsewhere
- * (e.g. in BugsnagBreadcrumbsTest)
+ * Test that removeOnFailureBlock() performs as expected.
  */
-- (void) testRemoveOnSendBlock {
+- (void) testRemoveOnFailureBlock {
     // Prevent sending events
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     XCTAssertEqual([[configuration onSendBlocks] count], 0);
-
-    BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
-
-    BugsnagOnSendErrorRef callback = [configuration addOnSendErrorBlock:block];
+    
+    BugsnagOnSendFailureBlock block = ^(BugsnagEvent * _Nonnull event) {};
+    
+    BugsnagOnSendFailureRef callback = [configuration addOnSendFailureBlock:block];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     [client start];
+    
+    XCTAssertEqual([[configuration onFailureBlocks] count], 1);
+    
+    [configuration removeOnSendFailure:callback];
+    XCTAssertEqual([[configuration onFailureBlocks] count], 0);
+}
 
-    XCTAssertEqual([[configuration onSendBlocks] count], 1);
-
-    [configuration removeOnSendError:callback];
-    XCTAssertEqual([[configuration onSendBlocks] count], 0);
+/**
+ * Test that clearOnSendFailureBlock() performs as expected.
+ */
+- (void) testClearOnSendFailureBlock {
+    // Prevent sending events
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual([[configuration onFailureBlocks] count], 0);
+    
+    BugsnagOnSendFailureBlock block1 = ^(BugsnagEvent * _Nonnull event) {};
+    BugsnagOnSendFailureBlock block2 = ^(BugsnagEvent * _Nonnull event) {};
+    
+    // Add more than one
+    [configuration addOnSendFailureBlock:block1];
+    [configuration addOnSendFailureBlock:block2];
+    
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
+    
+    XCTAssertEqual([[configuration onFailureBlocks] count], 2);
 }
 
 /**
@@ -843,6 +862,28 @@
     [client start];
 
     XCTAssertEqual([[configuration onSendBlocks] count], 2);
+}
+
+/**
+ * Test that removeOnSendBlock() performs as expected.
+ * Note: We don't test that set blocks are executed since this is tested elsewhere
+ * (e.g. in BugsnagBreadcrumbsTest)
+ */
+- (void) testRemoveOnSendBlock {
+    // Prevent sending events
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual([[configuration onSendBlocks] count], 0);
+    
+    BugsnagOnSendErrorBlock block = ^BOOL(BugsnagEvent * _Nonnull event) { return false; };
+    
+    BugsnagOnSendErrorRef callback = [configuration addOnSendErrorBlock:block];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    [client start];
+    
+    XCTAssertEqual([[configuration onSendBlocks] count], 1);
+    
+    [configuration removeOnSendError:callback];
+    XCTAssertEqual([[configuration onSendBlocks] count], 0);
 }
 
 - (void)testSendThreadsDefault {
@@ -878,6 +919,12 @@
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
 
+    BugsnagOnSendFailureBlock onFailureBlock1 = ^(BugsnagEvent * _Nonnull event) {};
+    BugsnagOnSendFailureBlock onFailureBlock2 = ^(BugsnagEvent * _Nonnull event) {};
+    
+    NSArray *failureBlocks = @[ onFailureBlock1, onFailureBlock2 ];
+    [config setOnFailureBlocks:[failureBlocks mutableCopy]]; // Mutable arg required
+    
     // Clone
     BugsnagConfiguration *clone = [config copy];
     XCTAssertNotEqual(config, clone);
@@ -918,6 +965,12 @@
     XCTAssertEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
     [clone setOnSendBlocks:[@[ onSendBlock2 ] mutableCopy]];
     XCTAssertNotEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
+    
+    // Array (of blocks)
+    XCTAssertEqual(config.onFailureBlocks, clone.onFailureBlocks);
+    XCTAssertEqual(config.onFailureBlocks[0], clone.onFailureBlocks[0]);
+    [clone setOnFailureBlocks:[@[ onFailureBlock2 ] mutableCopy]];
+    XCTAssertNotEqual(config.onFailureBlocks[0], clone.onFailureBlocks[0]);
     
     XCTAssertEqualObjects(clone.notifier.name, config.notifier.name);
     XCTAssertEqualObjects(clone.notifier.version, config.notifier.version);

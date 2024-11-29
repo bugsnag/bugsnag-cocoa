@@ -112,6 +112,8 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @property (nonatomic) NSMutableArray<BugsnagOnSendErrorBlock> *onSendBlocks;
 
+@property (nonatomic) NSMutableArray<BugsnagOnSendFailureBlock> *onFailureBlocks;
+
 @property (nonatomic) NSMutableArray<BugsnagOnSessionBlock> *onSessionBlocks;
 
 @end

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### Enhancements
+
+* Add callback for when an Error fails to send.
+  []()
+  
 ## 6.30.2 (2024-11-07)
 
 ### Bug Fixes

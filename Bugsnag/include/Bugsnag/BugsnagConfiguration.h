@@ -115,6 +115,18 @@ typedef BOOL (^BugsnagOnSendErrorBlock)(BugsnagEvent *_Nonnull event);
 typedef id<NSObject> BugsnagOnSendErrorRef;
 
 /**
+ *  A configuration block for being notified when an event fails to send.
+ *
+ *  @param event The event report. NULL if the event cannot be loaded from disk.
+ */
+typedef void (^BugsnagOnSendFailureBlock)(BugsnagEvent *_Nullable event);
+
+/**
+ * An opaque object that identifies and allows the removal of a BugsnagOnSendFailureBlock.
+ */
+typedef id<NSObject> BugsnagOnSendFailureRef;
+
+/**
  *  A configuration block for modifying a captured breadcrumb
  *
  *  @param breadcrumb The breadcrumb
@@ -440,6 +452,29 @@ BUGSNAG_EXTERN
 - (void)removeOnSessionBlock:(BugsnagOnSessionBlock)block
     BUGSNAG_DEPRECATED_WITH_REPLACEMENT("removeOnSession:")
     NS_SWIFT_NAME(removeOnSession(block:));
+
+// =============================================================================
+// MARK: - onSendFailure
+// =============================================================================
+
+/**
+ *  Add a callback to be invoked when a report fails to be
+ *  send to Bugsnag.
+ *
+ *  @param block A block to be called on send failure.
+ *
+ *  @returns An opaque reference to the callback which can be passed to `removeOnSendFailure:`
+ */
+- (BugsnagOnSendFailureRef)addOnSendFailureBlock:(BugsnagOnSendFailureBlock)block
+NS_SWIFT_NAME(addOnSendFailure(block:));
+
+/**
+ * Remove the callback that would be invoked on send failure.
+ *
+ * @param callback The opaque reference of the callback, returned by `addOnSendFailureBlock:`
+ */
+- (void)removeOnSendFailure:(BugsnagOnSendFailureRef)callback
+NS_SWIFT_NAME(removeOnSendFailure(_:));
 
 // =============================================================================
 // MARK: - onSend
