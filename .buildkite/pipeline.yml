@@ -28,7 +28,7 @@ steps:
 
   - label: Build test fixtures
     key: cocoa_fixture
-    timeout_in_minutes: 30
+    timeout_in_minutes: 15
     agents:
       queue: macos-14
     env:
@@ -176,7 +176,7 @@ steps:
       - logs/*
 
   - label: watchOS 8 unit tests
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     env:
@@ -187,7 +187,7 @@ steps:
       - logs/*
 
   - label: watchOS 7 unit tests
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-12-arm
     env:
@@ -289,7 +289,7 @@ steps:
   - label: 'macOS 11 barebones E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-11
     plugins:
@@ -310,7 +310,7 @@ steps:
   - label: 'macOS 10.15 barebones E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-10.15
     plugins:
@@ -772,4 +772,7 @@ steps:
   #
 
   - label: 'Conditionally trigger full set of tests'
+    timeout_in_minutes: 5
+    agents:
+      queue: macos
     command: sh -c .buildkite/pipeline_trigger.sh

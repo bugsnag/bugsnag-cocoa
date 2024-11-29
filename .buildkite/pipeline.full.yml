@@ -139,7 +139,7 @@ steps:
   - label: 'macOS 14 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     plugins:
@@ -163,7 +163,7 @@ steps:
   - label: 'macOS 10.13 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
@@ -830,7 +830,7 @@ steps:
   #
 
   - label: 'examples/objective-c-ios'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -846,7 +846,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
 
   - label: 'examples/objective-c-osx'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -860,7 +860,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-ios'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -874,7 +874,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-package-manager'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -889,7 +889,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swiftui'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
