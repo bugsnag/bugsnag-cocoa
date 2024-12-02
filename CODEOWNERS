@@ -1,17 +1,1 @@
-*                   @robert-smartbear @kstenerud @tomlongridge
-
-features/*          @joshedney @twometresteve @cawllec
-
-scripts/*           @joshedney @twometresteve @cawllec
-
-.buildkite/*        @joshedney @twometresteve @cawllec
-
-.github/*           @joshedney @twometresteve @cawllec
-
-Makefile            @joshedney @twometresteve @cawllec
-
-Gemfile             @joshedney @twometresteve @cawllec
-
-docker-compose.yml  @joshedney @twometresteve @cawllec
-
-TESTING.md          @joshedney @twometresteve @cawllec
+Bugsnag             @robert-smartbear @kstenerud
