@@ -5,7 +5,9 @@ steps:
 
   - label: Build XcFramework test fixtures
     key: xcframework_cocoa_fixture
-    depends_on: framework_build
+    depends_on:
+      - framework_build
+      - upload-full-pipeline
     timeout_in_minutes: 30
     agents:
       queue: macos-14
@@ -40,6 +42,7 @@ steps:
   - label: ':bitbar: iOS 17 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 20
     agents:
       queue: opensource
@@ -73,6 +76,7 @@ steps:
   - label: ':bitbar: iOS 16 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 20
     agents:
       queue: opensource
@@ -106,6 +110,7 @@ steps:
   - label: ':bitbar: iOS 13 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 20
     agents:
       queue: opensource
@@ -139,6 +144,7 @@ steps:
   - label: 'macOS 14 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 10
     agents:
       queue: macos-14
@@ -163,6 +169,7 @@ steps:
   - label: 'macOS 10.13 XcFramework barebone E2E tests'
     depends_on:
       - xcframework_cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 10
     agents:
       queue: opensource-mac-cocoa-10.13
@@ -190,6 +197,7 @@ steps:
   - label: ':bitbar: iOS 16 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -226,6 +234,7 @@ steps:
   - label: ':bitbar: iOS 16 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -259,7 +268,9 @@ steps:
           limit: 2
 
   - label: ':bitbar: iOS 15 E2E tests batch 1'
-    depends_on: "cocoa_fixture"
+    depends_on:
+      - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 90
     agents:
       queue: opensource
@@ -290,7 +301,9 @@ steps:
     concurrency_method: eager
 
   - label: ':bitbar: iOS 15 E2E tests batch 2'
-    depends_on: "cocoa_fixture"
+    depends_on:
+      - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 90
     agents:
       queue: opensource
@@ -322,6 +335,7 @@ steps:
   - label: ':bitbar: iOS 14 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -358,6 +372,7 @@ steps:
   - label: ':bitbar: iOS 14 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -393,6 +408,7 @@ steps:
   - label: ':bitbar: iOS 13 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -429,6 +445,7 @@ steps:
   - label: ':bitbar: iOS 13 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -467,6 +484,7 @@ steps:
   - label: ':bitbar: iOS 17 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -503,6 +521,7 @@ steps:
   - label: ':bitbar: iOS 17 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource
@@ -538,6 +557,7 @@ steps:
   - label: ':browserstack: iOS 17 app hang tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 30
     agents:
       queue: opensource
@@ -573,6 +593,7 @@ steps:
   - label: ':browserstack: iOS 16 app hang tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 30
     agents:
       queue: opensource
@@ -608,6 +629,7 @@ steps:
   - label: ':browserstack: iOS 15 app hang tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 30
     agents:
       queue: opensource
@@ -641,6 +663,7 @@ steps:
   - label: ':browserstack: iOS 14 app hang tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 30
     agents:
       queue: opensource
@@ -677,6 +700,7 @@ steps:
   # - label: ':browserstack: iOS 13 app hang tests'
   #   depends_on:
   #     - cocoa_fixture
+  #     - upload-full-pipeline
   #   timeout_in_minutes: 30
   #   agents:
   #     queue: opensource
@@ -709,6 +733,7 @@ steps:
   - label: 'ARM macOS 13 E2E tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: macos-13-arm
@@ -732,6 +757,7 @@ steps:
   - label: 'ARM macOS 12 E2E tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: macos-12-arm
@@ -755,6 +781,7 @@ steps:
   - label: 'macOS 11 E2E tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: macos-11
@@ -776,6 +803,7 @@ steps:
   - label: 'macOS 10.15 E2E tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: macos-10.15
@@ -793,6 +821,7 @@ steps:
   - label: 'macOS 10.14 E2E tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource-mac-cocoa-10.14
@@ -810,6 +839,7 @@ steps:
   - label: 'macOS 10.13 E2E tests'
     depends_on:
       - cocoa_fixture
+      - upload-full-pipeline
     timeout_in_minutes: 60
     agents:
       queue: opensource-mac-cocoa-10.13
@@ -831,6 +861,8 @@ steps:
 
   - label: 'examples/objective-c-ios'
     timeout_in_minutes: 10
+    depends_on:
+      - upload-full-pipeline
     agents:
       queue: macos-14
     commands:
@@ -846,6 +878,8 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
 
   - label: 'examples/objective-c-osx'
+    depends_on:
+      - upload-full-pipeline
     timeout_in_minutes: 10
     agents:
       queue: macos-14
@@ -860,6 +894,8 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-ios'
+    depends_on:
+      - upload-full-pipeline
     timeout_in_minutes: 10
     agents:
       queue: macos-14
@@ -874,6 +910,8 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-package-manager'
+    depends_on:
+      - upload-full-pipeline
     timeout_in_minutes: 10
     agents:
       queue: macos-14
@@ -889,6 +927,8 @@ steps:
       - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swiftui'
+    depends_on:
+      - upload-full-pipeline
     timeout_in_minutes: 10
     agents:
       queue: macos-14
