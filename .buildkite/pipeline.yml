@@ -37,6 +37,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/release/app_and_device_attributes.feature
+        features/release/breadcrumbs.feature
+        features/release/unhandled_cpp_exception.feature
         --os=macos
         --fail-fast
     retry:
@@ -59,6 +61,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/release/app_and_device_attributes.feature
+        features/release/breadcrumbs.feature
+        features/release/unhandled_cpp_exception.feature
         --os=macos
         --fail-fast
     retry:
@@ -81,6 +85,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/release/app_and_device_attributes.feature
+        features/release/breadcrumbs.feature
+        features/release/unhandled_cpp_exception.feature
         --os=macos
         --fail-fast
     retry:
@@ -103,6 +109,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/release/app_and_device_attributes.feature
+        features/release/breadcrumbs.feature
+        features/release/unhandled_cpp_exception.feature
         --os=macos
         --fail-fast
     retry:
@@ -125,6 +133,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/release/app_and_device_attributes.feature
+        features/release/breadcrumbs.feature
+        features/release/unhandled_cpp_exception.feature
         --os=macos
         --fail-fast
     retry:
@@ -147,6 +157,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/release/app_and_device_attributes.feature
+        features/release/breadcrumbs.feature
+        features/release/unhandled_cpp_exception.feature
         --os=macos
         --fail-fast
     retry:
