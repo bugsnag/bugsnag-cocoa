@@ -26,7 +26,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: macos-14-
+      queue: macos-14-1
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
@@ -39,6 +39,9 @@ steps:
         features/release/app_and_device_attributes.feature
         --os=macos
         --fail-fast
+    retry:
+      manual:
+        permit_on_passed: true
 
   - label: 'ARM macOS 14 E2E tests 2'
     depends_on:
@@ -58,6 +61,9 @@ steps:
         features/release/app_and_device_attributes.feature
         --os=macos
         --fail-fast
+    retry:
+      manual:
+        permit_on_passed: true
 
   - label: 'ARM macOS 14 E2E tests 3'
     depends_on:
@@ -77,6 +83,9 @@ steps:
         features/release/app_and_device_attributes.feature
         --os=macos
         --fail-fast
+    retry:
+      manual:
+        permit_on_passed: true
 
   - label: 'ARM macOS 14 E2E tests 4'
     depends_on:
@@ -96,6 +105,9 @@ steps:
         features/release/app_and_device_attributes.feature
         --os=macos
         --fail-fast
+    retry:
+      manual:
+        permit_on_passed: true
 
   - label: 'ARM macOS 14 E2E tests 5'
     depends_on:
@@ -115,6 +127,9 @@ steps:
         features/release/app_and_device_attributes.feature
         --os=macos
         --fail-fast
+    retry:
+      manual:
+        permit_on_passed: true
 
   - label: 'ARM macOS 14 E2E tests 6'
     depends_on:
@@ -134,4 +149,7 @@ steps:
         features/release/app_and_device_attributes.feature
         --os=macos
         --fail-fast
+    retry:
+      manual:
+        permit_on_passed: true
 
