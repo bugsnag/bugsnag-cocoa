@@ -21,8 +21,18 @@
 
 #import "BugsnagHandledState.h"
 #import "BugsnagNotifier.h"
+#import "FeatureFlags/BSGFeatureFlagStore.h"
 
-@interface BSGFeatureFlagStore : NSObject <NSCopying>
+@interface BSGMemoryFeatureFlagStore : NSObject <BSGFeatureFlagStore, NSCopying>
+@end
+
+@interface BSGPersistentFeatureFlagStore : NSObject <BSGFeatureFlagStore>
+@end
+
+@interface BSGAtomicFeatureFlagStore : NSObject <BSGFeatureFlagStore>
+@end
+
+@interface BSGCompositeFeatureFlagStore : NSObject <BSGFeatureFlagStore>
 @end
 
 NS_ASSUME_NONNULL_BEGIN
@@ -79,7 +89,7 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @property (retain, nonatomic) BugsnagConfiguration *configuration;
 
-@property (readonly, nonatomic) BSGFeatureFlagStore *featureFlagStore;
+@property (readonly, nonatomic) BSGCompositeFeatureFlagStore *featureFlagStore;
 
 @property (strong, nonatomic) BugsnagMetadata *metadata;
 
@@ -161,7 +171,7 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 - (NSDictionary *)toJsonWithRedactedKeys:(nullable NSSet *)redactedKeys;
 
-@property (readwrite, strong, nonnull, nonatomic) BSGFeatureFlagStore *featureFlagStore;
+@property (readwrite, strong, nonnull, nonatomic) id<BSGFeatureFlagStore> featureFlagStore;
 
 @end
 

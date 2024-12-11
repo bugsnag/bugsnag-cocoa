@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Optimized feature flags store.
+  [1715](https://github.com/bugsnag/bugsnag-cocoa/pull/1715)
+
 ## 6.30.2 (2024-11-07)
 
 ### Bug Fixes

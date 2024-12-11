@@ -133,6 +133,8 @@
             @"thermalStateDidChange: v24@0:8@16",
             @"updateSession: v24@0:8@?16",
             @"notifyErrorOrException:stackStripDepth:block: v40@0:8@16Q24@?32",
+            @"setFeatureFlags: v24@0:8@16",
+            @"featureFlags @16@0:8"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

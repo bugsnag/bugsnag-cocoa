@@ -19,6 +19,7 @@ BSG_OBJC_DIRECT_MEMBERS
 @property (readonly, nonatomic) NSString *events;
 @property (readonly, nonatomic) NSString *kscrashReports;
 @property (readonly, nonatomic) NSString *sessions;
+@property (readonly, nonatomic) NSString *featureFlags;
 
 /**
  * File containing details of the current app hang (if the app is hung)
@@ -40,7 +41,6 @@ BSG_OBJC_DIRECT_MEMBERS
  * General per-launch metadata
  */
 @property (readonly, nonatomic) NSString *metadata;
-
 /**
  * BSGRunContext
  */
