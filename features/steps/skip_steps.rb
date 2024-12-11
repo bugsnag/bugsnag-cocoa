@@ -3,7 +3,11 @@ BeforeAll do
 end
 
 Before do
-  skip_this_scenario if $skip_remaining
+  # skip_this_scenario if $skip_remaining
+end
+
+AfterAll do
+  $logger.info 'This is my AfterAll hook'
 end
 
 Given('The Appium session is ok') do
@@ -12,7 +16,7 @@ end
 
 Given('The Appium session terminates') do
   $logger.error 'Appium session terminated - ending the run'
-  $skip_remaining = true
+  # $skip_remaining = true
   # fail 'Appium session terminated'
   exit false
 end
