@@ -112,7 +112,7 @@ Feature: Barebone tests
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
     # TODO: Skipped pending PLAT-13234
-    # And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
+    #And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
     And I discard the oldest error
@@ -145,7 +145,7 @@ Feature: Barebone tests
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
     # TODO: Skipped pending PLAT-13234
-    #And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
+    And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
   @watchos
