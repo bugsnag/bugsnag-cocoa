@@ -11,9 +11,10 @@ Given('The Appium session is ok') do
 end
 
 Given('The Appium session terminates') do
-  $logger.error 'Appium session terminated - skipping remaining tests'
+  $logger.error 'Appium session terminated - ending the run'
   $skip_remaining = true
-  fail 'Appium session terminated'
+  # fail 'Appium session terminated'
+  exit false
 end
 
 Given('This scenario won\'t be run') do
