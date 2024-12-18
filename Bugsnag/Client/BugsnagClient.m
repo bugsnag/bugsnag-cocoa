@@ -72,6 +72,9 @@
 #import "BugsnagUser+Private.h"
 #import "BSGPersistentDeviceID.h"
 #import "BugsnagCocoaPerformanceFromBugsnagCocoa.h"
+#import "BSGPersistentFeatureFlagStore.h"
+#import "BSGAtomicFeatureFlagStore.h"
+#import "BSGCompositeFeatureFlagStore.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -141,6 +144,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
         writer->addIntegerElement(writer, "thermalState", bsg_runContext->thermalState);
 
         BugsnagBreadcrumbsWriteCrashReport(writer, requiresAsyncSafety);
+        BugsnagFeatureFlagsWriteCrashReport(writer, requiresAsyncSafety);
 
         // Create a file to indicate that the crash has been handled by
         // the library. This exists in case the subsequent `onCrash` handler
@@ -211,13 +215,10 @@ BSG_OBJC_DIRECT_MEMBERS
                           withEmail:_configuration.user.email
                             andName:_configuration.user.name];
         }
-
-        _featureFlagStore = [configuration.featureFlagStore copy];
         
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{
             BSGKeyClient: @{
                 BSGKeyContext: _configuration.context ?: [NSNull null],
-                BSGKeyFeatureFlags: BSGFeatureFlagStoreToJSON(_featureFlagStore),
             },
             BSGKeyUser: [_configuration.user toJson] ?: @{}
         }];
@@ -236,6 +237,11 @@ BSG_OBJC_DIRECT_MEMBERS
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
+        
+        id<BSGFeatureFlagStore> persistentFeatureFlagsStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:fileLocations.featureFlags];
+        _featureFlagStore = [BSGCompositeFeatureFlagStore storeWithMemoryStore:[configuration.featureFlagStore copy]
+                                                               persistentStore:persistentFeatureFlagsStore
+                                                                   atomicStore:[BSGAtomicFeatureFlagStore store]];
 
         // Start with a copy of the configuration metadata
         self.metadata = [[_configuration metadata] copy];
@@ -285,6 +291,7 @@ BSG_OBJC_DIRECT_MEMBERS
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbStore removeAllBreadcrumbs];
+    [self.featureFlagStore synchronizeFlagsWithMemoryStore];
 
 #if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
@@ -796,9 +803,9 @@ BSG_OBJC_DIRECT_MEMBERS
     [event.metadata addMetadata:BSGDeviceMetadataFromRunContext(bsg_runContext) toSection:BSGKeyDevice];
 
     // App hang events will already contain feature flags
-    if (!event.featureFlagStore.count) {
+    if (event.featureFlagStore.isEmpty) {
         @synchronized (self.featureFlagStore) {
-            event.featureFlagStore = [self.featureFlagStore copy];
+            event.featureFlagStore = [self.featureFlagStore copyMemoryStore];
         }
     }
 
@@ -882,8 +889,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {
     @synchronized (self.featureFlagStore) {
-        BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, variant);
-        [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+        [self.featureFlagStore addFeatureFlag:name withVariant:variant];
     }
     if (self.observer) {
         self.observer(BSGClientObserverAddFeatureFlag, [BugsnagFeatureFlag flagWithName:name variant:variant]);
@@ -892,8 +898,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)addFeatureFlagWithName:(NSString *)name {
     @synchronized (self.featureFlagStore) {
-        BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, nil);
-        [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+        [self.featureFlagStore addFeatureFlag:name withVariant:nil];
     }
     if (self.observer) {
         self.observer(BSGClientObserverAddFeatureFlag, [BugsnagFeatureFlag flagWithName:name]);
@@ -902,8 +907,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)addFeatureFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
     @synchronized (self.featureFlagStore) {
-        BSGFeatureFlagStoreAddFeatureFlags(self.featureFlagStore, featureFlags);
-        [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+        [self.featureFlagStore addFeatureFlags:featureFlags];
     }
     if (self.observer) {
         for (BugsnagFeatureFlag *featureFlag in featureFlags) {
@@ -914,8 +918,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)clearFeatureFlagWithName:(NSString *)name {
     @synchronized (self.featureFlagStore) {
-        BSGFeatureFlagStoreClear(self.featureFlagStore, name);
-        [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+        [self.featureFlagStore clear:name];
     }
     if (self.observer) {
         self.observer(BSGClientObserverClearFeatureFlag, name);
@@ -924,8 +927,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)clearFeatureFlags {
     @synchronized (self.featureFlagStore) {
-        BSGFeatureFlagStoreClear(self.featureFlagStore, nil);
-        [self.state addMetadata:BSGFeatureFlagStoreToJSON(self.featureFlagStore) withKey:BSGKeyFeatureFlags toSection:BSGKeyClient];
+        [self.featureFlagStore clear];
     }
     if (self.observer) {
         self.observer(BSGClientObserverClearFeatureFlag, nil);
@@ -1076,7 +1078,7 @@ BSG_OBJC_DIRECT_MEMBERS
     self.appHangEvent.context = self.context;
 
     @synchronized (self.featureFlagStore) {
-        self.appHangEvent.featureFlagStore = [self.featureFlagStore copy];
+        self.appHangEvent.featureFlagStore = [self.featureFlagStore copyMemoryStore];
     }
     
     [self.appHangEvent symbolicateIfNeeded];
@@ -1225,9 +1227,7 @@ BSG_OBJC_DIRECT_MEMBERS
                               session:session];
 
     event.context = stateDict[BSGKeyClient][BSGKeyContext];
-
-    id featureFlags = stateDict[BSGKeyClient][BSGKeyFeatureFlags];
-    event.featureFlagStore = BSGFeatureFlagStoreFromJSON(featureFlags);
+    event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore persistedFlags]);
 
     return event;
 }

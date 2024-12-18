@@ -29,6 +29,7 @@ let package = Package(
                 .headerSearchPath("Client"),
                 .headerSearchPath("Configuration"),
                 .headerSearchPath("Delivery"),
+                .headerSearchPath("FeatureFlags"),
                 .headerSearchPath("Helpers"),
                 .headerSearchPath("include/Bugsnag"),
                 .headerSearchPath("KSCrash"),

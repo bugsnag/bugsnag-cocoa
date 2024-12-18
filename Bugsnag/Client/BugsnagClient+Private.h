@@ -19,6 +19,7 @@
 @class BugsnagNotifier;
 @class BugsnagSessionTracker;
 @class BugsnagSystemState;
+@class BSGPersistentFeatureFlagStore;
 
 NS_ASSUME_NONNULL_BEGIN
 

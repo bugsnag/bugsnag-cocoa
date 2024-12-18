@@ -104,6 +104,13 @@ Feature: Out of memory errors
     And I wait to receive an error
     Then the error is an OOM event
     And the event "user.id" is not null
+    And the error payload field "events.0.featureFlags" is an array with 3 elements
+    And the error payload field "events.0.featureFlags.0.featureFlag" equals "Feature Flag1"
+    And the error payload field "events.0.featureFlags.0.variant" equals "Variant1"
+    And the error payload field "events.0.featureFlags.1.featureFlag" equals "Feature Flag2"
+    And the error payload field "events.0.featureFlags.1.variant" equals "Variant2"
+    And the error payload field "events.0.featureFlags.2.featureFlag" equals "Feature Flag3"
+    And the error payload field "events.0.featureFlags.2.variant" is null
 
   Scenario: Out of memory errors are not reported from UIApplicationStateInactive
     Given I run "OOMInactiveScenario" and relaunch the crashed app

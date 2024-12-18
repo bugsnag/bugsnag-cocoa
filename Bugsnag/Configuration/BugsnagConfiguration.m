@@ -28,7 +28,7 @@
 
 #import "BSGConfigurationBuilder.h"
 #import "BSGDefines.h"
-#import "BSGFeatureFlagStore.h"
+#import "BSGMemoryFeatureFlagStore.h"
 #import "BSGKeys.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagEndpointConfiguration.h"
@@ -166,7 +166,7 @@ BSG_OBJC_DIRECT_MEMBERS
     if (apiKey) {
         [self setApiKey:apiKey];
     }
-    _featureFlagStore = [[BSGFeatureFlagStore alloc] init];
+    _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _metadata = [[BugsnagMetadata alloc] init];
     _endpoints = [BugsnagEndpointConfiguration new];
     _autoDetectErrors = YES;
@@ -241,7 +241,7 @@ BSG_OBJC_DIRECT_MEMBERS
     _bundleVersion = dictionaryRepresentation[BSGKeyBundleVersion];
     _context = dictionaryRepresentation[BSGKeyContext];
     _enabledReleaseStages = dictionaryRepresentation[BSGKeyEnabledReleaseStages];
-    _featureFlagStore = [[BSGFeatureFlagStore alloc] init];
+    _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _releaseStage = dictionaryRepresentation[BSGKeyReleaseStage];
     return self;
 }
@@ -508,23 +508,23 @@ BSG_OBJC_DIRECT_MEMBERS
 // MARK: - <BugsnagFeatureFlagStore>
 
 - (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {
-    BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, variant);
+    [self.featureFlagStore addFeatureFlag:name withVariant:variant];
 }
 
 - (void)addFeatureFlagWithName:(NSString *)name {
-    BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, nil);
+    [self.featureFlagStore addFeatureFlag:name withVariant:nil];
 }
 
 - (void)addFeatureFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
-    BSGFeatureFlagStoreAddFeatureFlags(self.featureFlagStore, featureFlags);
+    [self.featureFlagStore addFeatureFlags:featureFlags];
 }
 
 - (void)clearFeatureFlagWithName:(NSString *)name {
-    BSGFeatureFlagStoreClear(self.featureFlagStore, name);
+    [self.featureFlagStore clear:name];
 }
 
 - (void)clearFeatureFlags {
-    BSGFeatureFlagStoreClear(self.featureFlagStore, nil);
+    [self.featureFlagStore clear];
 }
 
 // MARK: - <MetadataStore>

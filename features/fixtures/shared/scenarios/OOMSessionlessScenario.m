@@ -22,8 +22,11 @@
 }
 
 - (void)run {
+    [Bugsnag addFeatureFlagWithName:@"Feature Flag1" variant: @"Variant1"];
     // Allow time for state metadata to be flushed to disk
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [Bugsnag addFeatureFlagWithName:@"Feature Flag2" variant: @"Variant2"];
+        [Bugsnag addFeatureFlagWithName:@"Feature Flag3"];
         // Fake an OOM
         kill(getpid(), SIGKILL);
     });

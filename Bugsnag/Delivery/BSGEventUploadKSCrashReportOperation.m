@@ -37,7 +37,7 @@ static NSArray * CrashReportKeys(NSData *data, NSError *error) {
                 return nil;
             }
             NSMutableArray *keys = [NSMutableArray array];
-            NSString *pattern = @"\"(report|process|system|system_atcrash|binary_images|crash|threads|error|user_atcrash|config|metaData|state|breadcrumbs)\":";
+            NSString *pattern = @"\"(report|process|system|system_atcrash|binary_images|crash|threads|error|user_atcrash|config|metaData|state|breadcrumbs|featureFlags)\":";
             NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
             for (NSTextCheckingResult *result in [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)]) {
                 if ([result numberOfRanges] == 2) {

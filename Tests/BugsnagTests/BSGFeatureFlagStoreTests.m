@@ -8,7 +8,7 @@
 
 #import "BSGTestCase.h"
 
-#import "BSGFeatureFlagStore.h"
+#import "BSGMemoryFeatureFlagStore.h"
 
 @interface BSGFeatureFlagStoreTests : BSGTestCase
 
@@ -17,21 +17,21 @@
 @implementation BSGFeatureFlagStoreTests
 
 - (void)test {
-    BSGFeatureFlagStore *store = [[BSGFeatureFlagStore alloc] init];
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
 
-    BSGFeatureFlagStoreAddFeatureFlag(store, @"featureC", @"checked");
+    [store addFeatureFlag:@"featureC" withVariant:@"checked"];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[@{@"featureFlag": @"featureC", @"variant": @"checked"}]));
     
-    BSGFeatureFlagStoreAddFeatureFlag(store, @"featureA", @"enabled");
+    [store addFeatureFlag:@"featureA" withVariant:@"enabled"];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[
                             @{@"featureFlag": @"featureC", @"variant": @"checked"},
                             @{@"featureFlag": @"featureA", @"variant": @"enabled"}
                           ]));
 
-    BSGFeatureFlagStoreAddFeatureFlag(store, @"featureB", nil);
+    [store addFeatureFlag:@"featureB" withVariant:nil];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[
                             @{@"featureFlag": @"featureC", @"variant": @"checked"},
@@ -40,7 +40,7 @@
                           ]));
 
 
-    BSGFeatureFlagStoreAddFeatureFlags(store, @[[BugsnagFeatureFlag flagWithName:@"featureA"]]);
+    [store addFeatureFlags: @[[BugsnagFeatureFlag flagWithName:@"featureA"]]];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[
                             @{@"featureFlag": @"featureC", @"variant": @"checked"},
@@ -51,29 +51,29 @@
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(BSGFeatureFlagStoreFromJSON(BSGFeatureFlagStoreToJSON(store))),
                           BSGFeatureFlagStoreToJSON(store));
     
-    BSGFeatureFlagStoreClear(store, @"featureB");
+    [store clear: @"featureB"];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
                           (@[
                             @{@"featureFlag": @"featureC", @"variant": @"checked"},
                             @{@"featureFlag": @"featureA"}
                           ]));
 
-    BSGFeatureFlagStoreClear(store, nil);
+    [store clear];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
 }
 
 - (void)testAddRemoveMany {
     // Tests that rebuildIfTooManyHoles works as expected
 
-    BSGFeatureFlagStore *store = [[BSGFeatureFlagStore alloc] init];
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
 
-    BSGFeatureFlagStoreAddFeatureFlag(store, @"blah", @"testing");
+    [store addFeatureFlag:@"blah" withVariant:@"testing"];
     for (int j = 0; j < 10; j++) {
         for (int i = 0; i < 1000; i++) {
             NSString *name = [NSString stringWithFormat:@"%d-%d", j, i];
-            BSGFeatureFlagStoreAddFeatureFlag(store, name, nil);
+            [store addFeatureFlag:name withVariant:nil];
             if (i < 999) {
-                BSGFeatureFlagStoreClear(store, name);
+                [store clear:name];
             }
         }
     }
@@ -95,12 +95,12 @@
 }
 
 - (void)testAddFeatureFlagPerformance {
-    BSGFeatureFlagStore *store = [[BSGFeatureFlagStore alloc] init];
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
 
     __auto_type block = ^{
         for (int i = 0; i < 1000; i++) {
             NSString *name = [NSString stringWithFormat:@"%d", i];
-            BSGFeatureFlagStoreAddFeatureFlag(store, name, nil);
+            [store addFeatureFlag:name withVariant:nil];
         }
     };
 
