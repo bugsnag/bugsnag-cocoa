@@ -24,6 +24,8 @@ let package = Package(
             ],
             publicHeadersPath: "include",
             cSettings: [
+                .define("NS_BLOCK_ASSERTIONS", .when(configuration: .release)),
+                .define("NDEBUG", .when(configuration: .release)),
                 .headerSearchPath("."),
                 .headerSearchPath("Breadcrumbs"),
                 .headerSearchPath("Client"),
@@ -53,6 +55,8 @@ let package = Package(
             path: "BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin",
             publicHeadersPath: "include",
             cSettings: [
+                .define("NS_BLOCK_ASSERTIONS", .when(configuration: .release)),
+                .define("NDEBUG", .when(configuration: .release)),
                 .headerSearchPath("."),
                 .headerSearchPath("include/BugsnagNetworkRequestPlugin"),
             ]
