@@ -147,15 +147,17 @@ Maze.hooks.after do |scenario|
       Process.kill 'KILL', $fixture_pid
       Process.waitpid $fixture_pid
       $fixture_pid = nil
-      sleep 1 # prevent log bleed between scenarios due to second precision of --start
-      app = ENV['RUN_XCFRAMEWORK_APP'] ? 'macOSTestAppXcFramework' : 'macOSTestApp'
-      log = Process.spawn(
-        '/usr/bin/log', 'show', '--style', 'syslog', '--predicate',
-        "eventMessage contains \"#{app}\" OR process == \"#{app}\"",
-        '--start', $started_at.strftime('%Y-%m-%d %H:%M:%S%z'),
-        out: File.open(File.join(path, 'device.log'), 'w')
-      )
-      Process.wait log
+      if ENV['DEBUG']
+        sleep 1 # prevent log bleed between scenarios due to second precision of --start
+        app = ENV['RUN_XCFRAMEWORK_APP'] ? 'macOSTestAppXcFramework' : 'macOSTestApp'
+        log = Process.spawn(
+          '/usr/bin/log', 'show', '--style', 'syslog', '--predicate',
+          "eventMessage contains \"#{app}\" OR process == \"#{app}\"",
+          '--start', $started_at.strftime('%Y-%m-%d %H:%M:%S%z'),
+          out: File.open(File.join(path, 'device.log'), 'w')
+        )
+        Process.wait log
+      end
     end
   when 'ios'
     begin
