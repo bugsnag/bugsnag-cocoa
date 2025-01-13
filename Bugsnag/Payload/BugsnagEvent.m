@@ -9,7 +9,7 @@
 #import "BugsnagEvent+Private.h"
 
 #import "BSGDefines.h"
-#import "BSGFeatureFlagStore.h"
+#import "BSGMemoryFeatureFlagStore.h"
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
@@ -33,6 +33,7 @@
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
+#import "BSGFileLocations.h"
 
 static NSString * const RedactedMetadataValue = @"[REDACTED]";
 
@@ -103,6 +104,20 @@ NSArray <BugsnagBreadcrumb *> *BSGParseBreadcrumbs(NSDictionary *report) {
     return breadcrumbs;
 }
 
+BSGMemoryFeatureFlagStore *BSGParseFeatureFlags(NSDictionary *report) {
+    // default to overwritten featureFlags from callback
+    NSArray *cache = [report valueForKeyPath:@"user.overrides.featureFlags"]
+        // then cached featureFlags from an OOM event
+        ?: [report valueForKeyPath:@"user.state.oom.featureFlags"]
+        // then cached featureFlags from a regular event
+        // KSCrashReports from earlier versions of the notifier used this
+        ?: [report valueForKeyPath:@"user.state.crash.featureFlags"]
+        // featureFlags added to a KSCrashReport by BSSerializeDataCrashHandler
+        ?: [report valueForKeyPath:@"user.featureFlags"];
+    
+    return BSGFeatureFlagStoreFromJSON(cache);
+}
+
 NSString *BSGParseReleaseStage(NSDictionary *report) {
     return [report valueForKeyPath:@"user.overrides.releaseStage"]
                ?: BSGLoadConfigValue(report, @"releaseStage");
@@ -167,7 +182,7 @@ BSG_OBJC_DIRECT_MEMBERS
         _metadata = metadata;
         _breadcrumbs = breadcrumbs;
         _errors = errors;
-        _featureFlagStore = [[BSGFeatureFlagStore alloc] init];
+        _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
         _threads = threads;
         _session = [session copy];
     }
@@ -400,7 +415,7 @@ BSG_OBJC_DIRECT_MEMBERS
     obj.enabledReleaseStages = BSGLoadConfigValue(event, BSGKeyEnabledReleaseStages);
     obj.releaseStage = BSGParseReleaseStage(event);
     obj.deviceAppHash = deviceAppHash;
-    obj.featureFlagStore = BSGFeatureFlagStoreFromJSON([event valueForKeyPath:@"user.state.client.featureFlags"]);
+    obj.featureFlagStore = BSGParseFeatureFlags(event);
     obj.context = [event valueForKeyPath:@"user.state.client.context"];
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.depth = depth;
@@ -429,7 +444,7 @@ BSG_OBJC_DIRECT_MEMBERS
     }
     _apiKey = BSGDeserializeString(json[BSGKeyApiKey]);
     _context = BSGDeserializeString(json[BSGKeyContext]);
-    _featureFlagStore = [[BSGFeatureFlagStore alloc] init];
+    _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _groupingHash = BSGDeserializeString(json[BSGKeyGroupingHash]);
 
     if (_errors.count) {
@@ -792,23 +807,23 @@ BSG_OBJC_DIRECT_MEMBERS
 }
 
 - (void)addFeatureFlagWithName:(NSString *)name variant:(nullable NSString *)variant {
-    BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, variant);
+    [self.featureFlagStore addFeatureFlag:name withVariant:variant];
 }
 
 - (void)addFeatureFlagWithName:(NSString *)name {
-    BSGFeatureFlagStoreAddFeatureFlag(self.featureFlagStore, name, nil);
+    [self.featureFlagStore addFeatureFlag:name withVariant:nil];
 }
 
 - (void)addFeatureFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
-    BSGFeatureFlagStoreAddFeatureFlags(self.featureFlagStore, featureFlags);
+    [self.featureFlagStore addFeatureFlags:featureFlags];
 }
 
 - (void)clearFeatureFlagWithName:(NSString *)name {
-    BSGFeatureFlagStoreClear(self.featureFlagStore, name);
+    [self.featureFlagStore clear:name];
 }
 
 - (void)clearFeatureFlags {
-    BSGFeatureFlagStoreClear(self.featureFlagStore, nil);
+    [self.featureFlagStore clear];
 }
 
 // MARK: - <BugsnagMetadataStore>

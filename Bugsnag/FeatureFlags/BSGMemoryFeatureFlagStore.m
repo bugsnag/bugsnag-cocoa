@@ -1,36 +1,38 @@
 //
-//  BSGFeatureFlagStore.m
+//  BSGMemoryFeatureFlagStore.m
 //  Bugsnag
 //
 //  Created by Nick Dowell on 11/11/2021.
 //  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGFeatureFlagStore.h"
+#import "BSGMemoryFeatureFlagStore.h"
 
 #import "BSGKeys.h"
 #import "BugsnagFeatureFlag.h"
 
-void BSGFeatureFlagStoreAddFeatureFlag(BSGFeatureFlagStore *store, NSString *name, NSString *_Nullable variant) {
-    [store addFeatureFlag:name withVariant:variant];
+NSArray<NSDictionary *> *BSGFeatureFlagStoreToJSON(id<BSGFeatureFlagStore> store) {
+    NSMutableArray<NSDictionary *> *result = [NSMutableArray array];
+
+    for (BugsnagFeatureFlag *flag in [store allFlags]) {
+        if ([flag isKindOfClass:[BugsnagFeatureFlag class]]) {
+            if (flag.variant) {
+                [result addObject:@{BSGKeyFeatureFlag:flag.name, BSGKeyVariant:(NSString *_Nonnull)flag.variant}];
+            } else {
+                [result addObject:@{BSGKeyFeatureFlag:flag.name}];
+            }
+        }
+    }
+    return result;
 }
 
-void BSGFeatureFlagStoreAddFeatureFlags(BSGFeatureFlagStore *store, NSArray<BugsnagFeatureFlag *> *featureFlags) {
-    [store addFeatureFlags:featureFlags];
+BSGMemoryFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id json) {
+    return [BSGMemoryFeatureFlagStore fromJSON:json];
 }
 
-void BSGFeatureFlagStoreClear(BSGFeatureFlagStore *store, NSString *_Nullable name) {
-    [store clear:name];
+BSGMemoryFeatureFlagStore * BSGFeatureFlagStoreWithFlags(NSArray<BugsnagFeatureFlag *> *flags) {
+    return [BSGMemoryFeatureFlagStore withFlags:flags];
 }
-
-NSArray<NSDictionary *> * BSGFeatureFlagStoreToJSON(BSGFeatureFlagStore *store) {
-    return [store toJSON];
-}
-
-BSGFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id json) {
-    return [BSGFeatureFlagStore fromJSON:json];
-}
-
 
 /**
  * Stores feature flags as a dictionary containing the flag name as a key, with the
@@ -41,7 +43,7 @@ BSGFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id json) {
  * This gives the access speed of a dictionary while keeping ordering intact.
  */
 BSG_OBJC_DIRECT_MEMBERS
-@interface BSGFeatureFlagStore ()
+@interface BSGMemoryFeatureFlagStore ()
 
 @property(nonatomic, readwrite) NSMutableArray *flags;
 @property(nonatomic, readwrite) NSMutableDictionary *indices;
@@ -51,10 +53,10 @@ BSG_OBJC_DIRECT_MEMBERS
 static const int REBUILD_AT_HOLE_COUNT = 1000;
 
 BSG_OBJC_DIRECT_MEMBERS
-@implementation BSGFeatureFlagStore
+@implementation BSGMemoryFeatureFlagStore
 
-+ (nonnull BSGFeatureFlagStore *) fromJSON:(nonnull id)json {
-    BSGFeatureFlagStore *store = [BSGFeatureFlagStore new];
++ (nonnull BSGMemoryFeatureFlagStore *)fromJSON:(nonnull id)json {
+    BSGMemoryFeatureFlagStore *store = [BSGMemoryFeatureFlagStore new];
     if ([json isKindOfClass:[NSArray class]]) {
         for (id item in json) {
             if ([item isKindOfClass:[NSDictionary class]]) {
@@ -72,7 +74,17 @@ BSG_OBJC_DIRECT_MEMBERS
     return store;
 }
 
-- (nonnull instancetype) init {
++ (nonnull BSGMemoryFeatureFlagStore *)withFlags:(NSArray<BugsnagFeatureFlag *> *)flags {
+    BSGMemoryFeatureFlagStore *store = [BSGMemoryFeatureFlagStore new];
+    
+    for (BugsnagFeatureFlag *flag in flags) {
+        [store addFeatureFlag:flag.name withVariant:flag.variant];
+    }
+    
+    return store;
+}
+
+- (nonnull instancetype)init {
     if ((self = [super init]) != nil) {
         _flags = [NSMutableArray new];
         _indices = [NSMutableDictionary new];
@@ -86,20 +98,6 @@ static inline int getIndexFromDict(NSDictionary *dict, NSString *name) {
         return -1;
     }
     return boxedIndex.intValue;
-}
-
-- (NSUInteger) count {
-    return self.indices.count;
-}
-
-- (nonnull NSArray<BugsnagFeatureFlag *> *) allFlags {
-    NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:self.indices.count];
-    for (BugsnagFeatureFlag *flag in self.flags) {
-        if ([flag isKindOfClass:[BugsnagFeatureFlag class]]) {
-            [flags addObject:flag];
-        }
-    }
-    return flags;
 }
 
 - (void)rebuildIfTooManyHoles {
@@ -124,7 +122,30 @@ static inline int getIndexFromDict(NSDictionary *dict, NSString *name) {
     self.indices = newIndices;
 }
 
-- (void) addFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
+- (id)copyWithZone:(NSZone *)zone {
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore allocWithZone:zone] init];
+    store.flags = [self.flags mutableCopy];
+    store.indices = [self.indices mutableCopy];
+    return store;
+}
+
+#pragma mark - BSGFeatureFlagStore
+
+- (nonnull NSArray<BugsnagFeatureFlag *> *)allFlags {
+    NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:self.indices.count];
+    for (BugsnagFeatureFlag *flag in self.flags) {
+        if ([flag isKindOfClass:[BugsnagFeatureFlag class]]) {
+            [flags addObject:flag];
+        }
+    }
+    return flags;
+}
+
+- (BOOL)isEmpty {
+    return self.indices.count == 0;
+}
+
+- (void)addFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
     BugsnagFeatureFlag *flag = [BugsnagFeatureFlag flagWithName:name variant:variant];
 
     int index = getIndexFromDict(self.indices, name);
@@ -137,13 +158,13 @@ static inline int getIndexFromDict(NSDictionary *dict, NSString *name) {
     }
 }
 
-- (void) addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
+- (void)addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
     for (BugsnagFeatureFlag *flag in featureFlags) {
         [self addFeatureFlag:flag.name withVariant:flag.variant];
     }
 }
 
-- (void) clear:(nullable NSString *)name {
+- (void)clear:(nullable NSString *)name {
     if (name != nil) {
         int index = getIndexFromDict(self.indices, name);
         if (index >= 0) {
@@ -152,31 +173,13 @@ static inline int getIndexFromDict(NSDictionary *dict, NSString *name) {
             [self rebuildIfTooManyHoles];
         }
     } else {
-        [self.indices removeAllObjects];
-        [self.flags removeAllObjects];
+        [self clear];
     }
 }
 
-- (nonnull NSArray<NSDictionary *> *) toJSON {
-    NSMutableArray<NSDictionary *> *result = [NSMutableArray array];
-
-    for (BugsnagFeatureFlag *flag in self.flags) {
-        if ([flag isKindOfClass:[BugsnagFeatureFlag class]]) {
-            if (flag.variant) {
-                [result addObject:@{BSGKeyFeatureFlag:flag.name, BSGKeyVariant:(NSString *_Nonnull)flag.variant}];
-            } else {
-                [result addObject:@{BSGKeyFeatureFlag:flag.name}];
-            }
-        }
-    }
-    return result;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    BSGFeatureFlagStore *store = [[BSGFeatureFlagStore allocWithZone:zone] init];
-    store.flags = [self.flags mutableCopy];
-    store.indices = [self.indices mutableCopy];
-    return store;
+- (void)clear {
+    [self.indices removeAllObjects];
+    [self.flags removeAllObjects];
 }
 
 @end

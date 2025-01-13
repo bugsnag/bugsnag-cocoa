@@ -19,13 +19,16 @@ steps:
       - make build_swift
       - make build_ios_static
       - zip -ry Bugsnag.xcframework.zip build/xcframeworks/products/Bugsnag.xcframework
+      - zip -ry BugsnagNetworkRequestPlugin.xcframework.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework
     plugins:
       - artifacts#v1.9.3:
-          upload: "Bugsnag.xcframework.zip"
+          upload:
+            - "Bugsnag.xcframework.zip"
+            - "BugsnagNetworkRequestPlugin.xcframework.zip"
 
   - label: Build test fixtures
     key: cocoa_fixture
-    timeout_in_minutes: 30
+    timeout_in_minutes: 15
     agents:
       queue: macos-14
     env:
@@ -173,7 +176,7 @@ steps:
       - logs/*
 
   - label: watchOS 8 unit tests
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     env:
@@ -184,7 +187,7 @@ steps:
       - logs/*
 
   - label: watchOS 7 unit tests
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-12-arm
     env:
@@ -197,7 +200,7 @@ steps:
   - label: 'ARM macOS 14 E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 120
     agents:
       queue: macos-14
     plugins:
@@ -286,7 +289,7 @@ steps:
   - label: 'macOS 11 barebones E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-11
     plugins:
@@ -307,7 +310,7 @@ steps:
   - label: 'macOS 10.15 barebones E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 10
     agents:
       queue: macos-10.15
     plugins:
@@ -480,6 +483,40 @@ steps:
   #
   # BitBar
   #
+
+  - label: ':bitbar: iOS 17 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':bitbar: iOS 16 barebone tests'
     depends_on:
@@ -690,7 +727,7 @@ steps:
   - label: 'macOS 14 debug E2E tests'
     depends_on:
       - cocoa_fixture
-    timeout_in_minutes: 10
+    timeout_in_minutes: 20
     agents:
       queue: macos-14
     plugins:
@@ -735,4 +772,7 @@ steps:
   #
 
   - label: 'Conditionally trigger full set of tests'
+    timeout_in_minutes: 5
+    agents:
+      queue: macos
     command: sh -c .buildkite/pipeline_trigger.sh

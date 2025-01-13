@@ -24,7 +24,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 @property (readonly, nonatomic) NSDictionary<NSString *, id> *dictionaryRepresentation;
 
-@property (nonatomic) BSGFeatureFlagStore *featureFlagStore;
+@property (nonatomic) BSGMemoryFeatureFlagStore *featureFlagStore;
 
 @property (copy, nonatomic) BugsnagMetadata *metadata;
 

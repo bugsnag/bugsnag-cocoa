@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.31.0 (2025-01-13)
+
+### Enhancements
+
+* Disabled assertions on release build.
+  [1717](https://github.com/bugsnag/bugsnag-cocoa/pull/1717)
+
+* Optimized feature flags store.
+  [1715](https://github.com/bugsnag/bugsnag-cocoa/pull/1715)
+
 ## 6.30.2 (2024-11-07)
 
 ### Bug Fixes

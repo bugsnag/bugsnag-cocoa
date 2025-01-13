@@ -13,13 +13,16 @@ steps:
       XCODE_VERSION: 15.3.0
     plugins:
       - artifacts#v1.9.3:
-          download: "Bugsnag.xcframework.zip"
+          download:
+            - "Bugsnag.xcframework.zip"
+            - "BugsnagNetworkRequestPlugin.xcframework.zip"
           upload:
             - features/fixtures/ios/output/iOSTestAppXcFramework.ipa
-            #      - features/fixtures/macos/output/macOSTestApp.zip
             - features/fixtures/ios/output/xcframework_ipa_url_bb.txt
+            - features/fixtures/macos/output/macOSTestAppXcFramework.zip
     commands:
       - unzip Bugsnag.xcframework.zip
+      - unzip BugsnagNetworkRequestPlugin.xcframework.zip
       - bundle install
       - make xcframework-test-fixtures
       - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt
@@ -33,6 +36,39 @@ steps:
   #
   # XcFramework E2E tests
   #
+
+  - label: ':bitbar: iOS 17 XcFramework barebone E2E tests'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 20
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+        upload: "maze_output/failed/**/*"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/xcframework_ipa_url_bb.txt"
+          - "--farm=bb"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
 
   - label: ':bitbar: iOS 16 XcFramework barebone E2E tests'
     depends_on:
@@ -99,6 +135,54 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+
+  - label: 'macOS 14 XcFramework barebone E2E tests'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-14
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+        upload:
+          - "*.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    env:
+      RUN_XCFRAMEWORK_APP: "true"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release/barebone_tests.feature
+        --os=macos
+
+  - label: 'macOS 10.13 XcFramework barebone E2E tests'
+    depends_on:
+      - xcframework_cocoa_fixture
+    timeout_in_minutes: 10
+    agents:
+      queue: opensource-mac-cocoa-10.13
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+        upload:
+          - "*.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    env:
+      RUN_XCFRAMEWORK_APP: "true"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release/barebone_tests.feature
+        --os=macos
 
   #
   # BitBar
@@ -380,27 +464,28 @@ steps:
   #
   # BrowserStack
   #
-  - label: ':browserstack: iOS 17 E2E tests batch 1'
+  - label: ':bitbar: iOS 17 E2E tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs_release.txt"
-          - "--farm=bs"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
           - "--device=IOS_17"
-          - "--appium-version=1.21.0"
-          - "--a11y-locator"
+          - "--no-tunnel"
+          - "--aws-public-ip"
           - "--fail-fast"
+          # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
       test-collector#v1.10.2:
@@ -408,33 +493,33 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'browserstack-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
 
-  - label: ':browserstack: iOS 17 E2E tests batch 2'
+  - label: ':bitbar: iOS 17 E2E tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+      artifacts#v1.9.3:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
         upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
         service-ports: true
         command:
-          - "--app=@/app/build/ipa_url_bs_release.txt"
-          - "--farm=bs"
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
           - "--device=IOS_17"
-          - "--appium-version=1.21.0"
-          - "--a11y-locator"
+          - "--no-tunnel"
+          - "--aws-public-ip"
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
@@ -443,7 +528,7 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'browserstack-app'
+    concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
       automatic:
@@ -457,7 +542,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -492,7 +577,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -527,7 +612,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -560,7 +645,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload: "maze_output/failed/**/*"
       docker-compose#v3.7.0:
@@ -596,7 +681,7 @@ steps:
   #   agents:
   #     queue: opensource
   #   plugins:
-  #     artifacts#v1.5.0:
+  #     artifacts#v1.9.3:
   #       download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
   #       upload: "maze_output/failed/**/*"
   #     docker-compose#v3.7.0:
@@ -628,7 +713,7 @@ steps:
     agents:
       queue: macos-13-arm
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
@@ -651,7 +736,7 @@ steps:
     agents:
       queue: macos-12-arm
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
@@ -674,7 +759,7 @@ steps:
     agents:
       queue: macos-11
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
       test-collector#v1.10.2:
@@ -695,7 +780,7 @@ steps:
     agents:
       queue: macos-10.15
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
@@ -712,7 +797,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.14
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
@@ -729,7 +814,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.13
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
@@ -745,7 +830,7 @@ steps:
   #
 
   - label: 'examples/objective-c-ios'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -761,7 +846,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
 
   - label: 'examples/objective-c-osx'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -775,7 +860,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-ios'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -789,7 +874,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swift-package-manager'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
@@ -804,7 +889,7 @@ steps:
       - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
   - label: 'examples/swiftui'
-    timeout_in_minutes: 30
+    timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:

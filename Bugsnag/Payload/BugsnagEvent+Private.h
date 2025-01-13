@@ -7,7 +7,7 @@
 //
 
 #import "BSGDefines.h"
-#import "BSGFeatureFlagStore.h"
+#import "BSGMemoryFeatureFlagStore.h"
 #import "BugsnagInternals.h"
 #import "BugsnagCorrelation.h"
 

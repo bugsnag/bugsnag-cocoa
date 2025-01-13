@@ -139,7 +139,7 @@ test-fixtures: ## Build the end-to-end test fixture
 
 xcframework-test-fixtures: ## Build the xcframework end-to-end test fixture
 	@./features/scripts/export_xcframework_ios_app.sh
-#	@./features/scripts/export_xcframework_mac_app.sh
+	@./features/scripts/export_xcframework_mac_app.sh
 
 e2e_ios_local:
 	@./features/scripts/export_ios_app.sh
