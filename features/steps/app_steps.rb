@@ -61,7 +61,7 @@ Then('the app is not running') do
   wait_for_true('the app is not running') do
     case Maze::Helper.get_current_platform
     when 'ios'
-      Maze.driver.app_state('com.bugsnag.fixtures.cocoa') == :not_running
+      Maze::Api::Appium::AppManager.new.state == :not_running
     else
       raise "Don't know how to query app state on this platform"
     end
@@ -115,7 +115,7 @@ def relaunch_crashed_app
   when 'ios'
     # Wait for the app to stop running before relaunching
     step 'the app is not running'
-    Maze.driver.activate_app Maze.driver.app_id
+    Maze::Api::Appium::AppManager.new.activate
   when 'macos'
     sleep 4
     launch_app
@@ -131,8 +131,8 @@ end
 def kill_and_relaunch_app
   case Maze::Helper.get_current_platform
   when 'ios'
-    Maze.driver.terminate_app Maze.driver&.app_id
-    Maze.driver.activate_app Maze.driver.app_id
+    Maze::Api::Appium::AppManager.new.terminate
+    Maze::Api::Appium::AppManager.new.activate
   when 'macos'
     run_macos_app # This will kill the app if it's running
   when 'watchos'
