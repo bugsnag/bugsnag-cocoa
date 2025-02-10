@@ -208,10 +208,7 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 + (instancetype)frameFromJson:(NSDictionary *)json;
 
 @property (copy, nullable, nonatomic) NSString *codeIdentifier;
-@property (strong, nullable, nonatomic) NSNumber *columnNumber;
-@property (copy, nullable, nonatomic) NSString *file;
 @property (strong, nullable, nonatomic) NSNumber *inProject;
-@property (strong, nullable, nonatomic) NSNumber *lineNumber;
 
 /// Populates the method and symbolAddress via `dladdr()` if this object was created from a backtrace or callstack.
 /// This can be a slow operation, so should be performed on a background thread.

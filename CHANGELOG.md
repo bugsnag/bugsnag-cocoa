@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Added `file`, `lineNumber` and `columnNumber` properties to `BugsnagStackframe` public header. 
+  [#1728](https://github.com/bugsnag/bugsnag-cocoa/pull/1728)
+
 ## 6.31.0 (2025-01-13)
 
 ### Enhancements
