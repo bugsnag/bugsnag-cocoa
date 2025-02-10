@@ -32,10 +32,11 @@
 @interface BSGAtomicFeatureFlagStore : NSObject <BSGFeatureFlagStore>
 @end
 
-@interface BSGCompositeFeatureFlagStore : NSObject <BSGFeatureFlagStore>
-@end
-
 NS_ASSUME_NONNULL_BEGIN
+
+@interface BSGCompositeFeatureFlagStore : NSObject <BSGFeatureFlagStore>
+- (id<BSGFeatureFlagStore>)copyMemoryStore;
+@end
 
 #pragma mark -
 
