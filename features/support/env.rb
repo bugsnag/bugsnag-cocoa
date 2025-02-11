@@ -130,6 +130,13 @@ Maze.hooks.before do |_scenario|
   $started_at = Time.now
 end
 
+def pull_file(path)
+  Maze.driver.pull_file "@com.bugsnag.fixtures.cocoa/#{path}"
+rescue StandardError => e
+  $logger.error "Failed to pull #{path}: #{e.message}"
+  'Appium failed to pull this file.'
+end
+
 Maze.hooks.after do |scenario|
   next unless ENV['STRESS_TEST'].nil?
 
@@ -161,10 +168,16 @@ Maze.hooks.after do |scenario|
     end
   when 'ios'
     begin
-      data = Maze.driver.pull_file '@com.bugsnag.fixtures.cocoa/Documents/kscrash.log'
-      File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
-    rescue StandardError
-      puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"
+      #file_list = pull_file('Documents/index.txt')
+      # TODO: temp code
+      file_list = "Documents/config.json\nstate.json"
+
+      file_list.split("\n").each do |item|
+        contents = pull_file(item)
+        write_file = File.join(path, file_list.split('/')[-1])
+        $logger.info "Writing #{item} to #{write_file} with contents: #{contents}"
+        File.open(write_file, 'wb') { |file| file << contents }
+      end
     end
   end
 end
