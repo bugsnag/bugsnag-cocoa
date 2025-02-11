@@ -73,6 +73,21 @@ BUGSNAG_EXTERN
 @property (copy, nullable, nonatomic) BugsnagStackframeType type;
 
 /**
+ * The file of the stackframe
+ */
+@property (copy, nullable, nonatomic) NSString *file;
+
+/**
+ * The line number of the stackframe
+ */
+@property (strong, nullable, nonatomic) NSNumber *lineNumber;
+
+/**
+ * The column number of the stackframe
+ */
+@property (strong, nullable, nonatomic) NSNumber *columnNumber;
+
+/**
  * Creates an array of stackframe objects representing the provided call stack.
  *
  * @param callStackReturnAddresses An array containing the call stack return addresses, as returned by
