@@ -397,7 +397,7 @@ steps:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-    concurrency: 25
+    concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:
@@ -432,7 +432,7 @@ steps:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-    concurrency: 25
+    concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
     retry:

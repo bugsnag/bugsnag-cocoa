@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 # portable for CI, e.g. a specific release.  However, leaving it commented out would mean quicker CI.
 gem 'bugsnag-maze-runner', '~> 9.0'
 gem 'cocoapods'
-gem 'xcpretty'
+gem 'xcpretty', '~>0.3.0'
 
 # Use a specific branch
 #gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'master'
