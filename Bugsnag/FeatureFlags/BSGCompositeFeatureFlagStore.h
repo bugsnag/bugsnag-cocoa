@@ -22,7 +22,6 @@ BSG_OBJC_DIRECT_MEMBERS
                      persistentStore:(id<BSGFeatureFlagStore>)persistenStore
                          atomicStore:(id<BSGFeatureFlagStore>)atomicStore;
 
-- (id<BSGFeatureFlagStore>)copyMemoryStore;
 - (void)synchronizeFlagsWithMemoryStore;
 
 @end

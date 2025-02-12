@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+bundle install
+
 declare "${@}"
 
 xcresult=$(date '+BugsnagTests-%Y-%m-%d-%H-%M-%S.xcresult')
