@@ -7,7 +7,7 @@ gem 'cocoapods'
 gem 'xcpretty'
 
 # Use a specific branch
-#gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'master'
+gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'integration/appium-api'
 
 # Locally, you can run against Maze Runner branches and uncommitted changes:
-gem 'bugsnag-maze-runner', path: '../maze-runner'
+#gem 'bugsnag-maze-runner', path: '../maze-runner'
