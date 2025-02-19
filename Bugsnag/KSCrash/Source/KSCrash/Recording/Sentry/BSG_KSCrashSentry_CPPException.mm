@@ -238,6 +238,14 @@ after_rethrow:
 #if BSG_HAVE_MACH_THREADS
         bsg_kscrashsentry_resumeThreads();
 #endif
+
+        // Must run before endHandlingCrash unblocks secondary crashed threads.
+        BSG_KSCrash_Context *context = crashContext();
+        if (context->crash.attemptDelivery) {
+            BSG_KSLOG_DEBUG("Attempting delivery.");
+            context->crash.attemptDelivery();
+        }
+
         bsg_kscrashsentry_endHandlingCrash();
     }
     if (bsg_g_originalTerminateHandler != NULL) {

@@ -124,6 +124,14 @@ void bsg_kssighndl_i_handleSignal(int sigNum, siginfo_t *signalInfo,
             "Crash handling complete. Restoring original handlers.");
         bsg_kscrashsentry_uninstall(BSG_KSCrashTypeAsyncSafe);
         bsg_kscrashsentry_resumeThreads();
+
+        // Must run before endHandlingCrash unblocks secondary crashed threads.
+        BSG_KSCrash_Context *context = crashContext();
+        if (context->crash.attemptDelivery) {
+            BSG_KSLOG_DEBUG("Attempting delivery.");
+            context->crash.attemptDelivery();
+        }
+
         bsg_kscrashsentry_endHandlingCrash();
     }
 
