@@ -15,16 +15,32 @@
  */
 #import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.h>
 
+@import CrashReporter;
+
+@interface AppDelegate ()
+
+@property(nonatomic, strong) PLCrashReporter *crashReporter;
+
+@end
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
+    [self startPLCrashReporter];
+    [self startBugsnag];
+
+    [self fetchPLCrashReport];
+
+    return YES;
+}
+
+- (void)startBugsnag {
     /**
      This is the minimum amount of setup required for Bugsnag to work.  Simply add your API key to the app's .plist (Supporting Files/Bugsnag Test App-Info.plist) and the application will deliver all error and session notifications to the appropriate dashboard.
      
      You can find your API key in your Bugsnag dashboard under the settings menu.
      */
-    [Bugsnag start];
+//    [Bugsnag start];
     
     /**
      Bugsnag behavior can be configured through the plist and/or further extended in code by creating a BugsnagConfiguration object and passing it to [Bugsnag startWithConfiguration].
@@ -33,7 +49,7 @@
      */
     
     // Create config object from the application plist
-//    BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
+    BugsnagConfiguration *config = [BugsnagConfiguration loadConfig];
     
     // ... or construct an empty object
 //    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"YOUR-API-KEY"];
@@ -76,12 +92,59 @@
      */
 //    [config setRedactedKeys:[NSSet setWithArray:@[@"filter_me", @"firstName", @"lastName"]]];
     
+    [config addOnSendErrorBlock:^BOOL(BugsnagEvent * _Nonnull event) {
+        return [self receiveBugsnagReport:event];
+    }];
+
     /**
      Finally, start Bugsnag with the specified configuration:
      */
-//    [Bugsnag startWithConfiguration:config];
-    
+    [Bugsnag startWithConfiguration:config];
+}
+
+- (BOOL)receiveBugsnagReport:(BugsnagEvent * _Nonnull)event {
+    NSLog(@"BUGSNAG: REPORT:\n%@: %@", event.errors[0].errorClass, event.errors[0].errorMessage);
     return YES;
+}
+
+- (void)startPLCrashReporter {
+    PLCrashReporterConfig *config = [[PLCrashReporterConfig alloc] initWithSignalHandlerType: PLCrashReporterSignalHandlerTypeMach
+                                                                       symbolicationStrategy: PLCrashReporterSymbolicationStrategyAll];
+    self.crashReporter = [[PLCrashReporter alloc] initWithConfiguration: config];
+
+    // Enable the Crash Reporter.
+    NSError *error;
+    if (![self.crashReporter enableCrashReporterAndReturnError: &error]) {
+        NSLog(@"PLCRASHREPORTER: Could not enable crash reporter: %@", error);
+    }
+}
+
+- (void)fetchPLCrashReport {
+    NSLog(@"PLCRASHREPORTER: Checking for crash report");
+    if ([self.crashReporter hasPendingCrashReport]) {
+        NSError *error;
+
+        // Try loading the crash report.
+        NSData *data = [self.crashReporter loadPendingCrashReportDataAndReturnError: &error];
+        if (data == nil) {
+            NSLog(@"PLCRASHREPORTER: Failed to load crash report data: %@", error);
+            return;
+        }
+
+        // Retrieving crash reporter data.
+        PLCrashReport *report = [[PLCrashReport alloc] initWithData: data error: &error];
+        if (report == nil) {
+            NSLog(@"PLCRASHREPORTER: Failed to parse crash report: %@", error);
+            return;
+        }
+
+        // We could send the report from here, but we'll just print out some debugging info instead.
+        NSString *text = [PLCrashReportTextFormatter stringValueForCrashReport: report withTextFormat: PLCrashReportTextFormatiOS];
+        NSLog(@"PLCRASHREPORTER: REPORT:\n%@", text);
+
+        // Purge the report.
+        [self.crashReporter purgePendingCrashReport];
+    }
 }
 
 #if defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0

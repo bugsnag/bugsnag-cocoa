@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,7 @@
 		011E212B26BC3618006903C3 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E212A26BC3618006903C3 /* SceneDelegate.m */; };
 		0159747126BBE92D003BD715 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0159746F26BBE92D003BD715 /* LaunchScreen.storyboard */; };
 		01B9390826BBE17C00208C39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01B9390726BBE17C00208C39 /* Assets.xcassets */; };
+		09F3F51D2D66044700BAA0A3 /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 09F3F51C2D66044700BAA0A3 /* CrashReporter */; };
 		19B2907F523540B1194E89AC /* libPods-objective-c-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AE12FD2EC7D212FA4CE8C14 /* libPods-objective-c-ios.a */; };
 		8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A4882E1224BCC130035B94C /* WebKit.framework */; };
 		8A4882E5224BCD5D0035B94C /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A4882E4224BCD5D0035B94C /* OutOfMemoryController.m */; };
@@ -66,6 +67,7 @@
 				8A4882E2224BCC130035B94C /* WebKit.framework in Frameworks */,
 				F40B874B16AA233500676BB2 /* UIKit.framework in Frameworks */,
 				F40B874D16AA233500676BB2 /* Foundation.framework in Frameworks */,
+				09F3F51D2D66044700BAA0A3 /* CrashReporter in Frameworks */,
 				F40B874F16AA233500676BB2 /* CoreGraphics.framework in Frameworks */,
 				19B2907F523540B1194E89AC /* libPods-objective-c-ios.a in Frameworks */,
 			);
@@ -163,12 +165,16 @@
 				F40B874316AA233500676BB2 /* Frameworks */,
 				F40B874416AA233500676BB2 /* Resources */,
 				5142A2F8286744A694BDB5BA /* Upload Bugsnag dSYM */,
+				6C97AEFBEE94A9FF44E1136A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "objective-c-ios";
+			packageProductDependencies = (
+				09F3F51C2D66044700BAA0A3 /* CrashReporter */,
+			);
 			productName = "Bugsnag Test App";
 			productReference = F40B874616AA233500676BB2 /* objective-c-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -198,6 +204,9 @@
 				Base,
 			);
 			mainGroup = F40B873B16AA233500676BB2;
+			packageReferences = (
+				09F3F51B2D66044700BAA0A3 /* XCRemoteSwiftPackageReference "plcrashreporter" */,
+			);
 			productRefGroup = F40B874716AA233500676BB2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -236,6 +245,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby";
 			shellScript = "dsyms = Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"]\n\nfork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  dsyms.each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
+			showEnvVarsInLog = 0;
+		};
+		6C97AEFBEE94A9FF44E1136A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-objective-c-ios/Pods-objective-c-ios-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Bugsnag/Bugsnag.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Bugsnag.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-objective-c-ios/Pods-objective-c-ios-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6D3E90BD4495FE724F7FF283 /* [CP] Check Pods Manifest.lock */ = {
@@ -392,7 +419,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -472,6 +500,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		09F3F51B2D66044700BAA0A3 /* XCRemoteSwiftPackageReference "plcrashreporter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/plcrashreporter.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.11.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		09F3F51C2D66044700BAA0A3 /* CrashReporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09F3F51B2D66044700BAA0A3 /* XCRemoteSwiftPackageReference "plcrashreporter" */;
+			productName = CrashReporter;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F40B873D16AA233500676BB2 /* Project object */;
 }
