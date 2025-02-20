@@ -73,7 +73,10 @@ BSG_KSCrashType bsg_kscrash_install(const char *const crashReportFilePath,
  *         successfully installed. Otherwise it represents which sentries it
  *         will attempt to activate when BSG_KSCrash installs.
  */
+#ifndef DECLARED_SET_CRASH_HANDLING_TYPES
+#define DECLARED_SET_CRASH_HANDLING_TYPES
 BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes);
+#endif
 
 /** Reinstall the crash reporter. Useful for resetting the crash reporter
  * after a "soft" crash.

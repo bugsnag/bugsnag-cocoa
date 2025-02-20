@@ -35,12 +35,15 @@
  */
 
 
+#ifndef DECLARED_CRASH_TYPES
+#define DECLARED_CRASH_TYPES
 typedef CF_ENUM(unsigned, BSG_KSCrashType) {
     BSG_KSCrashTypeMachException = 0x01,
     BSG_KSCrashTypeSignal = 0x02,
     BSG_KSCrashTypeCPPException = 0x04,
     BSG_KSCrashTypeNSException = 0x08,
 };
+#endif
 
 #define BSG_KSCrashTypeAll                                                     \
     (BSG_KSCrashTypeMachException | BSG_KSCrashTypeSignal |                    \

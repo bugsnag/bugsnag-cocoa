@@ -44,6 +44,8 @@
 #import <Bugsnag/BugsnagStackframe.h>
 #import <Bugsnag/BugsnagThread.h>
 
+#ifndef DECLARED_CRASH_TYPES
+#define DECLARED_CRASH_TYPES
 // Copied from BSG_KSCrashType.h
 typedef CF_ENUM(unsigned, BSG_KSCrashType) {
     BSG_KSCrashTypeMachException = 0x01,
@@ -51,9 +53,13 @@ typedef CF_ENUM(unsigned, BSG_KSCrashType) {
     BSG_KSCrashTypeCPPException = 0x04,
     BSG_KSCrashTypeNSException = 0x08,
 };
+#endif
 
+#ifndef DECLARED_SET_CRASH_HANDLING_TYPES
+#define DECLARED_SET_CRASH_HANDLING_TYPES
 // Copied from BSG_KSCrashC.h
 BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes);
+#endif
 
 /**
  * Static access to a Bugsnag Client, the easiest way to use Bugsnag in your app.
