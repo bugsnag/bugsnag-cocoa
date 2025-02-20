@@ -12,18 +12,6 @@
 @import CrashReporter;
 
 
-// Copied from BSG_KSCrashType.h
-typedef CF_ENUM(unsigned, BSG_KSCrashType) {
-    BSG_KSCrashTypeMachException = 0x01,
-    BSG_KSCrashTypeSignal = 0x02,
-    BSG_KSCrashTypeCPPException = 0x04,
-    BSG_KSCrashTypeNSException = 0x08,
-};
-
-// Copied from BSG_KSCrashC.h
-BSG_KSCrashType bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashType crashTypes);
-
-
 @interface AppDelegate ()
 
 @property(nonatomic, strong) PLCrashReporter *crashReporter;
