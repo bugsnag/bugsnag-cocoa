@@ -3,12 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		00C3ED5C23F2DA4900757DBD /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 00C3ED5B23F2DA4900757DBD /* README.md */; };
 		01575CF826C12B2F00BD56D7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */; };
+		09F3F5222D6793AE00BAA0A3 /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 09F3F5212D6793AE00BAA0A3 /* CrashReporter */; };
+		09F3F5262D67979C00BAA0A3 /* Bugsnag.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09F3F5252D67979C00BAA0A3 /* Bugsnag.xcframework */; };
 		378BA2CD24229CBB00123123 /* OutOfMemoryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 378BA2CC24229CBB00123123 /* OutOfMemoryController.m */; };
 		379D203A242B697600C11EFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 379D2038242B697600C11EFE /* LaunchScreen.storyboard */; };
 		99E0BFB5118D8734EE28789F /* Pods_swift_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C150B6F7F4565C76CCBBFE1 /* Pods_swift_ios.framework */; };
@@ -25,6 +27,7 @@
 /* Begin PBXFileReference section */
 		00C3ED5B23F2DA4900757DBD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		09F3F5252D67979C00BAA0A3 /* Bugsnag.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Bugsnag.xcframework; path = ../../../Bugsnag.xcframework; sourceTree = "<group>"; };
 		2C150B6F7F4565C76CCBBFE1 /* Pods_swift_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_swift_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		378BA2CB24229CBB00123123 /* OutOfMemoryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutOfMemoryController.h; sourceTree = "<group>"; };
 		378BA2CC24229CBB00123123 /* OutOfMemoryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutOfMemoryController.m; sourceTree = "<group>"; };
@@ -53,8 +56,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E75E62E11F4CE1DD000C44C0 /* libz.tbd in Frameworks */,
+				09F3F5222D6793AE00BAA0A3 /* CrashReporter in Frameworks */,
 				E75E62DF1F4CE1D8000C44C0 /* libc++.tbd in Frameworks */,
 				99E0BFB5118D8734EE28789F /* Pods_swift_ios.framework in Frameworks */,
+				09F3F5262D67979C00BAA0A3 /* Bugsnag.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +99,7 @@
 		D175F4BA1ACDBD81009AFFB7 /* swift-ios */ = {
 			isa = PBXGroup;
 			children = (
+				09F3F5252D67979C00BAA0A3 /* Bugsnag.xcframework */,
 				D175F4BD1ACDBD81009AFFB7 /* AppDelegate.swift */,
 				01575CF726C12B2F00BD56D7 /* SceneDelegate.swift */,
 				D175F4BF1ACDBD81009AFFB7 /* ViewController.swift */,
@@ -133,13 +139,15 @@
 				D175F4B51ACDBD81009AFFB7 /* Frameworks */,
 				D175F4B61ACDBD81009AFFB7 /* Resources */,
 				9AFEEED933DC82BFDDB374F6 /* Upload Bugsnag dSYM */,
-				B2D2057DB5069AFE4AD142D4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "swift-ios";
+			packageProductDependencies = (
+				09F3F5212D6793AE00BAA0A3 /* CrashReporter */,
+			);
 			productName = "bugsnag-example";
 			productReference = D175F4B81ACDBD81009AFFB7 /* swift-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -170,6 +178,9 @@
 				Base,
 			);
 			mainGroup = D175F4AF1ACDBD81009AFFB7;
+			packageReferences = (
+				09F3F5202D6793AE00BAA0A3 /* XCRemoteSwiftPackageReference "plcrashreporter" */,
+			);
 			productRefGroup = D175F4B91ACDBD81009AFFB7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -226,26 +237,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby";
 			shellScript = "dsyms = Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"]\n\nfork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  dsyms.each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
-			showEnvVarsInLog = 0;
-		};
-		B2D2057DB5069AFE4AD142D4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-swift-ios/Pods-swift-ios-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Bugsnag/Bugsnag.framework",
-				"${BUILT_PRODUCTS_DIR}/BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bugsnag.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BugsnagNetworkRequestPlugin.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-swift-ios/Pods-swift-ios-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -387,7 +378,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -404,7 +396,10 @@
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				INFOPLIST_FILE = "swift-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.examples.swiftui-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -426,7 +421,10 @@
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				INFOPLIST_FILE = "swift-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.examples.swiftui-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -459,6 +457,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		09F3F5202D6793AE00BAA0A3 /* XCRemoteSwiftPackageReference "plcrashreporter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/plcrashreporter.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.11.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		09F3F5212D6793AE00BAA0A3 /* CrashReporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09F3F5202D6793AE00BAA0A3 /* XCRemoteSwiftPackageReference "plcrashreporter" */;
+			productName = CrashReporter;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D175F4B01ACDBD81009AFFB7 /* Project object */;
 }

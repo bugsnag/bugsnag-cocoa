@@ -33,6 +33,7 @@
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 #import "BSGUtils.h"
+#import "BSG_KSCrashC.h"
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
@@ -374,6 +375,10 @@ BSG_OBJC_DIRECT_MEMBERS
     if ([self bugsnagReadyForInternalCalls]) {
         [self.client removeOnBreadcrumbBlock:block];
     }
+}
+
++ (void)enableAllRemainingHandlers {
+    bsg_kscrash_setHandlingCrashTypes((BSG_KSCrashType)~0);
 }
 
 @end

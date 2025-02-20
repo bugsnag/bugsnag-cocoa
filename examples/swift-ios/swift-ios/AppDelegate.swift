@@ -20,81 +20,83 @@
 
 import UIKit
 import Bugsnag
+import CrashReporter
 
 /**
  To enable network breadcrumbs, import the plugin and then add to your config (see configuration section further down).
  You must also update your Podfile to include pod BugsnagNetworkRequestPlugin.
  */
-import BugsnagNetworkRequestPlugin
+//import BugsnagNetworkRequestPlugin
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var crashReporter: PLCrashReporter?
+
+    func startBugsnag() {
+        let config = BugsnagConfiguration("791ac5ad5a73e2409c395a9db2ba033c")
+
+        config.enabledErrorTypes.cppExceptions = false;
+        config.enabledErrorTypes.signals = false;
+        config.enabledErrorTypes.unhandledExceptions = false;
+        config.enabledErrorTypes.machExceptions = true;
+
+        config.addOnSendError { event in
+            print("BUGSNAG: Reporting crash \(String(describing: event.errors[0].errorClass)): \(String(describing: event.errors[0].errorMessage))")
+            return true
+        }
+
+        Bugsnag.start(with: config)
+
+    }
+
+    func startPLCrashReporter() {
+        let config = PLCrashReporterConfig(signalHandlerType: .mach, symbolicationStrategy: .all)
+        crashReporter = PLCrashReporter(configuration: config)
+        if crashReporter == nil {
+          print("Could not create an instance of PLCrashReporter")
+          return
+        }
+
+        // Enable the Crash Reporter.
+        do {
+          try crashReporter!.enableAndReturnError()
+        } catch let error {
+          print("Warning: Could not enable crash reporter: \(error)")
+        }
+    }
+
+    func loadPLCrashReport() {
+        if crashReporter!.hasPendingCrashReport() {
+          do {
+            let data = try crashReporter!.loadPendingCrashReportDataAndReturnError()
+
+            // Retrieving crash reporter data.
+            let report = try PLCrashReport(data: data)
+
+            // We could send the report from here, but we'll just print out some debugging info instead.
+            if let text = PLCrashReportTextFormatter.stringValue(for: report, with: PLCrashReportTextFormatiOS) {
+              print(text)
+            } else {
+              print("CrashReporter: can't convert report to text")
+            }
+          } catch let error {
+            print("CrashReporter failed to load and parse with error: \(error)")
+          }
+        }
+
+        // Purge the report.
+        crashReporter!.purgePendingCrashReport()
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        startBugsnag()
+        startPLCrashReporter()
 
-        /**
-         This is the minimum amount of setup required for Bugsnag to work.  Simply add your API key to the app's .plist (Supporting Files/Info.plist) and the application will deliver all error and session notifications to the appropriate dashboard.
-         
-         You can find your API key in your Bugsnag dashboard under the settings menu.
-         */
-        Bugsnag.start()
+        Bugsnag.enableAllRemainingHandlers()
 
-        /**
-         Bugsnag behavior can be configured through the plist and/or further extended in code by creating a BugsnagConfiguration object and passing it to [Bugsnag startWithConfiguration].
-         
-         All subsequent setup is optional, and will configure your Bugsnag setup in different ways. A few common examples are included here, for more detailed explanations please look at the documented configuration options at https://docs.bugsnag.com/platforms/ios/configuration-options/
-         */
-        
-        // Create config object from the application plist
-//      let config = BugsnagConfiguration.loadConfig()
-        
-        // ... or construct an empty object
-//      let config = BugsnagConfiguration("YOUR-API-KEY")
-
-        /**
-         This sets some user information that will be attached to each error.
-         */
-//        config.setUser("DefaultUser", withEmail:"Not@real.fake", andName:"Default User")
-
-        /**
-         The appVersion will let you see what release an error is present in.  This will be picked up automatically from your build settings, but can be manually overwritten as well.
-         */
-//        config.appVersion = "1.5.0"
-
-        /**
-         When persisting a user you won't need to set the user information everytime the app opens, instead it will be persisted between each app session.
-         */
-//        config.persistUser = true
-
-        /**
-         This option allows you to send more or less detail about errors to Bugsnag.  Setting it to Always or Unhandled means you'll have detailed stacktraces of all app threads available when debugging unexpected errors.
-         */
-//        config.sendThreads = .always
-
-        /**
-         Enabled error types allow you to customize exactly what errors are automatically captured and delivered to your Bugsnag dashboard.  A detailed breakdown of each error type can be found in the configuration option documentation.
-         */
-//        config.enabledErrorTypes.ooms = false
-//        config.enabledErrorTypes.unhandledExceptions = true
-//        config.enabledErrorTypes.machExceptions = true
-
-        /**
-         To enable network breadcrumbs, add the BugsnagNetworkRequestPlugin plugin to your config.
-         */
-//        config.add(BugsnagNetworkRequestPlugin())
-
-        /**
-         If there's information that you do not wish sent to your Bugsnag dashboard, such as passwords or user information, you can set the keys as redacted. When a notification is sent to Bugsnag all keys matching your set filters will be redacted before they leave your application.
-         All automatically captured data can be found here: https://docs.bugsnag.com/platforms/ios/automatically-captured-data/.
-         */
-//        config.redactedKeys = ["password", "credit_card_number"]
-
-        /**
-         Finally, start Bugsnag with the specified configuration:
-         */
-//        Bugsnag.start(with: config)
+        loadPLCrashReport()
 
         return true
     }

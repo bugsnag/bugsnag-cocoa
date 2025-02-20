@@ -35,7 +35,7 @@
 
     // Now install the rest of the Bugsnag handlers so that THEY become the first handlers.
     // Since Bugsnag's Mach handler is already installed, it won't be installed when we call this.
-    bsg_kscrash_setHandlingCrashTypes(~0);
+    [Bugsnag enableAllRemainingHandlers];
 
     // At this point, the first handlers for each type are:
     //
