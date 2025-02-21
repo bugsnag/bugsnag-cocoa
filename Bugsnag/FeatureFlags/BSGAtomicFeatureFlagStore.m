@@ -28,6 +28,10 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 @implementation BSGAtomicFeatureFlagStore
 
 + (instancetype)store {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        nameToFlag = [NSMutableDictionary dictionary];
+    });
     return [self new];
 }
 
@@ -102,6 +106,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
     [self _awaitAtomicFeatureFlagsLockIfNeeded];
     newItem->previous = tail;
     atomic_store(&g_feature_flags_tail, newItem);
+    nameToFlag[name] = [NSValue valueWithPointer:newItem];
 }
 
 - (NSData *)_dataForFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant {
@@ -132,6 +137,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
             atomic_store(&g_feature_flags_tail, flag->previous);
         }
         free(flag);
+        nameToFlag[name] = nil;
     }
 }
 
@@ -144,6 +150,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
         item = next;
     }
     atomic_store(&g_feature_flags_tail, NULL);
+    nameToFlag = [NSMutableDictionary dictionary];
 }
 
 @end
