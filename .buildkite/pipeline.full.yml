@@ -795,7 +795,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 60
     agents:
-      queue: opensource-mac-cocoa-10.14
+      queue: macos-10.14
     plugins:
       artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
