@@ -122,7 +122,7 @@ steps:
   - label: macOS 10.13 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: macos-10.13
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -348,7 +348,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: macos-10.13
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
@@ -752,7 +752,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 10
     agents:
-      queue: opensource-mac-cocoa-10.13
+      queue: macos-10.13
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
