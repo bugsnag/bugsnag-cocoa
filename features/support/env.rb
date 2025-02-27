@@ -160,11 +160,12 @@ Maze.hooks.after do |scenario|
       end
     end
   when 'ios'
+    manager = Maze::Api::Appium::FileManager.new
     begin
-      data = Maze.driver.pull_file '@com.bugsnag.fixtures.cocoa/Documents/kscrash.log'
+      data = manager.read_app_file 'kscrash.log'
       File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
     rescue StandardError
-      puts "Maze.driver.pull_file failed: #{$ERROR_INFO}"
+      puts "read_app_file failed: #{$ERROR_INFO}"
     end
   end
 end
