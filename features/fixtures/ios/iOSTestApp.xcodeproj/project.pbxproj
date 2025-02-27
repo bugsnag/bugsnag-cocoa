@@ -121,6 +121,7 @@
 		8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */; };
 		8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */; };
 		967F6F1229B2236A0054EED8 /* InternalWorkingsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1129B2236A0054EED8 /* InternalWorkingsScenario.swift */; };
+		96A25F322D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F312D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m */; };
 		A1117E552535A59100014FDA /* OOMLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E542535A59100014FDA /* OOMLoadScenario.swift */; };
 		A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */; };
 		A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */; };
@@ -328,6 +329,7 @@
 		8AF8FCAB22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnhandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		967F6F1129B2236A0054EED8 /* InternalWorkingsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalWorkingsScenario.swift; sourceTree = "<group>"; };
+		96A25F312D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionFeatureFlagsScenario.m; sourceTree = "<group>"; };
 		A1117E542535A59100014FDA /* OOMLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMLoadScenario.swift; sourceTree = "<group>"; };
 		A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMAutoDetectErrorsScenario.swift; sourceTree = "<group>"; };
 		A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
@@ -545,6 +547,7 @@
 				8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */,
 				010BAAFA2833CE570003FF36 /* CxxExceptionOverrideScenario.mm */,
 				F429550B682F8F9677305881 /* CxxExceptionScenario.mm */,
+				09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */,
 				010BAAF42833CE570003FF36 /* DisableAllExceptManualExceptionsAndCrashScenario.m */,
 				010BAB402833D2AA0003FF36 /* DisabledReleaseStageAutoSessionScenario.swift */,
 				010BAB3C2833D2890003FF36 /* DisabledReleaseStageManualSessionScenario.swift */,
@@ -595,6 +598,7 @@
 				E753F24524927409001FB671 /* NotifyCallbackCrashScenario.swift */,
 				8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */,
 				F4295E86DC0BE9DC731B0D1C /* NullPointerScenario.m */,
+				96A25F312D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m */,
 				010BAAF52833CE570003FF36 /* ObjCExceptionOverrideScenario.m */,
 				F429521A8EEB435DCB6EACE1 /* ObjCExceptionScenario.m */,
 				F429511ED32FC9FB46649CAE /* ObjCMsgSendScenario.m */,
@@ -680,7 +684,6 @@
 				010BAAF22833CE570003FF36 /* UserPersistencePersistUserClientScenario.m */,
 				010BAAF82833CE570003FF36 /* UserPersistencePersistUserScenario.m */,
 				E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */,
-				09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */,
 			);
 			name = scenarios;
 			path = ../shared/scenarios;
@@ -948,6 +951,7 @@
 				010BAB332833D1E80003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift in Sources */,
 				E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */,
 				E7B79CDA24800A5D0039FB88 /* MetadataMergeScenario.swift in Sources */,
+				96A25F322D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */,
 				E7B79CD8247FD7810039FB88 /* AutoContextNSExceptionScenario.swift in Sources */,
 				010BAB3B2833D2280003FF36 /* UnhandledErrorValidReleaseStageScenario.swift in Sources */,
 				010BDFB92885562D007025F9 /* ReportBackgroundAppHangScenario.swift in Sources */,

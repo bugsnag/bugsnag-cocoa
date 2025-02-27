@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.32.1 (2025-02-27)
+
+### Bug Fixes
+
+* Fixed the issue causing flags cleared by calling `+[Bugsnag clearFeatureFlagWithName:]` to appear in crash reports.
+  [#1740](https://github.com/bugsnag/bugsnag-cocoa/pull/1740)
+
 ## 6.32.0 (2025-02-11)
 
 ### Enhancements
