@@ -10,7 +10,7 @@
 
 #import "BSGKeys.h"
 #import "BSGRunContext.h"
-#import "BSG_KSSystemInfo.h"
+#import "KSSystemInfo.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration.h"
 
@@ -21,8 +21,8 @@
  */
 NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     NSMutableDictionary *app = [NSMutableDictionary new];
-    app[@"name"] = [event valueForKeyPath:@"system." BSG_KSSystemField_BundleExecutable];
-    app[@"runningOnRosetta"] = [event valueForKeyPath:@"system." BSG_KSSystemField_Translated];
+    app[@"name"] = [event valueForKeyPath:@"system." KSSystemField_BundleExecutable];
+    app[@"runningOnRosetta"] = [event valueForKeyPath:@"system." KSSystemField_Translated];
     return app;
 }
 
@@ -73,11 +73,11 @@ NSDictionary *BSGAppMetadataFromRunContext(const struct BSGRunContext *context) 
           codeBundleId:(NSString *)codeBundleId
 {
     NSDictionary *system = event[BSGKeySystem];
-    app.id = system[@BSG_KSSystemField_BundleID];
-    app.binaryArch = system[@BSG_KSSystemField_BinaryArch];
-    app.bundleVersion = system[@BSG_KSSystemField_BundleVersion];
-    app.dsymUuid = system[@BSG_KSSystemField_AppUUID];
-    app.version = system[@BSG_KSSystemField_BundleShortVersion];
+    app.id = system[@KSSystemField_BundleID];
+    app.binaryArch = system[@KSSystemField_BinaryArch];
+    app.bundleVersion = system[@KSSystemField_BundleVersion];
+    app.dsymUuid = system[@KSSystemField_AppUUID];
+    app.version = system[@KSSystemField_BundleShortVersion];
     app.codeBundleId = [event valueForKeyPath:@"user.state.app.codeBundleId"] ?: codeBundleId;
     [app setValuesFromConfiguration:config];
 }

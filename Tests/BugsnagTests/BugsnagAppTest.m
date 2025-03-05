@@ -8,7 +8,7 @@
 
 #import "BSGTestCase.h"
 
-#import "BSG_KSSystemInfo.h"
+#import "KSSystemInfo.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagConfiguration+Private.h"
@@ -184,7 +184,7 @@
 }
 
 - (void)testBSGParseAppMetadata {
-    NSDictionary *metadata = BSGParseAppMetadata(@{@"system": [BSG_KSSystemInfo systemInfo]});
+    NSDictionary *metadata = BSGParseAppMetadata(@{@"system": [KSSystemInfo systemInfo]});
     int proc_translated = 0;
     size_t size = sizeof(proc_translated);
     if (!sysctlbyname("sysctl.proc_translated", &proc_translated, &size, NULL, 0) && proc_translated) {

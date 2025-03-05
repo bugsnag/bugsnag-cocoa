@@ -775,29 +775,29 @@
  * Test the mapping between BSGErrorTypes and KSCrashTypes
  */
 -(void)testCrashTypeMapping {
-    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes([BugsnagErrorTypes new]),
-                   BSG_KSCrashTypeNSException |
-                   BSG_KSCrashTypeMachException |
-                   BSG_KSCrashTypeSignal |
-                   BSG_KSCrashTypeCPPException);
+    XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes([BugsnagErrorTypes new]),
+                   KSCrashTypeNSException |
+                   KSCrashTypeMachException |
+                   KSCrashTypeSignal |
+                   KSCrashTypeCPPException);
 
     // Check partial sets
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
     errorTypes.ooms = false;
     errorTypes.signals = false;
     errorTypes.machExceptions = false;
-    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes(errorTypes),
-                   BSG_KSCrashTypeNSException | BSG_KSCrashTypeCPPException);
+    XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes(errorTypes),
+                   KSCrashTypeNSException | KSCrashTypeCPPException);
 
     errorTypes.signals = true;
     errorTypes.cppExceptions = false;
-    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes(errorTypes),
-                   BSG_KSCrashTypeNSException | BSG_KSCrashTypeSignal);
+    XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes(errorTypes),
+                   KSCrashTypeNSException | KSCrashTypeSignal);
 
     errorTypes.cppExceptions = true;
     errorTypes.unhandledExceptions = false;
-    XCTAssertEqual(BSG_KSCrashTypeFromBugsnagErrorTypes(errorTypes),
-                   BSG_KSCrashTypeCPPException | BSG_KSCrashTypeSignal);
+    XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes(errorTypes),
+                   KSCrashTypeCPPException | KSCrashTypeSignal);
 }
 
 #endif
@@ -910,7 +910,7 @@
     // Block
     [clone setOnCrashHandler:config.onCrashHandler];
     XCTAssertEqual(config.onCrashHandler, clone.onCrashHandler);
-    [clone setOnCrashHandler:(void *)^(const BSG_KSCrashReportWriter *_Nonnull writer){}];
+    [clone setOnCrashHandler:(void *)^(const KSCrashReportWriter *_Nonnull writer){}];
     XCTAssertNotEqual(config.onCrashHandler, clone.onCrashHandler);
 
     // Array (of blocks)

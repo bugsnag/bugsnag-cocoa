@@ -155,7 +155,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 
 @end
 
-void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
+void BugsnagFeatureFlagsWriteCrashReport(const KSCrashReportWriter *writer,
                                         bool __unused requiresAsyncSafety) {
     atomic_store(&g_writing_crash_report, true);
     

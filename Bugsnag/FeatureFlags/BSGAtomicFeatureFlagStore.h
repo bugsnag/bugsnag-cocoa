@@ -26,6 +26,6 @@ BSG_OBJC_DIRECT_MEMBERS
  * Inserts the current feature flags into a crash report.
  *
  */
-void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter * _Nonnull writer,
+void BugsnagFeatureFlagsWriteCrashReport(const KSCrashReportWriter * _Nonnull writer,
                                          bool requiresAsyncSafety);
 NS_ASSUME_NONNULL_END

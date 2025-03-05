@@ -27,7 +27,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSJSONCodec.h"
+#import "KSJSONCodec.h"
 
 
 @interface KSJSONCodec_Tests : XCTestCase @end
@@ -37,15 +37,15 @@
 
 static int AddData(const char *data, size_t length, void *userData) {
     [(__bridge NSMutableData *)userData appendBytes:data length:length];
-    return BSG_KSJSON_OK;
+    return KSJSON_OK;
 }
 
-static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
+static NSString *JSONString(void (^ block)(KSJSONEncodeContext *context)) {
     NSMutableData *data = [NSMutableData data];
-    BSG_KSJSONEncodeContext context = {0};
-    bsg_ksjsonbeginEncode(&context, false, AddData, (__bridge void *)data);
+    KSJSONEncodeContext context = {0};
+    ksjsonbeginEncode(&context, false, AddData, (__bridge void *)data);
     block(&context);
-    bsg_ksjsonendEncode(&context);
+    ksjsonendEncode(&context);
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
@@ -54,8 +54,8 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[]";
     id original = [NSArray array];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
     });
     XCTAssertEqualObjects(jsonString, expected, @"");
     id result = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
@@ -69,9 +69,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[null]";
     id original = @[[NSNull null]];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddNullElement(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddNullElement(context, NULL);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -87,9 +87,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[true]";
     id original = @[@YES];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddBooleanElement(context, NULL, true);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddBooleanElement(context, NULL, true);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -105,9 +105,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[false]";
     id original = @[@NO];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddBooleanElement(context, NULL, false);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddBooleanElement(context, NULL, false);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -123,13 +123,13 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
 //    NSError* error = (NSError*)self;
 //    NSString* expected = @"[1]";
 //    id original = @[@1];
-//    NSString* jsonString = toString([BSG_KSJSONCodec encode:original
-//                                                options:BSG_KSJSONEncodeOptionSorted
+//    NSString* jsonString = toString([KSJSONCodec encode:original
+//                                                options:KSJSONEncodeOptionSorted
 //                                                  error:&error]);
 //    XCTAssertNotNil(jsonString, @"");
 //    XCTAssertNil(error, @"");
 //    XCTAssertEqualObjects(jsonString, expected, @"");
-//    id result = [BSG_KSJSONCodec decode:toData(jsonString) error:&error];
+//    id result = [KSJSONCodec decode:toData(jsonString) error:&error];
 //    XCTAssertNotNil(result, @"");
 //    XCTAssertNil(error, @"");
 //    XCTAssertEqualObjects(result, original, @"");
@@ -140,9 +140,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[-2e-1]";
     id original = @[@(-0.2f)];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, NULL, -0.2f);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddFloatingPointElement(context, NULL, -0.2f);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -160,9 +160,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[-2e-15]";
     id original = @[@(-2e-15f)];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, NULL, -2e-15f);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddFloatingPointElement(context, NULL, -2e-15f);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -180,9 +180,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[\"One\"]";
     id original = @[@"One"];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddStringElement(context, NULL, "One", 3);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddStringElement(context, NULL, "One", 3);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -198,10 +198,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[\"テスト\"]";
     id original = @[@"テスト"];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = "テスト";
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -219,11 +219,11 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     id original = @[@"One",
             @1000,
             @YES];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddStringElement(context, NULL, "One", 3);
-        bsg_ksjsonaddIntegerElement(context, NULL, 1000);
-        bsg_ksjsonaddBooleanElement(context, NULL, true);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddStringElement(context, NULL, "One", 3);
+        ksjsonaddIntegerElement(context, NULL, 1000);
+        ksjsonaddBooleanElement(context, NULL, true);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -239,9 +239,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[[]]";
     id original = @[[NSArray array]];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonbeginArray(context, NULL);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -257,10 +257,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[[\"Blah\"]]";
     id original = @[@[@"Blah"]];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddStringElement(context, NULL, "Blah", 4);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddStringElement(context, NULL, "Blah", 4);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -276,9 +276,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[{}]";
     id original = @[[NSDictionary dictionary]];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonbeginObject(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonbeginObject(context, NULL);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -294,10 +294,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[{\"Blah\":true}]";
     id original = @[@{@"Blah": @YES}];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddBooleanElement(context, "Blah", true);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddBooleanElement(context, "Blah", true);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -314,8 +314,8 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{}";
     id original = [NSDictionary dictionary];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -331,9 +331,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":null}";
     id original = @{@"One": [NSNull null]};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddNullElement(context, "One");
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddNullElement(context, "One");
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -349,9 +349,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":true}";
     id original = @{@"One": @YES};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddBooleanElement(context, "One", true);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddBooleanElement(context, "One", true);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -367,9 +367,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":false}";
     id original = @{@"One": @NO};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddBooleanElement(context, "One", false);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddBooleanElement(context, "One", false);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -385,9 +385,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":1}";
     id original = @{@"One": @1};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, "One", 1);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddIntegerElement(context, "One", 1);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -403,9 +403,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":5.4918e+1}";
     id original = @{@"One": @54.918F};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, "One", 54.918F);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddFloatingPointElement(context, "One", 54.918F);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -421,9 +421,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
 - (void) assertInt:(int64_t) value convertsTo:(NSString *)str
 {
     NSString* expected = [NSString stringWithFormat:@"{\"One\":%@}", str];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, "One", value);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddIntegerElement(context, "One", value);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertEqualObjects(jsonString, expected, @"");
@@ -432,9 +432,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
 - (void) assertDouble:(double) value convertsTo:(NSString *)str
 {
     NSString* expected = [NSString stringWithFormat:@"{\"One\":%@}", str];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, "One", value);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddFloatingPointElement(context, "One", value);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertEqualObjects(jsonString, expected, @"");
@@ -512,9 +512,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":5e+20}";
     id original = @{@"One": @5e20F};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, "One", 5e20F);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddFloatingPointElement(context, "One", 5e20F);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -532,9 +532,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":\"Value\"}";
     id original = @{@"One": @"Value"};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddStringElement(context, "One", "Value", 5);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddStringElement(context, "One", "Value", 5);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -552,11 +552,11 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     id original = @{@"One": @"Value",
             @"Two": @1000,
             @"Three": @YES};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddStringElement(context, "One", "Value", 5);
-        bsg_ksjsonaddBooleanElement(context, "Three", true);
-        bsg_ksjsonaddIntegerElement(context, "Two", 1000);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddStringElement(context, "One", "Value", 5);
+        ksjsonaddBooleanElement(context, "Three", true);
+        ksjsonaddIntegerElement(context, "Two", 1000);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -572,9 +572,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":{}}";
     id original = @{@"One": [NSDictionary dictionary]};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonbeginObject(context, "One");
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonbeginObject(context, "One");
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -590,10 +590,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"One\":{\"Blah\":1}}";
     id original = @{@"One": @{@"Blah": @1}};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonbeginObject(context, "One");
-        bsg_ksjsonaddIntegerElement(context, "Blah", 1);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonbeginObject(context, "One");
+        ksjsonaddIntegerElement(context, "Blah", 1);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -609,9 +609,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"Key\":[]}";
     id original = @{@"Key": [NSArray array]};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonbeginArray(context, "Key");
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonbeginArray(context, "Key");
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -627,10 +627,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"{\"Blah\":[true]}";
     id original = @{@"Blah": @[@YES]};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonbeginArray(context, "Blah");
-        bsg_ksjsonaddBooleanElement(context, NULL, true);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonbeginArray(context, "Blah");
+        ksjsonaddBooleanElement(context, NULL, true);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -704,11 +704,11 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
             @"57": @"57",
             @"58": @"58",
             @"59": @"59"};
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
         for (NSString *key in original) {
             const char *value = [[original objectForKey:key] UTF8String];
-            bsg_ksjsonaddStringElement(context, key.UTF8String, value, strlen(value));
+            ksjsonaddStringElement(context, key.UTF8String, value, strlen(value));
         }
     });
     XCTAssertNotNil(jsonString, @"");
@@ -724,10 +724,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[\"\\b\\f\\n\\r\\t\"]";
     id original = @[@"\b\f\n\r\t"];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = "\b\f\n\r\t"; 
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -743,10 +743,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[\"Testing\\b escape \\f chars\\n\"]";
     id original = @[@"Testing\b escape \f chars\n"];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = "Testing\b escape \f chars\n"; 
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -762,10 +762,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[\"\\\"\\\\\"]";
     id original = @[@"\"\\"];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = "\"\\"; 
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -781,9 +781,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[1.2]";
     id original = @[@1.2F];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, NULL, 1.2F);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddFloatingPointElement(context, NULL, 1.2F);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -799,9 +799,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[1e-1]";
     id original = @[@0.1];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddFloatingPointElement(context, NULL, 0.1);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddFloatingPointElement(context, NULL, 0.1);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -817,9 +817,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[20]";
     id original = @[@20];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, NULL, 20);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddIntegerElement(context, NULL, 20);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -835,9 +835,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[2000]";
     id original = @[@2000];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, NULL, 2000);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddIntegerElement(context, NULL, 2000);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -853,9 +853,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[2000000000]";
     id original = @[@2000000000];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, NULL, 2000000000);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddIntegerElement(context, NULL, 2000000000);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -871,9 +871,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[200000000000]";
     id original = @[@200000000000];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, NULL, 200000000000);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddIntegerElement(context, NULL, 200000000000);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -889,9 +889,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[-2000]";
     id original = @[@(-2000)];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, NULL, -2000);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddIntegerElement(context, NULL, -2000);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -907,9 +907,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSError* error = nil;
     NSString* expected = @"[0]";
     id original = @[@0];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddIntegerElement(context, NULL, 0);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddIntegerElement(context, NULL, 0);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -926,9 +926,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSString* string = @"";
     NSString* expected = @"[\"\"]";
     id original = @[string];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
-        bsg_ksjsonaddStringElement(context, NULL, "", 0);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
+        ksjsonaddStringElement(context, NULL, "", 0);
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -952,10 +952,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
 
     NSString* expected = [NSString stringWithFormat:@"[\"%@\"]", string];
     id original = @[string];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = string.UTF8String;
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -975,10 +975,10 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
     NSString* string = [NSString stringWithCString:buff encoding:NSUTF8StringEncoding];
 
     id original = @[string];
-    NSString* jsonString = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* jsonString = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = string.UTF8String;
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertNotNil(jsonString, @"");
     XCTAssertNil(error, @"");
@@ -990,19 +990,19 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
 
 - (void) testSerializeDictionaryBadCharacter
 {
-    NSString* result = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginObject(context, NULL);
-        bsg_ksjsonaddStringElement(context, "blah\x01blah", "blah", 4);
+    NSString* result = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginObject(context, NULL);
+        ksjsonaddStringElement(context, "blah\x01blah", "blah", 4);
     });
     XCTAssertEqualObjects(result, @"{\"blah\\u001Blah\":\"blah\"}");
 }
 
 - (void) testSerializeArrayBadCharacter
 {
-    NSString* result = JSONString(^(BSG_KSJSONEncodeContext *context) {
-        bsg_ksjsonbeginArray(context, NULL);
+    NSString* result = JSONString(^(KSJSONEncodeContext *context) {
+        ksjsonbeginArray(context, NULL);
         const char *value = "test\x01ing";
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertEqualObjects(result, @"[\"test\\u0001ing\"]");
 }
@@ -1031,9 +1031,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
                 @"12345678901234567890123456789012345678901234567890"
                 @"12345678901234567890123456789012345678901234567890"
                 @"12345678901234567890123456789012345678901234567890";
-    NSString* result = JSONString(^(BSG_KSJSONEncodeContext *context) {
+    NSString* result = JSONString(^(KSJSONEncodeContext *context) {
         const char *value = [source UTF8String];
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertEqualObjects(result, @"\""
                           @"\\\"12345678901234567890123456789012345678901234567890"
@@ -1071,9 +1071,9 @@ static NSString *JSONString(void (^ block)(BSG_KSJSONEncodeContext *context)) {
                 @"\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01"
                 @"\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01"
                 @"\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01";
-    NSString* result = JSONString(^(BSG_KSJSONEncodeContext *context) {
+    NSString* result = JSONString(^(KSJSONEncodeContext *context) {
         const char *value = [source UTF8String];
-        bsg_ksjsonaddStringElement(context, NULL, value, strlen(value));
+        ksjsonaddStringElement(context, NULL, value, strlen(value));
     });
     XCTAssertEqualObjects(result, @"\"\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001"
                                   @"\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001\\u0001"

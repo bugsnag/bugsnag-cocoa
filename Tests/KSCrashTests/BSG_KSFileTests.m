@@ -1,5 +1,5 @@
 //
-//  BSG_KSFileTests.m
+//  KSFileTests.m
 //  Bugsnag
 //
 //  Created by Nick Dowell on 13/01/2022.
@@ -8,16 +8,16 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSFile.h"
+#import "KSFile.h"
 
-@interface BSG_KSFileTests : XCTestCase
+@interface KSFileTests : XCTestCase
 
 @property NSString *filePath;
 @property int fileDescriptor;
 
 @end
 
-@implementation BSG_KSFileTests
+@implementation KSFileTests
 
 - (void)setUp {
     [super setUp];
@@ -31,30 +31,30 @@
 }
 
 - (void)testFileWrite {
-    BSG_KSFile file;
+    KSFile file;
     const size_t bufferSize = 8;
     char buffer[bufferSize];
     
-    BSG_KSFileInit(&file, self.fileDescriptor, buffer, bufferSize);
+    KSFileInit(&file, self.fileDescriptor, buffer, bufferSize);
     XCTAssertEqual(file.bufferSize, bufferSize);
     XCTAssertEqual(file.bufferUsed, 0);
     
-    BSG_KSFileWrite(&file, "Someone", 7);
+    KSFileWrite(&file, "Someone", 7);
     XCTAssertEqual(file.bufferUsed, 7, @"The buffer should not be flushed until filled");
-    BSG_KSFileWrite(&file, " ", 1);
+    KSFileWrite(&file, " ", 1);
     XCTAssertEqual(file.bufferUsed, 0, @"The buffer should be flushed once filled");
     
-    BSG_KSFileWrite(&file, "says", 4);
-    BSG_KSFileWrite(&file, ": ", 2);
+    KSFileWrite(&file, "says", 4);
+    KSFileWrite(&file, ": ", 2);
     XCTAssertEqual(file.bufferUsed, 6, @"The buffer should not be flushed until filled");
     
-    BSG_KSFileWrite(&file, "Hello, ", 7);
+    KSFileWrite(&file, "Hello, ", 7);
     XCTAssertEqual(file.bufferUsed, (6 + 7) % bufferSize);
     
-    BSG_KSFileWrite(&file, "Supercalifragilisticexpialidocious", 34);
+    KSFileWrite(&file, "Supercalifragilisticexpialidocious", 34);
     XCTAssertEqual(file.bufferUsed, 0, @"Large writes should flush the buffer and leave it empty");
     
-    BSG_KSFileFlush(&file);
+    KSFileFlush(&file);
     XCTAssertEqualObjects([self fileContentsAsString], @"Someone says: Hello, Supercalifragilisticexpialidocious");
 }
 

@@ -1,5 +1,5 @@
 //
-//  bsg_kssignalInfo_Tests.m
+//  kssignalInfo_Tests.m
 //
 //  Created by Karl Stenerud on 2012-03-03.
 //
@@ -30,59 +30,59 @@
 #import "BSG_kssignalInfo.h"
 
 
-@interface bsg_kssignalInfo_Tests : XCTestCase @end
+@interface kssignalInfo_Tests : XCTestCase @end
 
 
-@implementation bsg_kssignalInfo_Tests
+@implementation kssignalInfo_Tests
 
 - (void) testSignalName
 {
     NSString* expected = @"SIGBUS";
-    NSString* actual = [NSString stringWithCString:bsg_kssignal_signalName(SIGBUS) encoding:NSUTF8StringEncoding];
+    NSString* actual = [NSString stringWithCString:kssignal_signalName(SIGBUS) encoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(actual, expected, @"");
 }
 
 - (void) testHighSignalName
 {
-    const char* result = bsg_kssignal_signalName(90);
+    const char* result = kssignal_signalName(90);
     XCTAssertTrue(result == NULL, @"");
 }
 
 - (void) testNegativeSignalName
 {
-    const char* result = bsg_kssignal_signalName(-1);
+    const char* result = kssignal_signalName(-1);
     XCTAssertTrue(result == NULL, @"");
 }
 
 - (void) testSignalCodeName
 {
     NSString* expected = @"BUS_ADRERR";
-    NSString* actual = [NSString stringWithCString:bsg_kssignal_signalCodeName(SIGBUS, BUS_ADRERR)
+    NSString* actual = [NSString stringWithCString:kssignal_signalCodeName(SIGBUS, BUS_ADRERR)
                                           encoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(actual, expected, @"");
 }
 
 - (void) testHighSignalCodeName
 {
-    const char* result = bsg_kssignal_signalCodeName(SIGBUS, 90);
+    const char* result = kssignal_signalCodeName(SIGBUS, 90);
     XCTAssertTrue(result == NULL, @"");
 }
 
 - (void) testNegativeSignalCodeName
 {
-    const char* result = bsg_kssignal_signalCodeName(SIGBUS, -1);
+    const char* result = kssignal_signalCodeName(SIGBUS, -1);
     XCTAssertTrue(result == NULL, @"");
 }
 
 - (void) testFatalSignals
 {
-    const int* fatalSignals = bsg_kssignal_fatalSignals();
+    const int* fatalSignals = kssignal_fatalSignals();
     XCTAssertTrue(fatalSignals != NULL, @"");
 }
 
 - (void) testNumFatalSignals
 {
-    int numSignals = bsg_kssignal_numFatalSignals();
+    int numSignals = kssignal_numFatalSignals();
     XCTAssertTrue(numSignals > 0, @"");
 }
 
@@ -123,13 +123,13 @@
 
 - (void) assertMachException:(int) exception code:(int) code matchesSignal:(int) signal
 {
-    int result = bsg_kssignal_signalForMachException(exception, code);
+    int result = kssignal_signalForMachException(exception, code);
     XCTAssertEqual(result, signal, @"");
 }
 
 - (void) assertSignal:(int) signal matchesMachException:(int) exception
 {
-    int result = bsg_kssignal_machExceptionForSignal(signal);
+    int result = kssignal_machExceptionForSignal(signal);
     XCTAssertEqual(result, exception, @"");
 }
 

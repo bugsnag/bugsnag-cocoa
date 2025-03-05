@@ -1,5 +1,5 @@
 //
-//  BSG_KSCrashStringConversionTest.m
+//  KSCrashStringConversionTest.m
 //  Bugsnag
 //
 //  Created by Karl Stenerud on 01.06.22.
@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSCrashStringConversion.h"
+#import "KSCrashStringConversion.h"
 
 @interface KSCrashStringConversionTests : XCTestCase
 @end

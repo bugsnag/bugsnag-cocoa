@@ -26,8 +26,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSSystemInfo.h"
-#import "BSG_KSSystemInfoC.h"
+#import "KSSystemInfo.h"
+#import "KSSystemInfoC.h"
 
 
 @interface KSSystemInfo_Tests : XCTestCase @end
@@ -37,19 +37,19 @@
 
 - (void) testSystemInfo
 {
-    NSDictionary* info = [BSG_KSSystemInfo systemInfo];
+    NSDictionary* info = [KSSystemInfo systemInfo];
     XCTAssertNotNil(info, @"");
 }
 
 - (void) testSystemInfoJSON
 {
-    const char* json = bsg_kssysteminfo_toJSON();
+    const char* json = kssysteminfo_toJSON();
     XCTAssertTrue(json != NULL, @"");
 }
 
 - (void) testCopyProcessName
 {
-    char* processName = bsg_kssysteminfo_copyProcessName();
+    char* processName = kssysteminfo_copyProcessName();
     XCTAssertTrue(processName != NULL, @"");
     if(processName != NULL)
     {

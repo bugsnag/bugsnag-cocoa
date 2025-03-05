@@ -19,7 +19,7 @@
 
 @implementation BSGTelemetryTests
 
-static void OnCrashHandler(const BSG_KSCrashReportWriter *writer) {}
+static void OnCrashHandler(const KSCrashReportWriter *writer) {}
 
 - (BugsnagConfiguration *)createConfiguration {
     return [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];

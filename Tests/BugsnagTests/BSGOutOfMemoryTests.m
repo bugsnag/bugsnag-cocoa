@@ -2,8 +2,8 @@
 
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
-#import "BSG_KSCrashState.h"
-#import "BSG_KSSystemInfo.h"
+#import "KSCrashState.h"
+#import "KSSystemInfo.h"
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration.h"

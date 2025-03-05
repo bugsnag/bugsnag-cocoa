@@ -27,7 +27,7 @@
 
 #import "FileBasedTestCase.h"
 
-#import "BSG_KSFileUtils.h"
+#import "KSFileUtils.h"
 
 
 @interface KSFileUtils_Tests : FileBasedTestCase @end
@@ -39,7 +39,7 @@
 {
     NSString* path = @"some/kind/of/path";
     NSString* expected = @"path";
-    NSString* actual = [NSString stringWithCString:bsg_ksfulastPathEntry([path cStringUsingEncoding:NSUTF8StringEncoding])
+    NSString* actual = [NSString stringWithCString:ksfulastPathEntry([path cStringUsingEncoding:NSUTF8StringEncoding])
                                           encoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(actual, expected, @"");
 }
@@ -53,7 +53,7 @@
 
     int fd = open([path UTF8String], O_RDWR | O_CREAT | O_EXCL, 0644);
     XCTAssertTrue(fd >= 0, @"");
-    bool result = bsg_ksfuwriteBytesToFD(fd, [expected cStringUsingEncoding:NSUTF8StringEncoding], stringLength);
+    bool result = ksfuwriteBytesToFD(fd, [expected cStringUsingEncoding:NSUTF8StringEncoding], stringLength);
     XCTAssertTrue(result, @"");
     NSString* actual = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
     XCTAssertNil(error, @"");

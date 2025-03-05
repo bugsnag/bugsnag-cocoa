@@ -9,7 +9,7 @@
 #import "BSGPersistentDeviceID.h"
 #import "BSGJSONSerialization.h"
 #import "BSGFilesystem.h"
-#import "BSG_KSSysCtl.h"
+#import "KSSysCtl.h"
 #import "BSGKeys.h"
 #if __has_include(<UIKit/UIDevice.h>)
 #import <UIKit/UIKit.h>
@@ -29,7 +29,7 @@
 
 #pragma mark Generator
 
-// Used to compute deviceId; mimics +[BSG_KSSystemInfo CPUArchForCPUType:subType:]
+// Used to compute deviceId; mimics +[KSSystemInfo CPUArchForCPUType:subType:]
 static NSString * _Nullable cpuArch(void) {
     cpu_type_t cpuType = 0;
     size_t size = sizeof cpuType;
@@ -123,7 +123,7 @@ static NSMutableData * _Nonnull generateIdentificationData(void) {
     [[UIDevice currentDevice].identifierForVendor getUUIDBytes:(uint8_t*)data.mutableBytes];
 #else
     data = [NSMutableData dataWithLength:6];
-    bsg_kssysctl_getMacAddress(BSGKeyDefaultMacName, [data mutableBytes]);
+    kssysctl_getMacAddress(BSGKeyDefaultMacName, [data mutableBytes]);
 #endif
 
     if (isAllZeroes(data)) {

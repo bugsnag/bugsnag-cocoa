@@ -12,10 +12,10 @@
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "BSGWatchKit.h"
-#import "BSG_KSLogger.h"
-#import "BSG_KSMach.h"
-#import "BSG_KSMachHeaders.h"
-#import "BSG_KSSystemInfo.h"
+#import "KSLogger.h"
+#import "KSMach.h"
+#import "KSMachHeaders.h"
+#import "KSSystemInfo.h"
 
 #import <Foundation/Foundation.h>
 #import <stdatomic.h>
@@ -50,7 +50,7 @@ static void InstallTimer(void);
 
 /// Populates `bsg_runContext`
 static void InitRunContext(void) {
-    bsg_runContext->isDebuggerAttached = bsg_ksmachisBeingTraced();
+    bsg_runContext->isDebuggerAttached = ksmachisBeingTraced();
     
     bsg_runContext->isLaunching = YES;
     
@@ -118,7 +118,7 @@ static bool GetIsActive(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([KSSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState == WKApplicationStateActive;
     } else if (@available(watchOS 7.0, *)) {
@@ -187,7 +187,7 @@ static bool GetIsForeground(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([KSSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState != WKApplicationStateBackground;
     } else if (@available(watchOS 7.0, *)) {
@@ -207,7 +207,7 @@ static bool GetIsForeground(void) {
 
 static UIApplication * GetUIApplication(void) {
     // +sharedApplication is unavailable to app extensions
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([KSSystemInfo isRunningInAppExtension]) {
         return nil;
     }
     // Using performSelector: to avoid a compile-time check that
@@ -484,7 +484,7 @@ void BSGRunContextUpdateMemory(void) {
 bool BSGRunContextWasKilled(void) {
     // App extensions have a different lifecycle and the heuristic used for
     // finding app terminations rooted in fixable code does not apply
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([KSSystemInfo isRunningInAppExtension]) {
         return NO;
     }
     

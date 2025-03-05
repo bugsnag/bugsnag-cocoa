@@ -27,7 +27,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSSysCtl.h"
+#import "KSSysCtl.h"
 
 
 @interface KSSysCtl_Tests : XCTestCase @end
@@ -37,20 +37,20 @@
 
 - (void) testSysCtlInt32ForName
 {
-    int32_t result = bsg_kssysctl_int32ForName("hw.ncpu");
+    int32_t result = kssysctl_int32ForName("hw.ncpu");
     XCTAssertTrue(result > 0, @"");
 }
 
 - (void) testSysCtlInt32ForNameInvalid
 {
-    int32_t result = bsg_kssysctl_int32ForName("kernblah.posix1version");
+    int32_t result = kssysctl_int32ForName("kernblah.posix1version");
     XCTAssertTrue(result == 0, @"");
 }
 
 - (void) testSysCtlStringForName
 {
     char buff[100] = {0};
-    bool success = bsg_kssysctl_stringForName("kern.ostype", buff, sizeof(buff));
+    bool success = kssysctl_stringForName("kern.ostype", buff, sizeof(buff));
     XCTAssertTrue(success, @"");
     XCTAssertTrue(buff[0] != 0, @"");
 }
@@ -58,7 +58,7 @@
 - (void) testSysCtlStringForNameInvalid
 {
     char buff[100] = {0};
-    bool success = bsg_kssysctl_stringForName("kernblah.ostype", buff, sizeof(buff));
+    bool success = kssysctl_stringForName("kernblah.ostype", buff, sizeof(buff));
     XCTAssertFalse(success, @"");
     XCTAssertTrue(buff[0] == 0, @"");
 }
@@ -66,7 +66,7 @@
 - (void) testGetMacAddress
 {
     unsigned char macAddress[6] = {0};
-    bool success = bsg_kssysctl_getMacAddress("en0", (char*)macAddress);
+    bool success = kssysctl_getMacAddress("en0", (char*)macAddress);
     XCTAssertTrue(success, @"");
     unsigned int result = 0;
     for(size_t i = 0; i < sizeof(macAddress); i++)
@@ -79,7 +79,7 @@
 - (void) testGetMacAddressInvalid
 {
     unsigned char macAddress[6] = {0};
-    bool success = bsg_kssysctl_getMacAddress("blah blah", (char*)macAddress);
+    bool success = kssysctl_getMacAddress("blah blah", (char*)macAddress);
     XCTAssertFalse(success, @"");
 }
 

@@ -11,8 +11,8 @@
 #import "BSGHardware.h"
 #import "BSGRunContext.h"
 #import "BSGUtils.h"
-#import "BSG_KSCrashReportFields.h"
-#import "BSG_KSSystemInfo.h"
+#import "KSCrashReportFields.h"
+#import "KSSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
@@ -24,8 +24,8 @@ NSMutableDictionary *BSGParseDeviceMetadata(NSDictionary *event) {
     NSMutableDictionary *device = [NSMutableDictionary new];
     NSDictionary *state = [event valueForKeyPath:@"user.state.deviceState"];
     [device addEntriesFromDictionary:state];
-    device[@"timezone"] = [event valueForKeyPath:@"system." BSG_KSSystemField_TimeZone];
-    device[@"macCatalystiOSVersion"] = [event valueForKeyPath:@"system." BSG_KSSystemField_iOSSupportVersion];
+    device[@"timezone"] = [event valueForKeyPath:@"system." KSSystemField_TimeZone];
+    device[@"macCatalystiOSVersion"] = [event valueForKeyPath:@"system." KSSystemField_iOSSupportVersion];
 
 #if TARGET_OS_SIMULATOR
     device[@"simulator"] = @YES;
@@ -83,8 +83,8 @@ NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *conte
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState new];
     [self populateFields:device dictionary:event];
     device.orientation = [event valueForKeyPath:@"user.state.deviceState.orientation"];
-    device.freeMemory = [event valueForKeyPath:@"system." BSG_KSSystemField_Memory "." BSG_KSCrashField_Free];
-    device.freeDisk = [event valueForKeyPath:@"system." BSG_KSSystemField_Disk "." BSG_KSCrashField_Free];
+    device.freeMemory = [event valueForKeyPath:@"system." KSSystemField_Memory "." KSCrashField_Free];
+    device.freeDisk = [event valueForKeyPath:@"system." KSSystemField_Disk "." KSCrashField_Free];
 
     NSString *val = [event valueForKeyPath:@"report.timestamp"];
 

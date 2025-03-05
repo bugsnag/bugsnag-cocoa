@@ -9,10 +9,10 @@
 #import "BugsnagStackframe+Private.h"
 
 #import "BSGKeys.h"
-#import "BSG_KSBacktrace.h"
-#import "BSG_KSCrashReportFields.h"
-#import "BSG_KSMachHeaders.h"
-#import "BSG_Symbolicate.h"
+#import "KSStackCursor_Backtrace.h"
+#import "KSCrashReportFields.h"
+//#import "KSMachHeaders.h"
+//#import "Symbolicate.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 
@@ -31,7 +31,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     for (NSDictionary *image in images) {
-        if ([(NSNumber *)image[@ BSG_KSCrashField_ImageAddress] unsignedLongValue] == addr) {
+        if ([(NSNumber *)image[KSCrashField_ImageAddress] unsignedLongValue] == addr) {
             return image;
         }
     }
@@ -67,7 +67,7 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
 }
 
 + (instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages {
-    NSNumber *frameAddress = dict[@ BSG_KSCrashField_InstructionAddr];
+    NSNumber *frameAddress = dict[KSCrashField_InstructionAddr];
     if (frameAddress.unsignedLongLongValue == 1) {
         // We sometimes get a frame address of 0x1 at the bottom of the call stack.
         // It's not a valid stack frame and causes E2E tests to fail, so should be ignored.
@@ -76,18 +76,18 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
 
     BugsnagStackframe *frame = [BugsnagStackframe new];
     frame.frameAddress = frameAddress;
-    frame.machoFile = dict[@ BSG_KSCrashField_ObjectName]; // last path component
-    frame.machoLoadAddress = dict[@ BSG_KSCrashField_ObjectAddr];
-    frame.method = dict[@ BSG_KSCrashField_SymbolName];
-    frame.symbolAddress = dict[@ BSG_KSCrashField_SymbolAddr];
+    frame.machoFile = dict[KSCrashField_ObjectName]; // last path component
+    frame.machoLoadAddress = dict[KSCrashField_ObjectAddr];
+    frame.method = dict[KSCrashField_SymbolName];
+    frame.symbolAddress = dict[KSCrashField_SymbolAddr];
     frame.isPc = [dict[BSGKeyIsPC] boolValue];
     frame.isLr = [dict[BSGKeyIsLR] boolValue];
 
     NSDictionary *image = FindImage(binaryImages, (uintptr_t)frame.machoLoadAddress.unsignedLongLongValue);
     if (image != nil) {
-        frame.machoFile = image[@ BSG_KSCrashField_Name]; // full path
-        frame.machoUuid = image[@ BSG_KSCrashField_UUID];
-        frame.machoVmAddress = image[@ BSG_KSCrashField_ImageVmAddress];
+        frame.machoFile = image[KSCrashField_Name]; // full path
+        frame.machoUuid = image[KSCrashField_UUID];
+        frame.machoVmAddress = image[KSCrashField_ImageVmAddress];
     } else if (frame.isPc) {
         // If the program counter's value isn't in any known image, the crash may have been due to a bad function pointer.
         // Ignore these frames to prevent the dashboard grouping on the address.

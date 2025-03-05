@@ -20,7 +20,7 @@
  *
  * Change the value of `BSG_LOG_LEVEL` to one of the levels given below and run `pod install`.
  *
- * Note: There is also lower-level KSCrash logging configuration in BSG_KSLogger.h
+ * Note: There is also lower-level KSCrash logging configuration in KSLogger.h
  *       That file includes this one.  No further configuration is required.
  */
 

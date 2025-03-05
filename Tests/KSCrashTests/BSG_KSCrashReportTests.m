@@ -1,5 +1,5 @@
 //
-//  BSG_KSCrashReportTests.m
+//  KSCrashReportTests.m
 //  Bugsnag
 //
 //  Created by Nick Dowell on 06/01/2022.
@@ -8,19 +8,19 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSCrashC.h"
-#import "BSG_KSCrashReport.h"
-#import "BSG_KSCrashSentry_Private.h"
-#import "BSG_KSMach.h"
+#import "KSCrashC.h"
+#import "KSCrashReport.h"
+#import "KSCrashSentry_Private.h"
+#import "KSMach.h"
 #import "BSGDefines.h"
 
 #import <execinfo.h>
 
-@interface BSG_KSCrashReportTests : XCTestCase
+@interface KSCrashReportTests : XCTestCase
 
 @end
 
-@implementation BSG_KSCrashReportTests
+@implementation KSCrashReportTests
 
 - (void)testBinaryImages {
     NSString *crashReportFilePath = [self temporaryFile:@"crash_report.json"];
@@ -28,20 +28,20 @@
     NSString *stateFilePath = [self temporaryFile:@"kscrash_state"];
     NSString *crashID = [[NSUUID UUID] UUIDString];
     
-    bsg_kscrash_init();
-    bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNSException);
-    bsg_kscrash_install([crashReportFilePath fileSystemRepresentation],
+    kscrash_init();
+    kscrash_setHandlingCrashTypes(KSCrashTypeNSException);
+    kscrash_install([crashReportFilePath fileSystemRepresentation],
                         [recrashReportFilePath fileSystemRepresentation],
                         [stateFilePath fileSystemRepresentation],
                         [crashID UTF8String]);
     
     uintptr_t stackTrace[500];
     
-    BSG_KSCrash_Context *context = crashContext();
-    context->crash.crashType = BSG_KSCrashTypeNSException;
-    context->crash.offendingThread = bsg_ksmachthread_self();
+    KSCrash_Context *context = crashContext();
+    context->crash.crashType = KSCrashTypeNSException;
+    context->crash.offendingThread = ksmachthread_self();
     context->crash.registersAreValid = false;
-    context->crash.NSException.name = "BSG_KSCrashReportTests";
+    context->crash.NSException.name = "KSCrashReportTests";
     context->crash.crashReason = "testBinaryImages";
     context->crash.stackTrace = stackTrace;
     context->crash.stackTraceLength = backtrace((void **)stackTrace, sizeof(stackTrace) / sizeof(*stackTrace));
@@ -49,11 +49,11 @@
     
     const char *reportPath = [crashReportFilePath fileSystemRepresentation];
 #if BSG_HAVE_MACH_THREADS
-    bsg_kscrashsentry_suspendThreads();
+    kscrashsentry_suspendThreads();
 #endif
-    bsg_kscrashreport_writeStandardReport(context, reportPath);
+    kscrashreport_writeStandardReport(context, reportPath);
 #if BSG_HAVE_MACH_THREADS
-    bsg_kscrashsentry_resumeThreads();
+    kscrashsentry_resumeThreads();
 #endif
     
     NSDictionary *report = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:crashReportFilePath] options:0 error:nil];
@@ -74,9 +74,9 @@
     NSString *stateFilePath = [self temporaryFile:@"kscrash_state"];
     NSString *crashID = [[NSUUID UUID] UUIDString];
     
-    bsg_kscrash_init();
-    bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNSException);
-    bsg_kscrash_install([crashReportFilePath fileSystemRepresentation],
+    kscrash_init();
+    kscrash_setHandlingCrashTypes(KSCrashTypeNSException);
+    kscrash_install([crashReportFilePath fileSystemRepresentation],
                         [recrashReportFilePath fileSystemRepresentation],
                         [stateFilePath fileSystemRepresentation],
                         [crashID UTF8String]);
@@ -90,11 +90,11 @@
         assert(stackTrace[i] != 0);
     }
     
-    BSG_KSCrash_Context *context = crashContext();
-    context->crash.crashType = BSG_KSCrashTypeNSException;
-    context->crash.offendingThread = bsg_ksmachthread_self();
+    KSCrash_Context *context = crashContext();
+    context->crash.crashType = KSCrashTypeNSException;
+    context->crash.offendingThread = ksmachthread_self();
     context->crash.registersAreValid = false;
-    context->crash.NSException.name = "BSG_KSCrashReportTests";
+    context->crash.NSException.name = "KSCrashReportTests";
     context->crash.crashReason = "testWriteStandardReportPerformance";
     context->crash.stackTrace = stackTrace;
     context->crash.stackTraceLength = numFrames;
@@ -105,11 +105,11 @@
         
         [self startMeasuring]; {
 #if BSG_HAVE_MACH_THREADS
-            bsg_kscrashsentry_suspendThreads();
+            kscrashsentry_suspendThreads();
 #endif
-            bsg_kscrashreport_writeStandardReport(context, reportPath);
+            kscrashreport_writeStandardReport(context, reportPath);
 #if BSG_HAVE_MACH_THREADS
-            bsg_kscrashsentry_resumeThreads();
+            kscrashsentry_resumeThreads();
 #endif
         }
         [self stopMeasuring];

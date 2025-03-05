@@ -105,7 +105,7 @@ class BugsnagSwiftPublicAPITests: BSGTestCase {
 
         config.onCrashHandler = nil
         config.onCrashHandler = { (writer) in }
-        let crashHandler: (@convention(c)(UnsafePointer<BSG_KSCrashReportWriter>) -> Void)? = { writer in }
+        let crashHandler: (@convention(c)(UnsafePointer<KSCrashReportWriter>) -> Void)? = { writer in }
         config.onCrashHandler = crashHandler
         
         config.autoDetectErrors = true

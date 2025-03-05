@@ -645,7 +645,7 @@ Changelog
 
 ### Bug fixes
 
-* Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
+* Fix another rare crash in `ksmachgetThreadQueueName`.
   [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
 
 ## 6.10.2 (2021-07-14)
@@ -669,7 +669,7 @@ Changelog
   [#1143](https://github.com/bugsnag/bugsnag-cocoa/pull/1143)
   [#1138](https://github.com/bugsnag/bugsnag-cocoa/issues/1138)
 
-* Fix a rare crash in `bsg_ksmachgetThreadQueueName`.
+* Fix a rare crash in `ksmachgetThreadQueueName`.
   [#1147](https://github.com/bugsnag/bugsnag-cocoa/pull/1147)
 
 ## 6.10.0 (2021-06-30)
@@ -786,7 +786,7 @@ Changelog
 * Fix crashes that could occur in `bsg_recordException` in low memory conditions.
   [#1068](https://github.com/bugsnag/bugsnag-cocoa/pull/1068)
 
-* Fix a crash in `bsg_ksmachgetThreadQueueName`.
+* Fix a crash in `ksmachgetThreadQueueName`.
   [#1065](https://github.com/bugsnag/bugsnag-cocoa/pull/1065)
 
 * Improve timestamp accuracy to fix breadcrumbs that are reported to occur after the error.
@@ -1378,7 +1378,7 @@ how to upgrade.
 * Remove `setSuspendThreadsForUserReported`, `setReportWhenDebuggerIsAttached`, `setThreadTracingEnabled`, `setWriteBinaryImagesForUserReported` from public API.
   [#468](https://github.com/bugsnag/bugsnag-cocoa/pull/468)
 
-* Fixes typo in `BSG_KSCDeleteOnSuccess` enumeration
+* Fixes typo in `KSCDeleteOnSuccess` enumeration
   [#317](https://github.com/bugsnag/bugsnag-cocoa/pull/317)
 
 * Add a breadcrumb when Bugsnag first starts with the message "Bugsnag loaded"
@@ -1981,7 +1981,7 @@ In addition, sessions can be indicated manually using `[Bugsnag startSession]` [
 
 ## 5.14.0 (23 Nov 2017)
 
-* Use `BSG_KSCrashReportWriter` header rather than `KSCrashReportWriter` for custom JSON serialization
+* Use `KSCrashReportWriter` header rather than `KSCrashReportWriter` for custom JSON serialization
 
 ## 5.13.5 (21 Nov 2017)
 

@@ -1,5 +1,5 @@
 //
-//  bsg_ksmachTests.m
+//  ksmachTests.m
 //
 //  Created by Karl Stenerud on 2012-03-03.
 //
@@ -27,8 +27,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "BSG_KSMach.h"
-#import "BSG_KSMachApple.h"
+#import "KSMach.h"
+#import "KSMachApple.h"
 #import "BSGDefines.h"
 
 #import <mach/mach_time.h>
@@ -47,7 +47,7 @@
 
 - (void) main
 {
-    self.thread = bsg_ksmachthread_self();
+    self.thread = ksmachthread_self();
     while(!self.isCancelled)
     {
         [[self class] sleepForTimeInterval:0.1];
@@ -64,43 +64,43 @@ void * executeBlock(void *ptr)
 }
 
 
-@interface bsg_ksmachTests : XCTestCase @end
+@interface ksmachTests : XCTestCase @end
 
-@implementation bsg_ksmachTests
+@implementation ksmachTests
 
 - (void) testExceptionName
 {
     NSString* expected = @"EXC_ARITHMETIC";
-    NSString* actual = [NSString stringWithCString:bsg_ksmachexceptionName(EXC_ARITHMETIC)
+    NSString* actual = [NSString stringWithCString:ksmachexceptionName(EXC_ARITHMETIC)
                                           encoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(actual, expected, @"");
 }
 
 - (void) testVeryHighExceptionName
 {
-    const char* result = bsg_ksmachexceptionName(100000);
+    const char* result = ksmachexceptionName(100000);
     XCTAssertTrue(result == NULL, @"");
 }
 
 - (void) testKernReturnCodeName
 {
     NSString* expected = @"KERN_FAILURE";
-    NSString* actual = [NSString stringWithCString:bsg_ksmachkernelReturnCodeName(KERN_FAILURE)
+    NSString* actual = [NSString stringWithCString:ksmachkernelReturnCodeName(KERN_FAILURE)
                                           encoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(actual, expected, @"");
 }
 
 - (void) testArmExcBadAccessKernReturnCodeNames
 {
-    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_DA_ALIGN)), @"EXC_ARM_DA_ALIGN");
-    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_DA_DEBUG)), @"EXC_ARM_DA_DEBUG");
-    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_SP_ALIGN)), @"EXC_ARM_SP_ALIGN");
-    XCTAssertEqualObjects(@(bsg_ksmachkernelReturnCodeName(EXC_ARM_SWP)), @"EXC_ARM_SWP");
+    XCTAssertEqualObjects(@(ksmachkernelReturnCodeName(EXC_ARM_DA_ALIGN)), @"EXC_ARM_DA_ALIGN");
+    XCTAssertEqualObjects(@(ksmachkernelReturnCodeName(EXC_ARM_DA_DEBUG)), @"EXC_ARM_DA_DEBUG");
+    XCTAssertEqualObjects(@(ksmachkernelReturnCodeName(EXC_ARM_SP_ALIGN)), @"EXC_ARM_SP_ALIGN");
+    XCTAssertEqualObjects(@(ksmachkernelReturnCodeName(EXC_ARM_SWP)), @"EXC_ARM_SWP");
 }
 
 - (void) testVeryHighKernReturnCodeName
 {
-    const char* result = bsg_ksmachkernelReturnCodeName(100000);
+    const char* result = ksmachkernelReturnCodeName(100000);
     XCTAssertTrue(result == NULL, @"");
 }
 
@@ -116,9 +116,9 @@ void * executeBlock(void *ptr)
     
     // Just make sure that suspending and resuming doesn't hang the process.
     unsigned threadsCount = 0;
-    thread_t *threads = bsg_ksmachgetAllThreads(&threadsCount);
-    bsg_ksmachsuspendThreads(threads, threadsCount);
-    bsg_ksmachresumeThreads(threads, threadsCount);
+    thread_t *threads = ksmachgetAllThreads(&threadsCount);
+    ksmachsuspendThreads(threads, threadsCount);
+    ksmachresumeThreads(threads, threadsCount);
 }
 #endif
 
@@ -127,7 +127,7 @@ void * executeBlock(void *ptr)
     char buff[100];
     char buff2[100] = {1,2,3,4,5};
     
-    kern_return_t result = bsg_ksmachcopyMem(buff2, buff, sizeof(buff));
+    kern_return_t result = ksmachcopyMem(buff2, buff, sizeof(buff));
     XCTAssertEqual(result, KERN_SUCCESS, @"");
     int memCmpResult = memcmp(buff, buff2, sizeof(buff));
     XCTAssertEqual(memCmpResult, 0, @"");
@@ -138,7 +138,7 @@ void * executeBlock(void *ptr)
     char buff[100];
     char* buff2 = NULL;
     
-    kern_return_t result = bsg_ksmachcopyMem(buff2, buff, sizeof(buff));
+    kern_return_t result = ksmachcopyMem(buff2, buff, sizeof(buff));
     XCTAssertTrue(result != KERN_SUCCESS, @"");
 }
 
@@ -147,7 +147,7 @@ void * executeBlock(void *ptr)
     char buff[100];
     char* buff2 = (char*)-1;
     
-    kern_return_t result = bsg_ksmachcopyMem(buff2, buff, sizeof(buff));
+    kern_return_t result = ksmachcopyMem(buff2, buff, sizeof(buff));
     XCTAssertTrue(result != KERN_SUCCESS, @"");
 }
 
@@ -158,7 +158,7 @@ void * executeBlock(void *ptr)
     [NSThread sleepForTimeInterval:0.1];
     uint64_t endTime = mach_absolute_time();
     CFAbsoluteTime cfEndTime = CFAbsoluteTimeGetCurrent();
-    double diff = bsg_ksmachtimeDifferenceInSeconds(endTime, startTime);
+    double diff = ksmachtimeDifferenceInSeconds(endTime, startTime);
     double cfDiff = cfEndTime - cfStartTime;
     XCTAssertEqualWithAccuracy(diff, cfDiff, 0.001);
 }
@@ -167,7 +167,7 @@ void * executeBlock(void *ptr)
 {
     char name[32] = "";
 
-    XCTAssertTrue(bsg_ksmachgetThreadQueueName(bsg_ksmachthread_self(),
+    XCTAssertTrue(ksmachgetThreadQueueName(ksmachthread_self(),
                                                name, sizeof(name)));
 
     XCTAssertEqualObjects(@(name), @"com.apple.main-thread");
@@ -181,7 +181,7 @@ void * executeBlock(void *ptr)
                    (__bridge_retained void *)^{
         char name[32] = "";
 
-        XCTAssertFalse(bsg_ksmachgetThreadQueueName(bsg_ksmachthread_self(),
+        XCTAssertFalse(ksmachgetThreadQueueName(ksmachthread_self(),
                                                     name, sizeof(name)));
     });
 
@@ -192,7 +192,7 @@ void * executeBlock(void *ptr)
 {
     char name[32] = "";
     
-    XCTAssertFalse(bsg_ksmachgetThreadQueueName(0xdeadbeef,
+    XCTAssertFalse(ksmachgetThreadQueueName(0xdeadbeef,
                                                 name, sizeof(name)));
 }
 
@@ -234,7 +234,7 @@ void * executeBlock(void *ptr)
 
         for (i = 0; i < threadCount; i++) {
             bzero(name, sizeof(name));
-            if (bsg_ksmachgetThreadQueueName(threads[i], name, sizeof(name))) {
+            if (ksmachgetThreadQueueName(threads[i], name, sizeof(name))) {
                 XCTAssertEqual(name[sizeof(name) - 1], '\0',
                                @"queue name must be NULL terminated");
             }
@@ -256,28 +256,28 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(kr == KERN_SUCCESS, @"");
     
     _STRUCT_MCONTEXT machineContext;
-    bool success = bsg_ksmachthreadState(thread.thread, &machineContext);
+    bool success = ksmachthreadState(thread.thread, &machineContext);
     XCTAssertTrue(success, @"");
 
-    int numRegisters = bsg_ksmachnumRegisters();
+    int numRegisters = ksmachnumRegisters();
     for(int i = 0; i < numRegisters; i++)
     {
-        const char* name = bsg_ksmachregisterName(i);
+        const char* name = ksmachregisterName(i);
         XCTAssertTrue(name != NULL, @"Register %d was NULL", i);
-        bsg_ksmachregisterValue(&machineContext, i);
+        ksmachregisterValue(&machineContext, i);
     }
 
-    const char* name = bsg_ksmachregisterName(1000000);
+    const char* name = ksmachregisterName(1000000);
     XCTAssertTrue(name == NULL, @"");
-    uint64_t value = bsg_ksmachregisterValue(&machineContext, 1000000);
+    uint64_t value = ksmachregisterValue(&machineContext, 1000000);
     XCTAssertTrue(value == 0, @"");
     
     uintptr_t address;
-    address = bsg_ksmachframePointer(&machineContext);
+    address = ksmachframePointer(&machineContext);
     XCTAssertTrue(address != 0, @"");
-    address = bsg_ksmachstackPointer(&machineContext);
+    address = ksmachstackPointer(&machineContext);
     XCTAssertTrue(address != 0, @"");
-    address = bsg_ksmachinstructionAddress(&machineContext);
+    address = ksmachinstructionAddress(&machineContext);
     XCTAssertTrue(address != 0, @"");
 
     thread_resume(thread.thread);
@@ -294,7 +294,7 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(kr == KERN_SUCCESS, @"");
     
     _STRUCT_MCONTEXT machineContext;
-    bool success = bsg_ksmachfloatState(thread.thread, &machineContext);
+    bool success = ksmachfloatState(thread.thread, &machineContext);
     XCTAssertTrue(success, @"");
     thread_resume(thread.thread);
     [thread cancel];
@@ -310,23 +310,23 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(kr == KERN_SUCCESS, @"");
     
     _STRUCT_MCONTEXT machineContext;
-    bool success = bsg_ksmachexceptionState(thread.thread, &machineContext);
+    bool success = ksmachexceptionState(thread.thread, &machineContext);
     XCTAssertTrue(success, @"");
     
-    int numRegisters = bsg_ksmachnumExceptionRegisters();
+    int numRegisters = ksmachnumExceptionRegisters();
     for(int i = 0; i < numRegisters; i++)
     {
-        const char* name = bsg_ksmachexceptionRegisterName(i);
+        const char* name = ksmachexceptionRegisterName(i);
         XCTAssertTrue(name != NULL, @"Register %d was NULL", i);
-        bsg_ksmachexceptionRegisterValue(&machineContext, i);
+        ksmachexceptionRegisterValue(&machineContext, i);
     }
     
-    const char* name = bsg_ksmachexceptionRegisterName(1000000);
+    const char* name = ksmachexceptionRegisterName(1000000);
     XCTAssertTrue(name == NULL, @"");
-    uint64_t value = bsg_ksmachexceptionRegisterValue(&machineContext, 1000000);
+    uint64_t value = ksmachexceptionRegisterValue(&machineContext, 1000000);
     XCTAssertTrue(value == 0, @"");
 
-    bsg_ksmachfaultAddress(&machineContext);
+    ksmachfaultAddress(&machineContext);
 
     thread_resume(thread.thread);
     [thread cancel];
@@ -335,14 +335,14 @@ void * executeBlock(void *ptr)
 
 - (void) testStackGrowDirection
 {
-    bsg_ksmachstackGrowDirection();
+    ksmachstackGrowDirection();
 }
 
 - (void) testRemoveThreadsFromList
 {
     thread_t src[] = {1, 2, 3};
     thread_t dst[] = {0, 0, 0};
-    bsg_ksmachremoveThreadsFromList(src, 3, NULL, 0, dst, 2);
+    ksmachremoveThreadsFromList(src, 3, NULL, 0, dst, 2);
     XCTAssertEqual(1, dst[0]);
     XCTAssertEqual(2, dst[1]);
     XCTAssertEqual(0, dst[2]);
@@ -353,7 +353,7 @@ void * executeBlock(void *ptr)
     thread_t src[] = {1, 2, 3, 4};
     thread_t omit[] = {2, 4};
     thread_t dst[] = {0, 0, 0, 0};
-    int count = bsg_ksmachremoveThreadsFromList(src, 4, omit, 2, dst, 3);
+    int count = ksmachremoveThreadsFromList(src, 4, omit, 2, dst, 3);
     XCTAssertEqual(1, dst[0]);
     XCTAssertEqual(3, dst[1]);
     XCTAssertEqual(0, dst[2]);
@@ -366,7 +366,7 @@ void * executeBlock(void *ptr)
     thread_t src[] = {1, 2, 3, 4, 5, 6};
     thread_t omit[] = {2, 4};
     thread_t dst[] = {0, 0, 0, 0, 0, 0};
-    int count = bsg_ksmachremoveThreadsFromList(src, 6, omit, 2, dst, 3);
+    int count = ksmachremoveThreadsFromList(src, 6, omit, 2, dst, 3);
     XCTAssertEqual(1, dst[0]);
     XCTAssertEqual(3, dst[1]);
     XCTAssertEqual(5, dst[2]);

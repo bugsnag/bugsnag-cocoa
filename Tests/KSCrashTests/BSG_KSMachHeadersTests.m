@@ -1,12 +1,12 @@
 //
-//  BSG_KSMachHeadersTests.m
+//  KSMachHeadersTests.m
 //  Tests
 //
 //  Created by Robin Macharg on 04/05/2020.
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
-#import "BSG_KSMachHeaders.h"
+#import "KSMachHeaders.h"
 #import <Bugsnag/Bugsnag.h>
 #import <XCTest/XCTest.h>
 #import <dlfcn.h>
@@ -47,10 +47,10 @@ const struct segment_command command2 = {
     .vmsize = 10,
 };
 
-@interface BSG_KSMachHeadersTests : XCTestCase
+@interface KSMachHeadersTests : XCTestCase
 @end
 
-@implementation BSG_KSMachHeadersTests
+@implementation KSMachHeadersTests
 
 - (void)setUp {
     [super setUp];
