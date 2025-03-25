@@ -1,5 +1,5 @@
 //
-//  BSGFeatureFlagStoreTests.m
+//  BSGMemoryFeatureFlagStoreTests.m
 //  Bugsnag
 //
 //  Created by Nick Dowell on 11/11/2021.
@@ -10,11 +10,11 @@
 
 #import "BSGMemoryFeatureFlagStore.h"
 
-@interface BSGFeatureFlagStoreTests : BSGTestCase
+@interface BSGMemoryFeatureFlagStoreTests : BSGTestCase
 
 @end
 
-@implementation BSGFeatureFlagStoreTests
+@implementation BSGMemoryFeatureFlagStoreTests
 
 - (void)test {
     BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
