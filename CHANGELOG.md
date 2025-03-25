@@ -1,11 +1,11 @@
 Changelog
 =========
 
-## TBD
+## 6.32.2 (2025-03-25)
 
 ### Bug Fixes
 
-* Fixed issue that could lead to an invalid pointer when removing a feature flag.
+* Fixed a potential invalid pointer crash when updating/removing feature flags.
   [#1754](https://github.com/bugsnag/bugsnag-cocoa/pull/1754)
 
 ## 6.32.1 (2025-02-27)
