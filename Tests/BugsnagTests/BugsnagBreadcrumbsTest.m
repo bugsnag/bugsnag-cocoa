@@ -16,6 +16,7 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BSGDefines.h"
+#import "WriterTestsSupport.h"
 
 #import <mach/mach_init.h>
 #import <mach/thread_act.h>
@@ -33,21 +34,6 @@ static int json_buffer_append(const char *data, size_t length, struct json_buffe
     memcpy(buffer->buffer + buffer->length, data, length);
     buffer->length += length;
     return BSG_KSJSON_OK;
-}
-
-static int addJSONData(const char *data, size_t length, NSMutableData *userData) {
-    [userData appendBytes:data length:length];
-    return BSG_KSJSON_OK;
-}
-
-static id JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer)) {
-    NSMutableData *data = [NSMutableData data];
-    BSG_KSJSONEncodeContext encodeContext;
-    BSG_KSCrashReportWriter reportWriter;
-    bsg_kscrw_i_prepareReportWriter(&reportWriter, &encodeContext);
-    bsg_ksjsonbeginEncode(&encodeContext, false, (BSG_KSJSONAddDataFunc)addJSONData, (__bridge void *)data);
-    block(&reportWriter);
-    return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
 }
 
 static BugsnagBreadcrumb * WithBlock(void (^ block)(BugsnagBreadcrumb *breadcrumb)) {
@@ -450,7 +436,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value);
 }
 
 - (void)testCrashReportWriter {
-    NSDictionary<NSString *, id> *object = JSONObject(^(BSG_KSCrashReportWriter *writer) {
+    NSDictionary<NSString *, id> *object = bsg_JSONObject(^(BSG_KSCrashReportWriter *writer) {
         writer->beginObject(writer, "");
         BugsnagBreadcrumbsWriteCrashReport(writer, true);
         writer->endContainer(writer);

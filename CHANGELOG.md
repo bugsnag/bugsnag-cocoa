@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.32.2 (2025-03-25)
+
+### Bug Fixes
+
+* Fixed a potential invalid pointer crash when updating/removing feature flags.
+  [#1754](https://github.com/bugsnag/bugsnag-cocoa/pull/1754)
+
 ## 6.32.1 (2025-02-27)
 
 ### Bug Fixes
