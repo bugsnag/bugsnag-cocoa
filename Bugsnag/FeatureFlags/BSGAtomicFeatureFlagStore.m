@@ -130,6 +130,9 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
         if (flag->previous) {
             flag->previous->next = flag->next;
         }
+        if (flag->next) {
+            flag->next->previous = flag->previous;
+        }
         if (flag == atomic_load(&g_feature_flags_head)) {
             atomic_store(&g_feature_flags_head, flag->next);
         }
