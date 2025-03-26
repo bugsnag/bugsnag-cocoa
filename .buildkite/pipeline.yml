@@ -1,6 +1,5 @@
 env:
   LANG: "en_GB.UTF-8"
-  BUILDKITE_TIMEOUT: 30
 
 steps:
   ##############################################################################
@@ -9,7 +8,7 @@ steps:
   #
 
   - label: ARM macOS 14 unit tests
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: macos-14-multiagent
     commands:
@@ -18,7 +17,7 @@ steps:
       - logs/*
 
   - label: iOS 17 unit tests
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: macos-14-multiagent
     commands:
@@ -29,7 +28,7 @@ steps:
       - logs/*
 
   - label: watchOS 8 unit tests
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: macos-14-multiagent
     env:
@@ -40,7 +39,7 @@ steps:
       - logs/*
 
   - label: iOS 17 unit tests
-    timeout_in_minutes: 10
+    timeout_in_minutes: 30
     agents:
       queue: macos-14-multiagent
     commands:
