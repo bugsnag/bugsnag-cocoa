@@ -215,7 +215,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
@@ -238,7 +238,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
@@ -261,7 +261,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
@@ -278,7 +278,7 @@ steps:
       - echo "--- Build"
       - make -C features/fixtures/macos-stress-test
       - echo "--- Test"
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/stress_test.feature
         --os=macos
         --no-log-requests
@@ -302,7 +302,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
@@ -319,7 +319,7 @@ steps:
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
@@ -338,7 +338,7 @@ steps:
           - "maze_output/failed/**/*"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
@@ -357,7 +357,7 @@ steps:
           - "maze_output/failed/**/*"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
         --fail-fast
@@ -742,7 +742,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/debug
         --os=macos
         --fail-fast
@@ -761,7 +761,7 @@ steps:
           - "maze_output/failed/**/*"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/debug
         --os=macos
         --fail-fast

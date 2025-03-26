@@ -143,11 +143,11 @@ xcframework-test-fixtures: ## Build the xcframework end-to-end test fixture
 
 e2e_ios_local:
 	@./features/scripts/export_ios_app.sh
-	bundle exec maze-runner --app=features/fixtures/ios/output/iOSTestApp.ipa --farm=local --os=ios --apple-team-id=7W9PZ27Y5F --udid="$(shell idevice_id -l)" $(FEATURES)
+	bundle exec maze-runner --port=$MAZE_RUNNER_PORT --app=features/fixtures/ios/output/iOSTestApp.ipa --farm=local --os=ios --apple-team-id=7W9PZ27Y5F --udid="$(shell idevice_id -l)" $(FEATURES)
 
 e2e_macos:
 	./features/scripts/export_mac_app.sh
-	bundle exec maze-runner --os=macOS $(FEATURES)
+	bundle exec maze-runner --port=$MAZE_RUNNER_PORT --os=macOS $(FEATURES)
 ifeq ($(ENABLE_CODE_COVERAGE), YES)
 	xcrun llvm-profdata merge -sparse *.profraw -o default.profdata
 	rm -rf *.profraw
@@ -159,9 +159,9 @@ endif
 e2e_watchos: features/fixtures/watchos/Podfile.lock features/fixtures/shared/scenarios/watchos_maze_host.h
 	open --background features/fixtures/watchos/watchOSTestApp.xcworkspace
 ifneq ($(FEATURES),)
-	bundle exec maze-runner --os=watchos $(FEATURES)
+	bundle exec maze-runner --port=$MAZE_RUNNER_PORT --os=watchos $(FEATURES)
 else
-	bundle exec maze-runner --os=watchos --tags @watchos
+	bundle exec maze-runner --port=$MAZE_RUNNER_PORT --os=watchos --tags @watchos
 endif
 
 features/fixtures/watchos/Podfile.lock: features/fixtures/watchos/Podfile

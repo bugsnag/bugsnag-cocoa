@@ -156,7 +156,7 @@ steps:
       RUN_XCFRAMEWORK_APP: "true"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
 
@@ -180,7 +180,7 @@ steps:
       RUN_XCFRAMEWORK_APP: "true"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release/barebone_tests.feature
         --os=macos
 
@@ -724,7 +724,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
@@ -747,7 +747,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
@@ -768,7 +768,7 @@ steps:
         branch: "^master|next$$"
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
@@ -785,7 +785,7 @@ steps:
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
@@ -802,7 +802,7 @@ steps:
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
@@ -819,7 +819,7 @@ steps:
         upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
     commands:
       - bundle install
-      - bundle exec maze-runner
+      - bundle exec maze-runner --port=$MAZE_RUNNER_PORT
         features/release
         --os=macos
         --fail-fast
