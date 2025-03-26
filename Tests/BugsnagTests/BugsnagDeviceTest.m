@@ -8,7 +8,7 @@
 
 #import "BSGTestCase.h"
 
-#import "KSSystemInfo.h"
+#import "BSG_KSSystemInfo.h"
 #import "BugsnagDevice+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 
@@ -102,7 +102,7 @@
 }
 
 - (void)testDeviceWithRealSystemInfo {
-    NSDictionary *systemInfo = [KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagDeviceWithState *device = [BugsnagDeviceWithState deviceWithKSCrashReport:@{@"system": systemInfo}];
     XCTAssertLessThan(device.freeMemory.unsignedLongLongValue, device.totalMemory.unsignedLongLongValue);
 }

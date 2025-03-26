@@ -26,7 +26,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import <Bugsnag/KSCrashReportWriter.h>
+#import <Bugsnag/BugsnagCrashReportWriter.h>
 #import <Bugsnag/BugsnagBreadcrumb.h>
 #import <Bugsnag/BugsnagDefines.h>
 #import <Bugsnag/BugsnagEvent.h>
@@ -239,7 +239,7 @@ BUGSNAG_EXTERN
 /**
  *  Optional handler invoked when an error or crash occurs
  */
-@property (nullable, nonatomic) void (* onCrashHandler)(const KSCrashReportWriter *);
+@property (nullable, nonatomic) void (* onCrashHandler)(const BugsnagCrashReportWriter *);
 
 /**
  *  YES if uncaught exceptions and other crashes should be reported automatically

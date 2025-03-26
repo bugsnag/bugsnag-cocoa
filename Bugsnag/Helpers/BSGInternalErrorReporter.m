@@ -167,24 +167,24 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 }
 
 - (nullable BugsnagEvent *)eventWithRecrashReport:(NSDictionary *)recrashReport {
-    NSString *reportType = recrashReport[@ KSCrashField_Report][@ KSCrashField_Type];
-    if (![reportType isEqualToString:@ KSCrashReportType_Minimal]) {
+    NSString *reportType = recrashReport[KSCrashField_Report][KSCrashField_Type];
+    if (![reportType isEqualToString:KSCrashReportType_Minimal]) {
         return nil;
     }
     
-    NSDictionary *crash = recrashReport[@ KSCrashField_Crash];
-    NSDictionary *crashedThread = crash[@ KSCrashField_CrashedThread];
+    NSDictionary *crash = recrashReport[KSCrashField_Crash];
+    NSDictionary *crashedThread = crash[KSCrashField_CrashedThread];
     
-    NSArray *backtrace = crashedThread[@ KSCrashField_Backtrace][@ KSCrashField_Contents];
-    NSArray *binaryImages = recrashReport[@ KSCrashField_BinaryImages];
+    NSArray *backtrace = crashedThread[KSCrashField_Backtrace][KSCrashField_Contents];
+    NSArray *binaryImages = recrashReport[KSCrashField_BinaryImages];
     NSArray<BugsnagStackframe *> *stacktrace = BSGDeserializeArrayOfObjects(backtrace, ^BugsnagStackframe *(NSDictionary *dict) {
         return [BugsnagStackframe frameFromDict:dict withImages:binaryImages];
     });
     
-    NSDictionary *errorDict = crash[@ KSCrashField_Error];
+    NSDictionary *errorDict = crash[KSCrashField_Error];
     BugsnagError *error =
     [[BugsnagError alloc] initWithErrorClass:@"Crash handler crashed"
-                                errorMessage:BSGParseErrorClass(errorDict, (id)errorDict[@ KSCrashField_Type])
+                                errorMessage:BSGParseErrorClass(errorDict, (id)errorDict[KSCrashField_Type])
                                    errorType:BSGErrorTypeCocoa
                                   stacktrace:stacktrace];
     

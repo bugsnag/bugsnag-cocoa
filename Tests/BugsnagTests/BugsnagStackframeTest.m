@@ -8,7 +8,7 @@
 
 #import "BSGTestCase.h"
 
-#import "KSMachHeaders.h"
+#import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
 
 @interface BugsnagStackframeTest : BSGTestCase

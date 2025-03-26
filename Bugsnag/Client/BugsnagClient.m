@@ -45,7 +45,7 @@
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "KSCrashC.h"
-#import "KSSystemInfo.h"
+#import "BSG_KSSystemInfo.h"
 #import "Bugsnag.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagAppWithState+Private.h"
@@ -75,6 +75,7 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "KSCrashMonitor_AppState.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -103,9 +104,9 @@ static void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer, bool 
     BSGSessionWriteCrashReport(writer, requiresAsyncSafety);
 
     if (isCrash) {
-        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
-        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
-        writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
+        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON, false);
+        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON, false);
+        writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON, false);
 
         writer->beginObject(writer, "app"); {
             if (bsg_runContext->memoryLimit) {
@@ -156,7 +157,7 @@ static void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer, bool 
     }
 
     if (bsg_g_bugsnag_data.usageJSON) {
-        writer->addJSONElement(writer, "_usage", bsg_g_bugsnag_data.usageJSON);
+        writer->addJSONElement(writer, "_usage", bsg_g_bugsnag_data.usageJSON, false);
     }
 
     if (bsg_g_bugsnag_data.onCrash) {
@@ -265,7 +266,7 @@ BSG_OBJC_DIRECT_MEMBERS
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     // add metadata about app/device
-    NSDictionary *systemInfo = [KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 
@@ -694,7 +695,7 @@ BSG_OBJC_DIRECT_MEMBERS
                stackStripDepth:(NSUInteger)stackStripDepth
                          block:(_Nullable BugsnagOnErrorBlock)block {
     BugsnagCorrelation *correlation = [self getCurrentCorrelation];
-    NSDictionary *systemInfo = [KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagMetadata *metadata = [self.metadata copy];
     
     NSArray<NSNumber *> *callStack = nil;

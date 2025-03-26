@@ -10,7 +10,7 @@
 #import "Logging.h"
 
 // Create crash handler
-void HandleCrashedThread(const BSG_KSCrashReportWriter *writer) {
+void HandleCrashedThread(const BugsnagCrashReportWriter *writer) {
     // write primitive values
     writer->beginObject(writer, "custom");
     {

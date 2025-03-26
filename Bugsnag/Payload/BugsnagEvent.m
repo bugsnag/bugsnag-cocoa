@@ -34,6 +34,7 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 #import "BSGFileLocations.h"
+#import "KSCrashReportFields.h"
 
 static NSString * const RedactedMetadataValue = @"[REDACTED]";
 
@@ -458,12 +459,13 @@ BSG_OBJC_DIRECT_MEMBERS
     NSMutableDictionary *userAtCrash = [report[BSGKeyUser] mutableCopy];
     // avoid adding internal information to user-defined metadata
     NSArray *keysToRemove = @[
-            @KSCrashField_Overrides,
-            @KSCrashField_HandledState,
-            @KSCrashField_Metadata,
-            @KSCrashField_State,
-            @KSCrashField_Config,
-            @KSCrashField_DiscardDepth,
+        // TODO: Add the keys to our own constants list (look for the hardcoded values in our source code on next)
+//            KSCrashField_Overrides,
+//            KSCrashField_HandledState,
+//            KSCrashField_Metadata,
+            KSCrashField_State,
+//            KSCrashField_Config,
+//            KSCrashField_DiscardDepth,
             @"batteryLevel",
             @"breadcrumbs",
             @"charging",

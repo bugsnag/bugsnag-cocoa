@@ -9,7 +9,7 @@
 #import "BSGTelemetry.h"
 
 #import "BSGDefines.h"
-#import "KSMachHeaders.h"
+#import "BSG_KSMachHeaders.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagErrorTypes.h"
 

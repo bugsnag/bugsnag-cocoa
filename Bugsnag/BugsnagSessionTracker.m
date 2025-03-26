@@ -12,7 +12,7 @@
 #import "BSGDefines.h"
 #import "BSGUIKit.h"
 #import "BSGWatchKit.h"
-#import "KSSystemInfo.h"
+#import "KSCrashReportFields.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagCollections.h"
@@ -21,6 +21,7 @@
 #import "BugsnagLogger.h"
 #import "BugsnagSession+Private.h"
 #import "BugsnagUser+Private.h"
+#import "BSG_KSSystemInfo.h"
 
 /**
  Number of seconds in background required to make a new session
@@ -50,7 +51,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)startWithNotificationCenter:(NSNotificationCenter *)notificationCenter isInForeground:(BOOL)isInForeground {
 #if !TARGET_OS_WATCH
-    if ([KSSystemInfo isRunningInAppExtension]) {
+    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
         // UIApplication lifecycle notifications and UIApplicationState, which the automatic session tracking logic
         // depends on, are not available in app extensions.
         if (self.config.autoTrackSessions) {
@@ -161,7 +162,7 @@ BSG_OBJC_DIRECT_MEMBERS
         return;
     }
 
-    NSDictionary *systemInfo = [KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
                                              config:self.config
                                        codeBundleId:self.codeBundleId];

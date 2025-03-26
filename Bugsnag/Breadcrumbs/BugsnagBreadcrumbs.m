@@ -297,7 +297,7 @@ void BugsnagBreadcrumbsWriteCrashReport(const KSCrashReportWriter *writer,
     
     struct bsg_breadcrumb_list_item *item = atomic_load(&g_breadcrumbs_head);
     while (item) {
-        writer->addJSONElement(writer, NULL, item->jsonData);
+        writer->addJSONElement(writer, NULL, item->jsonData, false);
         item = item->next;
     }
     

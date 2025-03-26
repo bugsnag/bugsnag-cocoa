@@ -9,6 +9,7 @@
 #import "BugsnagInternals.h"
 #import "BSGDefines.h"
 #import "BSGFeatureFlagStore.h"
+#import "KSCrashReportWriter.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

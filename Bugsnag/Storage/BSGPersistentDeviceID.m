@@ -29,7 +29,7 @@
 
 #pragma mark Generator
 
-// Used to compute deviceId; mimics +[KSSystemInfo CPUArchForCPUType:subType:]
+// Used to compute deviceId; mimics +[BSG_KSSystemInfo CPUArchForCPUType:subType:]
 static NSString * _Nullable cpuArch(void) {
     cpu_type_t cpuType = 0;
     size_t size = sizeof cpuType;

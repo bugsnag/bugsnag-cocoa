@@ -772,14 +772,14 @@
 }
 
 /**
- * Test the mapping between BSGErrorTypes and KSCrashTypes
+ * Test the mapping between BSGErrorTypes and KSCrashMonitorTypes
  */
 -(void)testCrashTypeMapping {
     XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes([BugsnagErrorTypes new]),
-                   KSCrashTypeNSException |
-                   KSCrashTypeMachException |
-                   KSCrashTypeSignal |
-                   KSCrashTypeCPPException);
+                   KSCrashMonitorTypeNSException |
+                   KSCrashMonitorTypeMachException |
+                   KSCrashMonitorTypeSignal |
+                   KSCrashMonitorTypeCPPException);
 
     // Check partial sets
     BugsnagErrorTypes *errorTypes = [BugsnagErrorTypes new];
@@ -787,17 +787,17 @@
     errorTypes.signals = false;
     errorTypes.machExceptions = false;
     XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes(errorTypes),
-                   KSCrashTypeNSException | KSCrashTypeCPPException);
+                   KSCrashMonitorTypeNSException | KSCrashMonitorTypeCPPException);
 
     errorTypes.signals = true;
     errorTypes.cppExceptions = false;
     XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes(errorTypes),
-                   KSCrashTypeNSException | KSCrashTypeSignal);
+                   KSCrashMonitorTypeNSException | KSCrashMonitorTypeSignal);
 
     errorTypes.cppExceptions = true;
     errorTypes.unhandledExceptions = false;
     XCTAssertEqual(KSCrashTypeFromBugsnagErrorTypes(errorTypes),
-                   KSCrashTypeCPPException | KSCrashTypeSignal);
+                   KSCrashMonitorTypeCPPException | KSCrashMonitorTypeSignal);
 }
 
 #endif

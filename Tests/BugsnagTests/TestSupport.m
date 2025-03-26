@@ -9,7 +9,6 @@
 #import "TestSupport.h"
 
 #import "KSCrashC.h"
-#import "KSCrashState.h"
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
 #import "BSGUtils.h"

@@ -12,8 +12,8 @@
 @interface InvalidCrashReportScenario : Scenario
 @end
 
-static void CrashHandler(const BSG_KSCrashReportWriter *writer) {
-    writer->addJSONElement(writer, "something", "{1: \"Not valid JSON\"}");
+static void CrashHandler(const BugsnagCrashReportWriter *writer) {
+    writer->addJSONElement(writer, "something", "{1: \"Not valid JSON\"}", false);
     sleep(1);
 }
 

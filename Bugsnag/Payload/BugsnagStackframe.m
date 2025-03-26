@@ -11,8 +11,9 @@
 #import "BSGKeys.h"
 #import "KSStackCursor_Backtrace.h"
 #import "KSCrashReportFields.h"
-//#import "KSMachHeaders.h"
-//#import "Symbolicate.h"
+#import "BSG_KSMachHeaders.h"
+#import "BSG_Symbolicate.h"
+#import "KSSymbolicator.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 
@@ -202,7 +203,7 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     self.needsSymbolication = NO;
     
     uintptr_t frameAddress = self.frameAddress.unsignedIntegerValue;
-    uintptr_t instructionAddress = self.isPc ? frameAddress: CALL_INSTRUCTION_FROM_RETURN_ADDRESS(frameAddress);
+    uintptr_t instructionAddress = self.isPc ? frameAddress: kssymbolicator_callInstructionAddress(frameAddress);
     struct bsg_symbolicate_result result;
     bsg_symbolicate(instructionAddress, &result);
     

@@ -76,9 +76,9 @@ NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType) 
 }
 
 NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType) {
-    NSString *reason = error[@ KSCrashField_Reason];
+    NSString *reason = error[KSCrashField_Reason];
     NSString *diagnosis = nil;
-    if ([errorType isEqualToString:@ KSCrashExcType_Mach] || !reason) {
+    if ([errorType isEqualToString:KSCrashExcType_Mach] || !reason) {
         diagnosis = [[KSCrashDoctor new] diagnoseCrash:report];
     }
     return diagnosis ?: reason ?: @"";

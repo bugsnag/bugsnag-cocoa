@@ -163,7 +163,7 @@ void BugsnagFeatureFlagsWriteCrashReport(const KSCrashReportWriter *writer,
     
     struct bsg_feature_flag_list_item *item = atomic_load(&g_feature_flags_head);
     while (item) {
-        writer->addJSONElement(writer, NULL, item->jsonData);
+        writer->addJSONElement(writer, NULL, item->jsonData, false);
         item = item->next;
     }
     

@@ -139,30 +139,32 @@ BSG_OBJC_DIRECT_MEMBERS
 - (NSMutableDictionary *)fixupCrashReport:(NSDictionary *)report {
     NSMutableDictionary *mutableReport = [report mutableCopy];
     NSMutableDictionary *mutableInfo =
-            [report[@KSCrashField_Report] mutableCopy];
-    mutableReport[@KSCrashField_Report] = mutableInfo;
-
-    // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
-    NSNumber *timestampMillis = mutableInfo[@KSCrashField_Timestamp_Millis];
-    if ([timestampMillis isKindOfClass:[NSNumber class]]) {
-        NSTimeInterval timeInterval = (double)timestampMillis.unsignedLongLongValue / 1000.0;
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
-        mutableInfo[@KSCrashField_Timestamp] = [BSG_RFC3339DateTool stringFromDate:date];
-    } else {
-        [self convertTimestamp:@KSCrashField_Timestamp inReport:mutableInfo];
-    }
-
-    [self mergeDictWithKey:@KSCrashField_SystemAtCrash
-           intoDictWithKey:@KSCrashField_System
-                  inReport:mutableReport];
-
-    [self mergeDictWithKey:@KSCrashField_UserAtCrash
-           intoDictWithKey:@KSCrashField_User
-                  inReport:mutableReport];
+            [report[KSCrashField_Report] mutableCopy];
+    mutableReport[KSCrashField_Report] = mutableInfo;
+    
+    
+    // TODO: Add KSCrashField_Timestamp_Millis, KSCrashField_SystemAtCrash, KSCrashField_UserAtCrash to KSCrash (or use existing KSCrash functinality)
+//    // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
+//    NSNumber *timestampMillis = mutableInfo[KSCrashField_Timestamp_Millis];
+//    if ([timestampMillis isKindOfClass:[NSNumber class]]) {
+//        NSTimeInterval timeInterval = (double)timestampMillis.unsignedLongLongValue / 1000.0;
+//        NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+//        mutableInfo[KSCrashField_Timestamp] = [BSG_RFC3339DateTool stringFromDate:date];
+//    } else {
+//        [self convertTimestamp:KSCrashField_Timestamp inReport:mutableInfo];
+//    }
+//
+//    [self mergeDictWithKey:KSCrashField_SystemAtCrash
+//           intoDictWithKey:KSCrashField_System
+//                  inReport:mutableReport];
+//
+//    [self mergeDictWithKey:KSCrashField_UserAtCrash
+//           intoDictWithKey:KSCrashField_User
+//                  inReport:mutableReport];
 
     NSMutableDictionary *crashReport =
-            [report[@KSCrashField_Crash] mutableCopy];
-    mutableReport[@KSCrashField_Crash] = crashReport;
+            [report[KSCrashField_Crash] mutableCopy];
+    mutableReport[KSCrashField_Crash] = crashReport;
 
     return mutableReport;
 }

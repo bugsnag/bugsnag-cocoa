@@ -16,7 +16,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (instancetype)initWithId:(nullable NSString *)id name:(nullable NSString *)name emailAddress:(nullable NSString *)emailAddress;
 
-/// Returns the receiver if it has a non-nil `id`, or a copy of the receiver with a `id` set to `[KSSystemInfo deviceAndAppHash]`. 
+/// Returns the receiver if it has a non-nil `id`, or a copy of the receiver with a `id` set to `[BSG_KSSystemInfo deviceAndAppHash]`. 
 - (BugsnagUser *)withId;
 
 @end

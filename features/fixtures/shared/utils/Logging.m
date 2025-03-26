@@ -8,18 +8,22 @@
 
 #import "Logging.h"
 
-extern void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
+#if TARGET_OS_IPHONE
+extern void i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
+#endif
 
 void logInternal(const char* level, NSString *format, va_list args) {
     NSString *formatted = [[NSString alloc] initWithFormat:format arguments:args];
     NSString *fullMessage = [NSString stringWithFormat:@"bugsnagci %s: %@", level, formatted];
 
     NSLog(@"%@", fullMessage);
-    bsg_i_kslog_logCBasic("%s",
+    // TODO: Restore logging for macOS
+#if TARGET_OS_IPHONE
+    i_kslog_logCBasic("%s",
                           [[NSString stringWithFormat:@"%@ %@",
                             [NSDate date], fullMessage]
                            cStringUsingEncoding:NSUTF8StringEncoding]);
-
+#endif
 }
 
 void logDebugObjC(NSString *format, ...) {

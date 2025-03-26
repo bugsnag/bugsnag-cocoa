@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 void logInternal(const char* level, NSString *format, va_list args);
 
-void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer);
+void markErrorHandledCallback(const BugsnagCrashReportWriter *writer);
 
 @interface Scenario : NSObject
 

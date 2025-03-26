@@ -55,15 +55,15 @@
 {
     BugsnagAppWithState *app = [BugsnagAppWithState new];
     NSDictionary *system = event[BSGKeySystem];
-    NSDictionary *stats = system[@KSCrashField_AppStats];
+    NSDictionary *stats = system[KSCrashField_AppStats];
 
     // convert from seconds to milliseconds
-    NSNumber *activeTimeSinceLaunch = @((int)([stats[@KSCrashField_ActiveTimeSinceLaunch] doubleValue] * 1000.0));
-    NSNumber *backgroundTimeSinceLaunch = @((int)([stats[@KSCrashField_BGTimeSinceLaunch] doubleValue] * 1000.0));
+    NSNumber *activeTimeSinceLaunch = @((int)([stats[KSCrashField_ActiveTimeSinceLaunch] doubleValue] * 1000.0));
+    NSNumber *backgroundTimeSinceLaunch = @((int)([stats[KSCrashField_BGTimeSinceLaunch] doubleValue] * 1000.0));
 
     app.durationInForeground = activeTimeSinceLaunch;
     app.duration = @([activeTimeSinceLaunch longValue] + [backgroundTimeSinceLaunch longValue]);
-    app.inForeground = [stats[@KSCrashField_AppInFG] boolValue];
+    app.inForeground = [stats[KSCrashField_AppInFG] boolValue];
     app.isLaunching = [[event valueForKeyPath:@"user.isLaunching"] boolValue];
     [BugsnagApp populateFields:app dictionary:event config:config codeBundleId:codeBundleId];
     return app;
