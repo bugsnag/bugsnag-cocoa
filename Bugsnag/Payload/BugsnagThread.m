@@ -26,13 +26,13 @@
 // Protect access to thread-unsafe kscrashsentry_suspendThreads()
 static pthread_mutex_t bsg_suspend_threads_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void suspend_threads(__unused thread_act_array_t *threads,
-                            __unused mach_msg_type_number_t *numThreads) {
+static void suspend_threads(thread_act_array_t *threads,
+                            mach_msg_type_number_t *numThreads) {
     pthread_mutex_lock(&bsg_suspend_threads_mutex);
     ksmc_suspendEnvironment(threads, numThreads);
 }
 
-static void resume_threads(__unused thread_act_array_t threads, __unused mach_msg_type_number_t numThreads) {
+static void resume_threads(thread_act_array_t threads, mach_msg_type_number_t numThreads) {
     ksmc_resumeEnvironment(threads, numThreads);
     pthread_mutex_unlock(&bsg_suspend_threads_mutex);
 }
