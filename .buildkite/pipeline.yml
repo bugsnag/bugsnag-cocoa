@@ -113,8 +113,10 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     commands:
+      - echo "Using MR Port $((MAZE_RUNNER_PORT))"
       - bundle install
       - bundle exec maze-runner
+        --port=$((MAZE_RUNNER_PORT))
         features/release
         --os=macos
         --fail-fast
@@ -498,8 +500,10 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     commands:
+      - echo "Using MR Port $((MAZE_RUNNER_PORT))"
       - bundle install
       - bundle exec maze-runner
+        --port=$((MAZE_RUNNER_PORT))
         features/debug
         --os=macos
         --fail-fast
