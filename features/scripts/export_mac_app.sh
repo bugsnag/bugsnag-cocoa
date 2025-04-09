@@ -12,6 +12,11 @@ BUILD_CONFIGURATION=$1
 
 pushd features/fixtures/macos
 
+  echo "--- Setup fixture_config.json"
+  echo "{
+    \"maze_address\": \"localhost:$((MAZE_RUNNER_PORT))\",
+  }" > fixture_config.json
+
   echo "--- macOSTestApp: xcodebuild archive"
 
   BUILD_ARGS=(
