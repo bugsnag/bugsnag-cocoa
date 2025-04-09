@@ -133,9 +133,9 @@ steps:
     agents:
       queue: macos-14
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.0.0
     artifact_paths:
       - logs/*
 
