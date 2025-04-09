@@ -135,7 +135,7 @@ steps:
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 16.0.0
+      XCODE_VERSION: 15.4.0
     artifact_paths:
       - logs/*
 
