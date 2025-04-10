@@ -32,18 +32,22 @@
 
 static NSString *defaultAPIKey = @"12312312312312312312312312312312";
 
-// Look up port from the environment at runtime
-// to avoid hardcoding it in the binary.
-NSString *port = [[[NSProcessInfo processInfo] environment] objectForKey:@"MAZE_RUNNER_PORT"];
-if (!port) {
-    port = @"9339"; // fallback default if MAZE_RUNNER_PORT is not set
-}
 static NSString *defaultMazeRunnerURLString = nil;
-defaultMazeRunnerURLString = [NSString stringWithFormat:@"http://localhost:%@", port];
+
+- (void)initializeMazeRunnerURL {
+    if (!defaultMazeRunnerURLString) {
+        NSString *port = [[[NSProcessInfo processInfo] environment] objectForKey:@"MAZE_RUNNER_PORT"];
+        if (!port) {
+            port = @"9339";
+        }
+        defaultMazeRunnerURLString = [NSString stringWithFormat:@"http://localhost:%@", port];
+    }
+}
 
 @implementation MainWindowController
 
 - (void)windowDidLoad {
+    [self initializeMazeRunnerURL];
     [super windowDidLoad];
 
     self.fixtureConfig = [[FixtureConfig alloc] initWithApiKey:defaultAPIKey
