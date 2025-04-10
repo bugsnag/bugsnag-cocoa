@@ -31,7 +31,15 @@
 #pragma mark -
 
 static NSString *defaultAPIKey = @"12312312312312312312312312312312";
-static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
+
+// Look up port from the environment at runtime
+// to avoid hardcoding it in the binary.
+NSString *port = [[[NSProcessInfo processInfo] environment] objectForKey:@"MAZE_RUNNER_PORT"];
+if (!port) {
+    port = @"9339"; // fallback default if MAZE_RUNNER_PORT is not set
+}
+static NSString *defaultMazeRunnerURLString = nil;
+defaultMazeRunnerURLString = [NSString stringWithFormat:@"http://localhost:%@", port];
 
 @implementation MainWindowController
 
