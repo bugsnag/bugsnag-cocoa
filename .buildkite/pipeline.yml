@@ -117,7 +117,7 @@ steps:
       - bundle install
       - bundle exec maze-runner
         --port=$((MAZE_RUNNER_PORT))
-        --document-server-port$((MAZE_RUNNER_PORT + 1))
+        --document-server-port=$((MAZE_RUNNER_PORT + 1))
         features/release
         --os=macos
         --fail-fast
