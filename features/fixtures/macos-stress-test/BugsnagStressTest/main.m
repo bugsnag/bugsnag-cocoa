@@ -11,7 +11,13 @@
 #import <mach/task.h>
 #import <mach/task_info.h>
 
-static NSString * const kNotifyEndpoint = @"http://localhost:9339/notify";
+// Look up port from the environment at runtime
+// to avoid hardcoding it in the binary.
+NSString *port = [[[NSProcessInfo processInfo] environment] objectForKey:@"NOTIFY_PORT"];
+if (!port) {
+    port = @"9339"; // fallback default if NOTIFY_PORT is not set
+}
+NSString * const kNotifyEndpoint = [NSString stringWithFormat:@"http://localhost:%@/notify", port];
 
 static const int kNumberOfIterations = 15000;
 
