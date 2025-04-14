@@ -101,7 +101,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 120
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14-e2e
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
@@ -489,7 +489,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14-e2e
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
