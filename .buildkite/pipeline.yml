@@ -11,7 +11,7 @@ steps:
     key: framework_build
     timeout_in_minutes: 10
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14
     env:
       XCODE_VERSION: 15.3.0
     commands:
@@ -30,7 +30,7 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14
     env:
       XCODE_VERSION: 15.3.0
     artifact_paths:
@@ -53,7 +53,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -68,7 +68,7 @@ steps:
   - label: ARM macOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -77,7 +77,7 @@ steps:
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
     env:
@@ -88,7 +88,7 @@ steps:
   - label: watchOS 8 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-14-multiagent
+      queue: macos-14
     env:
       XCODE_VERSION: 15.3.0
     commands:
@@ -101,7 +101,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 120
     agents:
-      queue: macos-14-e2e
+      queue: macos-14-isolated
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
@@ -489,7 +489,7 @@ steps:
       - cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: macos-14-e2e
+      queue: macos-14-isolated
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
