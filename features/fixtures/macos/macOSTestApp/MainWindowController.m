@@ -31,11 +31,22 @@
 #pragma mark -
 
 static NSString *defaultAPIKey = @"12312312312312312312312312312312";
-static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
+static NSString *defaultMazeRunnerURLString = nil;
 
 @implementation MainWindowController
 
+- (void)initializeMazeRunnerURL {
+    if (!defaultMazeRunnerURLString) {
+        NSString *port = [[[NSProcessInfo processInfo] environment] objectForKey:@"MAZE_RUNNER_PORT"];
+        if (!port) {
+            port = @"9339";
+        }
+        defaultMazeRunnerURLString = [NSString stringWithFormat:@"http://localhost:%@", port];
+    }
+}
+
 - (void)windowDidLoad {
+    [self initializeMazeRunnerURL];
     [super windowDidLoad];
 
     self.fixtureConfig = [[FixtureConfig alloc] initWithApiKey:defaultAPIKey
@@ -53,7 +64,7 @@ static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
 
 - (IBAction)runScenario:(id)sender {
     logDebug(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
-    
+
     [self.fixture setApiKeyWithApiKey:self.apiKey];
     [self.fixture setNotifyEndpointWithEndpoint:self.notifyEndpoint];
     [self.fixture setSessionEndpointWithEndpoint:self.sessionEndpoint];
