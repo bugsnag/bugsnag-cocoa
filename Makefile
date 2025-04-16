@@ -191,10 +191,9 @@ endif
 	# Swift Package Manager prefers tags to be unprefixed package versions
 	@git tag $(PRESET_VERSION)
 	@git push origin v$(PRESET_VERSION) $(PRESET_VERSION)
-	@git checkout next
-	@git rebase origin/next
-	@git merge master
-	@git push origin next
+	# Synchronize master and next
+	@open "https://github.com/bugsnag/bugsnag-cocoa/compare/next...master?expand=1&title=Sync%20master%20into%20next"
+	@./scripts/build-xcframework.sh
 	# Prep GitHub release
 	# We could technically do a `hub release` here but a verification step
 	# before it goes live always seems like a good thing
