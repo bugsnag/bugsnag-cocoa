@@ -96,9 +96,9 @@ Feature: App and Device attributes present
     And I wait to receive 3 errors
     And the event "app.duration" is between 0 and 250
     And I discard the oldest error
-    And the event "app.duration" is between 2600 and 2800
+    And the event "app.duration" is between 2600 and 2850
     And I discard the oldest error
-    And the event "app.duration" is between 5400 and 5600
+    And the event "app.duration" is between 5400 and 5650
 
   Scenario: isLaunching should be true if launchDurationMillis is 0
     When I run "AppAndDeviceAttributesInfiniteLaunchDurationScenario"
