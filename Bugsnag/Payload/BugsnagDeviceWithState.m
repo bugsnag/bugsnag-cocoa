@@ -12,7 +12,7 @@
 #import "BSGRunContext.h"
 #import "BSGUtils.h"
 #import "KSCrashReportFields.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"

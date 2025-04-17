@@ -1,27 +1,9 @@
 //
-//  BSG_KSSystemInfo.h
+//  BSGSystemInfo.h
+//  Bugsnag
 //
 //  Created by Karl Stenerud on 2012-02-05.
-//
-//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall remain in place
-// in this source code.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+//  Copyright © 2021 Bugsnag Inc. All rights reserved.
 //
 
 #import <Bugsnag/BugsnagDefines.h>
@@ -51,29 +33,22 @@
 #define BSG_KSSystemField_TimeZone "time_zone"
 #define BSG_KSSystemField_Translated "proc_translated"
 #define BSG_KSSystemField_iOSSupportVersion "iOSSupportVersion"
+#define BSG_KSSystemField_ActiveTimeSinceLaunch "active_time_since_launch"
+#define BSG_KSSystemField_AppInFG "application_in_foreground"
+#define BSG_KSSystemField_BGTimeSinceLaunch "background_time_since_launch"
+#define BSG_KSSystemField_AppStats "application_stats"
+#define BSG_KSSystemField_Free "free"
 
 /**
  * Provides system information useful for a crash report.
  */
-BSG_OBJC_DIRECT_MEMBERS
-@interface BSG_KSSystemInfo : NSObject
+@interface BSGSystemInfo : NSObject
 
 /** Get the system info.
  *
  * @return The system info.
  */
 + (NSDictionary *)systemInfo;
-
-/** Get this application's UUID.
- *
- * @return The UUID.
- */
-+ (NSString *)appUUID;
-
-/**
- * The build version of the OS
- */
-+ (NSString *)osBuildVersion;
 
 /**
  * Whether the current main bundle is an iOS app extension

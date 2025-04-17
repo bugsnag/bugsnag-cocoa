@@ -11,7 +11,7 @@
 #import <Bugsnag/Bugsnag.h>
 
 #import "BSGInternalErrorReporter.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BugsnagAppWithState+Private.h"
 #import "BugsnagDeviceWithState+Private.h"
 #import "BugsnagEvent+Private.h"

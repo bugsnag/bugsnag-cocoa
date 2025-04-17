@@ -10,7 +10,7 @@
 
 #import "BSGKeys.h"
 #import "BSGRunContext.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration.h"
 

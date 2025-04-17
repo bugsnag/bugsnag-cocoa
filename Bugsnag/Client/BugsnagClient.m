@@ -45,7 +45,7 @@
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "KSCrashC.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "Bugsnag.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagAppWithState+Private.h"
@@ -266,7 +266,7 @@ BSG_OBJC_DIRECT_MEMBERS
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     // add metadata about app/device
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 
@@ -695,7 +695,7 @@ BSG_OBJC_DIRECT_MEMBERS
                stackStripDepth:(NSUInteger)stackStripDepth
                          block:(_Nullable BugsnagOnErrorBlock)block {
     BugsnagCorrelation *correlation = [self getCurrentCorrelation];
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
     BugsnagMetadata *metadata = [self.metadata copy];
     
     NSArray<NSNumber *> *callStack = nil;

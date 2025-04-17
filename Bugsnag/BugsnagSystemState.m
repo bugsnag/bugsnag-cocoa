@@ -19,7 +19,7 @@
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
 #import "BSGUtils.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BugsnagLogger.h"
 #import "BSGPersistentDeviceID.h"
 
@@ -49,7 +49,7 @@ id blankIfNil(id value) {
 }
 
 static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
 
     NSMutableDictionary *app = [NSMutableDictionary new];
     app[BSGKeyId] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleID]);

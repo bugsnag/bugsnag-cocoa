@@ -9,7 +9,7 @@
 #import "BugsnagDevice.h"
 
 #import "KSCrashReportFields.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagCollections.h"
 #import "BSGPersistentDeviceID.h"
