@@ -216,6 +216,7 @@ endif
 	@sed -i '' "s/_version = @\".*\";/_version = @\"$(VERSION)\";/" Bugsnag/Payload/BugsnagNotifier.m
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+.[0-9]+.[0-9]+/$(VERSION)/g" .jazzy.yaml
+	@sed -i '' "s/MARKETING_VERSION = .*/MARKETING_VERSION = $(VERSION);/" Bugsnag.xcodeproj/project.pbxproj
 	@agvtool new-marketing-version $(VERSION)
 
 prerelease: bump ## Generates a PR for the $VERSION release
