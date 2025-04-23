@@ -42,19 +42,19 @@
 + (void)populateFields:(BugsnagDevice *)device
             dictionary:(NSDictionary *)event {
     NSDictionary *system = event[@"system"];
-    device.jailbroken = [system[@BSG_KSSystemField_Jailbroken] boolValue];
+    device.jailbroken = [system[KSCrashField_Jailbroken] boolValue];
     device.id = BSGPersistentDeviceID.current.external;
     device.locale = [[NSLocale currentLocale] localeIdentifier];
     device.manufacturer = @"Apple";
-    device.model = system[@BSG_KSSystemField_Machine];
-    device.modelNumber = system[@BSG_KSSystemField_Model];
-    device.osName = system[@BSG_KSSystemField_SystemName];
-    device.osVersion = system[@BSG_KSSystemField_SystemVersion];
-    device.totalMemory = system[@BSG_KSSystemField_Memory][KSCrashField_Size];
+    device.model = system[KSCrashField_Machine];
+    device.modelNumber = system[KSCrashField_Model];
+    device.osName = system[KSCrashField_SystemName];
+    device.osVersion = system[KSCrashField_SystemVersion];
+    device.totalMemory = system[KSCrashField_Memory][KSCrashField_Size];
 
     NSMutableDictionary *runtimeVersions = [NSMutableDictionary new];
-    runtimeVersions[@"osBuild"] = system[@BSG_KSSystemField_OSVersion];
-    runtimeVersions[@"clangVersion"] = system[@BSG_KSSystemField_ClangVersion];
+    runtimeVersions[@"osBuild"] = system[KSCrashField_OSVersion];
+    runtimeVersions[@"clangVersion"] = system[@BSG_SystemField_ClangVersion];
     device.runtimeVersions = runtimeVersions;
 }
 

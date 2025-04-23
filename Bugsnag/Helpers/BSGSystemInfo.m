@@ -8,32 +8,19 @@
 
 #import "BSGSystemInfo.h"
 
-#import "BSGDefines.h"
 #import "BSGJSONSerialization.h"
-#import "BSGKeys.h"
 #import "BSGRunContext.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "BSG_Jailbreak.h"
-#import "BSG_KSMach.h"
-#import "BSG_KSMach.h"
-#import "BSG_KSMachHeaders.h"
-#import "BugsnagCollections.h"
-#import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
-#import "KSSysCtl.h"
-#import "KSCrashC.h"
-#import "KSCrash.h"
 #import "KSCrashReportFields.h"
-#import "KSFileUtils.h"
 #import "KSCrashMonitorContext.h"
+#import "KSCrashMonitor_System.h"
 #import "KSCrashMonitor_AppState.h"
 #import "KSCrashMonitor_DiscSpace.h"
 
-#import <CommonCrypto/CommonDigest.h>
-#import <mach-o/dyld.h>
-
-// TODO - OLD jailbroken definition left until Jailbroken task is done
+// TODO: OLD jailbroken definition left until Jailbroken task is done
 
 //static inline bool is_jailbroken(void) {
 //    static bool initialized_jb;
@@ -51,7 +38,7 @@
 //    return is_jb;
 //}
 
-// TODO DARIA should I move this to KSCrash?
+// TODO: Check if KSCrash reported version is correct after CI tests run
 // I think they have it covered (check after tests)
 /**
  * Returns the content of /System/Library/CoreServices/SystemVersion.plist
@@ -114,37 +101,45 @@ static NSDictionary * bsg_systemversion(void) {
     return sysInfo;
 }
 
+#define COPY_STRING(A) \
+fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
+
 + (NSDictionary *)buildSystemInfoStatic {
     NSMutableDictionary *sysInfo = [NSMutableDictionary dictionary];
     
-    // TODO DARIA do I need to check if the result is not empty?
-    // TODO DARIA replace magic strings with constants
-    // Or use directly from MonitorContext struct
-    NSDictionary *ksSysInfo = [[KSCrash sharedInstance] systemInfo];
+    KSCrash_MonitorContext fakeEvent = { 0 };
+    kscm_system_getAPI()->addContextualInfoToEvent(&fakeEvent);
 
-    sysInfo[@BSG_KSSystemField_SystemName] = ksSysInfo[@"systemName"];
-    sysInfo[@BSG_KSSystemField_SystemVersion] = ksSysInfo[@"systemVersion"];
-    sysInfo[@BSG_KSSystemField_Machine] = ksSysInfo[@"machine"];
-    sysInfo[@BSG_KSSystemField_Model] = ksSysInfo[@"model"];
-    sysInfo[@BSG_KSSystemField_OSVersion] = ksSysInfo[@"osVersion"];
-    sysInfo[@BSG_KSSystemField_BundleID] = ksSysInfo[@"bundleID"];
-    sysInfo[@BSG_KSSystemField_BundleName] = ksSysInfo[@"bundleName"];
-    sysInfo[@BSG_KSSystemField_BundleExecutable] = ksSysInfo[@"executableName"];
-    sysInfo[@BSG_KSSystemField_BundleVersion] = ksSysInfo[@"bundleVersion"];
-    sysInfo[@BSG_KSSystemField_BundleShortVersion] = ksSysInfo[@"bundleShortVersion"];
-    sysInfo[@BSG_KSSystemField_AppUUID] = ksSysInfo[@"appID"];
-    sysInfo[@BSG_KSSystemField_CPUArch] = ksSysInfo[@"cpuArchitecture"];
+    sysInfo[KSCrashField_SystemName] = COPY_STRING(systemName);
+    sysInfo[KSCrashField_SystemVersion] = COPY_STRING(systemVersion);
+    sysInfo[KSCrashField_Machine] = COPY_STRING(machine);
+    sysInfo[KSCrashField_Model] = COPY_STRING(model);
+    sysInfo[KSCrashField_OSVersion] = COPY_STRING(osVersion);
+    sysInfo[KSCrashField_BundleID] = COPY_STRING(bundleID);
+    sysInfo[KSCrashField_BundleName] = COPY_STRING(bundleName);
+    sysInfo[KSCrashField_Executable] = COPY_STRING(executableName);
+    sysInfo[KSCrashField_BundleVersion] = COPY_STRING(bundleVersion);
+    sysInfo[KSCrashField_BundleShortVersion] = COPY_STRING(bundleShortVersion);
+    sysInfo[KSCrashField_AppUUID] = COPY_STRING(appID);
+    sysInfo[KSCrashField_CPUArch] = COPY_STRING(cpuArchitecture);
+    sysInfo[@BSG_SystemField_BinaryArch] = COPY_STRING(binaryArchitecture);
+    sysInfo[KSCrashField_DeviceAppHash] = COPY_STRING(deviceAppHash);
+    sysInfo[@BSG_SystemField_Translated] = @(fakeEvent.System.procTranslated);
     
-    // TODO DARIA what's the difference between CPUArch and BinaryArch??
-    //sysInfo[@BSG_KSSystemField_BinaryArch] = [self CPUArchForCPUType:header->cputype subType:header->cpusubtype];
-    
-    // TODO DARIA missing field iOSSupportVersion
-    
-    sysInfo[@BSG_KSSystemField_DeviceAppHash] = ksSysInfo[@"deviceAppHash"];
-    sysInfo[@BSG_KSSystemField_Translated] = ksSysInfo[@"procTranslated"];
-    
+#if !TARGET_OS_SIMULATOR
+    //
+    // Report the name and version of the underlying OS the app is running on.
+    // For Mac Catalyst and iOS apps running on macOS, this means macOS rather
+    // than the version of iOS it emulates ("iOSSupportVersion")
+    //
+    NSDictionary *sysVersion = bsg_systemversion();
+#if TARGET_OS_IOS
+    sysInfo[@BSG_SystemField_iOSSupportVersion] = sysVersion[@"iOSSupportVersion"];
+#endif
+#endif
+
 #ifdef __clang_version__
-    sysInfo[@BSG_KSSystemField_ClangVersion] = @__clang_version__;
+    sysInfo[@BSG_SystemField_ClangVersion] = @__clang_version__;
 #endif
 
     return sysInfo;
@@ -153,32 +148,30 @@ static NSDictionary * bsg_systemversion(void) {
 + (NSDictionary *)systemInfo {
     NSMutableDictionary *sysInfo = [[self systemInfoStatic] mutableCopy];
 
-    NSDictionary *ksSysInfo = [[KSCrash sharedInstance] systemInfo];
-    sysInfo[@BSG_KSSystemField_Jailbroken] = ksSysInfo[@"isJailbroken"];
+    KSCrash_MonitorContext fakeEvent = { 0 };
+    kscm_system_getAPI()->addContextualInfoToEvent(&fakeEvent);
+    sysInfo[KSCrashField_Jailbroken] = @(fakeEvent.System.isJailbroken);
 
-    sysInfo[@BSG_KSSystemField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
-    sysInfo[@BSG_KSSystemField_Memory] = @{
-        @BSG_KSSystemField_Free: @(bsg_getHostMemory()),
-        @BSG_KSSystemField_Size: @(NSProcessInfo.processInfo.physicalMemory)
+    sysInfo[KSCrashField_TimeZone] = [[NSTimeZone localTimeZone] abbreviation];
+    sysInfo[KSCrashField_Memory] = @{
+        KSCrashField_Free: @(bsg_getHostMemory()),
+        KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
     
     // Grey area APIs, may not be filled on KSCrash side
-    // TODO DARIA how to check if empty!!
-    KSCrash_MonitorContext fakeEvent = { 0 };
     kscm_discspace_getAPI()->addContextualInfoToEvent(&fakeEvent);
-    sysInfo[@BSG_KSSystemField_Disk] = @{
-        @BSG_KSSystemField_Free: @(fakeEvent.System.freeStorageSize),
-        @BSG_KSSystemField_Size: @(fakeEvent.System.storageSize)
+    sysInfo[@BSG_SystemField_Disk] = @{
+        KSCrashField_Free: @(fakeEvent.System.freeStorageSize),
+        KSCrashField_Size: @(fakeEvent.System.storageSize)
     };
     
-    // TODO DARIA is this properly copied?
     kscm_appstate_getAPI()->addContextualInfoToEvent(&fakeEvent);
     NSMutableDictionary *statsInfo = [NSMutableDictionary dictionary];
-    statsInfo[@BSG_KSSystemField_ActiveTimeSinceLaunch] = @(fakeEvent.AppState.activeDurationSinceLaunch);
-    statsInfo[@BSG_KSSystemField_BGTimeSinceLaunch] = @(fakeEvent.AppState.backgroundDurationSinceLaunch);
-    statsInfo[@BSG_KSSystemField_AppInFG] = @(fakeEvent.AppState.applicationIsInForeground);
-    
-    sysInfo[@BSG_KSSystemField_AppStats] = statsInfo;
+    statsInfo[KSCrashField_ActiveTimeSinceLaunch] = @(fakeEvent.AppState.activeDurationSinceLaunch);
+    statsInfo[KSCrashField_BGTimeSinceLaunch] = @(fakeEvent.AppState.backgroundDurationSinceLaunch);
+    statsInfo[KSCrashField_AppInFG] = @(fakeEvent.AppState.applicationIsInForeground);
+    sysInfo[KSCrashField_AppStats] = statsInfo;
+
     return sysInfo;
 }
 
@@ -199,9 +192,9 @@ char *bsg_systeminfo_toJSON(void) {
     NSMutableDictionary *systemInfo = [[BSGSystemInfo systemInfo] mutableCopy];
 
     // Make sure the jailbroken status didn't get patched out.
-    // TODO DARIA maybe better to get from Monitor to get references, not copied strings
-    NSDictionary *ksSysInfo = [[KSCrash sharedInstance] systemInfo];
-    systemInfo[@BSG_KSSystemField_Jailbroken] = ksSysInfo[@"isJailbroken"];
+    KSCrash_MonitorContext fakeEvent = { 0 };
+    kscm_system_getAPI()->addContextualInfoToEvent(&fakeEvent);
+    systemInfo[KSCrashField_Jailbroken] = @(fakeEvent.System.isJailbroken);
 
     NSData *data = BSGJSONDataFromDictionary(systemInfo, NULL);
     if (!data) {
@@ -217,8 +210,8 @@ char *bsg_systeminfo_copyProcessName(void) {
 
 NSString * BSGGetDefaultDeviceId(void) {
     NSDictionary *sysInfo = [BSGSystemInfo systemInfo];
-    // TODO DARIA fix warning
-    return sysInfo[@BSG_KSSystemField_DeviceAppHash];
+    NSString *appHash = sysInfo[KSCrashField_DeviceAppHash];
+    return appHash;
 }
 
 NSDictionary * BSGGetSystemInfo(void) {

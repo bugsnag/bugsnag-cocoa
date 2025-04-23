@@ -13,6 +13,7 @@
 #import "BSGSystemInfo.h"
 #import "BugsnagCollections.h"
 #import "BugsnagConfiguration.h"
+#import "KSCrashReportFields.h"
 
 /**
  * Parse an event dictionary representation for App-specific metadata.
@@ -21,8 +22,13 @@
  */
 NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     NSMutableDictionary *app = [NSMutableDictionary new];
-    app[@"name"] = [event valueForKeyPath:@"system." @BSG_KSSystemField_BundleExecutable];
-    app[@"runningOnRosetta"] = [event valueForKeyPath:@"system." @BSG_KSSystemField_Translated];
+
+    NSMutableString *execPathKey = [NSMutableString string];
+    [execPathKey appendString:@"system."];
+    [execPathKey appendString:KSCrashField_Executable];
+    app[@"name"] = [event valueForKeyPath:execPathKey];
+
+    app[@"runningOnRosetta"] = [event valueForKeyPath:@"system." @BSG_SystemField_Translated];
     return app;
 }
 
@@ -73,11 +79,11 @@ NSDictionary *BSGAppMetadataFromRunContext(const struct BSGRunContext *context) 
           codeBundleId:(NSString *)codeBundleId
 {
     NSDictionary *system = event[BSGKeySystem];
-    app.id = system[@BSG_KSSystemField_BundleID];
-    app.binaryArch = system[@BSG_KSSystemField_BinaryArch];
-    app.bundleVersion = system[@BSG_KSSystemField_BundleVersion];
-    app.dsymUuid = system[@BSG_KSSystemField_AppUUID];
-    app.version = system[@BSG_KSSystemField_BundleShortVersion];
+    app.id = system[KSCrashField_BundleID];
+    app.binaryArch = system[@BSG_SystemField_BinaryArch];
+    app.bundleVersion = system[KSCrashField_BundleVersion];
+    app.dsymUuid = system[KSCrashField_AppUUID];
+    app.version = system[KSCrashField_BundleShortVersion];
     app.codeBundleId = [event valueForKeyPath:@"user.state.app.codeBundleId"] ?: codeBundleId;
     [app setValuesFromConfiguration:config];
 }

@@ -22,6 +22,7 @@
 #import "BSGSystemInfo.h"
 #import "BugsnagLogger.h"
 #import "BSGPersistentDeviceID.h"
+#import "KSCrashReportFields.h"
 
 #import <stdatomic.h>
 
@@ -52,13 +53,13 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
     NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
 
     NSMutableDictionary *app = [NSMutableDictionary new];
-    app[BSGKeyId] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleID]);
-    app[BSGKeyName] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleName]);
+    app[BSGKeyId] = blankIfNil(systemInfo[KSCrashField_BundleID]);
+    app[BSGKeyName] = blankIfNil(systemInfo[KSCrashField_BundleName]);
     app[BSGKeyReleaseStage] = config.releaseStage;
-    app[BSGKeyVersion] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleShortVersion]);
-    app[BSGKeyBundleVersion] = blankIfNil(systemInfo[@BSG_KSSystemField_BundleVersion]);
-    app[BSGKeyMachoUUID] = systemInfo[@BSG_KSSystemField_AppUUID];
-    app[@"binaryArch"] = systemInfo[@BSG_KSSystemField_BinaryArch];
+    app[BSGKeyVersion] = blankIfNil(systemInfo[KSCrashField_BundleShortVersion]);
+    app[BSGKeyBundleVersion] = blankIfNil(systemInfo[KSCrashField_BundleVersion]);
+    app[BSGKeyMachoUUID] = systemInfo[KSCrashField_AppUUID];
+    app[@"binaryArch"] = systemInfo[@BSG_SystemField_BinaryArch];
 #if TARGET_OS_TV
     app[BSGKeyType] = @"tvOS";
 #elif TARGET_OS_IOS
@@ -71,25 +72,25 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
 
     NSMutableDictionary *device = [NSMutableDictionary new];
     device[@"id"] = BSGPersistentDeviceID.current.external;
-    device[@"jailbroken"] = systemInfo[@BSG_KSSystemField_Jailbroken];
-    device[@"osBuild"] = systemInfo[@BSG_KSSystemField_OSVersion];
-    device[@"osVersion"] = systemInfo[@BSG_KSSystemField_SystemVersion];
-    device[@"osName"] = systemInfo[@BSG_KSSystemField_SystemName];
+    device[@"jailbroken"] = systemInfo[KSCrashField_Jailbroken];
+    device[@"osBuild"] = systemInfo[KSCrashField_OSVersion];
+    device[@"osVersion"] = systemInfo[KSCrashField_SystemVersion];
+    device[@"osName"] = systemInfo[KSCrashField_SystemName];
     // Translated from 'iDeviceMaj,Min' into human-readable "iPhone X" description on the server
-    device[@"model"] = systemInfo[@BSG_KSSystemField_Machine];
-    device[@"modelNumber"] = systemInfo[@ BSG_KSSystemField_Model];
+    device[@"model"] = systemInfo[KSCrashField_Machine];
+    device[@"modelNumber"] = systemInfo[KSCrashField_Model];
     device[@"wordSize"] = @(PLATFORM_WORD_SIZE);
     device[@"locale"] = [[NSLocale currentLocale] localeIdentifier];
     device[@"runtimeVersions"] = @{
-        @"clangVersion": systemInfo[@BSG_KSSystemField_ClangVersion] ?: @"",
-        @"osBuild": systemInfo[@BSG_KSSystemField_OSVersion] ?: @""
+        @"clangVersion": systemInfo[@BSG_SystemField_ClangVersion] ?: @"",
+        @"osBuild": systemInfo[KSCrashField_OSVersion] ?: @""
     };
 #if TARGET_OS_SIMULATOR
     device[@"simulator"] = @YES;
 #else
     device[@"simulator"] = @NO;
 #endif
-    device[@"totalMemory"] = systemInfo[@ BSG_KSSystemField_Memory][@ BSG_KSSystemField_Size];
+    device[@"totalMemory"] = systemInfo[KSCrashField_Memory][KSCrashField_Size];
 
     NSMutableDictionary *state = [NSMutableDictionary new];
     state[BSGKeyApp] = app;
