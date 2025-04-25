@@ -12,7 +12,6 @@
 #import "KSStackCursor_Backtrace.h"
 #import "KSCrashReportFields.h"
 #import "BSG_KSMachHeaders.h"
-#import "BSG_Symbolicate.h"
 #import "KSSymbolicator.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
@@ -204,14 +203,16 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     
     uintptr_t frameAddress = self.frameAddress.unsignedIntegerValue;
     uintptr_t instructionAddress = self.isPc ? frameAddress: kssymbolicator_callInstructionAddress(frameAddress);
-    struct bsg_symbolicate_result result;
-    bsg_symbolicate(instructionAddress, &result);
-    
-    if (result.function_address) {
-        self.symbolAddress = @(result.function_address);
+
+    KSStackCursor *cursor = &(struct KSStackCursor){};
+    cursor->stackEntry.address = instructionAddress;
+    kssymbolicator_symbolicate(cursor);
+
+    if (cursor->stackEntry.symbolAddress) {
+        self.symbolAddress = @(cursor->stackEntry.symbolAddress);
     }
-    if (result.function_name) {
-        self.method = @(result.function_name);
+    if (cursor->stackEntry.symbolName) {
+        self.method = @(cursor->stackEntry.symbolName);
     }
 }
 
