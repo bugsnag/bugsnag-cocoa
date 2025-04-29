@@ -45,7 +45,8 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, KSReportWriteCallback o
     KSCrashMonitorType crashTypes = 0;
     if (config.autoDetectErrors) {
         if (ksdebug_isBeingTraced()) {
-            crashTypes = KSCrashMonitorTypeDebuggerSafe;
+            // TODO: DARIA check if memory monitor works normally
+            crashTypes = (KSCrashMonitorTypeDebuggerSafe & ~KSCrashMonitorTypeMemoryTermination);
         } else {
             crashTypes = KSCrashTypeFromBugsnagErrorTypes(config.enabledErrorTypes);
         }
