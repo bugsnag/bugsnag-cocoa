@@ -15,7 +15,7 @@
 #import "BugsnagLogger.h"
 #import "BSG_KSMach.h"
 #import "BSG_KSMachHeaders.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "KSDebug.h"
 
 #import <Foundation/Foundation.h>
@@ -119,7 +119,7 @@ static bool GetIsActive(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState == WKApplicationStateActive;
     } else if (@available(watchOS 7.0, *)) {
@@ -188,7 +188,7 @@ static bool GetIsForeground(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState != WKApplicationStateBackground;
     } else if (@available(watchOS 7.0, *)) {
@@ -208,7 +208,7 @@ static bool GetIsForeground(void) {
 
 static UIApplication * GetUIApplication(void) {
     // +sharedApplication is unavailable to app extensions
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         return nil;
     }
     // Using performSelector: to avoid a compile-time check that
@@ -485,7 +485,7 @@ void BSGRunContextUpdateMemory(void) {
 bool BSGRunContextWasKilled(void) {
     // App extensions have a different lifecycle and the heuristic used for
     // finding app terminations rooted in fixable code does not apply
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         return NO;
     }
     

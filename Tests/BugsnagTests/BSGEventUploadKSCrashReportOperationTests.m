@@ -12,6 +12,7 @@
 
 #import "BSGEventUploadKSCrashReportOperation.h"
 #import "BSGInternalErrorReporter.h"
+#import "KSCrash.h"
 
 @interface BSGEventUploadKSCrashReportOperationTests : BSGTestCase
 
@@ -28,6 +29,7 @@
     [super setUp];
     
     BSGInternalErrorReporter.sharedInstance = (id)self;
+    [KSCrash installWithConfiguration:nil];
 }
 
 - (BSGEventUploadKSCrashReportOperation *)operationWithFile:(NSString *)file {

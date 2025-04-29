@@ -15,7 +15,7 @@
 
 #import "BSGRunContext.h"
 #import "BSG_KSMach.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 #import "BugsnagThread+Private.h"
@@ -51,7 +51,7 @@ BSG_OBJC_DIRECT_MEMBERS
         return;
     }
     
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         // App extensions have a different life cycle and environment that make the hang detection mechanism unsuitable.
         // * Depending on the type of extension, the run loop is not necessarily dedicated to UI.
         // * The host app or other extensions run by it may trigger false positives.
@@ -176,7 +176,7 @@ BSG_OBJC_DIRECT_MEMBERS
     // breadcrumbs from disk that could introduce delays and lead to misleading event contents.
     
     NSDate *date = [NSDate date];
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
     id<BSGAppHangDetectorDelegate> delegate = self.delegate;
     
     NSArray<BugsnagThread *> *threads = nil;

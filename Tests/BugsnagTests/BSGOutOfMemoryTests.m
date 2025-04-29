@@ -2,7 +2,7 @@
 
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "Bugsnag.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration.h"
