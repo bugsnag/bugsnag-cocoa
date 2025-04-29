@@ -15,6 +15,7 @@
 #import "KSCrashC.h"
 #import "KSDebug.h"
 #import "KSCrashConfiguration.h"
+#import "KSCrashReportFields.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
@@ -87,7 +88,33 @@ KSCrashMonitorType KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *errorType
 }
 
 static void BSGCrashAttemptDelivery(int64_t reportID) {
-    // TODO: DARIA check for report type
+    // Reading the report to check if appropriate type - allowed mach & nsexception
+    KSCrashReportStore *reportStore = [[KSCrash sharedInstance] reportStore];
+    if (reportStore == nil) {
+        bsg_log_debug(@"Report store is nil, could not perform crash-time delivery.");
+        return;
+    }
+    KSCrashReportDictionary *reportDict = [reportStore reportForID:reportID];
+    if (reportDict == nil) {
+        bsg_log_debug(@"Report is nil, could not perform crash-time delivery.");
+        return;
+    }
+
+    NSMutableString *errorTypePath = [NSMutableString string];
+    [errorTypePath appendString:KSCrashField_Crash];
+    [errorTypePath appendString:@"."];
+    [errorTypePath appendString:KSCrashField_Error];
+    [errorTypePath appendString:@"."];
+    [errorTypePath appendString:KSCrashField_Type];
+    NSString *crashErrorType = [NSObject valueForKeyPath:errorTypePath];
+
+    if (![crashErrorType isEqualToString:@"mach"] && ![crashErrorType isEqualToString:@"nsexception"])
+    {
+        bsg_log_debug(@"Crash type is not mach or nsexception, could not perform crash-time delivery.");
+        return;
+    }
+
+    // Extract file name from reportID
     NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
     if (bundleName == nil) {
         bundleName = @"Unknown";
