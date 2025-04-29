@@ -527,6 +527,15 @@
 		1CF5162A2DB9295700229F8B /* BSGSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF516232DB9295700229F8B /* BSGSystemInfo.m */; };
 		1CF5162B2DB9295700229F8B /* BSGSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CF516222DB9295700229F8B /* BSGSystemInfo.h */; };
 		1CF5162E2DB9295700229F8B /* BSGSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF516232DB9295700229F8B /* BSGSystemInfo.m */; };
+		1CA1FA8A2DC11E6200E19B1B /* KSStringConversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1FA892DC11E6200E19B1B /* KSStringConversion.c */; };
+		1CA1FA8B2DC11E6200E19B1B /* KSStringConversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1FA892DC11E6200E19B1B /* KSStringConversion.c */; };
+		1CA1FA8C2DC11E6200E19B1B /* KSStringConversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1FA892DC11E6200E19B1B /* KSStringConversion.c */; };
+		1CA1FA8D2DC11E6200E19B1B /* KSStringConversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1FA892DC11E6200E19B1B /* KSStringConversion.c */; };
+		1CA1FA8E2DC11E6200E19B1B /* KSStringConversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CA1FA892DC11E6200E19B1B /* KSStringConversion.c */; };
+		1CA1FA902DC11E6F00E19B1B /* KSStringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */; };
+		1CA1FA912DC11E6F00E19B1B /* KSStringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */; };
+		1CA1FA922DC11E6F00E19B1B /* KSStringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */; };
+		1CA1FA932DC11E6F00E19B1B /* KSStringConversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */; };
 		3A700A9424A63ABC0068CD1B /* BugsnagThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8024A63A8E0068CD1B /* BugsnagThread.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A700A9524A63AC50068CD1B /* BugsnagSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8124A63A8E0068CD1B /* BugsnagSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A700A9624A63AC60068CD1B /* BugsnagStackframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8224A63A8E0068CD1B /* BugsnagStackframe.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2138,6 +2147,8 @@
 		1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSStringConversion.h; sourceTree = "<group>"; };
 		1CF516222DB9295700229F8B /* BSGSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGSystemInfo.h; sourceTree = "<group>"; };
 		1CF516232DB9295700229F8B /* BSGSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGSystemInfo.m; sourceTree = "<group>"; };
+		1CA1FA892DC11E6200E19B1B /* KSStringConversion.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = KSStringConversion.c; sourceTree = "<group>"; };
+		1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSStringConversion.h; sourceTree = "<group>"; };
 		3A700A8024A63A8E0068CD1B /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagThread.h; sourceTree = "<group>"; };
 		3A700A8124A63A8E0068CD1B /* BugsnagSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSession.h; sourceTree = "<group>"; };
 		3A700A8224A63A8E0068CD1B /* BugsnagStackframe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagStackframe.h; sourceTree = "<group>"; };
