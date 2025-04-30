@@ -202,7 +202,7 @@ steps:
     env:
       XCODE_VERSION: 16.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=11.4 SDK=watchsimulator11.4
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=11.4 SDK=watchsimulator11.4 DEVICE="Apple Watch Series 10 (46mm)"
     artifact_paths:
       - logs/*
 
@@ -213,7 +213,7 @@ steps:
     env:
       XCODE_VERSION: 16.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator11.4
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator11.4 DEVICE="Apple Watch Series 7 (41mm)"
     artifact_paths:
       - logs/*
 
