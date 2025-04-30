@@ -142,7 +142,7 @@ steps:
     agents:
       queue: macos-15
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE="iPhone 15"
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE="iPhone 16"
     env:
       XCODE_VERSION: 16.3.0
     artifact_paths:
@@ -153,7 +153,7 @@ steps:
     agents:
       queue: macos-15
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 16"
     env:
       XCODE_VERSION: 16.3.0
     artifact_paths:
