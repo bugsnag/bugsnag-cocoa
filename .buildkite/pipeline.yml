@@ -11,9 +11,9 @@ steps:
     key: framework_build
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     commands:
       - make build_xcframework
       - make build_swift
@@ -30,9 +30,9 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp_Release.ipa
       - features/fixtures/ios/output/iOSTestApp_Debug.ipa
@@ -53,7 +53,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -64,6 +64,15 @@ steps:
   #
   # Unit tests
   #
+
+  - label: ARM macOS 15 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
 
   - label: ARM macOS 14 unit tests
     timeout_in_minutes: 10
@@ -128,14 +137,25 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: iOS 17 unit tests
+  - label: iOS 18 unit tests
     timeout_in_minutes: 10
     agents:
       queue: macos-14
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
+    artifact_paths:
+      - logs/*
+
+  - label: iOS 17 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
+    env:
+      XCODE_VERSION: 16.3.0
     artifact_paths:
       - logs/*
 
@@ -175,14 +195,25 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: watchOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15
+    env:
+      XCODE_VERSION: 16.3.0
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=11.4 SDK=watchsimulator11.4
+    artifact_paths:
+      - logs/*
+
   - label: watchOS 8 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator10.4
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator11.4
     artifact_paths:
       - logs/*
 
@@ -196,6 +227,29 @@ steps:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.0
     artifact_paths:
       - logs/*
+
+  - label: 'ARM macOS 15 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 120
+    agents:
+      queue: macos-15-isolated
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release
+        --os=macos
+        --fail-fast
 
   - label: 'ARM macOS 14 E2E tests'
     depends_on:
@@ -723,6 +777,29 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+
+  - label: 'macOS 15 debug E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 20
+    agents:
+      queue: macos-15-isolated
+    plugins:
+      artifacts#v1.5.0:
+        download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/debug
+        --os=macos
+        --fail-fast
 
   - label: 'macOS 14 debug E2E tests'
     depends_on:
