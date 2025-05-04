@@ -29,7 +29,7 @@
     [super setUp];
     
     BSGInternalErrorReporter.sharedInstance = (id)self;
-    [KSCrash installWithConfiguration:nil];
+    // TODO: DARIA install KSCRASH?
 }
 
 - (BSGEventUploadKSCrashReportOperation *)operationWithFile:(NSString *)file {

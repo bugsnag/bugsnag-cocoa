@@ -17,6 +17,7 @@
 #import "BSGSystemInfo.h"
 #import "KSDynamicLinker.h"
 #import "KSDebug.h"
+#import "KSDynamicLinker.h"
 
 #import <Foundation/Foundation.h>
 #import <stdatomic.h>
