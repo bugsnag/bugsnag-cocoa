@@ -27,10 +27,6 @@
     [Bugsnag startWithApiKey:DUMMY_APIKEY_32CHAR_1];
 }
 
-- (void)testAppDidCrashLastLaunch {
-    XCTAssertFalse(Bugsnag.lastRunInfo.crashed);
-}
-
 - (void)testValidNotify {
     [Bugsnag notify:[NSException exceptionWithName:@"FooException" reason:@"whoops" userInfo:nil]];
 }

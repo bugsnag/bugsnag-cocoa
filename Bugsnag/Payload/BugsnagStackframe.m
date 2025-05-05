@@ -103,10 +103,10 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     return frame;
 }
 
-+ (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length {
++ (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(int)length {
     NSMutableArray<BugsnagStackframe *> *frames = [NSMutableArray array];
     
-    for (NSUInteger i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
         uintptr_t address = backtrace[i];
         if (address == 1) {
             // We sometimes get a frame address of 0x1 at the bottom of the call stack.
