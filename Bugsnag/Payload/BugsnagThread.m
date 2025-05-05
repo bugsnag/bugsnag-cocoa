@@ -20,7 +20,6 @@
 #import "KSMachineContext.h"
 #import "KSStackCursor_MachineContext.h"
 #import "KSThread.h"
-#import "KSCPU_Apple.h"
 
 #include <pthread.h>
 
