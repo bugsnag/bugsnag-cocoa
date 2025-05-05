@@ -9,9 +9,9 @@
 #import "BSGTelemetry.h"
 
 #import "BSGDefines.h"
-#import "BSG_KSMachHeaders.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagErrorTypes.h"
+#import "KSDynamicLinker.h"
 
 static NSNumber *_Nullable BooleanValue(BOOL actual, BOOL defaultValue) {
     return actual != defaultValue ? (actual ? @YES : @NO) : nil;
@@ -22,7 +22,7 @@ static NSNumber *_Nullable IntegerValue(NSUInteger actual, NSUInteger defaultVal
 }
 
 static BOOL IsStaticallyLinked(void) {
-    return bsg_mach_headers_get_self_image() == bsg_mach_headers_get_main_image();
+    return ksdl_get_self_image() == ksdl_get_main_image();
 }
 
 static NSDictionary * ConfigValue(BugsnagConfiguration *configuration) {

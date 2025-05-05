@@ -14,8 +14,8 @@
 #import "BSGWatchKit.h"
 #import "BugsnagLogger.h"
 #import "BSG_KSMach.h"
-#import "BSG_KSMachHeaders.h"
 #import "BSGSystemInfo.h"
+#import "KSDynamicLinker.h"
 #import "KSDebug.h"
 
 #import <Foundation/Foundation.h>
@@ -66,9 +66,9 @@ static void InitRunContext(void) {
     bsg_runContext->bootTime = GetBootTime();
 
     // Make sure the images list is populated.
-    bsg_mach_headers_initialize();
+    ksdl_binary_images_initialize();
 
-    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
+    KSBinaryImage *image = ksdl_get_main_image();
     if (image && image->uuid) {
         uuid_copy(bsg_runContext->machoUUID, image->uuid);
     }

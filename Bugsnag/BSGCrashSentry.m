@@ -46,7 +46,7 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, KSReportWriteCallback o
     KSCrashMonitorType crashTypes = 0;
     if (config.autoDetectErrors) {
         if (ksdebug_isBeingTraced()) {
-            // TODO: DARIA check if memory monitor works normally
+            // TODO: To be fixed in PLAT-13869
             crashTypes = (KSCrashMonitorTypeDebuggerSafe & ~KSCrashMonitorTypeMemoryTermination);
         } else {
             crashTypes = KSCrashTypeFromBugsnagErrorTypes(config.enabledErrorTypes);
@@ -100,12 +100,7 @@ static void BSGCrashAttemptDelivery(int64_t reportID) {
         return;
     }
 
-    NSMutableString *errorTypePath = [NSMutableString string];
-    [errorTypePath appendString:KSCrashField_Crash];
-    [errorTypePath appendString:@"."];
-    [errorTypePath appendString:KSCrashField_Error];
-    [errorTypePath appendString:@"."];
-    [errorTypePath appendString:KSCrashField_Type];
+    NSString *errorTypePath = [NSString stringWithFormat:@"%@.%@.%@", KSCrashField_Crash, KSCrashField_Error, KSCrashField_Type];
     NSString *crashErrorType = [NSObject valueForKeyPath:errorTypePath];
 
     if (![crashErrorType isEqualToString:@"mach"] && ![crashErrorType isEqualToString:@"nsexception"])
@@ -115,18 +110,12 @@ static void BSGCrashAttemptDelivery(int64_t reportID) {
     }
 
     // Extract file name from reportID
-    NSString *bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-    if (bundleName == nil) {
-        bundleName = @"Unknown";
+    NSString *file = [reportStore crashReportPathForID:reportID];
+    if (file == nil) {
+        bsg_log_debug(@"Report path not found, could not perform crash-time delivery.");
+        return;
     }
-    const char *appName = [bundleName UTF8String];
-    const char *reportPath = [BSGFileLocations.current.kscrashReports UTF8String];
 
-    // Copied from hidden function: getCrashReportPathByID
-    char path[500];
-    snprintf(path, 500, "%s/%s-report-%016llx.json", reportPath, appName, reportID);
-
-    NSString *file = [NSString stringWithUTF8String:path];
     bsg_log_info(@"Attempting crash-time delivery of %@", file);
     int64_t timeout = (int64_t)(BSGCrashDeliveryTimeout * NSEC_PER_SEC);
     dispatch_time_t deadline = dispatch_time(DISPATCH_TIME_NOW, timeout);
