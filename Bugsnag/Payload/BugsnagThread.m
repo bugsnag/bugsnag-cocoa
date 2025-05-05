@@ -18,6 +18,7 @@
 #import "BugsnagThread+Private.h"
 #import "BSGDefines.h"
 #import "KSMachineContext.h"
+#import "KSStackCursor_MachineContext.h"
 #import "KSThread.h"
 #import "KSCPU_Apple.h"
 
@@ -53,13 +54,22 @@ struct backtrace_t {
 
 #if BSG_HAVE_MACH_THREADS
 static void backtrace_for_thread(thread_t __unused thread, struct backtrace_t __unused *output) {
-    STRUCT_MCONTEXT_L machineContext = {{0}};
-    if (kscpu_i_fillState(thread, (thread_state_t)&machineContext.__ss, ARM_THREAD_STATE, ARM_THREAD_STATE_COUNT)) {
-        // TODO: DARIA check this func
-        output->length = 0; // ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
+    KSMachineContext context;
+    BOOL result = ksmc_getContextForThread(thread, &context, NO);
+    if (result) {
+        KSStackCursor stackCursor;
+        kssc_initWithMachineContext(&stackCursor, kMaxAddresses, &context);
+        int i = 0;
+        while(stackCursor.advanceCursor(&stackCursor)) {
+            output->addresses[i] = stackCursor.stackEntry.address;
+            i++;
+        }
+        output->length = i;
     } else {
         output->length = 0;
     }
+
+    // ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
 }
 #endif
 
