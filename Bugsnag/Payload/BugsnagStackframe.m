@@ -11,8 +11,8 @@
 #import "BSGKeys.h"
 #import "KSStackCursor_Backtrace.h"
 #import "KSCrashReportFields.h"
-#import "BSG_KSMachHeaders.h"
 #import "KSSymbolicator.h"
+#import "KSDynamicLinker.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 
@@ -184,11 +184,11 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     if ((self = [super init])) {
         _frameAddress = @(address);
         _needsSymbolication = YES;
-        BSG_Mach_Header_Info *header = bsg_mach_headers_image_at_address(address);
+        KSBinaryImage *header = ksdl_image_at_address(address);
         if (header) {
             _machoFile = header->name ? @(header->name) : nil;
             _machoLoadAddress = @((uintptr_t)header->header);
-            _machoVmAddress = @(header->imageVmAddr);
+            _machoVmAddress = @(header->vmAddress);
             _machoUuid = header->uuid ? [[NSUUID alloc] initWithUUIDBytes:header->uuid].UUIDString : nil;
         }
     }
