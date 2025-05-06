@@ -11,13 +11,13 @@
 #import "BSGKeys.h"
 #import "KSStackCursor_Backtrace.h"
 #import "KSCrashReportFields.h"
-#import "BSG_KSMach.h"
 #import "BugsnagCollections.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
 #import "BSGDefines.h"
 #import "KSMachineContext.h"
+#import "KSMachineContext_Apple.h"
 #import "KSStackCursor_MachineContext.h"
 #import "KSThread.h"
 
@@ -53,11 +53,11 @@ struct backtrace_t {
 
 #if BSG_HAVE_MACH_THREADS
 static void backtrace_for_thread(thread_t __unused thread, struct backtrace_t __unused *output) {
-    KSMachineContext context;
-    BOOL result = ksmc_getContextForThread(thread, &context, NO);
+    KSMC_NEW_CONTEXT(context);
+    BOOL result = ksmc_getContextForThread(thread, context, NO);
     if (result) {
         KSStackCursor stackCursor;
-        kssc_initWithMachineContext(&stackCursor, kMaxAddresses, &context);
+        kssc_initWithMachineContext(&stackCursor, kMaxAddresses, context);
         int i = 0;
         while(stackCursor.advanceCursor(&stackCursor)) {
             output->addresses[i] = stackCursor.stackEntry.address;
@@ -67,8 +67,6 @@ static void backtrace_for_thread(thread_t __unused thread, struct backtrace_t __
     } else {
         output->length = 0;
     }
-
-    // ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
 }
 #endif
 
@@ -235,9 +233,15 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (NSArray<BugsnagThread *> *)allThreadsWithCurrentThreadBacktrace:(struct backtrace_t *)currentThreadBacktrace {
     integer_t *threadStates = NULL;
+    thread_t *threads = NULL;
     unsigned threadCount = 0;
 
-    thread_t *threads = bsg_ksmachgetAllThreads(&threadCount);
+    KSMC_NEW_CONTEXT(context);
+    BOOL result = ksmc_getContextForThread(ksthread_self(), context, YES);
+    if (result) {
+        threads = context->allThreads;
+        threadCount = (unsigned)context->threadCount;
+    }
     if (threads == NULL) {
         return @[];
     }
@@ -290,7 +294,6 @@ BSG_OBJC_DIRECT_MEMBERS
     }
 
 cleanup:
-    bsg_ksmachfreeThreads(threads, threadCount);
     free(backtraces);
     free(threadStates);
     return objects;
@@ -299,9 +302,16 @@ cleanup:
 + (instancetype)currentThreadWithBacktrace:(struct backtrace_t *)backtrace {
     thread_t selfThread = mach_thread_self();
     NSString *threadState = thread_state_name(ksthread_getThreadState(selfThread));
-
+    thread_t *threads = NULL;
     unsigned threadCount = 0;
-    thread_t *threads = bsg_ksmachgetAllThreads(&threadCount);
+
+    KSMC_NEW_CONTEXT(context);
+    BOOL result = ksmc_getContextForThread(selfThread, context, YES);
+    if (result) {
+        threads = context->allThreads;
+        threadCount = (unsigned)context->threadCount;
+    }
+
     unsigned threadIndex = 0;
     if (threads != NULL) {
         for (unsigned i = 0; i < threadCount; i++) {
@@ -311,10 +321,9 @@ cleanup:
             }
         }
     }
-    bsg_ksmachfreeThreads(threads, threadCount);
 
     return [[BugsnagThread alloc] initWithMachThread:selfThread
-                                               state: threadState
+                                               state:threadState
                                   backtraceAddresses:backtrace->addresses
                                      backtraceLength:backtrace->length
                                 errorReportingThread:YES
@@ -323,8 +332,15 @@ cleanup:
 
 #if BSG_HAVE_MACH_THREADS
 + (nullable instancetype)mainThread {
+    thread_t *threads = NULL;
     unsigned threadCount = 0;
-    thread_t *threads = bsg_ksmachgetAllThreads(&threadCount);
+
+    KSMC_NEW_CONTEXT(context);
+    BOOL result = ksmc_getContextForThread(ksthread_self(), context, YES);
+    if (result) {
+        threads = context->allThreads;
+        threadCount = (unsigned)context->threadCount;
+    }
     if (threads == NULL) {
         return nil;
     }
@@ -334,12 +350,12 @@ cleanup:
     BugsnagThread *object = nil;
 
     if (threadCount == 0) {
-        goto cleanup;
+        return object;
     }
 
     thread_t thread = threads[0];
     if (MACH_PORT_INDEX(thread) == MACH_PORT_INDEX(ksthread_self())) {
-        goto cleanup;
+        return object;
     }
 
     threadState = thread_state_name(ksthread_getThreadState(thread));
@@ -355,8 +371,6 @@ cleanup:
                                   errorReportingThread:YES
                                                  index:0];
 
-cleanup:
-    bsg_ksmachfreeThreads(threads, threadCount);
     return object;
 }
 #endif

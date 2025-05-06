@@ -196,7 +196,7 @@ static void * executeBlock(void *ptr) {
 }
 
 - (void)testAllThreadsFromBackgroundDoesNotOverflowStack {
-    const int threadCount = 1000;
+    const int threadCount = 900; // KSCrash max recorded threads is 1000
     pthread_t pthreads[threadCount];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     for (int i = 0; i < threadCount; i++) {

@@ -13,7 +13,6 @@
 #import "BSGUtils.h"
 #import "BSGWatchKit.h"
 #import "BugsnagLogger.h"
-#import "BSG_KSMach.h"
 #import "BSGSystemInfo.h"
 #import "KSDynamicLinker.h"
 #import "KSDebug.h"
@@ -24,6 +23,7 @@
 #import <sys/mman.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
+#include <mach/mach.h>
 
 #if __has_include(<os/proc.h>)
 #include <os/proc.h>

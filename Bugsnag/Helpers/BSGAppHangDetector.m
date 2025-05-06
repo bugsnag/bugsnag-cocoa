@@ -10,11 +10,12 @@
 
 #if BSG_HAVE_APP_HANG_DETECTION
 
+#import <pthread.h>
+
 #import <Bugsnag/BugsnagConfiguration.h>
 #import <Bugsnag/BugsnagErrorTypes.h>
 
 #import "BSGRunContext.h"
-#import "BSG_KSMach.h"
 #import "BSGSystemInfo.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
