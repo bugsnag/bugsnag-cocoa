@@ -279,7 +279,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release
+        features/release/barebone_tests.feature
         --os=macos
         --fail-fast
 
@@ -793,29 +793,6 @@ steps:
     timeout_in_minutes: 20
     agents:
       queue: macos-15-isolated
-    plugins:
-      artifacts#v1.5.0:
-        download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
-        upload:
-          - "macOSTestApp.log"
-          - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/debug
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 14 debug E2E tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 20
-    agents:
-      queue: macos-14-isolated
     plugins:
       artifacts#v1.5.0:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"

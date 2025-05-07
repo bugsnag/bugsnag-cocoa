@@ -8,9 +8,9 @@ steps:
     depends_on: framework_build
     timeout_in_minutes: 30
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     plugins:
       - artifacts#v1.9.3:
           download:
@@ -706,6 +706,29 @@ steps:
   #       - exit_status: -1  # Agent was lost
   #         limit: 2
 
+  - label: 'ARM macOS 14 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: macos-14
+    plugins:
+      artifacts#v1.9.3:
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release
+        --os=macos
+        --fail-fast
+
   - label: 'ARM macOS 13 E2E tests'
     depends_on:
       - cocoa_fixture
@@ -832,7 +855,7 @@ steps:
   - label: 'examples/objective-c-ios'
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - bundle install
       - cd examples/objective-c-ios
@@ -848,7 +871,7 @@ steps:
   - label: 'examples/objective-c-osx'
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - bundle install
       - cd examples/objective-c-osx
@@ -862,7 +885,7 @@ steps:
   - label: 'examples/swift-ios'
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - bundle install
       - cd examples/swift-ios
@@ -876,7 +899,7 @@ steps:
   - label: 'examples/swift-package-manager'
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - bundle install
       - cd examples/swift-package-manager
@@ -891,7 +914,7 @@ steps:
   - label: 'examples/swiftui'
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - bundle install
       - cd examples/swiftui
