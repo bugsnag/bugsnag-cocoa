@@ -8,9 +8,9 @@
 
 #import "BSGTestCase.h"
 
-#import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagThread+Private.h"
+#import "KSDynamicLinker.h"
 
 #import <pthread.h>
 #import <stdatomic.h>
@@ -24,8 +24,8 @@
 
 + (void)setUp {
     [super setUp];
-    bsg_mach_headers_initialize();
-    bsg_mach_headers_get_images(); // Ensure call stack can be symbolicated
+    ksdl_binary_images_initialize();
+    ksdl_get_images(); // Ensure call stack can be symbolicated
 }
 
 - (void)setUp {

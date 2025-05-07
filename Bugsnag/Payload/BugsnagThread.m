@@ -16,9 +16,10 @@
 #import "BugsnagStackframe+Private.h"
 #import "BugsnagStacktrace.h"
 #import "BugsnagThread+Private.h"
-#import "BSG_KSCrashNames.h"
 #import "BSGDefines.h"
 #import "KSMachineContext.h"
+#import "KSStackCursor_MachineContext.h"
+#import "KSThread.h"
 
 #include <pthread.h>
 
@@ -39,27 +40,35 @@ static void resume_threads(thread_act_array_t threads, mach_msg_type_number_t nu
 #endif
 
 static NSString * thread_state_name(integer_t threadState) {
-    const char* stateCName = bsg_kscrashthread_state_name(threadState);
+    const char* stateCName = ksthread_state_name(threadState);
     return stateCName ? [NSString stringWithUTF8String:stateCName] : nil;
 }
 
 #define kMaxAddresses 150 // same as BSG_kMaxBacktraceDepth
 
 struct backtrace_t {
-    NSUInteger length;
+    int length;
     uintptr_t addresses[kMaxAddresses];
 };
 
-// TODO: Restore commented out code
-
 #if BSG_HAVE_MACH_THREADS
 static void backtrace_for_thread(thread_t __unused thread, struct backtrace_t __unused *output) {
-//    STRUCT_MCONTEXT_L machineContext = {{0}};
-//    if (bsg_ksmachthreadState(thread, &machineContext)) {
-//        output->length = (NSUInteger)ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
-//    } else {
-//        output->length = 0;
-//    }
+    KSMachineContext context;
+    BOOL result = ksmc_getContextForThread(thread, &context, NO);
+    if (result) {
+        KSStackCursor stackCursor;
+        kssc_initWithMachineContext(&stackCursor, kMaxAddresses, &context);
+        int i = 0;
+        while(stackCursor.advanceCursor(&stackCursor)) {
+            output->addresses[i] = stackCursor.stackEntry.address;
+            i++;
+        }
+        output->length = i;
+    } else {
+        output->length = 0;
+    }
+
+    // ksbt_backtraceThreadState(&machineContext, output->addresses, 0, kMaxAddresses);
 }
 #endif
 
@@ -213,7 +222,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 + (NSArray<BugsnagThread *> *)allThreads:(BOOL)allThreads callStackReturnAddresses:(NSArray<NSNumber *> *)callStackReturnAddresses {
     struct backtrace_t backtrace;
-    backtrace.length = MIN(callStackReturnAddresses.count, kMaxAddresses);
+    backtrace.length = MIN((int)callStackReturnAddresses.count, kMaxAddresses);
     for (NSUInteger i = 0; i < (NSUInteger)backtrace.length; i++) {
         backtrace.addresses[i] = (uintptr_t)callStackReturnAddresses[i].unsignedLongLongValue;
     }
@@ -244,7 +253,9 @@ BSG_OBJC_DIRECT_MEMBERS
     if (!threadStates) {
         goto cleanup;
     }
-//    ksmachgetThreadStates(threads, threadStates, threadCount);
+    for (unsigned i = 0; i < threadCount; i++) {
+        threadStates[i] = ksthread_getThreadState(threads[i]);
+    }
 
 #if BSG_HAVE_MACH_THREADS
     thread_act_array_t suspendedThreads = NULL;
@@ -256,30 +267,30 @@ BSG_OBJC_DIRECT_MEMBERS
     // the Objective-C runtime, or other subsystems.
 
     for (mach_msg_type_number_t i = 0; i < threadCount; i++) {
-//        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(ksmachthread_self());
-//        if (isCurrentThread) {
-//            backtraces[i].length = 0; // currentThreadBacktrace will be used instead
-//        } else {
-//            backtrace_for_thread(threads[i], &backtraces[i]);
-//        }
+        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(ksthread_self());
+        if (isCurrentThread) {
+            backtraces[i].length = 0; // currentThreadBacktrace will be used instead
+        } else {
+            backtrace_for_thread(threads[i], &backtraces[i]);
+        }
     }
 
     resume_threads(suspendedThreads, numSuspendedThreads);
 #endif
 
     for (mach_msg_type_number_t i = 0; i < threadCount; i++) {
-//        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(ksmachthread_self());
-//        struct backtrace_t *backtrace = isCurrentThread ? currentThreadBacktrace : &backtraces[i];
-//        [objects addObject:[[BugsnagThread alloc] initWithMachThread:threads[i]
-//                                                               state:thread_state_name(threadStates[i])
-//                                                  backtraceAddresses:backtrace->addresses
-//                                                     backtraceLength:backtrace->length
-//                                                errorReportingThread:isCurrentThread
-//                                                               index:i]];
+        BOOL isCurrentThread = MACH_PORT_INDEX(threads[i]) == MACH_PORT_INDEX(ksthread_self());
+        struct backtrace_t *backtrace = isCurrentThread ? currentThreadBacktrace : &backtraces[i];
+        [objects addObject:[[BugsnagThread alloc] initWithMachThread:threads[i]
+                                                               state:thread_state_name(threadStates[i])
+                                                  backtraceAddresses:backtrace->addresses
+                                                     backtraceLength:backtrace->length
+                                                errorReportingThread:isCurrentThread
+                                                               index:i]];
     }
 
 cleanup:
-//    ksmachfreeThreads(threads, threadCount);
+    bsg_ksmachfreeThreads(threads, threadCount);
     free(backtraces);
     free(threadStates);
     return objects;
@@ -287,7 +298,7 @@ cleanup:
 
 + (instancetype)currentThreadWithBacktrace:(struct backtrace_t *)backtrace {
     thread_t selfThread = mach_thread_self();
-//    NSString *threadState = thread_state_name(ksmachgetThreadState(selfThread));
+    NSString *threadState = thread_state_name(ksthread_getThreadState(selfThread));
 
     unsigned threadCount = 0;
     thread_t *threads = bsg_ksmachgetAllThreads(&threadCount);
@@ -300,11 +311,10 @@ cleanup:
             }
         }
     }
-//    ksmachfreeThreads(threads, threadCount);
+    bsg_ksmachfreeThreads(threads, threadCount);
 
     return [[BugsnagThread alloc] initWithMachThread:selfThread
-                                               state: @""
-                                               //state:threadState
+                                               state: threadState
                                   backtraceAddresses:backtrace->addresses
                                      backtraceLength:backtrace->length
                                 errorReportingThread:YES
@@ -328,26 +338,25 @@ cleanup:
     }
 
     thread_t thread = threads[0];
-//    if (MACH_PORT_INDEX(thread) == MACH_PORT_INDEX(ksmachthread_self())) {
-//        goto cleanup;
-//    }
+    if (MACH_PORT_INDEX(thread) == MACH_PORT_INDEX(ksthread_self())) {
+        goto cleanup;
+    }
 
-//    threadState = thread_state_name(ksmachgetThreadState(thread));
+    threadState = thread_state_name(ksthread_getThreadState(thread));
     BOOL needsResume = thread_suspend(thread) == KERN_SUCCESS;
     backtrace_for_thread(thread, &backtrace);
     if (needsResume) {
         thread_resume(thread);
     }
     object = [[BugsnagThread alloc] initWithMachThread:thread
-                                                 state:@""
-//                                                 state:threadState
+                                                 state:threadState
                                     backtraceAddresses:backtrace.addresses
                                        backtraceLength:backtrace.length
                                   errorReportingThread:YES
                                                  index:0];
 
 cleanup:
-//    ksmachfreeThreads(threads, threadCount);
+    bsg_ksmachfreeThreads(threads, threadCount);
     return object;
 }
 #endif
@@ -355,14 +364,14 @@ cleanup:
 - (instancetype)initWithMachThread:(thread_t)machThread
                              state:(NSString *)state
                 backtraceAddresses:(uintptr_t *)backtraceAddresses
-                   backtraceLength:(NSUInteger)backtraceLength
+                   backtraceLength:(int)backtraceLength
               errorReportingThread:(BOOL)errorReportingThread
                              index:(unsigned)index {
 
     char name[64] = "";
-//    if (!ksmachgetThreadName(machThread, name, sizeof(name)) || !name[0]) {
-//        ksmachgetThreadQueueName(machThread, name, sizeof(name));
-//    }
+    if (!ksthread_getThreadName(machThread, name, sizeof(name)) || !name[0]) {
+        ksthread_getQueueName(machThread, name, sizeof(name));
+    }
 
     return [self initWithId:[NSString stringWithFormat:@"%d", index]
                        name:name[0] ? @(name) : nil
