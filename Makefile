@@ -93,7 +93,7 @@ build_xcframework: ## Build as a multiplatform xcframework
 	@./scripts/build-xcframework.sh
 
 build_swift: ## Build with Swift Package Manager
-	@swift build -v
+	@swift build
 
 compile_commands.json:
 	set -o pipefail && xcodebuild -project Bugsnag.xcodeproj -configuration Release -scheme Bugsnag-iOS \
