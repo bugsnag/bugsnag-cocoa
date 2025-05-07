@@ -274,7 +274,7 @@ steps:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
-        test-collector#v1.11.0:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -298,7 +298,7 @@ steps:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
-        test-collector#v1.11.0:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -322,7 +322,7 @@ steps:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
-        test-collector#v1.11.0:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
