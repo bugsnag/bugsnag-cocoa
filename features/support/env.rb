@@ -162,10 +162,10 @@ Maze.hooks.after do |scenario|
   when 'ios'
     manager = Maze::Api::Appium::FileManager.new
     begin
-      data = manager.read_app_file 'kscrash.log'
-      File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+      data = manager.read_app_folder
+      File.open(File.join(path, 'Documents.zip'), 'wb') { |file| file << data }
     rescue StandardError
-      puts "read_app_file failed: #{$ERROR_INFO}"
+      puts "read_app_folder failed: #{$ERROR_INFO}"
     end
   end
 end
