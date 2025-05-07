@@ -3,12 +3,14 @@ Changelog
 
 ## TBD
 
-### Bug Fixes
-
 * Added missing MARKETING_VERSION build setting to multiple targets. This is required for generating CFBundleShortVersionString in some situations.
   [#1766](https://github.com/bugsnag/bugsnag-cocoa/pull/1766)
 
-* Fixed issue that could lead to an invalid pointer when removing a feature flag.
+## 6.32.2 (2025-03-25)
+
+### Bug Fixes
+
+* Fixed a potential invalid pointer crash when updating/removing feature flags.
   [#1754](https://github.com/bugsnag/bugsnag-cocoa/pull/1754)
 
 ## 6.32.1 (2025-02-27)
