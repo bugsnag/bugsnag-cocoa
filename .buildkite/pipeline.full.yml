@@ -12,7 +12,7 @@ steps:
     env:
       XCODE_VERSION: 16.3.0
     plugins:
-      - artifacts#v1.9.3:
+      - artifacts#v1.9.4:
           download:
             - "Bugsnag.xcframework.zip"
             - "BugsnagNetworkRequestPlugin.xcframework.zip"
@@ -44,9 +44,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -58,7 +60,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -77,9 +79,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -91,7 +95,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -110,9 +114,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -124,7 +130,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -143,12 +149,13 @@ steps:
     agents:
       queue: macos-14-isolated
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
         upload:
           - "*.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -167,12 +174,13 @@ steps:
     agents:
       queue: macos-10.13
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
         upload:
           - "*.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -194,9 +202,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -211,7 +221,7 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -230,9 +240,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -246,7 +258,7 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -264,9 +276,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -281,7 +295,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -295,9 +309,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -311,7 +327,7 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -326,9 +342,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -343,7 +361,7 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -362,9 +380,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -378,7 +398,7 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -397,9 +417,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -414,7 +436,7 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -433,9 +455,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -449,7 +473,7 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -471,9 +495,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -488,7 +514,7 @@ steps:
           # PLAT-11155: App hang scenarios run on BrowserStack
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -507,9 +533,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -523,7 +551,7 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -542,10 +570,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -555,7 +585,7 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -577,10 +607,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -590,7 +622,7 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -612,10 +644,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -625,7 +659,7 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -645,10 +679,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -658,7 +694,7 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -681,10 +717,10 @@ steps:
   #   agents:
   #     queue: opensource
   #   plugins:
-  #     artifacts#v1.9.3:
+  #     artifacts#v1.9.4:
   #       download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
   #       upload: "maze_output/failed/**/*"
-  #     docker-compose#v3.7.0:
+  #     docker-compose#v5.8.0:
   #       pull: cocoa-maze-runner
   #       run: cocoa-maze-runner
   #       command:
@@ -694,7 +730,7 @@ steps:
   #         - "--appium-version=1.21.0"
   #         - "--fail-fast"
   #         - "features/app_hangs.feature"
-  #     test-collector#v1.10.2:
+  #     test-collector#v1.11.0:
   #       files: "reports/TEST-*.xml"
   #       format: "junit"
   #       branch: "^master|next$$"
@@ -713,12 +749,13 @@ steps:
     agents:
       queue: macos-14
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -736,12 +773,13 @@ steps:
     agents:
       queue: macos-13-arm
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -759,12 +797,13 @@ steps:
     agents:
       queue: macos-12-arm
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -782,10 +821,13 @@ steps:
     agents:
       queue: macos-11
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
-      test-collector#v1.10.2:
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -803,9 +845,12 @@ steps:
     agents:
       queue: macos-10.15
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -820,9 +865,12 @@ steps:
     agents:
       queue: macos-10.14
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -837,9 +885,12 @@ steps:
     agents:
       queue: macos-10.13
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
