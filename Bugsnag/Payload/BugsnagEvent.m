@@ -14,7 +14,6 @@
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
-#import "KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagApp+Private.h"
@@ -459,23 +458,22 @@ BSG_OBJC_DIRECT_MEMBERS
     NSMutableDictionary *userAtCrash = [report[BSGKeyUser] mutableCopy];
     // avoid adding internal information to user-defined metadata
     NSArray *keysToRemove = @[
-        // TODO: Add the keys to our own constants list (look for the hardcoded values in our source code on next)
-//            KSCrashField_Overrides,
-//            KSCrashField_HandledState,
-//            KSCrashField_Metadata,
+            BSGKeyOverrides,
+            BSGKeyHandledState,
+            BSGKeyMetadata,
             KSCrashField_State,
-//            KSCrashField_Config,
-//            KSCrashField_DiscardDepth,
-            @"batteryLevel",
-            @"breadcrumbs",
-            @"charging",
-            @"handledCount",
-            @"id",
-            @"isLaunching",
-            @"orientation",
-            @"startedAt",
-            @"thermalState",
-            @"unhandledCount",
+            BSGKeyConfig,
+            BSGKeyDiscardDepth,
+            BSGKeyBatteryLevel,
+            BSGKeyBreadcrumbs,
+            BSGKeyCharging,
+            BSGKeyHandledCount,
+            BSGKeyId,
+            BSGKeyIsLaunching,
+            BSGKeyOrientation,
+            BSGKeyStartedAt,
+            BSGKeyThermalState,
+            BSGKeyUnhandledCount,
     ];
     [userAtCrash removeObjectsForKeys:keysToRemove];
 
