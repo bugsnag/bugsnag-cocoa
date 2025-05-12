@@ -102,5 +102,8 @@ static BSGKey const BSGKeyUuid                      = @"uuid";
 static BSGKey const BSGKeyVariant                   = @"variant";
 static BSGKey const BSGKeyVersion                   = @"version";
 static BSGKey const BSGKeyWarning                   = @"warning";
+static BSGKey const BSGKeyOverrides                 = @"overrides";
+static BSGKey const BSGKeyHandledState              = @"handledState";
+static BSGKey const BSGKeyDiscardDepth              = @"depth";
 
 #define BSGKeyDefaultMacName "en0"
