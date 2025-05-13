@@ -160,30 +160,6 @@ steps:
         features/release/barebone_tests.feature
         --os=macos
 
-  - label: 'macOS 10.13 XcFramework barebone E2E tests'
-    depends_on:
-      - xcframework_cocoa_fixture
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-10.13
-    plugins:
-      artifacts#v1.9.3:
-        download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
-        upload:
-          - "*.log"
-          - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    env:
-      RUN_XCFRAMEWORK_APP: "true"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release/barebone_tests.feature
-        --os=macos
-
   #
   # BitBar
   #
@@ -819,23 +795,6 @@ steps:
     timeout_in_minutes: 60
     agents:
       queue: macos-10.14
-    plugins:
-      artifacts#v1.9.3:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 10.13 E2E tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-10.13
     plugins:
       artifacts#v1.9.3:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
