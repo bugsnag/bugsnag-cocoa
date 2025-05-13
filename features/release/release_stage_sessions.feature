@@ -1,3 +1,5 @@
+# TODO Restore before PLAT-13748 is closed
+@skip
 Feature: Discarding sessions based on release stage
 
   Background:

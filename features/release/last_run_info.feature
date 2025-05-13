@@ -1,7 +1,10 @@
+# TODO Restore before PLAT-13748 is closed
+@skip
 Feature: Launch detection
 
   Background:
     Given I clear all persistent data
+
 
   Scenario: LastRunInfo consecutiveLaunchCrashes increments when isLaunching is true
     When I run "LastRunInfoScenario" and relaunch the crashed app

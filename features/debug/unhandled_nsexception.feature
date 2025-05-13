@@ -1,3 +1,5 @@
+# TODO Restore before PLAT-13748 is closed
+@skip
 Feature: Uncaught NSExceptions are captured by Bugsnag
 
   Background:

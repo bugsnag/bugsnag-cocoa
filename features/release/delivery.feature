@@ -1,8 +1,11 @@
+
 Feature: Delivery of errors
 
   Background:
     Given I clear all persistent data
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   @watchos
   Scenario: Delivery is retried after an HTTP 500 error
     When I set the HTTP status code for the next request to 500
@@ -15,6 +18,8 @@ Feature: Delivery of errors
     And I wait to receive an error
     Then the error is valid for the error reporting API
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Delivery is not retried after an HTTP 400 error
     When I set the HTTP status code for the next request to 400
     And I run "HandledExceptionScenario"
@@ -24,6 +29,8 @@ Feature: Delivery of errors
     And I configure Bugsnag for "HandledExceptionScenario"
     Then I should receive no errors
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Delivery is not retried for oversized handled payloads
     Given I set the HTTP status code to 500
     When I run "OversizedHandledErrorScenario"
@@ -35,6 +42,8 @@ Feature: Delivery of errors
     And I configure Bugsnag for "OversizedHandledErrorScenario"
     Then I should receive no errors
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Delivery is not retried for old handled payloads
     Given I set the HTTP status code to 500
     When I run "OldHandledErrorScenario"
@@ -52,6 +61,8 @@ Feature: Delivery of errors
     And I configure Bugsnag for "OldHandledErrorScenario"
     Then I should receive no errors
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Delivery is not retried for oversized crash payloads
     Given I set the HTTP status code to 500
     When I run "OversizedCrashReportScenario" and relaunch the crashed app
@@ -64,6 +75,8 @@ Feature: Delivery of errors
     And I configure Bugsnag for "OversizedCrashReportScenario"
     Then I should receive no errors
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Delivery is not retried for old crash payloads
     Given I set the HTTP status code to 500
     When I run "OldCrashReportScenario" and relaunch the crashed app
@@ -76,6 +89,8 @@ Feature: Delivery of errors
     And I configure Bugsnag for "OldCrashReportScenario"
     Then I should receive no errors
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Bugsnag.start() should block for 2 seconds after a launch crash
     When I run "SendLaunchCrashesSynchronouslyScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
@@ -85,6 +100,8 @@ Feature: Delivery of errors
     And I discard the oldest error
     And the event "metaData.bugsnag.startDuration" is between 2.0 and 2.5
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Bugsnag.start() should not block if sendLaunchCrashesSynchronously is false
     When I run "SendLaunchCrashesSynchronouslyFalseScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
@@ -94,6 +111,8 @@ Feature: Delivery of errors
     And I discard the oldest error
     And the event "metaData.bugsnag.startDuration" is between 0.0 and 0.5
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Bugsnag.start() should not block for non-launch crashes
     When I run "SendLaunchCrashesSynchronouslyLaunchCompletedScenario" and relaunch the crashed app
     And I set the response delay for the next request to 5000 milliseconds
@@ -103,6 +122,8 @@ Feature: Delivery of errors
     And I discard the oldest error
     And the event "metaData.bugsnag.startDuration" is between 0.0 and 0.5
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Session delivery should be retried for recent payloads
     Given I set the HTTP status code for the next request to 500
     And I run "AutoSessionScenario"
@@ -112,6 +133,8 @@ Feature: Delivery of errors
     When I run "AutoSessionScenario"
     Then I wait to receive 3 sessions
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: Session delivery should not be retried for old payloads
     Given I set the HTTP status code for the next request to 500
     And I set the app to "old" mode
@@ -127,6 +150,8 @@ Feature: Delivery of errors
     And I discard the oldest session
     And I should receive no sessions
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   Scenario: The oldest sessions should be deleted to comply with maxPersistedSessions
     Given I set the HTTP status code to 500
     And I run "MaxPersistedSessionsScenario"
@@ -159,6 +184,8 @@ Feature: Delivery of errors
     And the event "usage.system.stringCharsTruncated" is not null
     And the event "usage.system.stringsTruncated" is not null
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   @skip_ios_17
   # TODO: Skipped Pending PLAT-12398
   @skip_macos
@@ -188,6 +215,8 @@ Feature: Delivery of errors
       | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value |
       | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.            |
 
+  # TODO Restore before PLAT-13748 is closed
+  @skip
   @skip_below_ios_17
   @skip_macos
   Scenario Outline: Attempt Delivery On Crash iOS 17

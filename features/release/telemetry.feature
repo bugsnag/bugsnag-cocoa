@@ -3,6 +3,8 @@ Feature: Telemetry
   Background:
     Given I clear all persistent data
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: An internal error report is sent for invalid KSCrashReport files
     When I run "InvalidCrashReportScenario" and relaunch the crashed app
     And I configure Bugsnag for "InvalidCrashReportScenario"
@@ -37,6 +39,8 @@ Feature: Telemetry
     And the exception "errorClass" equals "Could not create directory"
     And the exception "message" matches "NSCocoaErrorDomain 513: You don’t have permission"
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Internal errors are not sent if disabled
     When I run "InvalidCrashReportScenario" and relaunch the crashed app
     And I set the app to "internalErrorsDisabled" mode

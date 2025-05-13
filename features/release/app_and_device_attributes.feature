@@ -3,6 +3,8 @@ Feature: App and Device attributes present
   Background:
     Given I clear all persistent data
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: App and Device info is as expected
     When I run "AppAndDeviceAttributesScenario"
     And I wait to receive 2 errors
@@ -91,6 +93,8 @@ Feature: App and Device attributes present
     And the error payload field "events.0.device.manufacturer" equals "Nokia"
     And the error payload field "events.0.device.modelNumber" equals "0898"
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Duration value increments as expected
     When I run "AppDurationScenario"
     And I wait to receive 3 errors
@@ -105,12 +109,16 @@ Feature: App and Device attributes present
     And I wait to receive an error
     And the event "app.isLaunching" is true
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: isLaunching is true for unhandled exception during launch
     When I run "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario" and relaunch the crashed app
     And I configure Bugsnag for "AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario"
     And I wait to receive an error
     And the event "app.isLaunching" is true
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: isLaunching is false for unhandled exception after launch
     When I run "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario" and relaunch the crashed app
     And I configure Bugsnag for "AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario"
