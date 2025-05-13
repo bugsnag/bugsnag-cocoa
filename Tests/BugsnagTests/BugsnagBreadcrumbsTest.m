@@ -16,37 +16,22 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BSGDefines.h"
+#import "WriterTestsSupport.h"
 
 #import <mach/mach_init.h>
 #import <mach/thread_act.h>
 #import <pthread.h>
 
-struct json_buffer {
-    size_t length;
-    char *buffer;
-};
-
-//static void prepareReportWriter(KSCrashReportWriter *const writer, KSJSONEncodeContext *const context);
+// TODO Restore before PLAT-13748 is closed
+//struct json_buffer {
+//    size_t length;
+//    char *buffer;
+//};
 //
 //static int json_buffer_append(const char *data, size_t length, struct json_buffer *buffer) {
 //    memcpy(buffer->buffer + buffer->length, data, length);
 //    buffer->length += length;
-//    return KSJSON_OK;
-//}
-//
-//static int addJSONData(const char *data, size_t length, NSMutableData *userData) {
-//    [userData appendBytes:data length:length];
-//    return KSJSON_OK;
-//}
-//
-//static id JSONObject(void (^ block)(KSCrashReportWriter *writer)) {
-//    NSMutableData *data = [NSMutableData data];
-//    KSJSONEncodeContext encodeContext;
-//    KSCrashReportWriter reportWriter;
-//    prepareReportWriter(&reportWriter, &encodeContext);
-//    ksjson_beginEncode(&encodeContext, false, (KSJSONAddDataFunc)addJSONData, (__bridge void *)data);
-//    block(&reportWriter);
-//    return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+//    return BSG_KSJSON_OK;
 //}
 //
 //static BugsnagBreadcrumb * WithBlock(void (^ block)(BugsnagBreadcrumb *breadcrumb)) {
@@ -449,7 +434,7 @@ struct json_buffer {
 //}
 //
 //- (void)testCrashReportWriter {
-//    NSDictionary<NSString *, id> *object = JSONObject(^(KSCrashReportWriter *writer) {
+//    NSDictionary<NSString *, id> *object = bsg_JSONObject(^(BSG_KSCrashReportWriter *writer) {
 //        writer->beginObject(writer, "");
 //        BugsnagBreadcrumbsWriteCrashReport(writer, true);
 //        writer->endContainer(writer);
@@ -521,10 +506,10 @@ struct json_buffer {
 //    for (int i = 0; i < 5000; i++) {
 //        buffer.length = 0;
 //        
-//        KSJSONEncodeContext context;
-//        KSCrashReportWriter writer;
-//        prepareReportWriter(&writer, &context);
-//        ksjson_beginEncode(&context, false, (KSJSONAddDataFunc)json_buffer_append, &buffer);
+//        BSG_KSJSONEncodeContext context;
+//        BSG_KSCrashReportWriter writer;
+//        bsg_kscrw_i_prepareReportWriter(&writer, &context);
+//        bsg_ksjsonbeginEncode(&context, false, (BSG_KSJSONAddDataFunc)json_buffer_append, &buffer);
 //        writer.beginObject(&writer, "");
 //        BugsnagBreadcrumbsWriteCrashReport(&writer, true);
 //        writer.endContainer(&writer);
