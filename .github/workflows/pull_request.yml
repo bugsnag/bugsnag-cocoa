@@ -7,10 +7,10 @@ jobs:
   analyze:
     permissions:
       statuses: write
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       # Infer 1.0.1 cannot parse the iOS 15 SDK headers
-      DEVELOPER_DIR: /Applications/Xcode_15.4.app
+      DEVELOPER_DIR: /Applications/Xcode_16.3.app
     steps:
     - name: Checkout pull request HEAD
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -27,7 +27,7 @@ jobs:
     permissions:
       pull-requests: write
       statuses: write
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
     - name: Checkout target branch
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
