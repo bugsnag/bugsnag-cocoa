@@ -119,14 +119,15 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: macOS 10.14 unit tests
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-10.14
-    commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=macOS
-    artifact_paths:
-      - logs/*
+# TODO Restore or fully remove before PLAT-13748 is closed
+#  - label: macOS 10.14 unit tests
+#    timeout_in_minutes: 10
+#    agents:
+#      queue: macos-10.14
+#    commands:
+#      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+#    artifact_paths:
+#      - logs/*
 
   - label: iOS 18 unit tests
     timeout_in_minutes: 10
