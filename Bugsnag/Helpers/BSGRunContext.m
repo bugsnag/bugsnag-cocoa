@@ -12,16 +12,18 @@
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
 #import "BSGWatchKit.h"
-#import "BSG_KSLogger.h"
-#import "BSG_KSMach.h"
-#import "BSG_KSMachHeaders.h"
-#import "BSG_KSSystemInfo.h"
+#import "BugsnagLogger.h"
+#import "BSGSystemInfo.h"
+#import "KSDynamicLinker.h"
+#import "KSDebug.h"
+#import "KSDynamicLinker.h"
 
 #import <Foundation/Foundation.h>
 #import <stdatomic.h>
 #import <sys/mman.h>
 #import <sys/stat.h>
 #import <sys/sysctl.h>
+#include <mach/mach.h>
 
 #if __has_include(<os/proc.h>)
 #include <os/proc.h>
@@ -50,7 +52,7 @@ static void InstallTimer(void);
 
 /// Populates `bsg_runContext`
 static void InitRunContext(void) {
-    bsg_runContext->isDebuggerAttached = bsg_ksmachisBeingTraced();
+    bsg_runContext->isDebuggerAttached = ksdebug_isBeingTraced();
     
     bsg_runContext->isLaunching = YES;
     
@@ -65,9 +67,9 @@ static void InitRunContext(void) {
     bsg_runContext->bootTime = GetBootTime();
 
     // Make sure the images list is populated.
-    bsg_mach_headers_initialize();
+    ksdl_binary_images_initialize();
 
-    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
+    KSBinaryImage *image = ksdl_get_main_image();
     if (image && image->uuid) {
         uuid_copy(bsg_runContext->machoUUID, image->uuid);
     }
@@ -118,7 +120,7 @@ static bool GetIsActive(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState == WKApplicationStateActive;
     } else if (@available(watchOS 7.0, *)) {
@@ -187,7 +189,7 @@ static bool GetIsForeground(void) {
 #endif
 
 #if TARGET_OS_WATCH
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         WKExtension *ext = [WKExtension sharedExtension];
         return ext && ext.applicationState != WKApplicationStateBackground;
     } else if (@available(watchOS 7.0, *)) {
@@ -207,7 +209,7 @@ static bool GetIsForeground(void) {
 
 static UIApplication * GetUIApplication(void) {
     // +sharedApplication is unavailable to app extensions
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         return nil;
     }
     // Using performSelector: to avoid a compile-time check that
@@ -484,7 +486,7 @@ void BSGRunContextUpdateMemory(void) {
 bool BSGRunContextWasKilled(void) {
     // App extensions have a different lifecycle and the heuristic used for
     // finding app terminations rooted in fixable code does not apply
-    if ([BSG_KSSystemInfo isRunningInAppExtension]) {
+    if ([BSGSystemInfo isRunningInAppExtension]) {
         return NO;
     }
     

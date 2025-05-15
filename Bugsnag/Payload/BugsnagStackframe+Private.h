@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 BSG_OBJC_DIRECT_MEMBERS
 @interface BugsnagStackframe ()
 
-+ (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length;
++ (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(int)length;
 
 /// Constructs a stackframe object from a KSCrashReport backtrace dictionary.
 + (nullable instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages;

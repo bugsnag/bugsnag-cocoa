@@ -9,8 +9,8 @@
 #import "BugsnagError+Private.h"
 
 #import "BSGKeys.h"
-#import "BSG_KSCrashDoctor.h"
-#import "BSG_KSCrashReportFields.h"
+#import "KSCrashDoctor.h"
+#import "KSCrashReportFields.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 #import "BugsnagStackframe+Private.h"
@@ -76,10 +76,10 @@ NSString *_Nonnull BSGParseErrorClass(NSDictionary *error, NSString *errorType) 
 }
 
 NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSString *errorType) {
-    NSString *reason = error[@ BSG_KSCrashField_Reason];
+    NSString *reason = error[KSCrashField_Reason];
     NSString *diagnosis = nil;
-    if ([errorType isEqualToString:@ BSG_KSCrashExcType_Mach] || !reason) {
-        diagnosis = [[BSG_KSCrashDoctor new] diagnoseCrash:report];
+    if ([errorType isEqualToString:KSCrashExcType_Mach] || !reason) {
+        diagnosis = [[KSCrashDoctor new] diagnoseCrash:report];
     }
     return diagnosis ?: reason ?: @"";
 }

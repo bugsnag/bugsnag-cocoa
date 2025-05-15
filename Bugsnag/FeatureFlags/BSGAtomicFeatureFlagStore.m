@@ -158,7 +158,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 
 @end
 
-void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
+void BugsnagFeatureFlagsWriteCrashReport(const KSCrashReportWriter *writer,
                                         bool __unused requiresAsyncSafety) {
     atomic_store(&g_writing_crash_report, true);
     
@@ -166,7 +166,7 @@ void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
     
     struct bsg_feature_flag_list_item *item = atomic_load(&g_feature_flags_head);
     while (item) {
-        writer->addJSONElement(writer, NULL, item->jsonData);
+        writer->addJSONElement(writer, NULL, item->jsonData, false);
         item = item->next;
     }
     

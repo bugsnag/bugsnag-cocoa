@@ -44,8 +44,8 @@
 #import "BSGTelemetry.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
-#import "BSG_KSCrashC.h"
-#import "BSG_KSSystemInfo.h"
+#import "KSCrashC.h"
+#import "BSGSystemInfo.h"
 #import "Bugsnag.h"
 #import "BugsnagApp+Private.h"
 #import "BugsnagAppWithState+Private.h"
@@ -75,6 +75,7 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "KSCrashMonitor_AppState.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -87,7 +88,7 @@ static struct {
     // Usage telemetry, from BSGTelemetryCreateUsage()
     char *usageJSON;
     // User onCrash handler
-    void (*onCrash)(const BSG_KSCrashReportWriter *writer);
+    void (*onCrash)(const KSCrashReportWriter *writer);
 } bsg_g_bugsnag_data;
 
 static char *crashSentinelPath;
@@ -98,14 +99,14 @@ static char *crashSentinelPath;
  *
  *  @param writer report writer which will receive updated metadata
  */
-static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, bool requiresAsyncSafety) {
+static void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer, bool requiresAsyncSafety) {
     BOOL isCrash = YES;
     BSGSessionWriteCrashReport(writer, requiresAsyncSafety);
 
     if (isCrash) {
-        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON);
-        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON);
-        writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON);
+        writer->addJSONElement(writer, "config", bsg_g_bugsnag_data.configJSON, false);
+        writer->addJSONElement(writer, "metaData", bsg_g_bugsnag_data.metadataJSON, false);
+        writer->addJSONElement(writer, "state", bsg_g_bugsnag_data.stateJSON, false);
 
         writer->beginObject(writer, "app"); {
             if (bsg_runContext->memoryLimit) {
@@ -156,7 +157,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
     }
 
     if (bsg_g_bugsnag_data.usageJSON) {
-        writer->addJSONElement(writer, "_usage", bsg_g_bugsnag_data.usageJSON);
+        writer->addJSONElement(writer, "_usage", bsg_g_bugsnag_data.usageJSON, false);
     }
 
     if (bsg_g_bugsnag_data.onCrash) {
@@ -234,7 +235,7 @@ BSG_OBJC_DIRECT_MEMBERS
         self.extraRuntimeInfo = [NSMutableDictionary new];
 
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
-        bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
+        bsg_g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
 
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
         
@@ -265,7 +266,7 @@ BSG_OBJC_DIRECT_MEMBERS
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
     // add metadata about app/device
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
 
@@ -394,7 +395,7 @@ BSG_OBJC_DIRECT_MEMBERS
     BOOL didCrash = NO;
     
     // Did the app crash in a way that was detected by KSCrash?
-    if (bsg_kscrashstate_currentState()->crashedLastLaunch || !access(crashSentinelPath, F_OK)) {
+    if (kscrashstate_currentState()->crashedLastLaunch || !access(crashSentinelPath, F_OK)) {
         bsg_log_info(@"Last run terminated due to a crash.");
         unlink(crashSentinelPath);
         didCrash = YES;
@@ -694,7 +695,7 @@ BSG_OBJC_DIRECT_MEMBERS
                stackStripDepth:(NSUInteger)stackStripDepth
                          block:(_Nullable BugsnagOnErrorBlock)block {
     BugsnagCorrelation *correlation = [self getCurrentCorrelation];
-    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    NSDictionary *systemInfo = [BSGSystemInfo systemInfo];
     BugsnagMetadata *metadata = [self.metadata copy];
     
     NSArray<NSNumber *> *callStack = nil;

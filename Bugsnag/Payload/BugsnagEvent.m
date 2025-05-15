@@ -14,7 +14,6 @@
 #import "BSGKeys.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
-#import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagApp+Private.h"
@@ -34,6 +33,7 @@
 #import "BugsnagThread+Private.h"
 #import "BugsnagUser+Private.h"
 #import "BSGFileLocations.h"
+#import "KSCrashReportFields.h"
 
 static NSString * const RedactedMetadataValue = @"[REDACTED]";
 
@@ -458,22 +458,22 @@ BSG_OBJC_DIRECT_MEMBERS
     NSMutableDictionary *userAtCrash = [report[BSGKeyUser] mutableCopy];
     // avoid adding internal information to user-defined metadata
     NSArray *keysToRemove = @[
-            @BSG_KSCrashField_Overrides,
-            @BSG_KSCrashField_HandledState,
-            @BSG_KSCrashField_Metadata,
-            @BSG_KSCrashField_State,
-            @BSG_KSCrashField_Config,
-            @BSG_KSCrashField_DiscardDepth,
-            @"batteryLevel",
-            @"breadcrumbs",
-            @"charging",
-            @"handledCount",
-            @"id",
-            @"isLaunching",
-            @"orientation",
-            @"startedAt",
-            @"thermalState",
-            @"unhandledCount",
+            BSGKeyOverrides,
+            BSGKeyHandledState,
+            BSGKeyMetadata,
+            KSCrashField_State,
+            BSGKeyConfig,
+            BSGKeyDiscardDepth,
+            BSGKeyBatteryLevel,
+            BSGKeyBreadcrumbs,
+            BSGKeyCharging,
+            BSGKeyHandledCount,
+            BSGKeyId,
+            BSGKeyIsLaunching,
+            BSGKeyOrientation,
+            BSGKeyStartedAt,
+            BSGKeyThermalState,
+            BSGKeyUnhandledCount,
     ];
     [userAtCrash removeObjectsForKeys:keysToRemove];
 

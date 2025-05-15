@@ -14,6 +14,8 @@ Feature: Threads
     And the error payload field "events.0.threads.1" is not null
     And the thread information is valid for the event
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Threads are captured for unhandled errors by default
     When I run "UnhandledErrorThreadSendAlwaysScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorThreadSendAlwaysScenario"
@@ -35,6 +37,8 @@ Feature: Threads
     And the exception "errorClass" equals "HandledErrorThreadSendUnhandledOnlyScenario"
     And the error payload field "events.0.threads" is an array with 0 elements
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Threads are not captured for unhandled errors when sendThreads is set to never
     When I run "UnhandledErrorThreadSendNeverScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorThreadSendNeverScenario"

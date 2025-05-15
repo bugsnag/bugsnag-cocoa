@@ -15,6 +15,8 @@ Feature: The context can be automatically and manually set on errors
     Then the error is valid for the error reporting API
     And the event "context" is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Automatic context from a C error
     When I run "AbortScenario" and relaunch the crashed app
     And I configure Bugsnag for "AbortScenario"

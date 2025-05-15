@@ -163,6 +163,7 @@
 				F40B874316AA233500676BB2 /* Frameworks */,
 				F40B874416AA233500676BB2 /* Resources */,
 				5142A2F8286744A694BDB5BA /* Upload Bugsnag dSYM */,
+				5FF922FF2568BDD855D06621 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -236,6 +237,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env ruby";
 			shellScript = "dsyms = Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"]\n\nfork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  dsyms.each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
+			showEnvVarsInLog = 0;
+		};
+		5FF922FF2568BDD855D06621 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-objective-c-ios/Pods-objective-c-ios-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Bugsnag/Bugsnag.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Bugsnag.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-objective-c-ios/Pods-objective-c-ios-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6D3E90BD4495FE724F7FF283 /* [CP] Check Pods Manifest.lock */ = {

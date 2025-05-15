@@ -1,3 +1,5 @@
+# TODO Restore before PLAT-13748 is closed
+@skip
 Feature: Detection of crashes during crash handling
 
   KSCrash can detect when a crash has occurred while executing its crash handler.

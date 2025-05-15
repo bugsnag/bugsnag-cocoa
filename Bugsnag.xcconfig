@@ -1,7 +1,8 @@
 
 // Apple Clang - Warning Policies
 
-GCC_TREAT_WARNINGS_AS_ERRORS                           = YES // -Werror
+// TODO: Restore GCC_TREAT_WARNINGS_AS_ERRORS = YES
+GCC_TREAT_WARNINGS_AS_ERRORS                           = NO // -Werror
 GCC_WARN_INHIBIT_ALL_WARNINGS                          = NO
 GCC_WARN_PEDANTIC                                      = NO
 

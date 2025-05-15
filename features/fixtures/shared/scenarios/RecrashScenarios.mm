@@ -19,11 +19,11 @@
 #define CAUSE_MACH_EXCEPTION volatile int *ptr = NULL; *ptr = 42
 #define RAISE_SIGNAL abort()
 
-extern "C" void OnCrashAbort(const BSG_KSCrashReportWriter *writer) {
+extern "C" void OnCrashAbort(const BugsnagCrashReportWriter *writer) {
     RAISE_SIGNAL;
 }
 
-extern "C" void OnCrashBadAccess(const BSG_KSCrashReportWriter *writer) {
+extern "C" void OnCrashBadAccess(const BugsnagCrashReportWriter *writer) {
     CAUSE_MACH_EXCEPTION;
 }
 

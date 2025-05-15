@@ -128,6 +128,7 @@
 				93BE1CCC1B62CC360016380C /* Frameworks */,
 				93BE1CCD1B62CC360016380C /* Resources */,
 				D24AA2BFC04EE1A1916426C8 /* Upload Bugsnag dSYM */,
+				7AD8EFF7A6FECAD653AC3937 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -185,6 +186,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		7AD8EFF7A6FECAD653AC3937 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-objective-c-osx/Pods-objective-c-osx-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Bugsnag/Bugsnag.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Bugsnag.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-objective-c-osx/Pods-objective-c-osx-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AF12CC88EC2DA5EF6D40C883 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

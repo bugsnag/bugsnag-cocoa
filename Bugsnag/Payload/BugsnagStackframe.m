@@ -9,10 +9,10 @@
 #import "BugsnagStackframe+Private.h"
 
 #import "BSGKeys.h"
-#import "BSG_KSBacktrace.h"
-#import "BSG_KSCrashReportFields.h"
-#import "BSG_KSMachHeaders.h"
-#import "BSG_Symbolicate.h"
+#import "KSStackCursor_Backtrace.h"
+#import "KSCrashReportFields.h"
+#import "KSSymbolicator.h"
+#import "KSDynamicLinker.h"
 #import "BugsnagCollections.h"
 #import "BugsnagLogger.h"
 
@@ -31,7 +31,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     for (NSDictionary *image in images) {
-        if ([(NSNumber *)image[@ BSG_KSCrashField_ImageAddress] unsignedLongValue] == addr) {
+        if ([(NSNumber *)image[KSCrashField_ImageAddress] unsignedLongValue] == addr) {
             return image;
         }
     }
@@ -67,7 +67,7 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
 }
 
 + (instancetype)frameFromDict:(NSDictionary<NSString *, id> *)dict withImages:(NSArray<NSDictionary<NSString *, id> *> *)binaryImages {
-    NSNumber *frameAddress = dict[@ BSG_KSCrashField_InstructionAddr];
+    NSNumber *frameAddress = dict[KSCrashField_InstructionAddr];
     if (frameAddress.unsignedLongLongValue == 1) {
         // We sometimes get a frame address of 0x1 at the bottom of the call stack.
         // It's not a valid stack frame and causes E2E tests to fail, so should be ignored.
@@ -76,18 +76,18 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
 
     BugsnagStackframe *frame = [BugsnagStackframe new];
     frame.frameAddress = frameAddress;
-    frame.machoFile = dict[@ BSG_KSCrashField_ObjectName]; // last path component
-    frame.machoLoadAddress = dict[@ BSG_KSCrashField_ObjectAddr];
-    frame.method = dict[@ BSG_KSCrashField_SymbolName];
-    frame.symbolAddress = dict[@ BSG_KSCrashField_SymbolAddr];
+    frame.machoFile = dict[KSCrashField_ObjectName]; // last path component
+    frame.machoLoadAddress = dict[KSCrashField_ObjectAddr];
+    frame.method = dict[KSCrashField_SymbolName];
+    frame.symbolAddress = dict[KSCrashField_SymbolAddr];
     frame.isPc = [dict[BSGKeyIsPC] boolValue];
     frame.isLr = [dict[BSGKeyIsLR] boolValue];
 
     NSDictionary *image = FindImage(binaryImages, (uintptr_t)frame.machoLoadAddress.unsignedLongLongValue);
     if (image != nil) {
-        frame.machoFile = image[@ BSG_KSCrashField_Name]; // full path
-        frame.machoUuid = image[@ BSG_KSCrashField_UUID];
-        frame.machoVmAddress = image[@ BSG_KSCrashField_ImageVmAddress];
+        frame.machoFile = image[KSCrashField_Name]; // full path
+        frame.machoUuid = image[KSCrashField_UUID];
+        frame.machoVmAddress = image[KSCrashField_ImageVmAddress];
     } else if (frame.isPc) {
         // If the program counter's value isn't in any known image, the crash may have been due to a bad function pointer.
         // Ignore these frames to prevent the dashboard grouping on the address.
@@ -103,10 +103,10 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     return frame;
 }
 
-+ (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(NSUInteger)length {
++ (NSArray<BugsnagStackframe *> *)stackframesWithBacktrace:(uintptr_t *)backtrace length:(int)length {
     NSMutableArray<BugsnagStackframe *> *frames = [NSMutableArray array];
     
-    for (NSUInteger i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++) {
         uintptr_t address = backtrace[i];
         if (address == 1) {
             // We sometimes get a frame address of 0x1 at the bottom of the call stack.
@@ -184,11 +184,11 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     if ((self = [super init])) {
         _frameAddress = @(address);
         _needsSymbolication = YES;
-        BSG_Mach_Header_Info *header = bsg_mach_headers_image_at_address(address);
+        KSBinaryImage *header = ksdl_image_at_address(address);
         if (header) {
             _machoFile = header->name ? @(header->name) : nil;
             _machoLoadAddress = @((uintptr_t)header->header);
-            _machoVmAddress = @(header->imageVmAddr);
+            _machoVmAddress = @(header->vmAddress);
             _machoUuid = header->uuid ? [[NSUUID alloc] initWithUUIDBytes:header->uuid].UUIDString : nil;
         }
     }
@@ -202,15 +202,17 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     self.needsSymbolication = NO;
     
     uintptr_t frameAddress = self.frameAddress.unsignedIntegerValue;
-    uintptr_t instructionAddress = self.isPc ? frameAddress: CALL_INSTRUCTION_FROM_RETURN_ADDRESS(frameAddress);
-    struct bsg_symbolicate_result result;
-    bsg_symbolicate(instructionAddress, &result);
-    
-    if (result.function_address) {
-        self.symbolAddress = @(result.function_address);
+    uintptr_t instructionAddress = self.isPc ? frameAddress: kssymbolicator_callInstructionAddress(frameAddress);
+
+    KSStackCursor *cursor = &(struct KSStackCursor){};
+    cursor->stackEntry.address = instructionAddress;
+    kssymbolicator_symbolicate(cursor);
+
+    if (cursor->stackEntry.symbolAddress) {
+        self.symbolAddress = @(cursor->stackEntry.symbolAddress);
     }
-    if (result.function_name) {
-        self.method = @(result.function_name);
+    if (cursor->stackEntry.symbolName) {
+        self.method = @(cursor->stackEntry.symbolName);
     }
 }
 

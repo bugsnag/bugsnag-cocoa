@@ -51,7 +51,12 @@
     "watchos": "6.3"
   },
   "source_files": [
-    "Bugsnag/{**/,}*.{m,h,mm,c}"
+    "Bugsnag/{**/,}*.{m,h,mm,c,cpp}"
+  ],
+  "exclude_files": [
+    "Bugsnag/KSCrash/Tests/{**/,}*.{m,h,mm,c,cpp}",
+    "Bugsnag/KSCrash/Samples/{**/,}*",
+    "Bugsnag/KSCrash/Sources/KSCrashTestTools/{**/,}*.{m,h,mm,c,cpp}"
   ],
   "resource_bundles": {
       "Bugsnag": ["Bugsnag/resources/PrivacyInfo.xcprivacy"]

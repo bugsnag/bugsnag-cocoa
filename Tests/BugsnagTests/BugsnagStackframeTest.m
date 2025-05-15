@@ -8,8 +8,8 @@
 
 #import "BSGTestCase.h"
 
-#import "BSG_KSMachHeaders.h"
 #import "BugsnagStackframe+Private.h"
+#import "KSDynamicLinker.h"
 
 @interface BugsnagStackframeTest : BSGTestCase
 @property NSDictionary *frameDict;
@@ -173,8 +173,8 @@
     XCTAssertNil(stackframe_.type);
 
 - (void)testDummyCallStackSymbols {
-    bsg_mach_headers_initialize(); // Prevent symbolication
-    
+    ksdl_binary_images_initialize(); // Prevent symbolication
+
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:@[]];
     XCTAssertEqual(stackframes.count, 0);
     
@@ -233,8 +233,8 @@
 }
 
 - (void)testRealCallStackSymbols {
-    bsg_mach_headers_initialize();
-    bsg_mach_headers_get_images(); // Ensure call stack can be symbolicated
+    ksdl_binary_images_initialize();
+    ksdl_get_images(); // Ensure call stack can be symbolicated
     
     NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];
@@ -278,8 +278,8 @@
                       [stackframe.method isEqualToString:@"<redacted>"] ||
                       // callStackSymbols contains the wrong symbol name - "__copy_helper_block_e8_32s"
                       // lldb agrees that the symbol should be "__RunTests_block_invoke_2"
-                      [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"]);
-        
+                      [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"] ||
+                      [stackframe.method isEqualToString:@"RunTestsFromRunLoop"]); // alternative name to the one above
         if ([stackframe.method isEqualToString:@"main"]) {
             didSeeMain = YES;
         }

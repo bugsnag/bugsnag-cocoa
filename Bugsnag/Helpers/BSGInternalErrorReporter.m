@@ -9,8 +9,8 @@
 #import "BSGInternalErrorReporter.h"
 
 #import "BSGKeys.h"
-#import "BSG_KSCrashReportFields.h"
-#import "BSG_KSSysCtl.h"
+#import "KSCrashReportFields.h"
+#import "KSSysCtl.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagApiClient.h"
 #import "BugsnagCollections.h"
@@ -167,24 +167,24 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 }
 
 - (nullable BugsnagEvent *)eventWithRecrashReport:(NSDictionary *)recrashReport {
-    NSString *reportType = recrashReport[@ BSG_KSCrashField_Report][@ BSG_KSCrashField_Type];
-    if (![reportType isEqualToString:@ BSG_KSCrashReportType_Minimal]) {
+    NSString *reportType = recrashReport[KSCrashField_Report][KSCrashField_Type];
+    if (![reportType isEqualToString:KSCrashReportType_Minimal]) {
         return nil;
     }
     
-    NSDictionary *crash = recrashReport[@ BSG_KSCrashField_Crash];
-    NSDictionary *crashedThread = crash[@ BSG_KSCrashField_CrashedThread];
+    NSDictionary *crash = recrashReport[KSCrashField_Crash];
+    NSDictionary *crashedThread = crash[KSCrashField_CrashedThread];
     
-    NSArray *backtrace = crashedThread[@ BSG_KSCrashField_Backtrace][@ BSG_KSCrashField_Contents];
-    NSArray *binaryImages = recrashReport[@ BSG_KSCrashField_BinaryImages];
+    NSArray *backtrace = crashedThread[KSCrashField_Backtrace][KSCrashField_Contents];
+    NSArray *binaryImages = recrashReport[KSCrashField_BinaryImages];
     NSArray<BugsnagStackframe *> *stacktrace = BSGDeserializeArrayOfObjects(backtrace, ^BugsnagStackframe *(NSDictionary *dict) {
         return [BugsnagStackframe frameFromDict:dict withImages:binaryImages];
     });
     
-    NSDictionary *errorDict = crash[@ BSG_KSCrashField_Error];
+    NSDictionary *errorDict = crash[KSCrashField_Error];
     BugsnagError *error =
     [[BugsnagError alloc] initWithErrorClass:@"Crash handler crashed"
-                                errorMessage:BSGParseErrorClass(errorDict, (id)errorDict[@ BSG_KSCrashField_Type])
+                                errorMessage:BSGParseErrorClass(errorDict, (id)errorDict[KSCrashField_Type])
                                    errorType:BSGErrorTypeCocoa
                                   stacktrace:stacktrace];
     
@@ -282,7 +282,7 @@ static void (^ startupBlock_)(BSGInternalErrorReporter *);
 
 static NSString * Sysctl(const char *name) {
     char buffer[32] = {0};
-    if (bsg_kssysctl_stringForName(name, buffer, sizeof buffer - 1)) {
+    if (kssysctl_stringForName(name, buffer, sizeof buffer - 1)) {
         return @(buffer);
     } else {
         return nil;

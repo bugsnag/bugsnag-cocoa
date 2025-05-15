@@ -10,7 +10,7 @@ class AttemptDeliveryOnCrashScenario: Scenario {
     
     override func configure() {
         super.configure()
-        BSGCrashSentryDeliveryTimeout = 15
+        BSGCrashDeliveryTimeout = 15
         config.attemptDeliveryOnCrash = true
         config.addOnSendError { event in
             event.context = "OnSendError"

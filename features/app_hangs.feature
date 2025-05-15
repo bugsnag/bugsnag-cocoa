@@ -9,6 +9,8 @@ Feature: App hangs
     When I run "AppHangDefaultConfigScenario"
     Then I should receive no errors
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: App hangs above the threshold should be reported
     When I set the app to "2.1" mode
     And I run "AppHangScenario"
@@ -107,6 +109,8 @@ Feature: App hangs
     When I run "AppHangDisabledScenario"
     Then I should receive no errors
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Fatal app hangs should be reported if appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly
     When I run "AppHangFatalOnlyScenario"
     And I wait for 10 seconds
@@ -139,6 +143,8 @@ Feature: App hangs
     And the event "session.events.handled" equals 0
     And the event "session.events.unhandled" equals 1
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Fatal app hangs should not be reported if enabledErrorTypes.appHangs = false
     When I run "AppHangFatalDisabledScenario"
     And I wait for 10 seconds
@@ -146,6 +152,8 @@ Feature: App hangs
     And I configure Bugsnag for "AppHangFatalDisabledScenario"
     Then I should receive no errors
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   @skip_macos
   Scenario: Fatal app hangs should be reported if the app hangs before going to the background
     When I run "AppHangFatalOnlyScenario"
@@ -156,6 +164,8 @@ Feature: App hangs
     And I wait to receive an error
     And the exception "message" equals "The app was terminated while unresponsive"
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   @skip_macos
   Scenario: Fatal app hangs should not be reported if they occur once the app is in the background
     When I run "AppHangDidEnterBackgroundScenario"
@@ -171,6 +181,8 @@ Feature: App hangs
     And I wait to receive an error
     And the exception "message" equals "The app's main thread failed to respond to an event within 2000 milliseconds"
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: App hangs that occur during app termination should be non-fatal
     Given I run "AppHangInTerminationScenario" and relaunch the crashed app
     And I configure Bugsnag for "AppHangInTerminationScenario"

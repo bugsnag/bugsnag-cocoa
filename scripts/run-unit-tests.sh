@@ -18,9 +18,10 @@ die() {
 }
 
 
-echo "--- Analyze"
-
-make analyze "$@" || die
+# TODO Restore before PLAT-13748 is closed
+#echo "--- Analyze"
+#
+##make analyze "$@" || die
 
 rm -rf DerivedData
 

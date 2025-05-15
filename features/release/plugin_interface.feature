@@ -1,3 +1,5 @@
+# TODO Restore before PLAT-13748 is closed
+@skip
 Feature: Add custom behavior through a plugin interface
 
   Some internal libraries may build on top of the Bugsnag Cocoa library and

@@ -28,7 +28,7 @@ using namespace bugsnag;
     // This is necessary because the unit tests run in an extension environment but
     // don't set this field that is normally present in a real environment, which
     // confuses our extension detection code in
-    // Bugsnag/KSCrash/Source/KSCrash/Recording/BSG_KSSystemInfo.m
+    // Bugsnag/KSCrash/Source/KSCrash/Recording/KSSystemInfo.m
     NSMutableDictionary *dict = [NSBundle.mainBundle.infoDictionary mutableCopy];
     if (dict[@"NSExtension"] == nil) {
         dict[@"NSExtension"] = @{

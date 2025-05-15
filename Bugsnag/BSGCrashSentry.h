@@ -8,16 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-#import "BSG_KSCrashReportWriter.h"
-#import "BSG_KSCrashType.h"
+#import "KSCrashReportWriter.h"
+#import "KSCrashMonitorType.h"
 
 @class BugsnagConfiguration;
 @class BugsnagErrorTypes;
 
 NS_ASSUME_NONNULL_BEGIN
 
-void BSGCrashSentryInstall(BugsnagConfiguration *, BSG_KSReportWriteCallback);
+void BSGCrashSentryInstall(BugsnagConfiguration *, KSReportWriteCallback);
 
-BSG_KSCrashType BSG_KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *);
+KSCrashMonitorType KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *);
 
 NS_ASSUME_NONNULL_END

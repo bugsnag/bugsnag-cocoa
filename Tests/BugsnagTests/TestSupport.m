@@ -8,8 +8,7 @@
 
 #import "TestSupport.h"
 
-#import "BSG_KSCrashC.h"
-#import "BSG_KSCrashState.h"
+#import "KSCrashC.h"
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
 #import "BSGUtils.h"

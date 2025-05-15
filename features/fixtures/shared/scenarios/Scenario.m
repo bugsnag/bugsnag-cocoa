@@ -19,15 +19,15 @@
 #error Unsupported TARGET_OS
 #endif
 
-extern bool bsg_kslog_setLogFilename(const char *filename, bool overwrite);
+extern bool kslog_setLogFilename(const char *filename, bool overwrite);
 
-void markErrorHandledCallback(const BSG_KSCrashReportWriter *writer) {
+void markErrorHandledCallback(const BugsnagCrashReportWriter *writer) {
     writer->addBooleanElement(writer, "unhandled", false);
 }
 
 // MARK: -
 
-#if !TARGET_OS_WATCH
+#if TARGET_OS_IPHONE
 static char ksLogPath[PATH_MAX];
 #endif
 
@@ -162,11 +162,15 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
 #if TARGET_OS_IPHONE
         NSString *logPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0]
                              stringByAppendingPathComponent:@"kscrash.log"];
-#else
-        NSString *logPath = @"/tmp/kscrash.log";
-#endif
         [logPath getFileSystemRepresentation:ksLogPath maxLength:sizeof(ksLogPath)];
-        bsg_kslog_setLogFilename(ksLogPath, false);
+        kslog_setLogFilename(ksLogPath, false);
+#else
+        
+        // TODO: Restore logging
+//        NSString *logPath = @"/tmp/kscrash.log";
+#endif
+//        [logPath getFileSystemRepresentation:ksLogPath maxLength:sizeof(ksLogPath)];
+//        kslog_setLogFilename(ksLogPath, false);
 #endif
         Method method = class_getInstanceMethod([NSURLSession class], @selector(uploadTaskWithRequest:fromData:completionHandler:));
         NSURLSession_uploadTaskWithRequest_fromData_completionHandler =
@@ -204,7 +208,7 @@ static NSURLSessionUploadTask * uploadTaskWithRequest_fromData_completionHandler
         }
     }
 #if !TARGET_OS_WATCH
-    bsg_kslog_setLogFilename(ksLogPath, true);
+//    kslog_setLogFilename(ksLogPath, true);
 #endif
 }
 

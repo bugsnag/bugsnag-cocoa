@@ -8,7 +8,7 @@
 
 #import "BugsnagUser+Private.h"
 
-#import "BSG_KSSystemInfo.h"
+#import "BSGSystemInfo.h"
 #import "BSGPersistentDeviceID.h"
 
 BSG_OBJC_DIRECT_MEMBERS

@@ -11,7 +11,7 @@
 #import "BSGFileLocations.h"
 #import "BSGJSONSerialization.h"
 #import "BSGUtils.h"
-#import "BSG_KSCrashReportWriter.h"
+#import "KSCrashReportWriter.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagCollections.h"
@@ -289,7 +289,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 #pragma mark -
 
-void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
+void BugsnagBreadcrumbsWriteCrashReport(const KSCrashReportWriter *writer,
                                         bool __unused requiresAsyncSafety) {
     atomic_store(&g_writing_crash_report, true);
     
@@ -297,7 +297,7 @@ void BugsnagBreadcrumbsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
     
     struct bsg_breadcrumb_list_item *item = atomic_load(&g_breadcrumbs_head);
     while (item) {
-        writer->addJSONElement(writer, NULL, item->jsonData);
+        writer->addJSONElement(writer, NULL, item->jsonData, false);
         item = item->next;
     }
     
