@@ -86,10 +86,6 @@ end
 
 # No platform relevance
 
-When('I clear the error queue') do
-  Maze::Server.errors.clear
-end
-
 
 def execute_command(action, args)
   Maze::Server.commands.add({ action: action, args: args, launch_count: $launch_count })
