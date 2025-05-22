@@ -140,7 +140,7 @@ steps:
   - label: iOS 18 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-15
+      queue: macos-15-isolated
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE="iPhone 16"
     env:
@@ -151,9 +151,20 @@ steps:
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-15
+      queue: macos-15-isolated
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
+    env:
+      XCODE_VERSION: 16.3.0
+    artifact_paths:
+      - logs/*
+
+  - label: iOS 16 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15-isolated
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 14"
     env:
       XCODE_VERSION: 16.3.0
     artifact_paths:
@@ -162,9 +173,9 @@ steps:
   - label: iOS 15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-15-isolated
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
     artifact_paths:
       - logs/*
 
@@ -180,7 +191,7 @@ steps:
   - label: tvOS 18 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-15
+      queue: macos-15-isolated
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=18.4
     artifact_paths:
@@ -189,9 +200,9 @@ steps:
   - label: tvOS 15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-15-isolated
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.0
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.4
     artifact_paths:
       - logs/*
 
@@ -207,7 +218,7 @@ steps:
   - label: watchOS 11 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-15
+      queue: macos-15-isolated
     env:
       XCODE_VERSION: 16.3.0
     commands:
