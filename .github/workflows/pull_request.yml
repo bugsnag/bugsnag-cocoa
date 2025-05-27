@@ -35,6 +35,8 @@ jobs:
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         ref: ${{ github.base_ref }}
+    - name: Pull submodules
+      run: git submodule update --init --recursive
     - name: Build framework
       run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO && mv build build.base
     - name: Checkout pull request merge branch
@@ -42,7 +44,7 @@ jobs:
       with:
         clean: false
         fetch-depth: 100
-    - name: Pulling submodules
+    - name: Pull submodules
       run: git submodule update --init --recursive
     - name: Build framework
       run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO
