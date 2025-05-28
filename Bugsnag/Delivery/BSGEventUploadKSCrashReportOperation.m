@@ -37,7 +37,7 @@ static NSArray * CrashReportKeys(NSData *data, NSError *error) {
                 return nil;
             }
             NSMutableArray *keys = [NSMutableArray array];
-            NSString *pattern = @"\"(report|process|system|system_atcrash|binary_images|crash|threads|error|user_atcrash|config|metaData|state|breadcrumbs|featureFlags)\":";
+            NSString *pattern = @"\"(report|process|system|binary_images|crash|threads|error|user|config|metaData|state|breadcrumbs|featureFlags)\":";
             NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
             for (NSTextCheckingResult *result in [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)]) {
                 if ([result numberOfRanges] == 2) {
@@ -141,26 +141,16 @@ BSG_OBJC_DIRECT_MEMBERS
     NSMutableDictionary *mutableInfo =
             [report[KSCrashField_Report] mutableCopy];
     mutableReport[KSCrashField_Report] = mutableInfo;
-    
-    
-    // TODO: Add KSCrashField_Timestamp_Millis, KSCrashField_SystemAtCrash, KSCrashField_UserAtCrash to KSCrash (or use existing KSCrash functinality)
-//    // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
-//    NSNumber *timestampMillis = mutableInfo[KSCrashField_Timestamp_Millis];
-//    if ([timestampMillis isKindOfClass:[NSNumber class]]) {
-//        NSTimeInterval timeInterval = (double)timestampMillis.unsignedLongLongValue / 1000.0;
-//        NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
-//        mutableInfo[KSCrashField_Timestamp] = [BSG_RFC3339DateTool stringFromDate:date];
-//    } else {
-//        [self convertTimestamp:KSCrashField_Timestamp inReport:mutableInfo];
-//    }
-//
-//    [self mergeDictWithKey:KSCrashField_SystemAtCrash
-//           intoDictWithKey:KSCrashField_System
-//                  inReport:mutableReport];
-//
-//    [self mergeDictWithKey:KSCrashField_UserAtCrash
-//           intoDictWithKey:KSCrashField_User
-//                  inReport:mutableReport];
+
+    // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
+    NSNumber *timestampMillis = mutableInfo[KSCrashField_Timestamp];
+    if ([timestampMillis isKindOfClass:[NSNumber class]]) {
+        NSTimeInterval timeInterval = (double)timestampMillis.unsignedLongLongValue / 1000.0;
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+        mutableInfo[KSCrashField_Timestamp] = [BSG_RFC3339DateTool stringFromDate:date];
+    } else {
+        [self convertTimestamp:KSCrashField_Timestamp inReport:mutableInfo];
+    }
 
     NSMutableDictionary *crashReport =
             [report[KSCrashField_Crash] mutableCopy];

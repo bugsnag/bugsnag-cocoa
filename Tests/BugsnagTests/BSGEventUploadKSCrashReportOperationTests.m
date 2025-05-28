@@ -60,25 +60,23 @@
 
 #pragma mark -
 
-// TODO Restore before PLAT-13748 is closed
-//- (void)testKSCrashReport1 {
-//    NSString *file = [[NSBundle bundleForClass:[self class]] pathForResource:@"KSCrashReport1" ofType:@"json" inDirectory:@"Data"];
-//    BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
-//    BugsnagEvent *event = [operation loadEventAndReturnError:nil];
-//    XCTAssertEqual(event.threads.count, 20);
-//    XCTAssertEqualObjects([event.breadcrumbs valueForKeyPath:NSStringFromSelector(@selector(message))], @[@"Bugsnag loaded"]);
-//    XCTAssertEqualObjects(event.app.bundleVersion, @"5");
-//    XCTAssertEqualObjects(event.app.id, @"com.bugsnag.macOSTestApp");
-//    XCTAssertEqualObjects(event.app.releaseStage, @"development");
-//    XCTAssertEqualObjects(event.app.type, @"macOS");
-//    XCTAssertEqualObjects(event.app.version, @"1.0.3");
-//    XCTAssertEqualObjects(event.errors.firstObject.errorClass, @"EXC_BAD_ACCESS");
-//    XCTAssertEqualObjects(event.errors.firstObject.errorMessage, @"Attempted to dereference null pointer.");
-//    XCTAssertEqualObjects(event.threads.firstObject.stacktrace.firstObject.method, @"-[OverwriteLinkRegisterScenario run]");
-//    XCTAssertEqualObjects(event.threads.firstObject.stacktrace.firstObject.machoFile, @"/Users/nick/Library/Developer/Xcode/Derived Data/macOSTestApp-ffunpkxyeczwoccascsrmsggolbp/Build/Products/Debug/macOSTestApp.app/Contents/MacOS/macOSTestApp");
-//    XCTAssertEqualObjects(event.user.id, @"48decb8cf9f410c4c20e6f597070ee60b131a5c4");
-//    XCTAssertTrue(event.app.inForeground);
-//}
+- (void)testKSCrashReport2 {
+    NSString *file = [[NSBundle bundleForClass:[self class]] pathForResource:@"KSCrashReport2" ofType:@"json" inDirectory:@"Data"];
+    BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
+    BugsnagEvent *event = [operation loadEventAndReturnError:nil];
+    XCTAssertEqual(event.threads.count, 8);
+    XCTAssertEqualObjects([event.breadcrumbs valueForKeyPath:NSStringFromSelector(@selector(message))], @[@"Bugsnag loaded"]);
+    XCTAssertEqualObjects(event.app.bundleVersion, @"5");
+    XCTAssertEqualObjects(event.app.id, @"com.github.kstenerud.KSCrash.Sample");
+    XCTAssertEqualObjects(event.app.releaseStage, @"development");
+    XCTAssertEqualObjects(event.app.type, @"macOS");
+    XCTAssertEqualObjects(event.app.version, @"1.0.3");
+    XCTAssertEqualObjects(event.errors.firstObject.errorClass, @"EXC_BAD_ACCESS");
+    XCTAssertEqualObjects(event.errors.firstObject.errorMessage, @"Attempted to dereference garbage pointer 0x42.");
+    XCTAssertEqualObjects(event.threads.firstObject.stacktrace.firstObject.method, @"+[KSCrashTriggersList trigger_mach_badAccess]");
+    XCTAssertEqualObjects(event.threads.firstObject.stacktrace.firstObject.machoFile, @"/Users/daria.bialobrzeska/Library/Developer/CoreSimulator/Devices/BEF3776F-7C42-46E5-9B6A-38378B4D4C82/data/Containers/Bundle/Application/795C4B4D-533D-47C4-9200-980C2982CBBC/Sample.app/Sample.debug.dylib");
+    XCTAssertTrue(event.app.inForeground);
+}
 
 - (void)testEmptyFile {
     NSString *file = [self temporaryFileWithContents:@""];
@@ -108,26 +106,29 @@
 }
 
 - (void)testSimpleJSONError {
-    NSString *file = [self temporaryFileWithContents:@"{\"report\":{},\"system\":{},\"user_atcrash\":{error:true}}"];
+    NSString *file = [self temporaryFileWithContents:@"{\"report\":{},\"system\":{},\"user\":{error:true}}"];
     BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
     XCTAssertNil([operation loadEventAndReturnError:nil]);
     XCTAssertEqualObjects(self.errorClass, @"Invalid crash report");
     XCTAssertEqualObjects(self.context, @"JSON parsing error");
-    XCTAssertEqualObjects(self.diagnostics[@"keys"], (@[@"report", @"system", @"user_atcrash"]));
+    XCTAssertEqualObjects(self.diagnostics[@"keys"], (@[@"report", @"system", @"user"]));
 }
 
 - (void)testCorruptKSCrashReport {
-    NSString *file = [[NSBundle bundleForClass:[self class]] pathForResource:@"KSCrashReport1" ofType:@"json" inDirectory:@"Data"];
+    NSString *file = [[NSBundle bundleForClass:[self class]] pathForResource:@"KSCrashReport2" ofType:@"json" inDirectory:@"Data"];
     NSMutableString *JSONString = [NSMutableString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
-    [JSONString replaceCharactersInRange:NSMakeRange(106094, 1) withString:@""];
+    [JSONString replaceCharactersInRange:NSMakeRange(24696, 1) withString:@""];
     file = [self temporaryFileWithContents:JSONString];
     BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
     XCTAssertNil([operation loadEventAndReturnError:nil]);
     XCTAssertEqualObjects(self.errorClass, @"Invalid crash report");
     XCTAssertEqualObjects(self.context, @"JSON parsing error");
-    XCTAssertEqualObjects(self.diagnostics[@"keys"], (@[
-        @"report", @"process", @"system", @"system_atcrash", @"binary_images", @"crash", @"threads",
-        @"error", @"user_atcrash", @"config", @"metaData", @"state", @"breadcrumbs", @"metaData"]));
+    // Multiple "state" keys are coming from thread states
+    // 8 threads = 8 additional "state" keys
+    // also, nested "user"
+    XCTAssertEqualObjects(self.diagnostics[@"keys"], (@[@"report", @"process", @"system", @"crash", @"error",
+        @"threads", @"state", @"state", @"state", @"state", @"state", @"state",  @"state", @"state",
+        @"binary_images", @"user", @"metaData", @"user", @"state", @"breadcrumbs", @"metaData"]));
 }
 
 @end
