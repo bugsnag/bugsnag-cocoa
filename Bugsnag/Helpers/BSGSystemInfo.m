@@ -12,31 +12,12 @@
 #import "BSGRunContext.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
-#import "BSG_Jailbreak.h"
 #import "BugsnagLogger.h"
 #import "KSCrashReportFields.h"
 #import "KSCrashMonitorContext.h"
 #import "KSCrashMonitor_System.h"
 #import "KSCrashMonitor_AppState.h"
 #import "KSCrashMonitor_DiscSpace.h"
-
-// TODO: OLD jailbroken definition left until Jailbroken task is done
-
-//static inline bool is_jailbroken(void) {
-//    static bool initialized_jb;
-//    static bool is_jb;
-//    if(!initialized_jb) {
-//        get_jailbreak_status(&is_jb);
-//
-//        // Also keep using the old detection method.
-//        if(bsg_mach_headers_image_named("MobileSubstrate", false) != NULL) {
-//            is_jb = true;
-//        }
-//        initialized_jb = true;
-//    }
-//
-//    return is_jb;
-//}
 
 // TODO: Check if KSCrash reported version is correct after CI tests run
 // I think they have it covered (check after tests)
