@@ -74,7 +74,7 @@
     XCTAssertEqualObjects(event.errors.firstObject.errorClass, @"EXC_BAD_ACCESS");
     XCTAssertEqualObjects(event.errors.firstObject.errorMessage, @"Attempted to dereference garbage pointer 0x42.");
     XCTAssertEqualObjects(event.threads.firstObject.stacktrace.firstObject.method, @"+[KSCrashTriggersList trigger_mach_badAccess]");
-    XCTAssertEqualObjects(event.threads.firstObject.stacktrace.firstObject.machoFile, @"/Users/daria.bialobrzeska/Library/Developer/CoreSimulator/Devices/BEF3776F-7C42-46E5-9B6A-38378B4D4C82/data/Containers/Bundle/Application/795C4B4D-533D-47C4-9200-980C2982CBBC/Sample.app/Sample.debug.dylib");
+    XCTAssertTrue([event.threads.firstObject.stacktrace.firstObject.machoFile hasSuffix:@"Sample.app/Sample.debug.dylib"]);
     XCTAssertTrue(event.app.inForeground);
 }
 
