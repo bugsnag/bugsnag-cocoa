@@ -18,6 +18,8 @@
 #import "KSCrashMonitor_System.h"
 #import "KSCrashMonitor_AppState.h"
 #import "KSCrashMonitor_DiscSpace.h"
+#import "KSJailbreak.h"
+#import "KSSystemCapabilities.h"
 
 // TODO: Check if KSCrash reported version is correct after CI tests run
 // I think they have it covered (check after tests)
@@ -33,8 +35,8 @@ static NSDictionary * bsg_systemversion(void) {
     int fd = -1;
     char buffer[1024] = {0};
     const char *file = "/System/Library/CoreServices/SystemVersion.plist";
-#if BSG_HAVE_SYSCALL
-    bsg_syscall_open(file, O_RDONLY, 0, &fd);
+#if KSCRASH_HAS_SYSCALL
+    ksj_syscall_open(file, O_RDONLY, 0, &fd);
 #else
     fd = open(file, O_RDONLY);
 #endif
