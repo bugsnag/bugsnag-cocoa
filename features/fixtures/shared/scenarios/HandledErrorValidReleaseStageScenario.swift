@@ -1,4 +1,4 @@
-class MagicError : NSError {}
+class MagicError : NSError, @unchecked Sendable {}
 
 class HandledErrorValidReleaseStageScenario : Scenario {
 
