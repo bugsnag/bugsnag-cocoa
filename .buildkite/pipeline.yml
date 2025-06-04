@@ -182,7 +182,7 @@ steps:
   - label: iOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-14-isolated
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
     artifact_paths:
@@ -209,7 +209,7 @@ steps:
   - label: tvOS 14 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-14-isolated
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
     artifact_paths:
@@ -240,7 +240,7 @@ steps:
   - label: watchOS 7 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-14-isolated
     env:
       DEVELOPER_DIR: /Applications/Xcode14.0.app
     commands:
