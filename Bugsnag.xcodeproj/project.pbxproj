@@ -532,6 +532,10 @@
 		1CCE632F2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
 		1CCE63302DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
 		1CCE63312DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
+		1CCE63282DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
+		1CCE63292DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
+		1CCE632A2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
+		1CCE632B2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
 		1CF516242DB9295700229F8B /* BSGSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF516232DB9295700229F8B /* BSGSystemInfo.m */; };
 		1CF516252DB9295700229F8B /* BSGSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CF516222DB9295700229F8B /* BSGSystemInfo.h */; };
 		1CF516262DB9295700229F8B /* BSGSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF516232DB9295700229F8B /* BSGSystemInfo.m */; };
@@ -652,10 +656,6 @@
 		96ABBE912D79167300BE215B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 96ABB8D82D79167100BE215B /* LICENSE */; };
 		96ABBE922D79167300BE215B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 96ABB8D82D79167100BE215B /* LICENSE */; };
 		96ABBE932D79167300BE215B /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 96ABB8D82D79167100BE215B /* LICENSE */; };
-		96ABBE9F2D7A796600BE215B /* BSG_Jailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ABBE9E2D7A796600BE215B /* BSG_Jailbreak.h */; };
-		96ABBEA02D7A796600BE215B /* BSG_Jailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ABBE9E2D7A796600BE215B /* BSG_Jailbreak.h */; };
-		96ABBEA12D7A796700BE215B /* BSG_Jailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ABBE9E2D7A796600BE215B /* BSG_Jailbreak.h */; };
-		96ABBEA22D7A796700BE215B /* BSG_Jailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ABBE9E2D7A796600BE215B /* BSG_Jailbreak.h */; };
 		96C390E82DB7274100B6E2EF /* DemangleNodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C38FFE2DB7274100B6E2EF /* DemangleNodes.h */; };
 		96C390E92DB7274100B6E2EF /* KSSysCtl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C390A12DB7274100B6E2EF /* KSSysCtl.h */; };
 		96C390EA2DB7274100B6E2EF /* KSCString.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C390C52DB7274100B6E2EF /* KSCString.h */; };
@@ -2134,6 +2134,7 @@
 		1CCE630B2DE47A7B005B1EE3 /* BSGLoggerHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGLoggerHelper.h; sourceTree = "<group>"; };
 		1CCE63212DE48F4C005B1EE3 /* BSGLoggerHelper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSGLoggerHelper.c; sourceTree = "<group>"; };
 		1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashMonitorContextHelper.m; sourceTree = "<group>"; };
+		1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSJailbreak.h; sourceTree = "<group>"; };
 		1CF516222DB9295700229F8B /* BSGSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGSystemInfo.h; sourceTree = "<group>"; };
 		1CF516232DB9295700229F8B /* BSGSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGSystemInfo.m; sourceTree = "<group>"; };
 		3A700A8024A63A8E0068CD1B /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagThread.h; sourceTree = "<group>"; };
@@ -3304,6 +3305,7 @@
 		96C390A32DB7274100B6E2EF /* include */ = {
 			isa = PBXGroup;
 			children = (
+				1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */,
 				1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */,
 				96C390842DB7274100B6E2EF /* KSCPU.h */,
 				96C390852DB7274100B6E2EF /* KSCPU_Apple.h */,
@@ -3492,6 +3494,7 @@
 				96C391E42DB7274100B6E2EF /* KSCrashReportVersion.h in Headers */,
 				96C391E52DB7274100B6E2EF /* KSCrashReportFilterAppleFmt.h in Headers */,
 				96C391E62DB7274100B6E2EF /* KSSystemCapabilities.h in Headers */,
+				1CCE63292DEE09C3005B1EE3 /* KSJailbreak.h in Headers */,
 				96C391E72DB7274100B6E2EF /* KSCrashReportFilterBasic.h in Headers */,
 				96C391E82DB7274100B6E2EF /* KSSymbolicator.h in Headers */,
 				96C391E92DB7274100B6E2EF /* KSCrashReportFilterStringify.h in Headers */,
@@ -3607,7 +3610,6 @@
 				CBB092902519F891007698BC /* BugsnagSystemState.h in Headers */,
 				3A700A9924A63AC60068CD1B /* BugsnagBreadcrumb.h in Headers */,
 				0126F7AB25DD5118008483C2 /* BSGEventUploadFileOperation.h in Headers */,
-				96ABBE9F2D7A796600BE215B /* BSG_Jailbreak.h in Headers */,
 				3A700A9A24A63AC60068CD1B /* BugsnagCrashReportWriter.h in Headers */,
 				09E312EF2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.h in Headers */,
 				3A700A9B24A63AC60068CD1B /* BugsnagErrorTypes.h in Headers */,
@@ -3814,6 +3816,7 @@
 				1CCE630C2DE47A7B005B1EE3 /* BSGLoggerHelper.h in Headers */,
 				96C391602DB7274100B6E2EF /* Demangle.h in Headers */,
 				96C391612DB7274100B6E2EF /* KSMach-O.h in Headers */,
+				1CCE632B2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */,
 				96C391622DB7274100B6E2EF /* LLVM.h in Headers */,
 				96C391632DB7274100B6E2EF /* KSDemangle_Swift.h in Headers */,
 				96C391642DB7274100B6E2EF /* KSCrashMonitorFlag.h in Headers */,
@@ -3826,7 +3829,6 @@
 				3A700AB524A63CFD0068CD1B /* BugsnagConfiguration.h in Headers */,
 				01FF490728BF8B7B001F817B /* BugsnagInternals.h in Headers */,
 				3A700AB624A63CFD0068CD1B /* BugsnagPlugin.h in Headers */,
-				96ABBEA02D7A796600BE215B /* BSG_Jailbreak.h in Headers */,
 				3A700AB724A63CFD0068CD1B /* BugsnagDevice.h in Headers */,
 				3A700AB824A63CFD0068CD1B /* BugsnagApp.h in Headers */,
 				3A700AB924A63CFD0068CD1B /* BugsnagError.h in Headers */,
@@ -4013,6 +4015,7 @@
 				1CCE630E2DE47A7B005B1EE3 /* BSGLoggerHelper.h in Headers */,
 				96C3946B2DB7274100B6E2EF /* Demangle.h in Headers */,
 				96C3946C2DB7274100B6E2EF /* KSMach-O.h in Headers */,
+				1CCE632A2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */,
 				96C3946D2DB7274100B6E2EF /* LLVM.h in Headers */,
 				96C3946E2DB7274100B6E2EF /* KSDemangle_Swift.h in Headers */,
 				96C3946F2DB7274100B6E2EF /* KSCrashMonitorFlag.h in Headers */,
@@ -4025,7 +4028,6 @@
 				3A700AC924A63D110068CD1B /* BugsnagConfiguration.h in Headers */,
 				01FF490828BF8B7B001F817B /* BugsnagInternals.h in Headers */,
 				3A700ACA24A63D110068CD1B /* BugsnagPlugin.h in Headers */,
-				96ABBEA12D7A796700BE215B /* BSG_Jailbreak.h in Headers */,
 				3A700ACB24A63D110068CD1B /* BugsnagDevice.h in Headers */,
 				3A700ACC24A63D110068CD1B /* BugsnagApp.h in Headers */,
 				3A700ACD24A63D110068CD1B /* BugsnagError.h in Headers */,
@@ -4120,7 +4122,6 @@
 				CBBDE95A280068FD0070DCD3 /* BugsnagEndpointConfiguration.h in Headers */,
 				CBBDE94F280068FD0070DCD3 /* BugsnagFeatureFlagStore.h in Headers */,
 				CBBDE95C280068FD0070DCD3 /* BugsnagError.h in Headers */,
-				96ABBEA22D7A796700BE215B /* BSG_Jailbreak.h in Headers */,
 				CBBDE94C280068FD0070DCD3 /* BugsnagThread.h in Headers */,
 				CBBDE933280068AD0070DCD3 /* BSGEventUploadFileOperation.h in Headers */,
 				CBBDE941280068D40070DCD3 /* BSGMemoryFeatureFlagStore.h in Headers */,
@@ -4135,6 +4136,7 @@
 				96C393222DB7274100B6E2EF /* KSCrashAppMemoryTracker.h in Headers */,
 				96C393232DB7274100B6E2EF /* KSCrashReportVersion.h in Headers */,
 				96C393242DB7274100B6E2EF /* KSCrashReportFilterAppleFmt.h in Headers */,
+				1CCE63282DEE09C3005B1EE3 /* KSJailbreak.h in Headers */,
 				96C393252DB7274100B6E2EF /* KSSystemCapabilities.h in Headers */,
 				96C394EE2DB72B2100B6E2EF /* KSCrashReportSinkStandard.h in Headers */,
 				96C393262DB7274100B6E2EF /* KSCrashReportFilterBasic.h in Headers */,
