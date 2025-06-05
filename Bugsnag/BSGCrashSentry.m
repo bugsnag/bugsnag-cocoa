@@ -43,7 +43,7 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, KSReportWriteCallback o
         onCrash(writer, requiresAsyncSafety);
     };
 
-    KSCrashMonitorType crashTypes = KSCrashMonitorTypeSystem;
+    KSCrashMonitorType crashTypes = (KSCrashMonitorTypeSystem | KSCrashMonitorTypeApplicationState);
     if (config.autoDetectErrors) {
         if (ksdebug_isBeingTraced()) {
             // TODO: To be fixed in PLAT-13869

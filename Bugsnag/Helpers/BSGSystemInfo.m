@@ -105,7 +105,8 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
     sysInfo[KSCrashField_BundleShortVersion] = COPY_STRING(bundleShortVersion);
     sysInfo[KSCrashField_AppUUID] = COPY_STRING(appID);
     sysInfo[KSCrashField_CPUArch] = COPY_STRING(cpuArchitecture);
-    sysInfo[@BSG_SystemField_BinaryArch] = COPY_STRING(binaryArchitecture);
+    sysInfo[KSCrashField_BinaryArch] = COPY_STRING(binaryArchitecture);
+    sysInfo[KSCrashField_ClangVersion] = COPY_STRING(clangVersion);
     sysInfo[KSCrashField_DeviceAppHash] = COPY_STRING(deviceAppHash);
     sysInfo[@BSG_SystemField_Translated] = @(fakeEvent.System.procTranslated);
     
@@ -119,10 +120,6 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
 #if TARGET_OS_IOS
     sysInfo[@BSG_SystemField_iOSSupportVersion] = sysVersion[@"iOSSupportVersion"];
 #endif
-#endif
-
-#ifdef __clang_version__
-    sysInfo[@BSG_SystemField_ClangVersion] = @__clang_version__;
 #endif
 
     return sysInfo;

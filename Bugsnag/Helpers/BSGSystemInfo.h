@@ -11,9 +11,7 @@
 
 #import "BSGDefines.h"
 
-#define BSG_SystemField_BinaryArch "binary_arch"
 #define BSG_SystemField_Translated "proc_translated"
-#define BSG_SystemField_ClangVersion "clang_version"
 #define BSG_SystemField_iOSSupportVersion "iOSSupportVersion"
 #define BSG_SystemField_Disk "disk"
 

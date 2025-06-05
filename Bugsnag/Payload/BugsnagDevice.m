@@ -54,7 +54,7 @@
 
     NSMutableDictionary *runtimeVersions = [NSMutableDictionary new];
     runtimeVersions[@"osBuild"] = system[KSCrashField_OSVersion];
-    runtimeVersions[@"clangVersion"] = system[@BSG_SystemField_ClangVersion];
+    runtimeVersions[@"clangVersion"] = system[KSCrashField_ClangVersion];
     device.runtimeVersions = runtimeVersions;
 }
 
