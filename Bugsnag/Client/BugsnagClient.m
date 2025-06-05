@@ -261,6 +261,7 @@ BSG_OBJC_DIRECT_MEMBERS
     // Map our bridged API early on.
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
 
+    // Install KSCrash
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
 
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
