@@ -62,8 +62,6 @@ Feature: Callbacks can access and modify event information
     And the event "user.name" equals "customName"
     And the event "unhandled" is false
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: An OnSend callback can overwrite information for an unhandled error
     When I run "SwiftAssertionScenario" and relaunch the crashed app
     And I configure Bugsnag for "OnSendOverwriteScenario"
@@ -78,8 +76,6 @@ Feature: Callbacks can access and modify event information
     And the event "user.email" equals "customEmail"
     And the event "user.name" equals "customName"
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Information set in OnCrashHandler is added to the final report
     When I run "OnCrashHandlerScenario" and relaunch the crashed app
     And I configure Bugsnag for "OnSendOverwriteScenario"
@@ -130,8 +126,6 @@ Feature: Callbacks can access and modify event information
     And the event "metaData.callbacks.afterCrash" is null
     And the event "metaData.callbacks.secondCallback" is true
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Changes made in OnSendError should not be persisted
     Given I set the HTTP status code for the next request to 500
     And I run "OnSendErrorPersistenceScenario"

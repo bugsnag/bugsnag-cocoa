@@ -1,5 +1,3 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: Enabled error types
 
   Background:

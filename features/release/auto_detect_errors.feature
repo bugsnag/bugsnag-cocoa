@@ -1,5 +1,3 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: autoDetectErrors flag controls whether errors are captured automatically
     Bugsnag captures several error types by default. If the autoDetectErrors flag
     is false it should only capture handled errors which the user has reported.
