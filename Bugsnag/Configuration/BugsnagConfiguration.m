@@ -168,7 +168,7 @@ BSG_OBJC_DIRECT_MEMBERS
     }
     _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _metadata = [[BugsnagMetadata alloc] init];
-    _endpoints = [BugsnagEndpointConfiguration defaultForApiKey:apiKey];
+    _endpoints = [BugsnagEndpointConfiguration defaultForApiKey:apiKey ?: @""];
     _autoDetectErrors = YES;
 #if BSG_HAVE_APP_HANG_DETECTION
     _appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
