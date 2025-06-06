@@ -16,7 +16,7 @@ Feature: Session Tracking
       | macos | macOS |
     And the session payload field "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
-      | macos | Mac OS |
+      | macos | macOS |
     And the session payload field "device.model" matches the regex "[iPad|Macmini|iPhone]1?\d,\d"
 
     And the session payload field "sessions.0.id" is a UUID
@@ -38,7 +38,7 @@ Feature: Session Tracking
       | macos | macOS |
     And the session payload field "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
-      | macos | Mac OS | "iOS"
+      | macos | macOS | "iOS"
 
     And the session payload field "sessions.0.id" is a UUID
     And the session payload field "sessions.0.startedAt" is a parsable timestamp in seconds

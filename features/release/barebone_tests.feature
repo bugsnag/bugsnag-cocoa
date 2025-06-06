@@ -45,7 +45,7 @@ Feature: Barebone tests
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osName" equals the platform-dependent string:
       | ios     | iOS     |
-      | macos   | Mac OS  |
+      | macos   | macOS  |
       | watchos | watchOS |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
@@ -176,7 +176,7 @@ Feature: Barebone tests
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osName" equals the platform-dependent string:
       | ios     | iOS     |
-      | macos   | Mac OS  |
+      | macos   | macOS  |
       | watchos | watchOS |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
@@ -290,7 +290,7 @@ Feature: Barebone tests
     And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.osName" equals the platform-dependent string:
       | ios   | iOS    |
-      | macos | Mac OS |
+      | macos | macOS |
     And the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null

@@ -109,7 +109,12 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
     sysInfo[KSCrashField_ClangVersion] = COPY_STRING(clangVersion);
     sysInfo[KSCrashField_DeviceAppHash] = COPY_STRING(deviceAppHash);
     sysInfo[@BSG_SystemField_Translated] = @(fakeEvent.System.procTranslated);
-    
+
+    // "ProductName" changed from "Mac OS X" to "macOS" in 11.0
+    if ([sysInfo[KSCrashField_SystemName] isEqual:@"Mac OS X"]) {
+        sysInfo[KSCrashField_SystemName] = @"macOS";
+    }
+
 #if !TARGET_OS_SIMULATOR
     //
     // Report the name and version of the underlying OS the app is running on.

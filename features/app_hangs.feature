@@ -42,7 +42,7 @@ Feature: App hangs
 
     And the error payload field "events.0.device.osName" equals the platform-dependent string:
       | ios   | iOS    |
-      | macos | Mac OS |
+      | macos | macOS |
     And the error payload field "events.0.device.jailbroken" is false
     And the error payload field "events.0.device.osVersion" matches the regex "\d+\.\d+"
     And the error payload field "events.0.device.manufacturer" equals "Apple"
