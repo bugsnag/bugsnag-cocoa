@@ -8,6 +8,10 @@
 
 #import "BugsnagEndpointConfiguration.h"
 
+static NSString *const BSGHubNotifyURL   = @"https://notify.insighthub.smartbear.com";
+static NSString *const BSGHubSessionURL  = @"https://sessions.insighthub.smartbear.com";
+static NSString *const BSGHubPrefix      = @"00000";
+
 @implementation BugsnagEndpointConfiguration
 
 - (instancetype)init {
@@ -24,5 +28,14 @@
         _sessions = sessions;
     }
     return self;
+}
+
++ (instancetype)defaultForApiKey:(NSString *)apiKey {
+    BugsnagEndpointConfiguration *cfg = [BugsnagEndpointConfiguration new];
+    if ([apiKey hasPrefix:BSGHubPrefix]) {
+        cfg.notify   = BSGHubNotifyURL;
+        cfg.sessions = BSGHubSessionURL;
+    }
+    return cfg;
 }
 @end

@@ -168,7 +168,7 @@ BSG_OBJC_DIRECT_MEMBERS
     }
     _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _metadata = [[BugsnagMetadata alloc] init];
-    _endpoints = [BugsnagEndpointConfiguration new];
+    _endpoints = [BugsnagEndpointConfiguration defaultForApiKey:apiKey];
     _autoDetectErrors = YES;
 #if BSG_HAVE_APP_HANG_DETECTION
     _appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
@@ -353,6 +353,29 @@ BSG_OBJC_DIRECT_MEMBERS
 // =============================================================================
 // MARK: -
 // =============================================================================
+
+- (void)setApiKey:(NSString *)apiKey {
+    _apiKey = [apiKey copy];
+
+    // Only change endpoints if the caller hasn't customised them
+    BOOL areDefaultValues =
+        ([_endpoints.notify   isEqualToString:@"https://notify.bugsnag.com"]   ||
+         [_endpoints.notify   isEqualToString:@"https://notify.insighthub.smartbear.com"]) &&
+        ([_endpoints.sessions isEqualToString:@"https://sessions.bugsnag.com"] ||
+         [_endpoints.sessions isEqualToString:@"https://sessions.insighthub.smartbear.com"]);
+
+    if (!areDefaultValues) {
+        return;                     // developer has overridden one or both URLs
+    }
+
+    if ([apiKey hasPrefix:@"00000"]) {
+        _endpoints.notify   = @"https://notify.insighthub.smartbear.com";
+        _endpoints.sessions = @"https://sessions.insighthub.smartbear.com";
+    } else {
+        _endpoints.notify   = @"https://notify.bugsnag.com";
+        _endpoints.sessions = @"https://sessions.bugsnag.com";
+    }
+}
 
 - (void)setEndpoints:(BugsnagEndpointConfiguration *)endpoints {
     if ([self isValidURLString:endpoints.notify]) {

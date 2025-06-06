@@ -30,6 +30,8 @@ BUGSNAG_EXTERN
  */
 @property (copy, nonatomic) NSString *sessions;
 
++ (instancetype)defaultForApiKey:(NSString *)apiKey; 
+
 - (instancetype)initWithNotify:(NSString *)notify
                       sessions:(NSString *)sessions;
 
