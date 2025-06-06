@@ -43,13 +43,13 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, KSReportWriteCallback o
         onCrash(writer, requiresAsyncSafety);
     };
 
-    KSCrashMonitorType crashTypes = 0;
+    KSCrashMonitorType crashTypes = KSCrashMonitorTypeSystem;
     if (config.autoDetectErrors) {
         if (ksdebug_isBeingTraced()) {
             // TODO: To be fixed in PLAT-13869
-            crashTypes = (KSCrashMonitorTypeDebuggerSafe & ~KSCrashMonitorTypeMemoryTermination);
+            crashTypes = (crashTypes | (KSCrashMonitorTypeDebuggerSafe & (~KSCrashMonitorTypeMemoryTermination)));
         } else {
-            crashTypes = KSCrashTypeFromBugsnagErrorTypes(config.enabledErrorTypes);
+            crashTypes = (crashTypes | KSCrashTypeFromBugsnagErrorTypes(config.enabledErrorTypes));
         }
         if (config.attemptDeliveryOnCrash) {
             bsg_log_debug(@"Enabling on-crash delivery");
