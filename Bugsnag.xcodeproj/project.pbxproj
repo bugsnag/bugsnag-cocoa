@@ -527,15 +527,15 @@
 		1CCE63242DE48F51005B1EE3 /* BSGLoggerHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE63212DE48F4C005B1EE3 /* BSGLoggerHelper.c */; };
 		1CCE63252DE48F51005B1EE3 /* BSGLoggerHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE63212DE48F4C005B1EE3 /* BSGLoggerHelper.c */; };
 		1CCE63262DE48F51005B1EE3 /* BSGLoggerHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE63212DE48F4C005B1EE3 /* BSGLoggerHelper.c */; };
+		1CCE63282DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
+		1CCE63292DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
+		1CCE632A2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
+		1CCE632B2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
 		1CCE632D2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
 		1CCE632E2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
 		1CCE632F2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
 		1CCE63302DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
 		1CCE63312DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */; };
-		1CCE63282DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
-		1CCE63292DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
-		1CCE632A2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
-		1CCE632B2DEE09C3005B1EE3 /* KSJailbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */; };
 		1CF516242DB9295700229F8B /* BSGSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF516232DB9295700229F8B /* BSGSystemInfo.m */; };
 		1CF516252DB9295700229F8B /* BSGSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CF516222DB9295700229F8B /* BSGSystemInfo.h */; };
 		1CF516262DB9295700229F8B /* BSGSystemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF516232DB9295700229F8B /* BSGSystemInfo.m */; };
@@ -1562,10 +1562,6 @@
 		96C395152DB741D500B6E2EF /* KSCrashReportFilterAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C395122DB741D500B6E2EF /* KSCrashReportFilterAlert.m */; };
 		96C395162DB741D500B6E2EF /* KSCrashReportFilterAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C395122DB741D500B6E2EF /* KSCrashReportFilterAlert.m */; };
 		96C395172DB741D500B6E2EF /* KSCrashReportFilterAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C395122DB741D500B6E2EF /* KSCrashReportFilterAlert.m */; };
-		96D53F9A2D9404B70020653A /* BSG_KSMachApple.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D53F992D9404B70020653A /* BSG_KSMachApple.h */; };
-		96D53F9B2D9404B70020653A /* BSG_KSMachApple.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D53F992D9404B70020653A /* BSG_KSMachApple.h */; };
-		96D53F9C2D9404B70020653A /* BSG_KSMachApple.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D53F992D9404B70020653A /* BSG_KSMachApple.h */; };
-		96D53F9D2D9404B70020653A /* BSG_KSMachApple.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D53F992D9404B70020653A /* BSG_KSMachApple.h */; };
 		96E45BF32D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
 		96E45BF42D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
 		96E45BF52D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
@@ -2133,8 +2129,8 @@
 		1CA1FA8F2DC11E6F00E19B1B /* KSStringConversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSStringConversion.h; sourceTree = "<group>"; };
 		1CCE630B2DE47A7B005B1EE3 /* BSGLoggerHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGLoggerHelper.h; sourceTree = "<group>"; };
 		1CCE63212DE48F4C005B1EE3 /* BSGLoggerHelper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSGLoggerHelper.c; sourceTree = "<group>"; };
-		1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashMonitorContextHelper.m; sourceTree = "<group>"; };
 		1CCE63272DEE09C3005B1EE3 /* KSJailbreak.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSJailbreak.h; sourceTree = "<group>"; };
+		1CCE632C2DEF5A06005B1EE3 /* KSCrashMonitorContextHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashMonitorContextHelper.m; sourceTree = "<group>"; };
 		1CF516222DB9295700229F8B /* BSGSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGSystemInfo.h; sourceTree = "<group>"; };
 		1CF516232DB9295700229F8B /* BSGSystemInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGSystemInfo.m; sourceTree = "<group>"; };
 		3A700A8024A63A8E0068CD1B /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagThread.h; sourceTree = "<group>"; };
@@ -2166,7 +2162,6 @@
 		968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGStoredFeatureFlag.m; sourceTree = "<group>"; };
 		968BFBD52D0125C800DCC24B /* BSGStoredFeatureFlag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGStoredFeatureFlag.h; sourceTree = "<group>"; };
 		96ABB8D82D79167100BE215B /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		96ABBE9E2D7A796600BE215B /* BSG_Jailbreak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_Jailbreak.h; sourceTree = "<group>"; };
 		96C38FDB2DB7274100B6E2EF /* KSCrashMonitor_BootTime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSCrashMonitor_BootTime.h; sourceTree = "<group>"; };
 		96C38FDF2DB7274100B6E2EF /* KSCrashMonitor_BootTime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashMonitor_BootTime.m; sourceTree = "<group>"; };
 		96C38FE12DB7274100B6E2EF /* KSCompilerDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSCompilerDefines.h; sourceTree = "<group>"; };
@@ -2373,7 +2368,6 @@
 		96C394E72DB72B2100B6E2EF /* KSCrashReportSinkStandard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashReportSinkStandard.m; sourceTree = "<group>"; };
 		96C3950D2DB741C900B6E2EF /* KSCrashReportFilterAlert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSCrashReportFilterAlert.h; sourceTree = "<group>"; };
 		96C395122DB741D500B6E2EF /* KSCrashReportFilterAlert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashReportFilterAlert.m; sourceTree = "<group>"; };
-		96D53F992D9404B70020653A /* BSG_KSMachApple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSG_KSMachApple.h; sourceTree = "<group>"; };
 		96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGAtomicFeatureFlagStore.h; sourceTree = "<group>"; };
 		96E45BF72D103AA200BEF978 /* BSGAtomicFeatureFlagStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAtomicFeatureFlagStore.m; sourceTree = "<group>"; };
 		96E45BFD2D103B1F00BEF978 /* BSGFeatureFlagStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGFeatureFlagStore.h; sourceTree = "<group>"; };
@@ -2582,7 +2576,6 @@
 				00AD1CF524869EE500A27979 /* Helpers */,
 				3A700A7E24A63A8E0068CD1B /* include */,
 				96ABB8DB2D79167100BE215B /* KSCrash */,
-				96ABBE9D2D7A78D300BE215B /* KSCrashLegacy */,
 				00AD1CF624869EEA00A27979 /* Metadata */,
 				00AD1CF724869EF100A27979 /* Payload */,
 				00AD1CF924869F0100A27979 /* Storage */,
@@ -2943,15 +2936,6 @@
 				96ABB8952D79167100BE215B /* Sources */,
 			);
 			path = KSCrash;
-			sourceTree = "<group>";
-		};
-		96ABBE9D2D7A78D300BE215B /* KSCrashLegacy */ = {
-			isa = PBXGroup;
-			children = (
-				96D53F992D9404B70020653A /* BSG_KSMachApple.h */,
-				96ABBE9E2D7A796600BE215B /* BSG_Jailbreak.h */,
-			);
-			path = KSCrashLegacy;
 			sourceTree = "<group>";
 		};
 		96C38FDC2DB7274100B6E2EF /* include */ = {
@@ -3642,7 +3626,6 @@
 				01B79DA9267CC4A000C8CC5E /* BSGUtils.h in Headers */,
 				008967B82486D9D800DC48C2 /* BugsnagBreadcrumbs.h in Headers */,
 				01C41A28288FD3EA00BAE31A /* BugsnagDefines.h in Headers */,
-				96D53F9A2D9404B70020653A /* BSG_KSMachApple.h in Headers */,
 				0154E20228070AEA009044E4 /* BSGRunContext.h in Headers */,
 				96E45BFE2D103B2600BEF978 /* BSGFeatureFlagStore.h in Headers */,
 				00AD1F102486A17900A27979 /* BugsnagSessionTracker.h in Headers */,
@@ -3871,7 +3854,6 @@
 				01099394273D123800128BBE /* BugsnagFeatureFlag.h in Headers */,
 				01CCAEEB25D414D60057268D /* BugsnagLastRunInfo.h in Headers */,
 				008968D02486DA9600DC48C2 /* BugsnagNotifier.h in Headers */,
-				96D53F9B2D9404B70020653A /* BSG_KSMachApple.h in Headers */,
 				008969CA2486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */,
 				0109939D273D13D800128BBE /* BSGMemoryFeatureFlagStore.h in Headers */,
 			);
@@ -4070,7 +4052,6 @@
 				01099395273D123800128BBE /* BugsnagFeatureFlag.h in Headers */,
 				01CCAEEC25D414D60057268D /* BugsnagLastRunInfo.h in Headers */,
 				008968D12486DA9600DC48C2 /* BugsnagNotifier.h in Headers */,
-				96D53F9C2D9404B70020653A /* BSG_KSMachApple.h in Headers */,
 				008969CB2486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */,
 				0109939E273D13D800128BBE /* BSGMemoryFeatureFlagStore.h in Headers */,
 			);
@@ -4113,7 +4094,6 @@
 				CBBDE93E280068D40070DCD3 /* BSGJSONSerialization.h in Headers */,
 				CBBDE972280069540070DCD3 /* BugsnagStacktrace.h in Headers */,
 				CBBDE956280068FD0070DCD3 /* BugsnagMetadata.h in Headers */,
-				96D53F9D2D9404B70020653A /* BSG_KSMachApple.h in Headers */,
 				CBBDE96C2800693F0070DCD3 /* BugsnagHandledState.h in Headers */,
 				CBBDE911280068560070DCD3 /* BSGCrashSentry.h in Headers */,
 				017DCF8F2874212F000ECB22 /* BSGTelemetry.h in Headers */,

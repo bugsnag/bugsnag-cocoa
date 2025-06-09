@@ -24,7 +24,7 @@ Feature: Barebone tests
       | watchos | com.bugsnag.fixtures.watchOSTestApp.watchkitapp.watchkitextension |
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true
-#    And the event "app.releaseStage" equals "production"
+    And the event "app.releaseStage" equals "production"
     And the event "app.type" equals the platform-dependent string:
       | ios     | iOS     |
       | macos   | macOS   |
@@ -159,7 +159,7 @@ Feature: Barebone tests
     And the event "app.bundleVersion" equals "12301"
     And the event "app.inForeground" is true
     And the event "app.isLaunching" is true
-#    And the event "app.releaseStage" equals "production"
+    And the event "app.releaseStage" equals "production"
     And the event "app.type" equals the platform-dependent string:
       | ios     | iOS     |
       | macos   | macOS   |

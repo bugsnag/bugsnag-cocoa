@@ -21,6 +21,8 @@
 #import "KSJailbreak.h"
 #import "KSSystemCapabilities.h"
 
+#import <sys/mount.h>
+
 // TODO: Check if KSCrash reported version is correct after CI tests run
 // I think they have it covered (check after tests)
 /**
@@ -143,13 +145,21 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
         KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
     
-    // Grey area APIs, may not be filled on KSCrash side
-    kscm_discspace_getAPI()->addContextualInfoToEvent(&fakeEvent);
-    sysInfo[@BSG_SystemField_Disk] = @{
-        KSCrashField_Free: @(fakeEvent.System.freeStorageSize),
-        KSCrashField_Size: @(fakeEvent.System.storageSize)
-    };
-    
+
+#if TARGET_OS_OSX
+    NSString *dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    const char *path = dir.fileSystemRepresentation;
+    if (path) {
+        uint64_t freeDisk, size;
+        if (bsg_statfs(path, &freeDisk, &size)) {
+            sysInfo[@BSG_SystemField_Disk] = @{
+                KSCrashField_Free: @(freeDisk),
+                KSCrashField_Size: @(size)
+            };
+        }
+    }
+#endif
+
     kscm_appstate_getAPI()->addContextualInfoToEvent(&fakeEvent);
     NSMutableDictionary *statsInfo = [NSMutableDictionary dictionary];
     statsInfo[KSCrashField_ActiveTimeSinceLaunch] = @(fakeEvent.AppState.activeDurationSinceLaunch);
@@ -202,3 +212,15 @@ NSString * BSGGetDefaultDeviceId(void) {
 NSDictionary * BSGGetSystemInfo(void) {
     return [BSGSystemInfo systemInfo];
 }
+
+#if TARGET_OS_OSX
+bool bsg_statfs(const char *path, uint64_t *free, uint64_t *total) {
+    struct statfs st;
+    if (statfs(path, &st) != 0) {
+        return false;
+    }
+    *free = st.f_bsize * st.f_bavail;
+    *total = st.f_bsize * st.f_blocks;
+    return true;
+}
+#endif

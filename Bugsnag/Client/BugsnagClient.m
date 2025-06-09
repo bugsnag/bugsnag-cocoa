@@ -44,7 +44,6 @@
 #import "BSGTelemetry.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
-#import "KSCrashC.h"
 #import "BSGSystemInfo.h"
 #import "Bugsnag.h"
 #import "BugsnagApp+Private.h"
@@ -75,6 +74,7 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "KSCrashC.h"
 #import "KSCrashMonitor_AppState.h"
 
 static struct {
@@ -116,6 +116,17 @@ static void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer, bool 
             if (bsg_runContext->memoryFootprint) {
                 writer->addUIntegerElement(writer, "memoryUsage", bsg_runContext->memoryFootprint);
             }
+#if TARGET_OS_OSX
+            uint64_t freeDisk, size;
+            if (bsg_statfs(crashSentinelPath, &freeDisk, &size)) {
+                writer->beginObject(writer, "disk");
+                {
+                    writer->addUIntegerElement(writer, "free", freeDisk);
+                    writer->addUIntegerElement(writer, "size", size);
+                }
+                writer->endContainer(writer);
+            }
+#endif
         }
         writer->endContainer(writer);
 
