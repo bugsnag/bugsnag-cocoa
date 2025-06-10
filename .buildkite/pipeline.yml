@@ -7,7 +7,6 @@ steps:
   # Build
   #
   - label: Build test fixtures
-    key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
       queue: macos-15
@@ -18,7 +17,6 @@ steps:
       - make test-fixtures
 
   - label: Build test fixtures
-    key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
       queue: macos-15
@@ -29,7 +27,6 @@ steps:
       - make test-fixtures
 
   - label: Build test fixtures
-    key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
       queue: macos-15
@@ -40,7 +37,6 @@ steps:
       - make test-fixtures
 
   - label: Build test fixtures
-    key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
       queue: macos-15
@@ -51,7 +47,6 @@ steps:
       - make test-fixtures
 
   - label: Build test fixtures
-    key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
       queue: macos-15
