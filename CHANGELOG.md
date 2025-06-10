@@ -3,6 +3,8 @@ Changelog
 
 ## TBD
 
+* Set default endpoints based on API key [#1801](https://github.com/bugsnag/bugsnag-cocoa/pull/1801)
+
 * Added missing MARKETING_VERSION build setting to multiple targets. This is required for generating CFBundleShortVersionString in some situations.
   [#1766](https://github.com/bugsnag/bugsnag-cocoa/pull/1766)
 
