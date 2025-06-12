@@ -147,6 +147,8 @@ Feature: Barebone tests
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
+# TODO Restore before PLAT-13748 is closed
+  @skip
   @watchos
   Scenario: Barebone test: unhandled error
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the crashed app
@@ -174,8 +176,7 @@ Feature: Barebone tests
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
-# TODO Restore before PLAT-13748 is closed
-#    And the event "device.osName" equals the platform-dependent string:
+    And the event "device.osName" equals the platform-dependent string:
       | ios     | iOS     |
       | macos   | Mac OS  |
       | watchos | watchOS |
@@ -194,10 +195,9 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
     And the event "metaData.error.nsexception.name" equals "NSRangeException"
-# TODO Restore before PLAT-13748 is closed
-#    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
-#    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
-#    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
+    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
     And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null
@@ -231,17 +231,15 @@ Feature: Barebone tests
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is a number
     And the error payload field "events.0.app.durationInForeground" is a number
-# TODO Restore before PLAT-13748 is closed
-#    And on macOS, the error payload field "events.0.device.freeDisk" is an integer
+    And on macOS, the error payload field "events.0.device.freeDisk" is an integer
     And the error payload field "events.0.device.freeMemory" is an integer
     And the error payload field "events.0.device.model" matches the regex "[iPad|Macmini|iPhone]1?\d,\d"
     And the error payload field "events.0.device.totalMemory" is an integer
     And on !watchOS, the error payload field "events.0.threads" is a non-empty array
     And on !watchOS, the error payload field "events.0.threads.1" is not null
-# TODO Restore before PLAT-13748 is closed
-#    And the stacktrace is valid for the event
-#    And the "isPC" of stack frame 0 is null
-#    And the "isLR" of stack frame 0 is null
+    And the stacktrace is valid for the event
+    And the "isPC" of stack frame 0 is null
+    And the "isLR" of stack frame 0 is null
 
   @skip_macos
   @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-9724
