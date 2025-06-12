@@ -113,8 +113,8 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
     sysInfo[@BSG_SystemField_Translated] = @(fakeEvent.System.procTranslated);
 
     // "ProductName" changed from "Mac OS X" to "macOS" in 11.0
-    if ([sysInfo[KSCrashField_SystemName] isEqual:@"Mac OS X"]) {
-        sysInfo[KSCrashField_SystemName] = @"macOS";
+    if ([sysInfo[KSCrashField_SystemName] isEqual:@"macOS"] || [sysInfo[KSCrashField_SystemName] isEqual:@"Mac OS X"]) {
+        sysInfo[KSCrashField_SystemName] = @"Mac OS";
     }
 
 #if !TARGET_OS_SIMULATOR

@@ -13,7 +13,7 @@ Feature: App and Device attributes present
 
     And the error payload field "events.0.device.osName" equals the platform-dependent string:
       | ios   | iOS    |
-      | macos | macOS |
+      | macos | Mac OS |
     And the error payload field "events.0.device.jailbroken" is false
     And the error payload field "events.0.device.osVersion" matches the regex "\d+\.\d+"
     And the error payload field "events.0.device.manufacturer" equals "Apple"
