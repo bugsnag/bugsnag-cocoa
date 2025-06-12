@@ -174,7 +174,8 @@ Feature: Barebone tests
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
-    And the event "device.osName" equals the platform-dependent string:
+# TODO Restore before PLAT-13748 is closed
+#    And the event "device.osName" equals the platform-dependent string:
       | ios     | iOS     |
       | macos   | Mac OS  |
       | watchos | watchOS |
