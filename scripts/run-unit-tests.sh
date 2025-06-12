@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+ruby --version
+
 bundle install
 
 declare "${@}"
