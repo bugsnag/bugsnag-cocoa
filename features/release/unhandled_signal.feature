@@ -1,10 +1,10 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: Signals are captured as error reports in Bugsnag
 
   Background:
     Given I clear all persistent data
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Triggering SIGABRT
     When I run "AbortScenario" and relaunch the crashed app
     And I configure Bugsnag for "AbortScenario"
@@ -32,6 +32,8 @@ Feature: Signals are captured as error reports in Bugsnag
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGABRT"
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Triggering SIGABRT with unhandled override
     When I run "AbortOverrideScenario" and relaunch the crashed app
     And I configure Bugsnag for "AbortOverrideScenario"
@@ -58,6 +60,8 @@ Feature: Signals are captured as error reports in Bugsnag
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGPIPE"
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: No error should be reported if SIGPIPE is ignored
     Given I run "SIGPIPEIgnoredScenario"
     And I wait to receive a session

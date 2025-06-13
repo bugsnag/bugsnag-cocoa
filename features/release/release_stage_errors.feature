@@ -3,15 +3,11 @@ Feature: Discarding reports based on release stage
   Background:
     Given I clear all persistent data
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Unhandled error ignored when release stage is not present in enabledReleaseStages
     When I run "UnhandledErrorInvalidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorInvalidReleaseStageScenario"
     Then I should receive no errors
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Unhandled error captured when release stage is present in enabledReleaseStages
     When I run "UnhandledErrorValidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorValidReleaseStageScenario"
@@ -21,8 +17,6 @@ Feature: Discarding reports based on release stage
     And the event "unhandled" is true
     And the event "app.releaseStage" equals "prod"
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Crash when release stage is changed to not present in enabledReleaseStages before the event
   If the current run has a different release stage than the crashing context,
   the report should only be sent if the release stage was in enabledReleaseStages
@@ -34,8 +28,6 @@ Feature: Discarding reports based on release stage
     And I configure Bugsnag for "UnhandledErrorChangeInvalidReleaseStageScenario"
     Then I should receive no errors
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Crash when release stage is changed to be present in enabledReleaseStages before the event
     When I run "UnhandledErrorChangeValidReleaseStageScenario" and relaunch the crashed app
     And I configure Bugsnag for "UnhandledErrorChangeValidReleaseStageScenario"

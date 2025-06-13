@@ -59,7 +59,7 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
     app[BSGKeyVersion] = blankIfNil(systemInfo[KSCrashField_BundleShortVersion]);
     app[BSGKeyBundleVersion] = blankIfNil(systemInfo[KSCrashField_BundleVersion]);
     app[BSGKeyMachoUUID] = systemInfo[KSCrashField_AppUUID];
-    app[@"binaryArch"] = systemInfo[@BSG_SystemField_BinaryArch];
+    app[@"binaryArch"] = systemInfo[KSCrashField_BinaryArch];
 #if TARGET_OS_TV
     app[BSGKeyType] = @"tvOS";
 #elif TARGET_OS_IOS
@@ -82,7 +82,7 @@ static NSMutableDictionary * initCurrentState(BugsnagConfiguration *config) {
     device[@"wordSize"] = @(PLATFORM_WORD_SIZE);
     device[@"locale"] = [[NSLocale currentLocale] localeIdentifier];
     device[@"runtimeVersions"] = @{
-        @"clangVersion": systemInfo[@BSG_SystemField_ClangVersion] ?: @"",
+        @"clangVersion": systemInfo[KSCrashField_ClangVersion] ?: @"",
         @"osBuild": systemInfo[KSCrashField_OSVersion] ?: @""
     };
 #if TARGET_OS_SIMULATOR

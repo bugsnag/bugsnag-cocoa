@@ -1,5 +1,3 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: Runtime versions are included in all requests
 
   Background:

@@ -11,6 +11,7 @@
 #import "BSGInternalErrorReporter.h"
 #import "BSGJSONSerialization.h"
 #import "KSCrashReportFields.h"
+#import "KSDate.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagAppWithState.h"
 #import "BugsnagCollections.h"
@@ -142,11 +143,14 @@ BSG_OBJC_DIRECT_MEMBERS
             [report[KSCrashField_Report] mutableCopy];
     mutableReport[KSCrashField_Report] = mutableInfo;
 
-    // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
-    NSNumber *timestampMillis = mutableInfo[KSCrashField_Timestamp];
-    if ([timestampMillis isKindOfClass:[NSNumber class]]) {
-        NSTimeInterval timeInterval = (double)timestampMillis.unsignedLongLongValue / 1000.0;
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    // Timestamp gets stored as a microseconds timestamp. Convert it to rfc3339.
+    NSNumber *timestampMicros = mutableInfo[KSCrashField_Timestamp];
+    if ([timestampMicros isKindOfClass:[NSNumber class]]) {
+        char dateBuffer[29];
+        ksdate_utcStringFromMicroseconds(timestampMicros.longLongValue, dateBuffer);
+        NSString *dateStr = [NSString stringWithUTF8String:dateBuffer];
+        // we are changing format a little
+        NSDate *date = [BSG_RFC3339DateTool dateFromString:dateStr];
         mutableInfo[KSCrashField_Timestamp] = [BSG_RFC3339DateTool stringFromDate:date];
     } else {
         [self convertTimestamp:KSCrashField_Timestamp inReport:mutableInfo];

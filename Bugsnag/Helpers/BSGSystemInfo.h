@@ -11,9 +11,7 @@
 
 #import "BSGDefines.h"
 
-#define BSG_SystemField_BinaryArch "binary_arch"
 #define BSG_SystemField_Translated "proc_translated"
-#define BSG_SystemField_ClangVersion "clang_version"
 #define BSG_SystemField_iOSSupportVersion "iOSSupportVersion"
 #define BSG_SystemField_Disk "disk"
 
@@ -33,13 +31,8 @@
  */
 + (BOOL)isRunningInAppExtension;
 
-/** Generate a 20 byte SHA1 hash that remains unique across a single device and
- * application. This is slightly different from the Apple crash report key,
- * which is unique to the device, regardless of the application.
- *
- * @return The stringified hex representation of the hash for this device + app.
- */
-// Disabled so that it never gets used unintentionally.
-//+ (NSString *)deviceAndAppHash;
-
 @end
+
+#if TARGET_OS_OSX
+bool bsg_statfs(const char *path, uint64_t *free, uint64_t *total);
+#endif

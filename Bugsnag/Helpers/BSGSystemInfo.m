@@ -21,6 +21,8 @@
 #import "KSJailbreak.h"
 #import "KSSystemCapabilities.h"
 
+#import <sys/mount.h>
+
 // TODO: Check if KSCrash reported version is correct after CI tests run
 // I think they have it covered (check after tests)
 /**
@@ -105,10 +107,16 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
     sysInfo[KSCrashField_BundleShortVersion] = COPY_STRING(bundleShortVersion);
     sysInfo[KSCrashField_AppUUID] = COPY_STRING(appID);
     sysInfo[KSCrashField_CPUArch] = COPY_STRING(cpuArchitecture);
-    sysInfo[@BSG_SystemField_BinaryArch] = COPY_STRING(binaryArchitecture);
+    sysInfo[KSCrashField_BinaryArch] = COPY_STRING(binaryArchitecture);
+    sysInfo[KSCrashField_ClangVersion] = COPY_STRING(clangVersion);
     sysInfo[KSCrashField_DeviceAppHash] = COPY_STRING(deviceAppHash);
     sysInfo[@BSG_SystemField_Translated] = @(fakeEvent.System.procTranslated);
-    
+
+    // "ProductName" changed from "Mac OS X" to "macOS" in 11.0
+    if ([sysInfo[KSCrashField_SystemName] isEqual:@"macOS"] || [sysInfo[KSCrashField_SystemName] isEqual:@"Mac OS X"]) {
+        sysInfo[KSCrashField_SystemName] = @"Mac OS";
+    }
+
 #if !TARGET_OS_SIMULATOR
     //
     // Report the name and version of the underlying OS the app is running on.
@@ -119,10 +127,6 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
 #if TARGET_OS_IOS
     sysInfo[@BSG_SystemField_iOSSupportVersion] = sysVersion[@"iOSSupportVersion"];
 #endif
-#endif
-
-#ifdef __clang_version__
-    sysInfo[@BSG_SystemField_ClangVersion] = @__clang_version__;
 #endif
 
     return sysInfo;
@@ -141,13 +145,21 @@ fakeEvent.System.A ? [NSString stringWithUTF8String:fakeEvent.System.A] : nil
         KSCrashField_Size: @(NSProcessInfo.processInfo.physicalMemory)
     };
     
-    // Grey area APIs, may not be filled on KSCrash side
-    kscm_discspace_getAPI()->addContextualInfoToEvent(&fakeEvent);
-    sysInfo[@BSG_SystemField_Disk] = @{
-        KSCrashField_Free: @(fakeEvent.System.freeStorageSize),
-        KSCrashField_Size: @(fakeEvent.System.storageSize)
-    };
-    
+
+#if TARGET_OS_OSX
+    NSString *dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    const char *path = dir.fileSystemRepresentation;
+    if (path) {
+        uint64_t freeDisk, size;
+        if (bsg_statfs(path, &freeDisk, &size)) {
+            sysInfo[@BSG_SystemField_Disk] = @{
+                KSCrashField_Free: @(freeDisk),
+                KSCrashField_Size: @(size)
+            };
+        }
+    }
+#endif
+
     kscm_appstate_getAPI()->addContextualInfoToEvent(&fakeEvent);
     NSMutableDictionary *statsInfo = [NSMutableDictionary dictionary];
     statsInfo[KSCrashField_ActiveTimeSinceLaunch] = @(fakeEvent.AppState.activeDurationSinceLaunch);
@@ -200,3 +212,15 @@ NSString * BSGGetDefaultDeviceId(void) {
 NSDictionary * BSGGetSystemInfo(void) {
     return [BSGSystemInfo systemInfo];
 }
+
+#if TARGET_OS_OSX
+bool bsg_statfs(const char *path, uint64_t *free, uint64_t *total) {
+    struct statfs st;
+    if (statfs(path, &st) != 0) {
+        return false;
+    }
+    *free = st.f_bsize * st.f_bavail;
+    *total = st.f_bsize * st.f_blocks;
+    return true;
+}
+#endif

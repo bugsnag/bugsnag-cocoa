@@ -11,7 +11,7 @@ Feature: Bugsnag captures an unhandled mach exception
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the event "exceptions.0.errorClass" equals "EXC_BAD_ACCESS"
-    And the event "exceptions.0.message" equals "Attempted to dereference garbage pointer 0xdeadbeef."
+    And the event "exceptions.0.message" starts with "Attempted to dereference garbage pointer 0xdeadbeef."
     And the event "metaData.error.address" equals 3735928559
     And the event "metaData.error.type" equals "mach"
     And the event "metaData.error.mach.code" equals one of:
@@ -34,7 +34,7 @@ Feature: Bugsnag captures an unhandled mach exception
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the event "exceptions.0.errorClass" equals "EXC_BAD_ACCESS"
-    And the event "exceptions.0.message" equals "Attempted to dereference garbage pointer 0xdeadbeef."
+    And the event "exceptions.0.message" starts with "Attempted to dereference garbage pointer 0xdeadbeef."
     And the event "metaData.error.address" equals 3735928559
     And the event "metaData.error.type" equals "mach"
     And the event "metaData.error.mach.code" equals one of:

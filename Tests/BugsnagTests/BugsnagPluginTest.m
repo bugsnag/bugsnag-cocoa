@@ -59,18 +59,17 @@
     [self waitForExpectations:@[expectation] timeout:3.0];
 }
 
-// TODO Restore before PLAT-13748 is closed
-//- (void)testCrashyPluginDoesNotCrashApp {
-//    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Crashy plugin not loaded by Bugsnag"];
-//    expectation.inverted = YES;
-//    CrashyPlugin *plugin = [CrashyPlugin new];
-//    plugin.expectation = expectation;
-//
-//    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
-//    [config addPlugin:plugin];
-//    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
-//    [client start];
-//    [self waitForExpectations:@[expectation] timeout:3.0];
-//}
+- (void)testCrashyPluginDoesNotCrashApp {
+    __block XCTestExpectation *expectation = [self expectationWithDescription:@"Crashy plugin not loaded by Bugsnag"];
+    expectation.inverted = YES;
+    CrashyPlugin *plugin = [CrashyPlugin new];
+    plugin.expectation = expectation;
+
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    [config addPlugin:plugin];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    [client start];
+    [self waitForExpectations:@[expectation] timeout:3.0];
+}
 
 @end

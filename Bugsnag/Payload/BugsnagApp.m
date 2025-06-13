@@ -23,9 +23,7 @@
 NSDictionary *BSGParseAppMetadata(NSDictionary *event) {
     NSMutableDictionary *app = [NSMutableDictionary new];
 
-    NSMutableString *execPathKey = [NSMutableString string];
-    [execPathKey appendString:@"system."];
-    [execPathKey appendString:KSCrashField_Executable];
+    NSString *execPathKey = [NSString stringWithFormat:@"system.%@", KSCrashField_Executable];
     app[@"name"] = [event valueForKeyPath:execPathKey];
 
     app[@"runningOnRosetta"] = [event valueForKeyPath:@"system." @BSG_SystemField_Translated];
@@ -80,7 +78,7 @@ NSDictionary *BSGAppMetadataFromRunContext(const struct BSGRunContext *context) 
 {
     NSDictionary *system = event[BSGKeySystem];
     app.id = system[KSCrashField_BundleID];
-    app.binaryArch = system[@BSG_SystemField_BinaryArch];
+    app.binaryArch = system[KSCrashField_BinaryArch];
     app.bundleVersion = system[KSCrashField_BundleVersion];
     app.dsymUuid = system[KSCrashField_AppUUID];
     app.version = system[KSCrashField_BundleShortVersion];

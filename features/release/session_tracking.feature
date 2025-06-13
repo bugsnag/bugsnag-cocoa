@@ -3,8 +3,6 @@ Feature: Session Tracking
   Background:
     Given I clear all persistent data
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Launching using the default configuration sends a single session
     When I run "AutoSessionScenario"
     And I wait to receive a session
@@ -27,8 +25,6 @@ Feature: Session Tracking
     And the session "user.email" is null
     And the session "user.name" is null
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Configuring a custom version sends it in a session request
     When I run "AutoSessionCustomVersionScenario"
     And I wait to receive a session
@@ -108,8 +104,6 @@ Feature: Session Tracking
     And the error payload field "events.0.session.events.handled" equals 2
     And the error payload field "events.0.session.id" equals the stored value "session_id"
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Encountering an unhandled event during a session
     When I run "AutoSessionUnhandledScenario" and relaunch the crashed app
     And I configure Bugsnag for "AutoSessionUnhandledScenario"
@@ -127,8 +121,6 @@ Feature: Session Tracking
     And the error payload field "events.0.session.events.unhandled" equals 1
     And the error payload field "events.0.session.id" equals the stored value "session_id"
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Encountering handled and unhandled events during a session
     When I run "AutoSessionMixedEventsScenario" and relaunch the crashed app
     And I configure Bugsnag for "AutoSessionMixedEventsScenario"
