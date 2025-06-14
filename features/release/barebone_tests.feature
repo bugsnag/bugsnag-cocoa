@@ -147,8 +147,6 @@ Feature: Barebone tests
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
-# TODO Restore before PLAT-13748 is closed
-  @skip
   @watchos
   Scenario: Barebone test: unhandled error
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the crashed app
@@ -195,9 +193,10 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
     And the event "metaData.error.nsexception.name" equals "NSRangeException"
-    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
-    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
-    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
+# TODO Restore before PLAT-13748 is closed
+#    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+#    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+#    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
     And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null

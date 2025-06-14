@@ -31,7 +31,13 @@ BSG_OBJC_DIRECT_MEMBERS
 
 static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     for (NSDictionary *image in images) {
-        if ([(NSNumber *)image[KSCrashField_ImageAddress] unsignedLongValue] == addr) {
+        NSNumber *vmAddr = (NSNumber *)image[KSCrashField_ImageVmAddress];
+        // First check symbol with vmAddress
+        if (vmAddr != 0) {
+            if ([(NSNumber *)image[KSCrashField_ImageVmAddress] unsignedLongValue] == addr) {
+                return image;
+            }
+        } else if ([(NSNumber *)image[KSCrashField_ImageAddress] unsignedLongValue] == addr) {
             return image;
         }
     }

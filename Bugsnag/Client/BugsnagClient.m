@@ -117,8 +117,10 @@ static void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer, bool 
                 writer->addUIntegerElement(writer, "memoryUsage", bsg_runContext->memoryFootprint);
             }
 #if TARGET_OS_OSX
+            BSGFileLocations *locations = [BSGFileLocations current];
+            NSString *eventsPath = locations.events;
             uint64_t freeDisk, size;
-            if (bsg_statfs(crashSentinelPath, &freeDisk, &size)) {
+            if (bsg_statfs([eventsPath UTF8String], &freeDisk, &size)) {
                 writer->beginObject(writer, "disk");
                 {
                     writer->addUIntegerElement(writer, "free", freeDisk);
