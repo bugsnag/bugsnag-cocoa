@@ -53,7 +53,7 @@ static NSString *defaultMazeRunnerURLString = @"http://localhost:9339";
 
 - (IBAction)runScenario:(id)sender {
     logDebug(@"%s %@", __PRETTY_FUNCTION__, self.scenarioName);
-    
+
     [self.fixture setApiKeyWithApiKey:self.apiKey];
     [self.fixture setNotifyEndpointWithEndpoint:self.notifyEndpoint];
     [self.fixture setSessionEndpointWithEndpoint:self.sessionEndpoint];

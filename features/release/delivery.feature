@@ -10,7 +10,7 @@ Feature: Delivery of errors
     And I wait to receive an error
     And I wait for the fixture to process the response
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "HandledExceptionScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
@@ -20,7 +20,7 @@ Feature: Delivery of errors
     And I run "HandledExceptionScenario"
     And I wait to receive an error
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "HandledExceptionScenario"
     Then I should receive no errors
 
@@ -31,7 +31,7 @@ Feature: Delivery of errors
     And I wait for the fixture to process the response
     # The error should not have been persited
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "OversizedHandledErrorScenario"
     Then I should receive no errors
 
@@ -42,13 +42,13 @@ Feature: Delivery of errors
     And I wait for the fixture to process the response
     # The error should now have been persisted
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "OldHandledErrorScenario"
     And I wait to receive an error
     And I wait for the fixture to process the response
     # The error should now have been deleted
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "OldHandledErrorScenario"
     Then I should receive no errors
 
@@ -60,7 +60,7 @@ Feature: Delivery of errors
     And I wait for the fixture to process the response
     # The crash report should now have been deleted
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "OversizedCrashReportScenario"
     Then I should receive no errors
 
@@ -72,7 +72,7 @@ Feature: Delivery of errors
     And I wait for the fixture to process the response
     # The crash report should now have been deleted
     And I kill and relaunch the app
-    And I clear the error queue
+    And I discard all errors
     And I configure Bugsnag for "OldCrashReportScenario"
     Then I should receive no errors
 
