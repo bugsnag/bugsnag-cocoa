@@ -65,10 +65,9 @@ Feature: Barebone tests
     And the event "metaData.Other.password" equals "[REDACTED]"
     And the event "metaData.Other.shouldBeTruncated" matches "\n\*\*\*345 CHARS TRUNCATED\*\*\*"
     And the event "metaData.error.nsexception.name" equals "NSRangeException"
-# TODO Restore before PLAT-13748 is closed
-#    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
-#    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
-#    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
+    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
     And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null
@@ -193,10 +192,9 @@ Feature: Barebone tests
     And the event "metaData.lastRunInfo.crashed" is true
     And the event "metaData.lastRunInfo.crashedDuringLaunch" is true
     And the event "metaData.error.nsexception.name" equals "NSRangeException"
-# TODO Restore before PLAT-13748 is closed
-#    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
-#    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
-#    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
+    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestUnhandledErrorScenario"
     And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null
