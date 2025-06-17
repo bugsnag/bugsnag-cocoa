@@ -271,6 +271,7 @@
         [stackframe symbolicateIfNeeded];
         XCTAssertNotNil(stackframe.symbolAddress);
         XCTAssertNil(stackframe.type);
+        XCTAssertNil(stackframe.method);
         XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method] ||
                       // Sometimes we do a better job at symbolication (-:
                       [callStackSymbols[idx] containsString:@"???"] ||

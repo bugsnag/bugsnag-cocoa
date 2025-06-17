@@ -43,10 +43,10 @@ Feature: Barebone tests
       | macos   | @null     |
       | watchos | @not_null |
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
-    And the event "device.osName" equals the platform-dependent string:
-      | ios     | iOS     |
-      | macos   | Mac OS  |
-      | watchos | watchOS |
+    And the event "device.osName" matches the platform-dependent regex:
+      | ios     | (iOS|iPadOS)  |
+      | macos   | Mac OS        |
+      | watchos | watchOS       |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
@@ -173,10 +173,10 @@ Feature: Barebone tests
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
-    And the event "device.osName" equals the platform-dependent string:
-      | ios     | iOS     |
-      | macos   | Mac OS  |
-      | watchos | watchOS |
+    And the event "device.osName" matches the platform-dependent regex:
+      | ios     | (iOS|iPadOS) |
+      | macos   | Mac OS       |
+      | watchos | watchOS      |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
