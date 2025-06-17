@@ -1,5 +1,3 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: Detection of crashes during crash handling
 
   KSCrash can detect when a crash has occurred while executing its crash handler.
@@ -26,7 +24,7 @@ Feature: Detection of crashes during crash handling
       | scenario                    | message        |
       | RecrashCppMachScenario      | EXC_BAD_ACCESS |
       | RecrashCppSignalScenario    | SIGABRT        |
-      | RecrashMachMachScenario     | EXC_BAD_ACCESS |
+      | RecrashMachMachScenario     | SIGSEGV        |
       | RecrashMachSignalScenario   | SIGABRT        |
       | RecrashObjcMachScenario     | EXC_BAD_ACCESS |
       | RecrashObjcSignalScenario   | SIGABRT        |
