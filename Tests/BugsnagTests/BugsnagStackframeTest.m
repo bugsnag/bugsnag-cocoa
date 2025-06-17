@@ -237,6 +237,7 @@
     ksdl_get_images(); // Ensure call stack can be symbolicated
     
     NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
+    XCTAssertNil(callStackSymbols);
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];
     XCTAssertEqual(stackframes.count, callStackSymbols.count, @"All valid stack frame strings should be parsed");
     BOOL __block didSeeMain = NO;
