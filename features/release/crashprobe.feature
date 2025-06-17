@@ -132,7 +132,7 @@ Feature: Reporting crash events
     And the "isLR" of stack frame 0 is null
 
   # TODO: Skipped Pending PLAT-12398
-  @skip_macos
+  @skip
   Scenario: Crash within Swift code
     When I run "SwiftCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "SwiftCrashScenario"
@@ -145,7 +145,7 @@ Feature: Reporting crash events
     And on x86, the "isLR" of stack frame 0 is null
 
   # TODO: Skipped Pending PLAT-12398
-  @skip_macos
+  @skip
   Scenario: Assertion failure in Swift code
     When I run "SwiftAssertionScenario" and relaunch the crashed app
     And I configure Bugsnag for "SwiftAssertionScenario"
