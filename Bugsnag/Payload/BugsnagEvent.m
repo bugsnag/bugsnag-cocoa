@@ -278,7 +278,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
     // Try to parse userInfo as dictionary
     NSString *userInfo = [error valueForKeyPath:@"nsexception.userInfo"];
-    if (userInfo != nil) {
+    if (userInfo != nil && [userInfo isKindOfClass:[NSString class]]) {
         NSError *err = nil;
         NSData *userInfoData = [userInfo dataUsingEncoding:NSUTF8StringEncoding];
         NSDictionary *userInfoJson = BSGJSONDictionaryFromData(userInfoData, 0, &err);
