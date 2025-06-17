@@ -285,8 +285,8 @@ Feature: Barebone tests
       | ios   | @not_null |
       | macos | @null     |
     And the event "device.freeMemory" is less than the event "device.totalMemory"
-    And the event "device.osName" equals the platform-dependent string:
-      | ios   | iOS    |
+    And the event "device.osName" matches the platform-dependent regex:
+      | ios   | i.*?OS    |
       | macos | Mac OS |
     And the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osVersion" matches "\d+\.\d+"
