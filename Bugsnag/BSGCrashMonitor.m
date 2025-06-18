@@ -60,6 +60,7 @@ void BSGCrashMonitorInstall(BugsnagConfiguration *config, KSReportWriteCallback 
     }
     ksConfig.monitors = crashTypes;
     ksConfig.reportStoreConfiguration = ksReportStore;
+    ksConfig.threadTracingEnabled = (config.sendThreads != BSGThreadSendPolicyNever);
 
     // In addition to installing crash handlers, KSCrash installation initializes various
     // subsystems that Bugsnag relies on, so needs to be called even if autoDetectErrors is disabled.

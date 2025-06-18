@@ -50,7 +50,7 @@
 
 - (void)crash __attribute__((noreturn)) {
     throw new std::runtime_error
-    // Long enough to exceed BSG_KSCrashSentry_CPPException's DESCRIPTION_BUFFER_LENGTH
+    // Long enough to exceed BSG_KSCrashMonitor_CPPException's DESCRIPTION_BUFFER_LENGTH
     ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
