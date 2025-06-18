@@ -6,8 +6,10 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
-// TODO Restore before PLAT-13748 is closed
-//#import "Bugsnag.h"
-//#import "BSG_KSJSONCodec.h"
-//
-//id bsg_JSONObject(void (^ block)(BSG_KSCrashReportWriter *writer));
+#import "Bugsnag.h"
+#import "KSJSONCodec.h"
+#import "KSCrashReportWriter.h"
+
+void prepareReportWriter(KSCrashReportWriter *const writer, KSJSONEncodeContext *const context);
+
+id bsg_JSONObject(void (^ block)(KSCrashReportWriter *writer));
