@@ -29,7 +29,7 @@
 #import "BSGAppHangDetector.h"
 #import "BSGAppKit.h"
 #import "BSGConnectivity.h"
-#import "BSGCrashSentry.h"
+#import "BSGCrashMonitor.h"
 #import "BSGDefines.h"
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
@@ -286,7 +286,7 @@ BSG_OBJC_DIRECT_MEMBERS
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
 
     // Install KSCrash
-    BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
+    BSGCrashMonitorInstall(self.configuration, BSSerializeDataCrashHandler);
 
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 

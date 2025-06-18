@@ -6,7 +6,7 @@
 
 #import "BugsnagConfiguration+Private.h"
 
-#import "BSGCrashSentry.h"
+#import "BSGCrashMonitor.h"
 #import "BugsnagClient+Private.h"
 #import "BugsnagEndpointConfiguration.h"
 #import "BugsnagErrorTypes.h"
