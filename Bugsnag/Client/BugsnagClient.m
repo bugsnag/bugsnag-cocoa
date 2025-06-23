@@ -264,6 +264,9 @@ BSG_OBJC_DIRECT_MEMBERS
 #if TARGET_OS_OSX
         NSString *dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
         if (dir != nil && [dir isKindOfClass:[NSString class]] && [dir length] > 0) {
+            if (userCachesPath) {
+              free(userCachesPath);
+            }
             userCachesPath = strdup(dir.fileSystemRepresentation);
         }
 #endif
