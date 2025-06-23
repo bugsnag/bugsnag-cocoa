@@ -32,8 +32,6 @@ Feature: Thrown C++ exceptions are captured by Bugsnag
     And on iOS 12 and later, the event "threads.0.name" equals "BSG MAIN THREAD"
     And on macOS 10.14 and later, the event "threads.0.name" equals "BSG MAIN THREAD"
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: Throwing without an exception
     When I run "CxxBareThrowScenario" and relaunch the crashed app
     And I configure Bugsnag for "CxxBareThrowScenario"
