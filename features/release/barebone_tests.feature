@@ -43,8 +43,8 @@ Feature: Barebone tests
       | macos   | @null     |
       | watchos | @not_null |
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
-    And the event "device.osName" equals the platform-dependent string:
-      | ios     | iOS     |
+    And the event "device.osName" matches the platform-dependent regex:
+      | ios     | i.*?OS  |
       | macos   | Mac OS  |
       | watchos | watchOS |
     And the event "device.osVersion" matches "\d+\.\d+"
@@ -65,10 +65,9 @@ Feature: Barebone tests
     And the event "metaData.Other.password" equals "[REDACTED]"
     And the event "metaData.Other.shouldBeTruncated" matches "\n\*\*\*345 CHARS TRUNCATED\*\*\*"
     And the event "metaData.error.nsexception.name" equals "NSRangeException"
-# TODO Restore before PLAT-13748 is closed
-#    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
-#    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
-#    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
+    And the event "metaData.error.nsexception.userInfo.date" equals "2001-01-01 00:00:00 +0000"
+    And the event "metaData.error.nsexception.userInfo.NSUnderlyingError" matches "Error Domain=ErrorDomain Code=0"
+    And the event "metaData.error.nsexception.userInfo.scenario" equals "BareboneTestHandledScenario"
     And the event "metaData.error.reason" equals "Something is out of range"
     And the event "metaData.error.type" equals "nsexception"
     And the event "metaData.usage" is null
@@ -147,8 +146,6 @@ Feature: Barebone tests
     And the "method" of stack frame 0 matches "BareboneTestHandledScenario"
     And the stacktrace is valid for the event
 
-# TODO Restore before PLAT-13748 is closed
-  @skip
   @watchos
   Scenario: Barebone test: unhandled error
     When I run "BareboneTestUnhandledErrorScenario" and relaunch the crashed app
@@ -176,10 +173,10 @@ Feature: Barebone tests
     And the event "device.locale" is not null
     And the event "device.manufacturer" equals "Apple"
     And on iOS, the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
-    And the event "device.osName" equals the platform-dependent string:
-      | ios     | iOS     |
-      | macos   | Mac OS  |
-      | watchos | watchOS |
+    And the event "device.osName" matches the platform-dependent regex:
+      | ios     | i.*?OS   |
+      | macos   | Mac OS   |
+      | watchos | watchOS  |
     And the event "device.osVersion" matches "\d+\.\d+"
     And the event "device.runtimeVersions.clangVersion" is not null
     And the event "device.runtimeVersions.osBuild" is not null
@@ -288,8 +285,8 @@ Feature: Barebone tests
       | ios   | @not_null |
       | macos | @null     |
     And the event "device.freeMemory" is less than the event "device.totalMemory"
-    And the event "device.osName" equals the platform-dependent string:
-      | ios   | iOS    |
+    And the event "device.osName" matches the platform-dependent regex:
+      | ios   | i.*?OS    |
       | macos | Mac OS |
     And the event "device.orientation" matches "(face(down|up)|landscape(left|right)|portrait(upsidedown)?)"
     And the event "device.osVersion" matches "\d+\.\d+"

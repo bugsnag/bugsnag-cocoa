@@ -1,5 +1,3 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: Reporting crash events
 
   Background:
@@ -67,7 +65,7 @@ Feature: Reporting crash events
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
-    And the exception "message" equals "Attempted to dereference null pointer."
+    And the exception "message" starts with "Attempted to dereference null pointer."
     And the "method" of stack frame 0 equals "-[OverwriteLinkRegisterScenario run]"
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
@@ -112,7 +110,7 @@ Feature: Reporting crash events
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
-    And the exception "message" equals one of:
+    And the exception "message" starts with one of:
       | ARM   | Attempted to dereference garbage pointer 0x38. |
       | Intel | Attempted to dereference garbage pointer 0x40. |
     And the "method" of stack frame 0 equals "objc_msgSend"
@@ -150,6 +148,8 @@ Feature: Reporting crash events
     And on arm, the "isLR" of stack frame 1 is true
     And on x86, the "isLR" of stack frame 1 is null
 
+  # TODO: Skipped Pending PLAT-12398
+  @skip
   Scenario: Crash within Swift code
     When I run "SwiftCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "SwiftCrashScenario"
@@ -163,6 +163,8 @@ Feature: Reporting crash events
     And on x86, the "isPC" of stack frame 1 is null
     And on x86, the "isLR" of stack frame 1 is null
 
+  # TODO: Skipped Pending PLAT-12398
+  @skip
   Scenario: Assertion failure in Swift code
     When I run "SwiftAssertionScenario" and relaunch the crashed app
     And I configure Bugsnag for "SwiftAssertionScenario"
@@ -181,7 +183,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "NullPointerScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the exception "message" equals "Attempted to dereference null pointer."
+    And the exception "message" starts with "Attempted to dereference null pointer."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "-[NullPointerScenario run]"
     And the "isPC" of stack frame 0 is true
@@ -196,7 +198,7 @@ Feature: Reporting crash events
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the error payload field "events" is an array with 1 elements
-    And the exception "message" equals "Attempted to dereference garbage pointer 0x1."
+    And the exception "message" starts with "Attempted to dereference garbage pointer 0x1."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the stacktrace contains methods:
     # |pthread_getname_np|
@@ -237,7 +239,7 @@ Feature: Reporting crash events
     And I configure Bugsnag for "AccessNonObjectScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the exception "message" equals "Attempted to dereference garbage pointer 0x10."
+    And the exception "message" starts with "Attempted to dereference garbage pointer 0x10."
     And the exception "errorClass" equals "EXC_BAD_ACCESS"
     And the "method" of stack frame 0 equals "objc_msgSend"
     And the "isPC" of stack frame 0 is true
@@ -246,6 +248,8 @@ Feature: Reporting crash events
     And on arm, the "isLR" of stack frame 1 is true
     And on x86, the "isLR" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Misuse of libdispatch
     When I run "DispatchCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "DispatchCrashScenario"

@@ -24,8 +24,6 @@ Feature: Attaching a series of notable events leading up to errors
     And I wait to receive an error
     Then the event has a "state" breadcrumb named "Bugsnag loaded"
 
-# TODO Restore before PLAT-13748 is closed
-@skip
   Scenario: An app lauches and subsequently crashes
     When I run "BuiltinTrapScenario" and relaunch the crashed app
     And I configure Bugsnag for "BuiltinTrapScenario"

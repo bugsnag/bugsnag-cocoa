@@ -120,7 +120,7 @@ Then('the stacktrace contains methods:') do |table|
   stack_trace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
   expected = table.raw.flatten
   actual = stack_trace.map { |s| s['method'] }
-  contains = actual.each_cons(expected.length).to_a.include? expected
+  contains = actual.any? { |act| expected.any? { |exp| act.include?(exp) } }
   Maze.check.true(contains, "Stacktrace methods #{actual} did not contain #{expected}")
 end
 

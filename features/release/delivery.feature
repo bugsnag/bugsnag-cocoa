@@ -160,8 +160,6 @@ Feature: Delivery of errors
     And the event "usage.system.stringCharsTruncated" is not null
     And the event "usage.system.stringsTruncated" is not null
 
-  # TODO Restore before PLAT-13748 is closed
-  @skip
   @skip_ios_17
   # TODO: Skipped Pending PLAT-12398
   @skip_macos
@@ -191,8 +189,6 @@ Feature: Delivery of errors
       | SwiftFatalError | mach        | Fatal error      | Unexpectedly found nil while unwrapping an Optional value |
       | BadAccess       | mach        | EXC_BAD_ACCESS   | Attempted to dereference garbage pointer 0x20.            |
 
-  # TODO Restore before PLAT-13748 is closed
-  @skip
   @skip_below_ios_17
   @skip_macos
   Scenario Outline: Attempt Delivery On Crash iOS 17

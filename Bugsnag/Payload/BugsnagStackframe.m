@@ -202,10 +202,9 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     self.needsSymbolication = NO;
     
     uintptr_t frameAddress = self.frameAddress.unsignedIntegerValue;
-    uintptr_t instructionAddress = self.isPc ? frameAddress: kssymbolicator_callInstructionAddress(frameAddress);
 
     KSStackCursor *cursor = &(struct KSStackCursor){};
-    cursor->stackEntry.address = instructionAddress;
+    cursor->stackEntry.address = frameAddress;
     kssymbolicator_symbolicate(cursor);
 
     if (cursor->stackEntry.symbolAddress) {

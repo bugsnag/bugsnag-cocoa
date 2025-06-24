@@ -92,6 +92,7 @@ static struct {
 } bsg_g_bugsnag_data;
 
 static char *crashSentinelPath;
+static char *userCachesPath;
 
 /**
  *  Handler executed when the application crashes. Writes information about the
@@ -117,14 +118,16 @@ static void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer, bool 
                 writer->addUIntegerElement(writer, "memoryUsage", bsg_runContext->memoryFootprint);
             }
 #if TARGET_OS_OSX
-            uint64_t freeDisk, size;
-            if (bsg_statfs(crashSentinelPath, &freeDisk, &size)) {
-                writer->beginObject(writer, "disk");
-                {
-                    writer->addUIntegerElement(writer, "free", freeDisk);
-                    writer->addUIntegerElement(writer, "size", size);
+            if (userCachesPath != NULL) {
+                uint64_t freeDisk, size;
+                if (bsg_statfs(userCachesPath, &freeDisk, &size)) {
+                    writer->beginObject(writer, "disk");
+                    {
+                        writer->addUIntegerElement(writer, "free", freeDisk);
+                        writer->addUIntegerElement(writer, "size", size);
+                    }
+                    writer->endContainer(writer);
                 }
-                writer->endContainer(writer);
             }
 #endif
         }
@@ -257,6 +260,16 @@ BSG_OBJC_DIRECT_MEMBERS
 
         // Start with a copy of the configuration metadata
         self.metadata = [[_configuration metadata] copy];
+
+#if TARGET_OS_OSX
+        NSString *dir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+        if (dir != nil && [dir isKindOfClass:[NSString class]] && [dir length] > 0) {
+            if (userCachesPath) {
+              free(userCachesPath);
+            }
+            userCachesPath = strdup(dir.fileSystemRepresentation);
+        }
+#endif
     }
     return self;
 }
