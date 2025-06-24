@@ -1,12 +1,12 @@
 //
-//  BSGCrashSentry.m
+//  BSGCrashMonitor.m
 //  Bugsnag
 //
 //  Created by Jamie Lynch on 11/08/2017.
 //
 //
 
-#import "BSGCrashSentry.h"
+#import "BSGCrashMonitor.h"
 
 #import "BSGEventUploader.h"
 #import "BSGFileLocations.h"
@@ -24,7 +24,7 @@ NSTimeInterval BSGCrashDeliveryTimeout = 3;
 
 static void BSGCrashAttemptDelivery(int64_t);
 
-void BSGCrashSentryInstall(BugsnagConfiguration *config, KSReportWriteCallback onCrash) {
+void BSGCrashMonitorInstall(BugsnagConfiguration *config, KSReportWriteCallback onCrash) {
     KSCrash *ksCrash = [KSCrash sharedInstance];
 
     // REPORT STORE CONFIGURATION
@@ -60,6 +60,9 @@ void BSGCrashSentryInstall(BugsnagConfiguration *config, KSReportWriteCallback o
     }
     ksConfig.monitors = crashTypes;
     ksConfig.reportStoreConfiguration = ksReportStore;
+#if !TARGET_OS_WATCH
+    ksConfig.threadTracingEnabled = (config.sendThreads != BSGThreadSendPolicyNever);
+#endif
 
     // In addition to installing crash handlers, KSCrash installation initializes various
     // subsystems that Bugsnag relies on, so needs to be called even if autoDetectErrors is disabled.
