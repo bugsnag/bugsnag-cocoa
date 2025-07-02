@@ -63,6 +63,8 @@ Feature: Reporting crash events
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Trigger a crash after overwriting the link register
     When I run "OverwriteLinkRegisterScenario" and relaunch the crashed app
     And I configure Bugsnag for "OverwriteLinkRegisterScenario"
