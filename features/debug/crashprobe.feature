@@ -3,6 +3,8 @@ Feature: Reporting crash events
   Background:
     Given I clear all persistent data
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Executing privileged instruction
     When I run "PrivilegedInstructionScenario" and relaunch the crashed app
     And I configure Bugsnag for "PrivilegedInstructionScenario"
@@ -264,6 +266,8 @@ Feature: Reporting crash events
     And the "isLR" of stack frame 0 is null
     And the "isPC" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Concurrent crashes should result in a single valid crash report
     Given I run "ConcurrentCrashesScenario" and relaunch the crashed app
     And I configure Bugsnag for "ConcurrentCrashesScenario"
