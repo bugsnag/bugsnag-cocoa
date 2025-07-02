@@ -356,18 +356,9 @@ BSG_OBJC_DIRECT_MEMBERS
 
 - (void)setApiKey:(NSString *)apiKey {
     _apiKey = [apiKey copy];
-    BugsnagEndpointConfiguration *ep = self.endpoints;
-    if (([ep.notify   isEqualToString:@"https://notify.bugsnag.com"]   ||
-         [ep.notify   isEqualToString:@"https://notify.insighthub.smartbear.com"]) &&
-        ([ep.sessions isEqualToString:@"https://sessions.bugsnag.com"] ||
-         [ep.sessions isEqualToString:@"https://sessions.insighthub.smartbear.com"])) {
-        if ([apiKey hasPrefix:@"00000"]) {
-            ep.notify   = @"https://notify.insighthub.smartbear.com";
-            ep.sessions = @"https://sessions.insighthub.smartbear.com";
-        } else {
-            ep.notify   = @"https://notify.bugsnag.com";
-            ep.sessions = @"https://sessions.bugsnag.com";
-        }
+
+    if (!self.endpoints.isCustom) {
+        self.endpoints = [BugsnagEndpointConfiguration defaultForApiKey:apiKey ?: @""];
     }
 }
 

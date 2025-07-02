@@ -31,11 +31,30 @@ static NSString *const BSGHubPrefix      = @"00000";
 }
 
 + (instancetype)defaultForApiKey:(NSString *)apiKey {
-    BugsnagEndpointConfiguration *cfg = [BugsnagEndpointConfiguration new];
+    BugsnagEndpointConfiguration *endpoints = [BugsnagEndpointConfiguration new];
     if ([apiKey hasPrefix:BSGHubPrefix]) {
-        cfg.notify   = BSGHubNotifyURL;
-        cfg.sessions = BSGHubSessionURL;
+        endpoints.notify   = BSGHubNotifyURL;
+        endpoints.sessions = BSGHubSessionURL;
     }
-    return cfg;
+    return endpoints;
+}
+
+- (BOOL)isCustom {
+    static NSSet<NSString *> *knownNotify;
+    static NSSet<NSString *> *knownSessions;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        knownNotify = [NSSet setWithObjects:
+            @"https://notify.bugsnag.com",
+            BSGHubNotifyURL,
+            nil];
+        knownSessions = [NSSet setWithObjects:
+            @"https://sessions.bugsnag.com",
+            BSGHubSessionURL,
+            nil];
+    });
+
+    return !([knownNotify containsObject:self.notify] &&
+             [knownSessions containsObject:self.sessions]);
 }
 @end

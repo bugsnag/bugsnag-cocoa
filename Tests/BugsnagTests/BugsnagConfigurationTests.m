@@ -699,6 +699,25 @@ static NSString *const HUB_APIKEY_32CHAR =
                           @"https://sessions.insighthub.smartbear.com");
 }
 
+- (void)testSwitchingApiKeyUpdatesEndpointsToBugsnagDefaults {
+    BugsnagConfiguration *config =
+        [[BugsnagConfiguration alloc] initWithApiKey:HUB_APIKEY_32CHAR];
+
+    // starts on InsightHub cluster
+    XCTAssertEqualObjects(config.endpoints.notify,
+                          @"https://notify.insighthub.smartbear.com");
+    XCTAssertEqualObjects(config.endpoints.sessions,
+                          @"https://sessions.insighthub.smartbear.com");
+
+    // switch to a regular Bugsnag key
+    [config setApiKey:DUMMY_APIKEY_32CHAR_1];
+
+    XCTAssertEqualObjects(config.endpoints.notify,
+                          @"https://notify.bugsnag.com");
+    XCTAssertEqualObjects(config.endpoints.sessions,
+                          @"https://sessions.bugsnag.com");
+}
+
 - (void)testCustomEndpointsAreNotOverwrittenWhenApiKeyChanges {
     BugsnagConfiguration *config =
         [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
@@ -713,6 +732,21 @@ static NSString *const HUB_APIKEY_32CHAR =
 
     XCTAssertEqualObjects(config.endpoints.notify, @"http://localhost:1234");
     XCTAssertEqualObjects(config.endpoints.sessions, @"http://localhost:8000");
+}
+
+- (void)testCustomEndpointsAreNotOverwrittenWhenSwitchingFromInsightHubToBugsnag {
+    BugsnagConfiguration *config =
+        [[BugsnagConfiguration alloc] initWithApiKey:HUB_APIKEY_32CHAR];
+
+    config.endpoints = [[BugsnagEndpointConfiguration alloc]
+                          initWithNotify:@"http://localhost:5678"
+                                 sessions:@"http://localhost:9999"];
+
+    // switch to Bugsnag key – should **not** touch the custom URLs
+    [config setApiKey:DUMMY_APIKEY_32CHAR_1];
+
+    XCTAssertEqualObjects(config.endpoints.notify, @"http://localhost:5678");
+    XCTAssertEqualObjects(config.endpoints.sessions, @"http://localhost:9999");
 }
 
 // =============================================================================
