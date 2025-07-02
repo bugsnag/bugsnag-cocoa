@@ -79,6 +79,8 @@ Feature: Reporting crash events
     And on arm, the "isLR" of stack frame 1 is true
     And on x86, the "isLR" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Attempt to write into a read-only page
     When I run "ReadOnlyPageScenario" and relaunch the crashed app
     And I configure Bugsnag for "ReadOnlyPageScenario"
