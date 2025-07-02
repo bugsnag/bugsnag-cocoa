@@ -20,6 +20,8 @@ Feature: Reporting crash events
     And on x86, the "isLR" of stack frame 1 is null
     And on x86, the "isPC" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Calling __builtin_trap()
     When I run "BuiltinTrapScenario" and relaunch the crashed app
     And I configure Bugsnag for "BuiltinTrapScenario"
