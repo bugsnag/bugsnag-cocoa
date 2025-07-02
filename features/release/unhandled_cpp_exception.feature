@@ -1,5 +1,3 @@
-# TODO Restore before PLAT-13748 is closed
-@skip
 Feature: Thrown C++ exceptions are captured by Bugsnag
 
   Background:

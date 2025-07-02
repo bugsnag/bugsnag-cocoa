@@ -1,5 +1,5 @@
 //
-//  BSGCrashSentry.h
+//  BSGCrashMonitor.h
 //  Bugsnag
 //
 //  Created by Jamie Lynch on 11/08/2017.
@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-void BSGCrashSentryInstall(BugsnagConfiguration *, KSReportWriteCallback);
+void BSGCrashMonitorInstall(BugsnagConfiguration *, KSReportWriteCallback);
 
 KSCrashMonitorType KSCrashTypeFromBugsnagErrorTypes(BugsnagErrorTypes *);
 

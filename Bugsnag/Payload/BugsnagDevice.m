@@ -49,6 +49,11 @@
     device.model = system[KSCrashField_Machine];
     device.modelNumber = system[KSCrashField_Model];
     device.osName = system[KSCrashField_SystemName];
+    // "ProductName" changed from "Mac OS X" to "macOS" in 11.0
+    if ([system[KSCrashField_SystemName] isEqual:@"macOS"] || [system[KSCrashField_SystemName] isEqual:@"Mac OS X"]) {
+        device.osName = @"Mac OS";
+    }
+
     device.osVersion = system[KSCrashField_SystemVersion];
     device.totalMemory = system[KSCrashField_Memory][KSCrashField_Size];
 

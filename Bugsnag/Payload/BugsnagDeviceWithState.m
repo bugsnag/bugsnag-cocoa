@@ -90,6 +90,13 @@ NSDictionary * BSGDeviceMetadataFromRunContext(const struct BSGRunContext *conte
     device.orientation = [event valueForKeyPath:@"user.state.deviceState.orientation"];
     device.freeMemory = [event valueForKeyPath:[NSString stringWithFormat:@"system.%@.%@", KSCrashField_Memory, KSCrashField_Free]];
     device.freeDisk = [event valueForKeyPath:[NSString stringWithFormat:@"system.%@.%@", @BSG_SystemField_Disk, KSCrashField_Free]];
+    if (device.freeDisk == nil) {
+        // disk info added in kscrash callback into 'app' key
+        NSDictionary *disk = [event valueForKeyPath:@"user.app.disk"];
+        if (disk != nil) {
+            device.freeDisk = [disk valueForKey:KSCrashField_Free];
+        }
+    }
 
     NSString *val = [event valueForKeyPath:@"report.timestamp"];
 

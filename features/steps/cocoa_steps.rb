@@ -32,6 +32,11 @@ Then('the exception {string} equals one of:') do |keypath, possible_values|
   Maze.check.includes(possible_values.raw.flatten, value)
 end
 
+Then('the exception {string} starts with one of:') do |keypath, possible_values|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
+  Maze.check.true(value.start_with?(*possible_values.raw.flatten))
+end
+
 Then('the error is an OOM event') do
   steps %(
     Then the exception "message" equals "The app was likely terminated by the operating system while in the foreground"

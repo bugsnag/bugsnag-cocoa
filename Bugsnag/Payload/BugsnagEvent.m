@@ -276,6 +276,19 @@ BSG_OBJC_DIRECT_MEMBERS
     NSMutableDictionary *error = [[event valueForKeyPath:@"crash.error"] mutableCopy];
     NSString *errorType = error[BSGKeyType];
 
+    // Try to parse userInfo as dictionary
+    NSString *userInfo = [error valueForKeyPath:@"nsexception.userInfo"];
+    if (userInfo != nil && [userInfo isKindOfClass:[NSString class]]) {
+        NSError *err = nil;
+        NSData *userInfoData = [userInfo dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *userInfoJson = BSGJSONDictionaryFromData(userInfoData, 0, &err);
+        if (err == nil && userInfoJson != nil) {
+            NSMutableDictionary *exc = [[error valueForKey:@"nsexception"] mutableCopy];
+            [exc setValue:userInfoJson forKey:@"userInfo"];
+            [error setValue:exc forKey:@"nsexception"];
+        }
+    }
+
     // Always assume that a report coming from KSCrash is by default an unhandled error.
     BOOL isUnhandled = YES;
     BOOL isUnhandledOverridden = NO;
