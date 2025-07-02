@@ -8,6 +8,8 @@
 
 #import "BugsnagEndpointConfiguration.h"
 
+static NSString *const BSGBugsnagNotifyURL   = @"https://notify.bugsnag.com";
+static NSString *const BSGBugsnagSessionURL  = @"https://sessions.bugsnag.com";
 static NSString *const BSGHubNotifyURL   = @"https://notify.insighthub.smartbear.com";
 static NSString *const BSGHubSessionURL  = @"https://sessions.insighthub.smartbear.com";
 static NSString *const BSGHubPrefix      = @"00000";
@@ -16,8 +18,8 @@ static NSString *const BSGHubPrefix      = @"00000";
 
 - (instancetype)init {
     if ((self = [super init])) {
-        _notify = @"https://notify.bugsnag.com";
-        _sessions = @"https://sessions.bugsnag.com";
+        _notify = BSGBugsnagNotifyURL;
+        _sessions = BSGBugsnagSessionURL;
     }
     return self;
 }
@@ -45,11 +47,11 @@ static NSString *const BSGHubPrefix      = @"00000";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         knownNotify = [NSSet setWithObjects:
-            @"https://notify.bugsnag.com",
+            BSGBugsnagNotifyURL,
             BSGHubNotifyURL,
             nil];
         knownSessions = [NSSet setWithObjects:
-            @"https://sessions.bugsnag.com",
+            BSGBugsnagSessionURL,
             BSGHubSessionURL,
             nil];
     });
