@@ -145,7 +145,7 @@ BSG_OBJC_DIRECT_MEMBERS
     for (NSString *filename in entries) {
         NSString *path = [directory stringByAppendingPathComponent:filename];
         NSDictionary *report = BSGJSONDictionaryFromFile(path, 0, &error);
-        NSString *reportType = report[KSCrashField_Report][KSCrashField_Type];
+        NSString *reportType = [self reportTypeFromCrashReport:report];
         if (![reportType isEqualToString:KSCrashReportType_Minimal]) {
             continue;
         }
@@ -159,6 +159,18 @@ BSG_OBJC_DIRECT_MEMBERS
             bsg_log_err(@"%@", error);
         }
     }
+}
+
+- (NSString *)reportTypeFromCrashReport:(NSDictionary *)crashReport {
+    if (crashReport == nil) {
+        return nil;
+    }
+    NSDictionary *report = crashReport[KSCrashField_Report];
+    if (![report isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    NSString *reportType = report[KSCrashField_Type];
+    return [reportType isKindOfClass:[NSString class]] ? reportType : nil;
 }
 
 /// Returns the stored event files sorted from oldest to most recent.
