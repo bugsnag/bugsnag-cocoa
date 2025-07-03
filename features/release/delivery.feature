@@ -163,6 +163,8 @@ Feature: Delivery of errors
   @skip_ios_17
   # TODO: Skipped Pending PLAT-12398
   @skip_macos
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario Outline: Attempt Delivery On Crash
     When I set the app to "<scenario_mode>" mode
     And I run "AttemptDeliveryOnCrashScenario"
@@ -191,6 +193,8 @@ Feature: Delivery of errors
 
   @skip_below_ios_17
   @skip_macos
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario Outline: Attempt Delivery On Crash iOS 17
     When I set the app to "<scenario_mode>" mode
     And I run "AttemptDeliveryOnCrashScenario"

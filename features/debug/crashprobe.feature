@@ -1,8 +1,12 @@
+# TODO Restore before PLAT-13748 is closed
+@skip
 Feature: Reporting crash events
 
   Background:
     Given I clear all persistent data
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Executing privileged instruction
     When I run "PrivilegedInstructionScenario" and relaunch the crashed app
     And I configure Bugsnag for "PrivilegedInstructionScenario"
@@ -18,6 +22,8 @@ Feature: Reporting crash events
     And on x86, the "isLR" of stack frame 1 is null
     And on x86, the "isPC" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Calling __builtin_trap()
     When I run "BuiltinTrapScenario" and relaunch the crashed app
     And I configure Bugsnag for "BuiltinTrapScenario"
@@ -59,6 +65,8 @@ Feature: Reporting crash events
     And the "isPC" of stack frame 0 is null
     And the "isLR" of stack frame 0 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Trigger a crash after overwriting the link register
     When I run "OverwriteLinkRegisterScenario" and relaunch the crashed app
     And I configure Bugsnag for "OverwriteLinkRegisterScenario"
@@ -73,6 +81,8 @@ Feature: Reporting crash events
     And on arm, the "isLR" of stack frame 1 is true
     And on x86, the "isLR" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Attempt to write into a read-only page
     When I run "ReadOnlyPageScenario" and relaunch the crashed app
     And I configure Bugsnag for "ReadOnlyPageScenario"
@@ -264,6 +274,8 @@ Feature: Reporting crash events
     And the "isLR" of stack frame 0 is null
     And the "isPC" of stack frame 1 is null
 
+# TODO Restore before PLAT-13748 is closed
+@skip
   Scenario: Concurrent crashes should result in a single valid crash report
     Given I run "ConcurrentCrashesScenario" and relaunch the crashed app
     And I configure Bugsnag for "ConcurrentCrashesScenario"

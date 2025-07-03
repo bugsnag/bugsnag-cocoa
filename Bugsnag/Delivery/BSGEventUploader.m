@@ -18,10 +18,7 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
-
-
-static NSString * const CrashReportPrefix = @"CrashReport-";
-static NSString * const RecrashReportPrefix = @"RecrashReport-";
+#import "KSCrashReportFields.h"
 
 
 @interface BSGEventUploader () <BSGEventUploadOperationDelegate>
@@ -146,35 +143,34 @@ BSG_OBJC_DIRECT_MEMBERS
     BOOL didReportRecrash = NO;
     
     for (NSString *filename in entries) {
-        if (![filename hasPrefix:RecrashReportPrefix] ||
-            ![filename.pathExtension isEqual:@"json"]) {
+        NSString *path = [directory stringByAppendingPathComponent:filename];
+        NSDictionary *report = BSGJSONDictionaryFromFile(path, 0, &error);
+        NSString *reportType = [self reportTypeFromCrashReport:report];
+        if (![reportType isEqualToString:KSCrashReportType_Minimal]) {
             continue;
         }
-        
-        NSString *path = [directory stringByAppendingPathComponent:filename];
         if (!didReportRecrash) {
-            NSDictionary *recrashReport = BSGJSONDictionaryFromFile(path, 0, &error);
-            if (recrashReport) {
-                bsg_log_debug(@"Reporting %@", filename);
-                [BSGInternalErrorReporter.sharedInstance reportRecrash:recrashReport];
-                didReportRecrash = YES;
-            }
+            bsg_log_debug(@"Reporting %@", filename);
+            [BSGInternalErrorReporter.sharedInstance reportRecrash:report];
+            didReportRecrash = YES;
         }
         bsg_log_debug(@"Deleting %@", filename);
         if (![fileManager removeItemAtPath:path error:&error]) {
             bsg_log_err(@"%@", error);
         }
-        
-        // Delete the report to prevent reporting a "JSON parsing error"
-        NSString *crashReportFilename = [filename stringByReplacingOccurrencesOfString:RecrashReportPrefix withString:CrashReportPrefix];
-        NSString *crashReportPath = [directory stringByAppendingPathComponent:crashReportFilename];
-        if (!BSGJSONDictionaryFromFile(crashReportPath, 0, nil)) {
-            bsg_log_info(@"Deleting unparsable %@", crashReportFilename);
-            if (![fileManager removeItemAtPath:crashReportPath error:&error]) {
-                bsg_log_err(@"%@", error);
-            }
-        }
     }
+}
+
+- (NSString *)reportTypeFromCrashReport:(NSDictionary *)crashReport {
+    if (crashReport == nil) {
+        return nil;
+    }
+    NSDictionary *report = crashReport[KSCrashField_Report];
+    if (![report isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    NSString *reportType = report[KSCrashField_Type];
+    return [reportType isKindOfClass:[NSString class]] ? reportType : nil;
 }
 
 /// Returns the stored event files sorted from oldest to most recent.
