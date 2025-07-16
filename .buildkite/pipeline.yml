@@ -13,7 +13,7 @@ steps:
     agents:
       queue: macos-15
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     commands:
       - make build_xcframework
       - make build_swift
@@ -32,7 +32,7 @@ steps:
     agents:
       queue: macos-15
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp_Release.ipa
       - features/fixtures/ios/output/iOSTestApp_Debug.ipa
@@ -54,6 +54,8 @@ steps:
     timeout_in_minutes: 15
     agents:
       queue: macos-15
+    env:
+      XCODE_VERSION: 26.0.0-beta-3
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -69,6 +71,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15
+    env:
+      XCODE_VERSION: 26.0.0-beta-3
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -144,7 +148,7 @@ steps:
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE="iPhone 16"
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     artifact_paths:
       - logs/*
 
@@ -155,7 +159,7 @@ steps:
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     artifact_paths:
       - logs/*
 
@@ -166,7 +170,7 @@ steps:
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 14"
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     artifact_paths:
       - logs/*
 
@@ -220,7 +224,7 @@ steps:
     agents:
       queue: macos-15-isolated
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=11.4 SDK=watchsimulator11.4 DEVICE="Apple Watch Series 10 (46mm)"
     artifact_paths:
@@ -231,7 +235,7 @@ steps:
     agents:
       queue: macos-15
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.0-beta-3
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator11.4 DEVICE="Apple Watch Series 7 (41mm)"
     artifact_paths:
