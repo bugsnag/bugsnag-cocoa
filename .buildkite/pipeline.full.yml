@@ -59,6 +59,8 @@ steps:
           - "--device=IOS_17"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/release/barebone_tests.feature"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -94,6 +96,8 @@ steps:
           - "--device=IOS_16"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/release/barebone_tests.feature"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -129,6 +133,8 @@ steps:
           - "--device=IOS_13"
           - "--no-tunnel"
           - "--aws-public-ip"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/release/barebone_tests.feature"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -166,6 +172,8 @@ steps:
       - bundle exec maze-runner
         features/release/barebone_tests.feature
         --os=macos
+        --repeater-api-key=
+        --hub-repeater-api-key=
 
   - label: 'macOS 10.13 XcFramework barebone E2E tests'
     depends_on:
@@ -191,6 +199,8 @@ steps:
       - bundle exec maze-runner
         features/release/barebone_tests.feature
         --os=macos
+        --repeater-api-key=
+        --hub-repeater-api-key=
 
   #
   # BitBar

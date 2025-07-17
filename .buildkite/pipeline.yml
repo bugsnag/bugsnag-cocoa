@@ -43,7 +43,7 @@ steps:
       - features/fixtures/ios/output/ipa_url_bb_debug.txt
       - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
-      - ruby script/build-test-fixtures.rb
+      - ruby scripts/build-test-fixture.rb
 
   - label: Carthage
     timeout_in_minutes: 15
@@ -776,6 +776,8 @@ steps:
           - "--farm=bs"
           - "--device=IOS_18"
           - "--fail-fast"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/debug"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -812,6 +814,8 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/debug"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -846,6 +850,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/debug
+        --repeater-api-key=
+        --hub-repeater-api-key=
         --os=macos
         --fail-fast
 
@@ -866,6 +872,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/debug
+        --repeater-api-key=
+        --hub-repeater-api-key=
         --os=macos
         --fail-fast
 
