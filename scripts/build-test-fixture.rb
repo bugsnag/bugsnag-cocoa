@@ -1,21 +1,29 @@
-def upload_files(api_key, dest)
-  Dir.chdir('features/fixtures/mazerunner') do
-    upload = "bugsnag-cli upload"
-    options = "--api-key=#{api_key} --overwrite --version-code=1"
-    puts "Uploading symbol files to #{dest}"
-    puts `#{upload} android-ndk #{options}`
-    puts "Uploading mapping file to #{dest}"
-    puts `#{upload} android-proguard #{options} --application-id=com.bugsnag.android.mazerunner`
+def run_command(command)
+  puts command
+  result = `#{command}`
+  puts result
+  unless $?.success?
+    code = $?.exitstatus
+    puts "Command failed with exit code #{code}"
+    exit code
   end
 end
 
-puts 'Building test fixture'
-puts `bundle install`
-puts `make fixture-r21`
+def upload_dsyms(api_key, dest)
+  puts "Uploading dsyms to #{dest}"
+  run_command "bugsnag-cli upload dsym --api-key=#{api_key} --overwrite features/fixtures/ios/archive/iosTestApp_Release.xcarchive"
+end
 
-upload_files(ENV['MAZE_REPEATER_API_KEY'], 'bugsnag.com') if ENV['MAZE_REPEATER_API_KEY']
-upload_files(ENV['MAZE_HUB_REPEATER_API_KEY'], 'Insight Hub') if ENV['MAZE_HUB_REPEATER_API_KEY']
+run_command 'bundle install'
+run_command 'make test-fixtures'
+run_command 'bugsnag-cli'
+puts 'Uploading IPAs to BrowserStack and BitBar'
+run_command 'bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt'
+run_command 'bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt'
+run_command 'bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt'
+run_command 'bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt'
 
-puts 'Uploading to BrowserStack and BitBar'
-puts `bundle exec upload-app --farm=bb --app=./build/fixture-r21.apk --app-id-file=build/fixture-r21-url.txt`
-puts `bundle exec upload-app --farm=bs --app=./build/fixture-r21.apk --app-id-file=build/bs-fixture-r21-url.txt`
+upload_dsyms(ENV['MAZE_REPEATER_API_KEY'], 'bugsnag.com') if ENV['MAZE_REPEATER_API_KEY']
+upload_dsyms(ENV['MAZE_HUB_REPEATER_API_KEY'], 'Insight Hub') if ENV['MAZE_HUB_REPEATER_API_KEY']
+
+

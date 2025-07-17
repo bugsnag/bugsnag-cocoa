@@ -43,12 +43,7 @@ steps:
       - features/fixtures/ios/output/ipa_url_bb_debug.txt
       - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
-      - bundle install
-      - make test-fixtures
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
+      - ruby script/build-test-fixtures.rb
 
   - label: Carthage
     timeout_in_minutes: 15
