@@ -23,7 +23,7 @@ pushd features/fixtures/ios
     -workspace iOSTestApp.xcworkspace \
     -destination generic/platform=iOS \
     -configuration ${BUILD_CONFIGURATION} \
-    -archivePath archive/iosTestApp.xcarchive \
+    -archivePath archive/iosTestApp_$BUILD_CONFIGURATION.xcarchive \
     -allowProvisioningUpdates \
     -quiet \
     archive \
@@ -34,7 +34,7 @@ pushd features/fixtures/ios
 
   xcrun xcodebuild \
     -exportArchive \
-    -archivePath archive/iosTestApp.xcarchive \
+    -archivePath archive/iosTestApp_$BUILD_CONFIGURATION.xcarchive \
     -destination generic/platform=iOS \
     -exportPath output/ \
     -quiet \
