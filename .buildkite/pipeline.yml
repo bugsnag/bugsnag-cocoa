@@ -169,6 +169,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
     artifact_paths:
@@ -187,6 +189,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=18.4
     artifact_paths:
@@ -196,6 +200,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.4
     artifact_paths:
