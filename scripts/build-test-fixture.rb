@@ -17,7 +17,7 @@ end
 
 run_command 'bundle install'
 run_command 'make test-fixtures'
-run_command 'bugsnag-cli'
+
 puts 'Uploading IPAs to BrowserStack and BitBar'
 run_command 'bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt'
 run_command 'bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt'
