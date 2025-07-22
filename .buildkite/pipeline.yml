@@ -43,12 +43,7 @@ steps:
       - features/fixtures/ios/output/ipa_url_bb_debug.txt
       - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
-      - bundle install
-      - make test-fixtures
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
+      - ruby scripts/build-test-fixture.rb
 
   - label: Carthage
     timeout_in_minutes: 15
@@ -174,6 +169,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
     artifact_paths:
@@ -192,6 +189,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=18.4
     artifact_paths:
@@ -201,6 +200,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.4
     artifact_paths:
@@ -781,6 +782,8 @@ steps:
           - "--farm=bs"
           - "--device=IOS_18"
           - "--fail-fast"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/debug"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -817,6 +820,8 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/debug"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
@@ -851,6 +856,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/debug
+        --repeater-api-key=
+        --hub-repeater-api-key=
         --os=macos
         --fail-fast
 
@@ -871,6 +878,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/debug
+        --repeater-api-key=
+        --hub-repeater-api-key=
         --os=macos
         --fail-fast
 

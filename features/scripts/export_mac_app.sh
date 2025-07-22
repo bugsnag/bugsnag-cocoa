@@ -19,7 +19,7 @@ pushd features/fixtures/macos
     -scheme macOSTestApp
     -destination generic/platform=macOS
     -configuration ${BUILD_CONFIGURATION}
-    -archivePath archive/macOSTestApp.xcarchive
+    -archivePath archive/macOSTestApp_$BUILD_CONFIGURATION.xcarchive
     -quiet
     archive
     ONLY_ACTIVE_ARCH=NO
@@ -41,7 +41,7 @@ pushd features/fixtures/macos
     -exportArchive \
     -exportPath output/ \
     -exportOptionsPlist exportOptions.plist \
-    -archivePath archive/macOSTestApp.xcarchive \
+    -archivePath archive/macOSTestApp_$BUILD_CONFIGURATION.xcarchive \
     -destination generic/platform=macOS \
     -quiet
 
