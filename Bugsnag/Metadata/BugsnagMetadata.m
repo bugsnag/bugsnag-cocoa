@@ -32,7 +32,7 @@
 #import "BugsnagLogger.h"
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BugsnagMetadata ()
 
 @property(atomic, readwrite, strong) NSMutableArray *stateEventBlocks;
@@ -46,7 +46,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagMetadata
 
 - (instancetype)init {

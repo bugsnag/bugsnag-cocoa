@@ -57,7 +57,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagConfiguration
 
 + (instancetype _Nonnull)loadConfig {

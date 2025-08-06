@@ -28,14 +28,14 @@ static const NSTimeInterval MaxPersistedAge = 60 * 24 * 60 * 60;
 static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSString *, NSDate *> **creationDates);
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGSessionUploader ()
 @property (nonatomic) NSMutableSet *activeIds;
 @property(nonatomic) BugsnagConfiguration *config;
 @end
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGSessionUploader
 
 - (instancetype)initWithConfig:(BugsnagConfiguration *)config notifier:(BugsnagNotifier *)notifier {

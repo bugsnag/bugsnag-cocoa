@@ -168,7 +168,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BugsnagClient () <BSGBreadcrumbSink>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
@@ -202,7 +202,7 @@ BSG_OBJC_DIRECT_MEMBERS
 __attribute__((annotate("oclint:suppress[long class]")))
 __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagClient
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration {

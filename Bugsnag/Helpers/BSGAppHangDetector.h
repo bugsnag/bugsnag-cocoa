@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol BSGAppHangDetectorDelegate;
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGAppHangDetector : NSObject
 
 - (void)startWithDelegate:(id<BSGAppHangDetectorDelegate>)delegate;

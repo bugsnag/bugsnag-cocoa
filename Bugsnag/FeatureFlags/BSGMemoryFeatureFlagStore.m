@@ -42,7 +42,7 @@ BSGMemoryFeatureFlagStore * BSGFeatureFlagStoreWithFlags(NSArray<BugsnagFeatureF
  *
  * This gives the access speed of a dictionary while keeping ordering intact.
  */
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGMemoryFeatureFlagStore ()
 
 @property(nonatomic, readwrite) NSMutableArray *flags;
@@ -52,7 +52,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 static const int REBUILD_AT_HOLE_COUNT = 1000;
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGMemoryFeatureFlagStore
 
 + (nonnull BSGMemoryFeatureFlagStore *)fromJSON:(nonnull id)json {

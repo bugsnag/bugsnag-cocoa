@@ -34,7 +34,7 @@
  *
  * The crash reports will be located in $APP_HOME/Library/Caches/KSCrashReports
  */
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSG_KSCrash : NSObject
 
 /** Get the singleton instance of the crash reporter.

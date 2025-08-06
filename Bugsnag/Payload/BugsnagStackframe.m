@@ -26,7 +26,7 @@ static NSString * _Nullable FormatMemoryAddress(NSNumber * _Nullable address) {
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagStackframe
 
 static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {

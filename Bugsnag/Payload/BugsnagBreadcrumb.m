@@ -81,7 +81,7 @@ BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString *value) {
 @end
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagBreadcrumb
 
 - (instancetype)init {

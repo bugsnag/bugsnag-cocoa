@@ -50,7 +50,7 @@ static NSString * Sysctl(const char *name);
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGInternalErrorReporter ()
 
 @property (nonatomic) NSString *apiKey;
@@ -60,7 +60,7 @@ BSG_OBJC_DIRECT_MEMBERS
 @end
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGInternalErrorReporter
 
 static BSGInternalErrorReporter *sharedInstance_;

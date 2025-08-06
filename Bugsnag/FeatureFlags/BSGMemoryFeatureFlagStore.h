@@ -16,7 +16,7 @@ NSArray<NSDictionary *> * BSGFeatureFlagStoreToJSON(id<BSGFeatureFlagStore> stor
 BSGMemoryFeatureFlagStore * BSGFeatureFlagStoreFromJSON(id _Nullable json);
 BSGMemoryFeatureFlagStore * BSGFeatureFlagStoreWithFlags(NSArray<BugsnagFeatureFlag *> *);
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGMemoryFeatureFlagStore ()
 
 + (nonnull BSGMemoryFeatureFlagStore *) fromJSON:(nonnull id)json;
