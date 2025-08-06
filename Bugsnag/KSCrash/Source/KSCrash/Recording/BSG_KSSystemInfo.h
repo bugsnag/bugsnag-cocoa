@@ -55,7 +55,7 @@
 /**
  * Provides system information useful for a crash report.
  */
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSG_KSSystemInfo : NSObject
 
 /** Get the system info.

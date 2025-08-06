@@ -15,7 +15,7 @@
 #import "BugsnagDevice+Private.h"
 #import "BugsnagUser+Private.h"
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagSession
 
 - (instancetype)initWithId:(NSString *)sessionId

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class BugsnagUser;
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BugsnagSession () <NSCopying>
 
 #pragma mark Initializers

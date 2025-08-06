@@ -19,7 +19,7 @@ NSString *_Nullable BSGErrorDescription(NSError *_Nullable error);
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGInternalErrorReporter : NSObject
 
 @property (class, nullable, nonatomic) BSGInternalErrorReporter *sharedInstance;

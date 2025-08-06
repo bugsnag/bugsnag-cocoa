@@ -45,7 +45,7 @@ typedef void (^BSGConnectivityChangeBlock)(BOOL connected, NSString *typeDescrip
  * Monitors network connectivity using SCNetworkReachability callbacks,
  * providing a customizable callback block invoked when connectivity changes.
  */
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGConnectivity : NSObject
 
 /**

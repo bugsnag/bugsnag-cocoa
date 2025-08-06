@@ -21,7 +21,7 @@
 #import "BugsnagThread+Private.h"
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGAppHangDetector ()
 
 @property (weak, nonatomic) id<BSGAppHangDetectorDelegate> delegate;
@@ -36,7 +36,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 static void * DetectAppHangs(void *object);
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGAppHangDetector
 
 - (void)startWithDelegate:(id<BSGAppHangDetectorDelegate>)delegate {

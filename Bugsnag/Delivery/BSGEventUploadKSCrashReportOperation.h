@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * A concrete operation class for reading a KSCrashReport from disk, converting it into a BugsnagEvent, and uploading.
  */
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGEventUploadKSCrashReportOperation : BSGEventUploadFileOperation
 
 @end

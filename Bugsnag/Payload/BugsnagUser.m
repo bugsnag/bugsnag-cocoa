@@ -11,7 +11,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSGPersistentDeviceID.h"
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagUser
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
