@@ -20,6 +20,16 @@
 
 import UIKit
 import Bugsnag
+import Test1
+import Test2
+import Test3
+import Test4
+import Test5
+import Test6
+import Test7
+import Test8
+import Test9
+import Test10
 
 class ViewController: UITableViewController {
     
@@ -77,6 +87,13 @@ class ViewController: UITableViewController {
                 Row(title: "Resume current session") { $0.resumeCurrentSession() },
             ],
             footer: "Demonstrates the methods of manually determining when sessions are created and expire."),
+        
+        Section(
+            title: "Debug",
+            rows: [
+                Row(title: "Start extra background threads") { $0.startExtraBackgroundThreads() },
+            ],
+            footer: "Features for debugging and testing"),
     ]
     
     // MARK: - Crashes
@@ -192,12 +209,42 @@ class ViewController: UITableViewController {
         Bugsnag.setUser("user123", withEmail: "TestUser@example.com", andName: "Test Userson")
     }
     
-    // MARK: - Sessions
-    
     func startNewSession() {
         // This starts a new session within Bugsnag.
         // While sessions are generally configured to work automatically, this allows you to define when a session begins.
         Bugsnag.startSession()
+        for _ in 0..<20 {
+            Thread {
+                Main1.main()
+            }.start()
+            Thread {
+                Main2.main()
+            }.start()
+            Thread {
+                Main3.main()
+            }.start()
+            Thread {
+                Main4.main()
+            }.start()
+            Thread {
+                Main5.main()
+            }.start()
+            Thread {
+                Main6.main()
+            }.start()
+            Thread {
+                Main7.main()
+            }.start()
+            Thread {
+                Main8.main()
+            }.start()
+            Thread {
+                Main9.main()
+            }.start()
+            Thread {
+                Main10.main()
+            }.start()
+        }
     }
     
     func pauseCurrentSession() {
@@ -238,5 +285,42 @@ class ViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.sections[indexPath.section].rows[indexPath.row].action(self)
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    // MARK: - Debug
+    
+    func startExtraBackgroundThreads() {
+        for _ in 0..<20 {
+            Thread {
+                Main1.main()
+            }.start()
+            Thread {
+                Main2.main()
+            }.start()
+            Thread {
+                Main3.main()
+            }.start()
+            Thread {
+                Main4.main()
+            }.start()
+            Thread {
+                Main5.main()
+            }.start()
+            Thread {
+                Main6.main()
+            }.start()
+            Thread {
+                Main7.main()
+            }.start()
+            Thread {
+                Main8.main()
+            }.start()
+            Thread {
+                Main9.main()
+            }.start()
+            Thread {
+                Main10.main()
+            }.start()
+        }
     }
 }
