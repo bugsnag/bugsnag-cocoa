@@ -26,6 +26,7 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             config.bundleVersion = "12301"
             config.context = "Something"
             config.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
+            Bugsnag.setGroupingDiscriminator("UnhandledErrorGroupingDiscriminator")
         }
     }
     

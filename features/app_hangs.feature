@@ -31,6 +31,7 @@ Feature: App hangs
     And the event "session.events.unhandled" equals 0
 
     And the event "context" equals "App Hang Scenario"
+    And the event "groupingDiscriminator" equals "AppHangScenarioGroupingDiscriminator"
 
     And the event contains the following feature flags:
       | featureFlag | variant |

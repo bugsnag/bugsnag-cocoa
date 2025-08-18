@@ -19,6 +19,7 @@ class OnSendOverwriteScenario : Scenario {
         self.config.addOnSendError { (event) -> Bool in
             event.app.id = "customAppId"
             event.context = "customContext"
+            event.groupingDiscriminator = "customGroupingDiscriminator"
             event.device.id = "customDeviceId"
             event.groupingHash = "customGroupingHash"
             event.severity = .info

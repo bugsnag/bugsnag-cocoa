@@ -14,6 +14,7 @@ class AttemptDeliveryOnCrashScenario: Scenario {
         config.attemptDeliveryOnCrash = true
         config.addOnSendError { event in
             event.context = "OnSendError"
+            event.groupingDiscriminator = "OnSendErrorGroupingDiscriminator"
             return true
         }
     }
