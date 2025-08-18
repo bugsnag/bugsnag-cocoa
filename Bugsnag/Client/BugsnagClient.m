@@ -181,6 +181,8 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (strong, nonatomic) BugsnagSessionTracker *sessionTracker;
 
+@property (copy, nullable, atomic) NSString *groupingDiscriminator_;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -643,6 +645,24 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
 - (NSString *)context {
     return self.configuration.context;
+}
+
+// =============================================================================
+// MARK: - Grouping Discriminator
+// =============================================================================
+
+- (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator {
+    @synchronized (self) {
+        NSString *previous = self.groupingDiscriminator_;
+        self.groupingDiscriminator_ = groupingDiscriminator;
+        return previous;
+    }
+}
+
+- (NSString *_Nullable)groupingDiscriminator {
+    @synchronized (self) {
+        return self.groupingDiscriminator_;
+    }
 }
 
 // MARK: - Notify
