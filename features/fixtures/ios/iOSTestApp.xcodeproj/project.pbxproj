@@ -1108,7 +1108,7 @@
 					../../../Bugsnag/Payload,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				OTHER_SWIFT_FLAGS = "-Onone";
@@ -1150,7 +1150,7 @@
 					../../../Bugsnag/Payload,
 				);
 				INFOPLIST_FILE = iOSTestApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LINKER_DISPLAYS_MANGLED_NAMES = NO;
 				MTL_ENABLE_DEBUG_INFO = YES;
