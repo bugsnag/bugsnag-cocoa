@@ -453,7 +453,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     _apiKey = BSGDeserializeString(json[BSGKeyApiKey]);
     _context = BSGDeserializeString(json[BSGKeyContext]);
-    _context = BSGDeserializeString(json[BSGKeyGroupingDiscriminator]);
+    _groupingDiscriminator = BSGDeserializeString(json[BSGKeyGroupingDiscriminator]);
     _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _groupingHash = BSGDeserializeString(json[BSGKeyGroupingHash]);
 

@@ -26,11 +26,11 @@ class BareboneTestUnhandledErrorScenario: Scenario {
             config.bundleVersion = "12301"
             config.context = "Something"
             config.setUser("barfoo", withEmail: "barfoo@example.com", andName: "Bar Foo")
-            Bugsnag.setGroupingDiscriminator("UnhandledErrorGroupingDiscriminator")
         }
     }
     
     override func run() {
+        Bugsnag.setGroupingDiscriminator("UnhandledErrorGroupingDiscriminator")
         // Manually constructing an exception to verify handling of userInfo
         NSException(
             name: .rangeException,

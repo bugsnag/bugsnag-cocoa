@@ -134,7 +134,9 @@
             @"updateSession: v24@0:8@?16",
             @"notifyErrorOrException:stackStripDepth:block: v40@0:8@16Q24@?32",
             @"setFeatureFlags: v24@0:8@16",
-            @"featureFlags @16@0:8"
+            @"featureFlags @16@0:8",
+            @"groupingDiscriminator_ @16@0:8",
+            @"setGroupingDiscriminator_: v24@0:8@16",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
