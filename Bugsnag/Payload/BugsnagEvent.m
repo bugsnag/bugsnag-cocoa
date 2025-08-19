@@ -72,6 +72,13 @@ NSString *BSGParseGroupingHash(NSDictionary *report) {
     return nil;
 }
 
+NSString *BSGParseGroupingDiscriminator(NSDictionary *report) {
+    id groupingDiscriminator = [report valueForKeyPath:@"user.state.client.groupingDiscriminator"];
+    if ([groupingDiscriminator isKindOfClass:[NSString class]])
+        return groupingDiscriminator;
+    return nil;
+}
+
 /** 
  * Find the breadcrumb cache for the event within the report object.
  *
@@ -202,6 +209,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         }) ?: @[];
 
         _context = BSGDeserializeString(json[BSGKeyContext]);
+        _groupingDiscriminator = BSGDeserializeString(json[BSGKeyGroupingDiscriminator]);
 
         _correlation = [[BugsnagCorrelation alloc] initWithJsonDictionary:json[BSGKeyCorrelation]];
 
@@ -417,6 +425,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.deviceAppHash = deviceAppHash;
     obj.featureFlagStore = BSGParseFeatureFlags(event);
     obj.context = [event valueForKeyPath:@"user.state.client.context"];
+    obj.groupingDiscriminator = BSGParseGroupingDiscriminator(event);
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.depth = depth;
     obj.usage = [event valueForKeyPath:@"user._usage"];
@@ -444,6 +453,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     _apiKey = BSGDeserializeString(json[BSGKeyApiKey]);
     _context = BSGDeserializeString(json[BSGKeyContext]);
+    _groupingDiscriminator = BSGDeserializeString(json[BSGKeyGroupingDiscriminator]);
     _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _groupingHash = BSGDeserializeString(json[BSGKeyGroupingHash]);
 
@@ -622,6 +632,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeyApp] = [self.app toDict];
 
     event[BSGKeyContext] = [self context];
+    event[BSGKeyGroupingDiscriminator] = [self groupingDiscriminator];
     event[BSGKeyCorrelation] = [self.correlation toJsonDictionary];
     event[BSGKeyFeatureFlags] = BSGFeatureFlagStoreToJSON(self.featureFlagStore);
     event[BSGKeyGroupingHash] = self.groupingHash;

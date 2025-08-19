@@ -30,6 +30,7 @@ static BSGKey const BSGKeyClient                    = @"client";
 static BSGKey const BSGKeyCodeBundleId              = @"codeBundleId";
 static BSGKey const BSGKeyConfig                    = @"config";
 static BSGKey const BSGKeyContext                   = @"context";
+static BSGKey const BSGKeyGroupingDiscriminator     = @"groupingDiscriminator";
 static BSGKey const BSGKeyCorrelation               = @"correlation";
 static BSGKey const BSGKeyCppException              = @"cpp_exception";
 static BSGKey const BSGKeyDevelopment               = @"development";

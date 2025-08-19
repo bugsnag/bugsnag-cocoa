@@ -25,6 +25,7 @@ Feature: Callbacks can access and modify event information
     Then the error is valid for the error reporting API
     And the event "app.id" equals "customAppId"
     And the event "context" equals "customContext"
+    And the event "groupingDiscriminator" equals "customGroupingDiscriminator"
     And the event "device.id" equals "customDeviceId"
     And the event "groupingHash" equals "customGroupingHash"
     And the event "severity" equals "info"
@@ -39,6 +40,7 @@ Feature: Callbacks can access and modify event information
     Then the error is valid for the error reporting API
     And the event "app.id" equals "customAppId"
     And the event "context" equals "customContext"
+    And the event "groupingDiscriminator" equals "customGroupingDiscriminator"
     And the event "device.id" equals "customDeviceId"
     And the event "groupingHash" equals "customGroupingHash"
     And the event "severity" equals "info"
@@ -54,6 +56,7 @@ Feature: Callbacks can access and modify event information
     Then the error is valid for the error reporting API
     And the event "app.id" equals "customAppId"
     And the event "context" equals "customContext"
+    And the event "groupingDiscriminator" equals "customGroupingDiscriminator"
     And the event "device.id" equals "customDeviceId"
     And the event "groupingHash" equals "customGroupingHash"
     And the event "severity" equals "info"
@@ -69,6 +72,7 @@ Feature: Callbacks can access and modify event information
     Then the error is valid for the error reporting API
     And the event "app.id" equals "customAppId"
     And the event "context" equals "customContext"
+    And the event "groupingDiscriminator" equals "customGroupingDiscriminator"
     And the event "device.id" equals "customDeviceId"
     And the event "groupingHash" equals "customGroupingHash"
     And the event "severity" equals "info"

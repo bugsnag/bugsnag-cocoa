@@ -23,6 +23,7 @@ class OnErrorOverwriteUnhandledFalseScenario : Scenario {
         Bugsnag.notifyError(error) { (event) -> Bool in
             event.app.id = "customAppId"
             event.context = "customContext"
+            event.groupingDiscriminator = "customGroupingDiscriminator"
             event.device.id = "customDeviceId"
             event.groupingHash = "customGroupingHash"
             event.severity = .info

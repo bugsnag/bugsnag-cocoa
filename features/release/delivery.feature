@@ -168,6 +168,7 @@ Feature: Delivery of errors
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the event "context" equals "OnSendError"
+    And the event "groupingDiscriminator" equals "OnSendErrorGroupingDiscriminator"
     And the exception "errorClass" equals "<error_class>"
     And the exception "message" equals "<message>"
     And the event "metaData.error.type" equals "<error_type>"
@@ -196,6 +197,7 @@ Feature: Delivery of errors
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the event "context" equals "OnSendError"
+    And the event "groupingDiscriminator" equals "OnSendErrorGroupingDiscriminator"
     And the exception "errorClass" equals "<error_class>"
     And the exception "message" equals "<message>"
     And the event "metaData.error.type" equals "<error_type>"

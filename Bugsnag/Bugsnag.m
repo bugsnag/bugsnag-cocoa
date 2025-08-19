@@ -317,6 +317,20 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
     return nil;
 }
 
++ (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator {
+    if ([self bugsnagReadyForInternalCalls]) {
+        return [self.client setGroupingDiscriminator:groupingDiscriminator];
+    }
+    return nil;
+}
+
++ (NSString *_Nullable)groupingDiscriminator {
+    if ([self bugsnagReadyForInternalCalls]) {
+        return [self.client groupingDiscriminator];
+    }
+    return nil;
+}
+
 + (BugsnagUser *)user {
     return self.client.user;
 }

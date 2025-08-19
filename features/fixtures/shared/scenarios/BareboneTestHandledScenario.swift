@@ -88,6 +88,8 @@ class BareboneTestHandledScenario: Scenario {
             culpa qui officia deserunt mollit anim id est laborum.
             """, key: "shouldBeTruncated", section: "Other")
         
+        Bugsnag.setGroupingDiscriminator("HandledErrorGroupingDiscriminator")
+        
         Bugsnag.notify(NSException(name: .rangeException,
                                    reason: "Something is out of range",
                                    userInfo: ["date": Date(timeIntervalSinceReferenceDate: 0),

@@ -290,6 +290,16 @@ BUGSNAG_EXTERN
  */
 + (NSString *_Nullable)context;
 
+/**
+ * Sets the grouping discriminator
+ */
++ (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator;
+
+/**
+ * Retrieves the grouping discriminator
+ */
++ (NSString *_Nullable)groupingDiscriminator;
+
 // =============================================================================
 // MARK: - User
 // =============================================================================

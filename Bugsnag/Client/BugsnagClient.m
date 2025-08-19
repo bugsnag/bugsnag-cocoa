@@ -181,6 +181,8 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (strong, nonatomic) BugsnagSessionTracker *sessionTracker;
 
+@property (copy, nullable, atomic) NSString *groupingDiscriminator_;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -219,6 +221,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{
             BSGKeyClient: @{
                 BSGKeyContext: _configuration.context ?: [NSNull null],
+                BSGKeyGroupingDiscriminator: _groupingDiscriminator_ ?: [NSNull null],
             },
             BSGKeyUser: [_configuration.user toJson] ?: @{}
         }];
@@ -645,6 +648,25 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return self.configuration.context;
 }
 
+// =============================================================================
+// MARK: - Grouping Discriminator
+// =============================================================================
+
+- (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator {
+    @synchronized (self) {
+        NSString *previous = self.groupingDiscriminator_;
+        self.groupingDiscriminator_ = groupingDiscriminator;
+        [self.state addMetadata:groupingDiscriminator withKey:BSGKeyGroupingDiscriminator toSection:BSGKeyClient];
+        return previous;
+    }
+}
+
+- (NSString *_Nullable)groupingDiscriminator {
+    @synchronized (self) {
+        return self.groupingDiscriminator_;
+    }
+}
+
 // MARK: - Notify
 
 // Here, we pass all public notify APIs to a common handling method
@@ -767,6 +789,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                     session:nil /* the session's event counts have not yet been incremented! */];
     event.apiKey = self.configuration.apiKey;
     event.context = context;
+    event.groupingDiscriminator = self.groupingDiscriminator_;
     event.originalError = errorOrException;
     event.correlation = correlation;
 
@@ -1076,6 +1099,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                               session:self.sessionTracker.runningSession];
 
     self.appHangEvent.context = self.context;
+    self.appHangEvent.groupingDiscriminator = self.groupingDiscriminator_;
 
     @synchronized (self.featureFlagStore) {
         self.appHangEvent.featureFlagStore = [self.featureFlagStore copyMemoryStore];
@@ -1227,6 +1251,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                               session:session];
 
     event.context = stateDict[BSGKeyClient][BSGKeyContext];
+    event.groupingDiscriminator = stateDict[BSGKeyClient][BSGKeyGroupingDiscriminator];
     event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore persistedFlags]);
 
     return event;

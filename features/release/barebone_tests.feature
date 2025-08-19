@@ -122,6 +122,7 @@ Feature: Barebone tests
     And the event "breadcrumbs.2.type" equals "error"
     And the event "breadcrumbs.3.name" equals "About to decode a payload..."
     And the event "context" equals "NSCocoaErrorDomain (4864)"
+    And the event "groupingDiscriminator" equals "HandledErrorGroupingDiscriminator"
     And on iOS 13 and later, the event "metaData.app.freeMemory" is a number
     And on iOS 13 and later, the event "metaData.app.memoryLimit" is a number
     And the event "metaData._usage" is null
@@ -167,6 +168,7 @@ Feature: Barebone tests
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" is null
     And the event "context" equals "Something"
+    And the event "groupingDiscriminator" equals "UnhandledErrorGroupingDiscriminator"
     And the event "device.freeMemory" is less than the event "device.totalMemory"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
@@ -277,6 +279,7 @@ Feature: Barebone tests
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "Memory Warning"
     And the event "context" equals "OOM Scenario"
+    And the event "groupingDiscriminator" equals "OOMScenarioGroupingDiscriminator"
     And the event "device.id" is not null
     And the event "device.jailbroken" is false
     And the event "device.locale" is not null
