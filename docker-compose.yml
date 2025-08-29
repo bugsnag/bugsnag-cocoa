@@ -26,7 +26,7 @@ x-common-environment: &common-environment
 
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:
@@ -38,7 +38,7 @@ services:
       - ./reports/:/app/reports/
 
   cocoa-maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
