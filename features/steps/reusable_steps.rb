@@ -72,13 +72,6 @@ Then('the event {string} is between {float} and {float}') do |field, lower, uppe
                   "Expected a value between #{lower} and #{upper}, but received #{value}")
 end
 
-Then('the event {string} is between {int} and {int}') do |field, lower, upper|
-  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
-  Maze.check.not_nil(value, 'Expected a value')
-  Maze.check.true(lower <= value && value <= upper,
-                  "Expected a value between #{lower} and #{upper}, but received #{value}")
-end
-
 Then('the event {string} is less than the event {string}') do |field1, field2|
   value1 = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field1}")
   Maze.check.not_nil(value1, 'Expected a value')

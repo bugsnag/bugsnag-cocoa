@@ -21,6 +21,7 @@ DerivedData
 Pods
 Carthage
 *.idea
+bugsnag-cocoa.iml
 features/fixtures/carthage-proj
 IDEWorkspaceChecks.plist
 Podfile.lock
@@ -33,6 +34,7 @@ Package.resolved
 /infer-out
 /oclint.json
 bb.ready
+/reports
 /maze_output
 Gemfile.lock
 Bugsnag.xcframework.zip
