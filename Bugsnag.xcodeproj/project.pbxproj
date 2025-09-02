@@ -840,6 +840,10 @@
 		9627A13C2D92201B00696E3C /* WriterTestsSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A13A2D92201B00696E3C /* WriterTestsSupport.m */; };
 		9627A13D2D92201B00696E3C /* WriterTestsSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A13A2D92201B00696E3C /* WriterTestsSupport.m */; };
 		9627A13E2D92201B00696E3C /* WriterTestsSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A13A2D92201B00696E3C /* WriterTestsSupport.m */; };
+		962CE8132E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		962CE8142E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		962CE8152E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		962CE8162E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -3088,6 +3092,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8132E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 				004E354C2487CC08007FBAE4 /* LICENSE in Resources */,
 				004E35492487CC04007FBAE4 /* README.md in Resources */,
 			);
@@ -3108,6 +3113,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8142E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 				004E354D2487CC09007FBAE4 /* LICENSE in Resources */,
 				004E354A2487CC04007FBAE4 /* README.md in Resources */,
 			);
@@ -3128,6 +3134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8152E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 				004E354E2487CC09007FBAE4 /* LICENSE in Resources */,
 				004E354B2487CC05007FBAE4 /* README.md in Resources */,
 			);
@@ -3158,6 +3165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8162E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4440,8 +4448,8 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				MARKETING_VERSION = 6.32.1;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 6.32.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4453,8 +4461,8 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				MARKETING_VERSION = 6.32.1;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 6.32.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
