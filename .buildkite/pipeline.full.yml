@@ -608,6 +608,8 @@ steps:
           limit: 2
         - exit_status: 104 # App hang related error
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 16 app hang tests'
@@ -645,6 +647,8 @@ steps:
           limit: 2
         - exit_status: 104 # App hang related error
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 15 app hang tests'
@@ -680,6 +684,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 14 app hang tests'
@@ -714,6 +720,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
