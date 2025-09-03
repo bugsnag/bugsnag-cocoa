@@ -323,9 +323,9 @@ steps:
     concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
-      - automatic:
-          - exit_status: 103  # Appium session failed
-            limit: 2
+      automatic:
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 15 E2E tests batch 2'
     depends_on: "cocoa_fixture"
@@ -359,9 +359,9 @@ steps:
     concurrency_group: 'bitbar'
     concurrency_method: eager
     retry:
-      - automatic:
-          - exit_status: 103  # Appium session failed
-            limit: 2
+      automatic:
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 14 E2E tests batch 1'
     depends_on:
