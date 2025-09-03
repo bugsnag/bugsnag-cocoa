@@ -493,6 +493,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':browserstack: iOS 18 E2E tests batch 2'
     depends_on:
@@ -530,6 +532,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 18 app hang tests'
@@ -566,6 +570,8 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
         - exit_status: 104 # App hang related error
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   ##############################################################################
@@ -612,6 +618,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 16 barebone tests'
     depends_on:
@@ -647,6 +655,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   - label: ':bitbar: iOS 15 barebone tests'
@@ -684,6 +694,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 14 barebone tests'
     depends_on:
@@ -720,6 +732,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 13 barebone tests'
     depends_on:
@@ -755,6 +769,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   ##############################################################################
@@ -796,6 +812,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 13 debug configuration tests'
     depends_on:
@@ -833,6 +851,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   - label: 'macOS 15 debug E2E tests'
