@@ -73,6 +73,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 16 XcFramework barebone E2E tests'
     depends_on:
@@ -110,6 +112,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 13 XcFramework barebone E2E tests'
     depends_on:
@@ -146,6 +150,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   - label: 'macOS 14 XcFramework barebone E2E tests'
@@ -242,6 +248,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 16 E2E tests batch 2'
     depends_on:
@@ -279,6 +287,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 15 E2E tests batch 1'
     depends_on: "cocoa_fixture"
@@ -312,6 +322,10 @@ steps:
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
+    retry:
+      - automatic:
+          - exit_status: 103  # Appium session failed
+            limit: 2
 
   - label: ':bitbar: iOS 15 E2E tests batch 2'
     depends_on: "cocoa_fixture"
@@ -344,6 +358,10 @@ steps:
     concurrency: 25
     concurrency_group: 'bitbar'
     concurrency_method: eager
+    retry:
+      - automatic:
+          - exit_status: 103  # Appium session failed
+            limit: 2
 
   - label: ':bitbar: iOS 14 E2E tests batch 1'
     depends_on:
@@ -382,6 +400,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 14 E2E tests batch 2'
     depends_on:
@@ -418,6 +438,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   - label: ':bitbar: iOS 13 E2E tests batch 1'
@@ -457,6 +479,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 13 E2E tests batch 2'
     depends_on:
@@ -493,6 +517,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   #
@@ -535,6 +561,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 17 E2E tests batch 2'
     depends_on:
@@ -571,6 +599,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   - label: ':browserstack: iOS 17 app hang tests'
