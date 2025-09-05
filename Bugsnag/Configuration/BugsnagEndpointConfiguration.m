@@ -10,8 +10,8 @@
 
 static NSString *const BSGBugsnagNotifyURL   = @"https://notify.bugsnag.com";
 static NSString *const BSGBugsnagSessionURL  = @"https://sessions.bugsnag.com";
-static NSString *const BSGHubNotifyURL   = @"https://notify.insighthub.smartbear.com";
-static NSString *const BSGHubSessionURL  = @"https://sessions.insighthub.smartbear.com";
+static NSString *const BSGHubNotifyURL   = @"https://notify.bugsnag.smartbear.com";
+static NSString *const BSGHubSessionURL  = @"https://sessions.bugsnag.smartbear.com";
 static NSString *const BSGHubPrefix      = @"00000";
 
 @implementation BugsnagEndpointConfiguration

@@ -31,7 +31,7 @@ BUGSNAG_EXTERN
 @property (copy, nonatomic) NSString *sessions;
 
 /**
- * Returns YES if the endpoints have been customized, i.e., they are not the default Bugsnag or InsightHub endpoints.
+ * Returns YES if the endpoints have been customized, i.e., they are not the default Bugsnag or Secondary URL endpoints.
  */
 @property (nonatomic, readonly) BOOL isCustom;
 

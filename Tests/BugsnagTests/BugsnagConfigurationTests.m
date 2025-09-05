@@ -670,14 +670,14 @@ static NSString *const HUB_APIKEY_32CHAR =
         [[BugsnagConfiguration alloc] initWithApiKey:HUB_APIKEY_32CHAR];
 
     XCTAssertEqualObjects(config.endpoints.notify,
-                          @"https://notify.insighthub.smartbear.com");
+                          @"https://notify.bugsnag.smartbear.com");
     XCTAssertEqualObjects(config.endpoints.sessions,
-                          @"https://sessions.insighthub.smartbear.com");
+                          @"https://sessions.bugsnag.smartbear.com");
 
     XCTAssertEqualObjects(config.notifyURL,
-                          [NSURL URLWithString:@"https://notify.insighthub.smartbear.com"]);
+                          [NSURL URLWithString:@"https://notify.bugsnag.smartbear.com"]);
     XCTAssertEqualObjects(config.sessionURL,
-                          [NSURL URLWithString:@"https://sessions.insighthub.smartbear.com"]);
+                          [NSURL URLWithString:@"https://sessions.bugsnag.smartbear.com"]);
 }
 
 - (void)testSwitchingApiKeyUpdatesEndpointsToHubDefaults {
@@ -694,20 +694,20 @@ static NSString *const HUB_APIKEY_32CHAR =
     [config setApiKey:HUB_APIKEY_32CHAR];
 
     XCTAssertEqualObjects(config.endpoints.notify,
-                          @"https://notify.insighthub.smartbear.com");
+                          @"https://notify.bugsnag.smartbear.com");
     XCTAssertEqualObjects(config.endpoints.sessions,
-                          @"https://sessions.insighthub.smartbear.com");
+                          @"https://sessions.bugsnag.smartbear.com");
 }
 
 - (void)testSwitchingApiKeyUpdatesEndpointsToBugsnagDefaults {
     BugsnagConfiguration *config =
         [[BugsnagConfiguration alloc] initWithApiKey:HUB_APIKEY_32CHAR];
 
-    // starts on InsightHub cluster
+    // starts on secondary cluster
     XCTAssertEqualObjects(config.endpoints.notify,
-                          @"https://notify.insighthub.smartbear.com");
+                          @"https://notify.bugsnag.smartbear.com");
     XCTAssertEqualObjects(config.endpoints.sessions,
-                          @"https://sessions.insighthub.smartbear.com");
+                          @"https://sessions.bugsnag.smartbear.com");
 
     // switch to a regular Bugsnag key
     [config setApiKey:DUMMY_APIKEY_32CHAR_1];
@@ -734,7 +734,7 @@ static NSString *const HUB_APIKEY_32CHAR =
     XCTAssertEqualObjects(config.endpoints.sessions, @"http://localhost:8000");
 }
 
-- (void)testCustomEndpointsAreNotOverwrittenWhenSwitchingFromInsightHubToBugsnag {
+- (void)testCustomEndpointsAreNotOverwrittenWhenSwitchingFromSecondaryToBugsnag {
     BugsnagConfiguration *config =
         [[BugsnagConfiguration alloc] initWithApiKey:HUB_APIKEY_32CHAR];
 
