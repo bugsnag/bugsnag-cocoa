@@ -75,6 +75,7 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "BSGDiagnostics.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -145,6 +146,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
         BugsnagBreadcrumbsWriteCrashReport(writer, requiresAsyncSafety);
         BugsnagFeatureFlagsWriteCrashReport(writer, requiresAsyncSafety);
+        BugsnagDiagnosticsWriteCrashReport(writer, requiresAsyncSafety);
 
         // Create a file to indicate that the crash has been handled by
         // the library. This exists in case the subsequent `onCrash` handler
