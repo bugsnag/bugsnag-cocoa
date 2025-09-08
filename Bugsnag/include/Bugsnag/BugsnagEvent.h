@@ -49,6 +49,11 @@ BUGSNAG_EXTERN
 @property (readwrite, copy, nullable, nonatomic) NSString *context;
 
 /**
+ *  Grouping discriminator for the event
+ */
+@property (readwrite, copy, nullable, nonatomic) NSString *groupingDiscriminator;
+
+/**
  *  The severity of the error generating the report
  */
 @property (readwrite, nonatomic) BSGSeverity severity;

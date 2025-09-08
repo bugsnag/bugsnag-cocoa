@@ -13,7 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGCompositeFeatureFlagStore ()
 
 @property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *persistedFlags;

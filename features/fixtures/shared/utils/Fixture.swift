@@ -13,6 +13,43 @@ protocol CommandReceiver {
     func receiveCommand(command: MazeRunnerCommand)
 }
 
+func copyDirectory(src: URL, dst: URL) {
+    logInfo("Attempting to copy \"\(src)\" to \"\(dst)\"")
+    let fm = FileManager.default
+    if fm.fileExists(atPath: src.path) {
+        do {
+            try fm.copyItem(at: src, to: dst)
+        } catch {
+            logError("Failed to copy \"\(src)\" to \"\(dst)\": \(error)")
+        }
+    }
+}
+
+func copyCachesToDocumentsFolder() {
+    let fm = FileManager.default
+    let identifier = Bundle.main.bundleIdentifier ?? ProcessInfo.processInfo.processName
+    let cachesUrl = fm.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+    let documentsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let rootPathComponent = "com.bugsnag.Bugsnag"
+    let sharedPathComponent = "bugsnag-shared-\(identifier)"
+    let dstCache = documentsUrl.appendingPathComponent("BugsnagCachesCopy")
+    if fm.fileExists(atPath: dstCache.path) {
+        do {
+            try fm.removeItem(at: dstCache)
+        } catch {
+            logError("Failed to remove \"\(dstCache)\": \(error)")
+        }
+    }
+    do {
+        try fm.createDirectory(atPath: dstCache.path, withIntermediateDirectories: true)
+    } catch {
+        logError("Failed to create \"\(dstCache)\": \(error)")
+    }
+
+    copyDirectory(src: cachesUrl.appendingPathComponent(rootPathComponent), dst: dstCache.appendingPathComponent(rootPathComponent))
+    copyDirectory(src: cachesUrl.appendingPathComponent(sharedPathComponent), dst: dstCache.appendingPathComponent(sharedPathComponent))
+}
+
 @objc
 class Fixture: NSObject, CommandReceiver {
     static let defaultApiKey = "12312312312312312312312312312312"
@@ -29,6 +66,7 @@ class Fixture: NSObject, CommandReceiver {
         self.defaultMazeRunnerURL = defaultMazeRunnerURL
         self.shouldLoadMazeRunnerURL = shouldLoadMazeRunnerURL
         fixtureConfig = FixtureConfig(apiKey: Fixture.defaultApiKey, mazeRunnerBaseAddress: defaultMazeRunnerURL)
+        copyCachesToDocumentsFolder()
     }
 
     @objc func start() {

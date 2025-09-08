@@ -31,6 +31,7 @@ Feature: App hangs
     And the event "session.events.unhandled" equals 0
 
     And the event "context" equals "App Hang Scenario"
+    And the event "groupingDiscriminator" equals "AppHangScenarioGroupingDiscriminator"
 
     And the event contains the following feature flags:
       | featureFlag | variant |
@@ -114,7 +115,7 @@ Feature: App hangs
     And I set the HTTP status code to 500
     And I configure Bugsnag for "AppHangFatalOnlyScenario"
     And I wait to receive an error
-    And I clear the error queue
+    And I discard all errors
     # Wait for fixture to receive the response and save the payload
     And I wait for 2 seconds
     And I kill and relaunch the app

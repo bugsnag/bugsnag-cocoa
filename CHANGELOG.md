@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## 6.33.0 (2025-09-08)
+
+### Enhancements
+
+* Added `groupingDiscriminator` property to `BugsnagEvent` and methods for setting and getting the global `groupingDiscriminator` to `Bugsnag` and `BugsnagClient`.
+  [#1830](https://github.com/bugsnag/bugsnag-cocoa/pull/1830)
+  
+* Set default endpoints based on API key [#1801](https://github.com/bugsnag/bugsnag-cocoa/pull/1801)
+
+### Bug Fixes
+
+* Added the missing `PrivacyInfo.xcprivacy` file to xcframeworks.
+  [#1837](https://github.com/bugsnag/bugsnag-cocoa/pull/1837)
+
+* Added missing MARKETING_VERSION build setting to multiple targets. This is required for generating CFBundleShortVersionString in some situations.
+  [#1766](https://github.com/bugsnag/bugsnag-cocoa/pull/1766)
+
 ## 6.32.2 (2025-03-25)
 
 ### Bug Fixes

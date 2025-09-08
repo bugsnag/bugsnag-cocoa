@@ -17,6 +17,7 @@ class AppHangScenario: Scenario {
     
     override func run() {
         Bugsnag.setContext("App Hang Scenario")
+        Bugsnag.setGroupingDiscriminator("AppHangScenarioGroupingDiscriminator")
         let timeInterval = TimeInterval(args[0])!
         logDebug("Simulating an app hang of \(timeInterval) seconds...")
         if timeInterval > 2 {

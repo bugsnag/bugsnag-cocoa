@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class BugsnagThread;
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BugsnagError ()
 
 - (instancetype)initWithKSCrashReport:(NSDictionary *)event stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace;

@@ -168,7 +168,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BugsnagClient () <BSGBreadcrumbSink>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
@@ -180,6 +180,8 @@ BSG_OBJC_DIRECT_MEMBERS
 @property (readwrite, nullable, nonatomic) BugsnagLastRunInfo *lastRunInfo;
 
 @property (strong, nonatomic) BugsnagSessionTracker *sessionTracker;
+
+@property (copy, nullable, atomic) NSString *groupingDiscriminator_;
 
 @end
 
@@ -202,7 +204,7 @@ BSG_OBJC_DIRECT_MEMBERS
 __attribute__((annotate("oclint:suppress[long class]")))
 __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagClient
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration {
@@ -219,6 +221,7 @@ BSG_OBJC_DIRECT_MEMBERS
         _state = [[BugsnagMetadata alloc] initWithDictionary:@{
             BSGKeyClient: @{
                 BSGKeyContext: _configuration.context ?: [NSNull null],
+                BSGKeyGroupingDiscriminator: _groupingDiscriminator_ ?: [NSNull null],
             },
             BSGKeyUser: [_configuration.user toJson] ?: @{}
         }];
@@ -645,6 +648,25 @@ BSG_OBJC_DIRECT_MEMBERS
     return self.configuration.context;
 }
 
+// =============================================================================
+// MARK: - Grouping Discriminator
+// =============================================================================
+
+- (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator {
+    @synchronized (self) {
+        NSString *previous = self.groupingDiscriminator_;
+        self.groupingDiscriminator_ = groupingDiscriminator;
+        [self.state addMetadata:groupingDiscriminator withKey:BSGKeyGroupingDiscriminator toSection:BSGKeyClient];
+        return previous;
+    }
+}
+
+- (NSString *_Nullable)groupingDiscriminator {
+    @synchronized (self) {
+        return self.groupingDiscriminator_;
+    }
+}
+
 // MARK: - Notify
 
 // Here, we pass all public notify APIs to a common handling method
@@ -767,6 +789,7 @@ BSG_OBJC_DIRECT_MEMBERS
                                                     session:nil /* the session's event counts have not yet been incremented! */];
     event.apiKey = self.configuration.apiKey;
     event.context = context;
+    event.groupingDiscriminator = self.groupingDiscriminator_;
     event.originalError = errorOrException;
     event.correlation = correlation;
 
@@ -1076,6 +1099,7 @@ BSG_OBJC_DIRECT_MEMBERS
                               session:self.sessionTracker.runningSession];
 
     self.appHangEvent.context = self.context;
+    self.appHangEvent.groupingDiscriminator = self.groupingDiscriminator_;
 
     @synchronized (self.featureFlagStore) {
         self.appHangEvent.featureFlagStore = [self.featureFlagStore copyMemoryStore];
@@ -1227,6 +1251,7 @@ BSG_OBJC_DIRECT_MEMBERS
                               session:session];
 
     event.context = stateDict[BSGKeyClient][BSGKeyContext];
+    event.groupingDiscriminator = stateDict[BSGKeyClient][BSGKeyGroupingDiscriminator];
     event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore persistedFlags]);
 
     return event;

@@ -271,6 +271,7 @@
         [stackframe symbolicateIfNeeded];
         XCTAssertNotNil(stackframe.symbolAddress);
         XCTAssertNil(stackframe.type);
+        
         XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method] ||
                       // Sometimes we do a better job at symbolication (-:
                       [callStackSymbols[idx] containsString:@"???"] ||
@@ -278,7 +279,9 @@
                       [stackframe.method isEqualToString:@"<redacted>"] ||
                       // callStackSymbols contains the wrong symbol name - "__copy_helper_block_e8_32s"
                       // lldb agrees that the symbol should be "__RunTests_block_invoke_2"
-                      [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"]);
+                      [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"] ||
+                      // Internal test function
+                      [stackframe.method isEqualToString:@"RunTestsFromRunLoop"]);
         
         if ([stackframe.method isEqualToString:@"main"]) {
             didSeeMain = YES;

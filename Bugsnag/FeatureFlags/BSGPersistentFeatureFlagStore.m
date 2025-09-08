@@ -12,7 +12,7 @@
 #import "BugsnagLogger.h"
 #import <Foundation/Foundation.h>
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGPersistentFeatureFlagStore ()
 
 @property(nonatomic, readwrite) uint64_t currentIndex;
@@ -20,7 +20,7 @@ BSG_OBJC_DIRECT_MEMBERS
 
 @end
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGPersistentFeatureFlagStore
 
 - (nonnull instancetype)initWithStorageDirectory:(NSString *)directory {

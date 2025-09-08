@@ -20,12 +20,13 @@ x-common-environment: &common-environment
   MAZE_BUGSNAG_API_KEY:
   MAZE_APPIUM_BUGSNAG_API_KEY:
   MAZE_REPEATER_API_KEY:
+  MAZE_HUB_REPEATER_API_KEY:
   MAZE_SCENARIO_BUGSNAG_API_KEY:
   MAZE_NO_FAIL_FAST:
 
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:
@@ -37,7 +38,7 @@ services:
       - ./reports/:/app/reports/
 
   cocoa-maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:

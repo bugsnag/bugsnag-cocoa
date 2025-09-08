@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BugsnagUser ()
 
 - (instancetype)initWithId:(nullable NSString *)id name:(nullable NSString *)name emailAddress:(nullable NSString *)emailAddress;

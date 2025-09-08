@@ -840,6 +840,10 @@
 		9627A13C2D92201B00696E3C /* WriterTestsSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A13A2D92201B00696E3C /* WriterTestsSupport.m */; };
 		9627A13D2D92201B00696E3C /* WriterTestsSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A13A2D92201B00696E3C /* WriterTestsSupport.m */; };
 		9627A13E2D92201B00696E3C /* WriterTestsSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A13A2D92201B00696E3C /* WriterTestsSupport.m */; };
+		962CE8132E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		962CE8142E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		962CE8152E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		962CE8162E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -3088,6 +3092,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8132E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 				004E354C2487CC08007FBAE4 /* LICENSE in Resources */,
 				004E35492487CC04007FBAE4 /* README.md in Resources */,
 			);
@@ -3108,6 +3113,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8142E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 				004E354D2487CC09007FBAE4 /* LICENSE in Resources */,
 				004E354A2487CC04007FBAE4 /* README.md in Resources */,
 			);
@@ -3128,6 +3134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8152E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 				004E354E2487CC09007FBAE4 /* LICENSE in Resources */,
 				004E354B2487CC05007FBAE4 /* README.md in Resources */,
 			);
@@ -3158,6 +3165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				962CE8162E65945200380522 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4099,6 +4107,7 @@
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MARKETING_VERSION = 6.33.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -4142,6 +4151,7 @@
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MARKETING_VERSION = 6.33.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -4172,16 +4182,15 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4200,11 +4209,13 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4216,16 +4227,14 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
@@ -4246,6 +4255,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
@@ -4266,16 +4276,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -4299,6 +4307,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -4310,16 +4319,14 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4339,6 +4346,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4356,16 +4364,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -4388,6 +4394,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -4399,16 +4406,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = Tests/BugsnagTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -4428,6 +4433,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -4442,6 +4448,8 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4453,6 +4461,8 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4470,6 +4480,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.TestHost-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4487,6 +4498,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.TestHost-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4527,10 +4539,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -4545,7 +4554,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = watchos;
@@ -4603,7 +4612,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = watchos;
@@ -4642,10 +4651,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"BSG_OBJC_DIRECT_MEMBERS=''",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -4653,7 +4659,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -4700,7 +4706,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 6.33.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;

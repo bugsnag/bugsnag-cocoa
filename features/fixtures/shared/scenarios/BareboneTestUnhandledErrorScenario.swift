@@ -30,6 +30,7 @@ class BareboneTestUnhandledErrorScenario: Scenario {
     }
     
     override func run() {
+        Bugsnag.setGroupingDiscriminator("UnhandledErrorGroupingDiscriminator")
         // Manually constructing an exception to verify handling of userInfo
         NSException(
             name: .rangeException,

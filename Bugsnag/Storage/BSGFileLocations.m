@@ -96,7 +96,7 @@ static NSString *getAndCreateSubdir(NSString *rootPath, NSString *relativePath) 
     return subdirPath;
 }
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGFileLocations
 
 + (instancetype) current {

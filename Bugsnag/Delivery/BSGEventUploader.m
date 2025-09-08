@@ -39,7 +39,7 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 
 // MARK: -
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGEventUploader
 
 @synthesize configuration = _configuration;

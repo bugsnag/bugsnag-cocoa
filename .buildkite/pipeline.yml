@@ -11,9 +11,9 @@ steps:
     key: framework_build
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     commands:
       - make build_xcframework
       - make build_swift
@@ -21,7 +21,7 @@ steps:
       - zip -ry Bugsnag.xcframework.zip build/xcframeworks/products/Bugsnag.xcframework
       - zip -ry BugsnagNetworkRequestPlugin.xcframework.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework
     plugins:
-      - artifacts#v1.9.3:
+      - artifacts#v1.9.4:
           upload:
             - "Bugsnag.xcframework.zip"
             - "BugsnagNetworkRequestPlugin.xcframework.zip"
@@ -30,9 +30,9 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp_Release.ipa
       - features/fixtures/ios/output/iOSTestApp_Debug.ipa
@@ -43,27 +43,31 @@ steps:
       - features/fixtures/ios/output/ipa_url_bb_debug.txt
       - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
-      - bundle install
-      - make test-fixtures
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_release.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Release.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_release.txt
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bb_debug.txt
-      - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestApp_Debug.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_bs_debug.txt
+      - ruby scripts/build-test-fixture.rb
 
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-14
+      queue: macos-15
     commands:
       - ./scripts/build-carthage.sh
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         upload: "features/fixtures/carthage/carthage-*.log"
 
   ##############################################################################
   #
   # Unit tests
   #
+
+  - label: ARM macOS 15 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
 
   - label: ARM macOS 14 unit tests
     timeout_in_minutes: 10
@@ -128,23 +132,47 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: iOS 18 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15-isolated
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE="iPhone 16"
+    env:
+      XCODE_VERSION: 16.3.0
+    artifact_paths:
+      - logs/*
+
   - label: iOS 17 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15-isolated
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 15"
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
+    artifact_paths:
+      - logs/*
+
+  - label: iOS 16 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15-isolated
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 14"
+    env:
+      XCODE_VERSION: 16.3.0
     artifact_paths:
       - logs/*
 
   - label: iOS 15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
     artifact_paths:
       - logs/*
 
@@ -157,12 +185,25 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: tvOS 18 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=18.4
+    artifact_paths:
+      - logs/*
+
   - label: tvOS 15 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-12-arm
+      queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.0
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=15.4
     artifact_paths:
       - logs/*
 
@@ -175,14 +216,25 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: watchOS 11 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-15-isolated
+    env:
+      XCODE_VERSION: 16.3.0
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=11.4 SDK=watchsimulator11.4 DEVICE="Apple Watch Series 10 (46mm)"
+    artifact_paths:
+      - logs/*
+
   - label: watchOS 8 unit tests
     timeout_in_minutes: 10
     agents:
-      queue: macos-14
+      queue: macos-15
     env:
-      XCODE_VERSION: 15.3.0
+      XCODE_VERSION: 16.3.0
     commands:
-      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator10.4
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator11.4 DEVICE="Apple Watch Series 7 (41mm)"
     artifact_paths:
       - logs/*
 
@@ -197,19 +249,20 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: 'ARM macOS 14 E2E tests'
+  - label: 'ARM macOS 15 E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 120
     agents:
-      queue: macos-14
+      queue: macos-15-isolated
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -220,6 +273,30 @@ steps:
         --os=macos
         --fail-fast
 
+  - label: 'ARM macOS 14 E2E tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 120
+    agents:
+      queue: macos-14-isolated
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release/barebone_tests.feature
+        --os=macos
+        --fail-fast
+
   - label: 'ARM macOS 13 barebones E2E tests'
     depends_on:
       - cocoa_fixture
@@ -227,12 +304,13 @@ steps:
     agents:
       queue: macos-13-arm
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -250,12 +328,13 @@ steps:
     agents:
       queue: macos-12-arm
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -293,10 +372,13 @@ steps:
     agents:
       queue: macos-11
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
-      test-collector#v1.10.2:
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -314,9 +396,12 @@ steps:
     agents:
       queue: macos-10.15
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload: ["macOSTestApp.log", "maze_output/failed/**/*"]
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -331,11 +416,12 @@ steps:
     agents:
       queue: macos-10.14
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -350,11 +436,12 @@ steps:
     agents:
       queue: macos-10.13
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
@@ -377,10 +464,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         service-ports: true
@@ -393,7 +482,7 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[e-z].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -404,6 +493,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':browserstack: iOS 18 E2E tests batch 2'
     depends_on:
@@ -412,10 +503,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         service-ports: true
@@ -428,7 +521,7 @@ steps:
           - "--fail-fast"
           - "features/release"
           - "--exclude=features/release/[a-d].*.feature$"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -439,6 +532,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: iOS 18 app hang tests'
@@ -448,10 +543,12 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload: "maze_output/failed/**/*"
-      docker-compose#v3.7.0:
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
@@ -461,7 +558,7 @@ steps:
           - "--appium-version=1.21.0"
           - "--fail-fast"
           - "features/app_hangs.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -473,6 +570,8 @@ steps:
         - exit_status: -1  # Agent was lost
           limit: 2
         - exit_status: 104 # App hang related error
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   ##############################################################################
@@ -491,9 +590,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -506,7 +607,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -517,6 +618,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 16 barebone tests'
     depends_on:
@@ -525,9 +628,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -540,7 +645,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -551,6 +656,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 15 barebone tests'
     depends_on:
@@ -559,9 +666,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -574,7 +683,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -585,6 +694,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 14 barebone tests'
     depends_on:
@@ -593,9 +704,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -608,7 +721,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -619,6 +732,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 13 barebone tests'
     depends_on:
@@ -627,9 +742,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -642,7 +759,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
           - "features/release/barebone_tests.feature"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -652,6 +769,8 @@ steps:
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
           limit: 2
 
   ##############################################################################
@@ -666,9 +785,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_debug.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
@@ -677,8 +798,10 @@ steps:
           - "--farm=bs"
           - "--device=IOS_18"
           - "--fail-fast"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/debug"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -689,6 +812,8 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
   - label: ':bitbar: iOS 13 debug configuration tests'
     depends_on:
@@ -697,9 +822,11 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.9.3:
+      artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
-        upload: "maze_output/failed/**/*"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
         pull: cocoa-maze-runner-bitbar
         run: cocoa-maze-runner-bitbar
@@ -711,8 +838,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+          - "--repeater-api-key="
+          - "--hub-repeater-api-key="
           - "features/debug"
-      test-collector#v1.10.2:
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -723,20 +852,23 @@ steps:
       automatic:
         - exit_status: -1  # Agent was lost
           limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
 
-  - label: 'macOS 14 debug E2E tests'
+  - label: 'macOS 15 debug E2E tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 20
     agents:
-      queue: macos-14
+      queue: macos-15-isolated
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
-      test-collector#v1.10.2:
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
@@ -744,6 +876,8 @@ steps:
       - bundle install
       - bundle exec maze-runner
         features/debug
+        --repeater-api-key=
+        --hub-repeater-api-key=
         --os=macos
         --fail-fast
 
@@ -754,15 +888,18 @@ steps:
     agents:
       queue: macos-10.13
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
         upload:
           - "macOSTestApp.log"
           - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
     commands:
       - bundle install
       - bundle exec maze-runner
         features/debug
+        --repeater-api-key=
+        --hub-repeater-api-key=
         --os=macos
         --fail-fast
 

@@ -82,6 +82,10 @@ Before('@skip_ios_17') do |_scenario|
   skip_between('ios', 17, 17.99)
 end
 
+Before('@skip_ios_18') do |_scenario|
+  skip_between('ios', 18, 18.99)
+end
+
 Before('@skip_below_ios_11') do |_scenario|
   skip_below('ios', 11)
 end
@@ -162,10 +166,10 @@ Maze.hooks.after do |scenario|
   when 'ios'
     manager = Maze::Api::Appium::FileManager.new
     begin
-      data = manager.read_app_file 'kscrash.log'
-      File.open(File.join(path, 'kscrash.log'), 'wb') { |file| file << data }
+      data = manager.read_app_folder
+      File.open(File.join(path, 'Documents.zip'), 'wb') { |file| file << data }
     rescue StandardError
-      puts "read_app_file failed: #{$ERROR_INFO}"
+      puts "read_app_folder failed: #{$ERROR_INFO}"
     end
   end
 end

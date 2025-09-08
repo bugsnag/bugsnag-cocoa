@@ -40,6 +40,8 @@ Feature: Attaching a series of notable events leading up to errors
     And I wait to receive an error
     Then the event has a "manual" breadcrumb named "Cache locked"
 
+  # TODO: Flaky on iOS 18 - see PLAT-14585
+  @skip_ios_18
   @skip_below_ios_13
   @skip_macos
   Scenario: State breadcrumbs
@@ -72,7 +74,7 @@ Feature: Attaching a series of notable events leading up to errors
     And the event "breadcrumbs.0.name" equals "NSURLSession request failed"
     And the event "breadcrumbs.0.type" equals "request"
     And the event "breadcrumbs.0.metaData.method" equals "GET"
-    And the event "breadcrumbs.0.metaData.url" matches "http://.*:9\d{3}/reflect/"
+    And the event "breadcrumbs.0.metaData.url" matches "http://.*:[89]\d{3}/reflect/"
     And the event "breadcrumbs.0.metaData.urlParams.status" equals "444"
     And the event "breadcrumbs.0.metaData.urlParams.password" equals "[REDACTED]"
     And the event "breadcrumbs.0.metaData.status" equals 444

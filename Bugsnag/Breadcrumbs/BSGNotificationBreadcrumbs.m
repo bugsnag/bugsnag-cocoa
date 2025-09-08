@@ -16,7 +16,7 @@
 #import "BugsnagBreadcrumbs.h"
 #import "BugsnagConfiguration+Private.h"
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @interface BSGNotificationBreadcrumbs ()
 
 @property (nonatomic) NSDictionary<NSNotificationName, NSString *> *notificationNameMap;
@@ -42,7 +42,7 @@ BSG_OBJC_DIRECT_MEMBERS
 @end
 
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSGNotificationBreadcrumbs
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration

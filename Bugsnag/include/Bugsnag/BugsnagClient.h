@@ -236,6 +236,16 @@ NS_SWIFT_NAME(leaveNetworkRequestBreadcrumb(task:metrics:));
  @property (copy, nullable, atomic) NSString *context;
 
 /**
+ * Sets the grouping discriminator
+ */
+- (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator;
+
+/**
+ * Retrieves the grouping discriminator
+ */
+- (NSString *_Nullable)groupingDiscriminator;
+
+/**
  * @return YES if Bugsnag has been started and the previous launch crashed
  */
 - (BOOL)appDidCrashLastLaunch BUGSNAG_DEPRECATED_WITH_REPLACEMENT("lastRunInfo.crashed");

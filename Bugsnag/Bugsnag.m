@@ -36,7 +36,7 @@
 
 static BugsnagClient *bsg_g_bugsnag_client = NULL;
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation Bugsnag
 
 + (BugsnagClient *_Nonnull)start {
@@ -313,6 +313,20 @@ BSG_OBJC_DIRECT_MEMBERS
 + (NSString *_Nullable)context {
     if ([self bugsnagReadyForInternalCalls]) {
         return self.client.context;
+    }
+    return nil;
+}
+
++ (NSString *_Nullable)setGroupingDiscriminator:(NSString *_Nullable)groupingDiscriminator {
+    if ([self bugsnagReadyForInternalCalls]) {
+        return [self.client setGroupingDiscriminator:groupingDiscriminator];
+    }
+    return nil;
+}
+
++ (NSString *_Nullable)groupingDiscriminator {
+    if ([self bugsnagReadyForInternalCalls]) {
+        return [self.client groupingDiscriminator];
     }
     return nil;
 }

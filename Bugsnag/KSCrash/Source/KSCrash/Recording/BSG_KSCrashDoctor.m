@@ -12,7 +12,7 @@
 #import "BSG_KSSystemInfo.h"
 #import "BugsnagLogger.h"
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BSG_KSCrashDoctor
 
 - (NSDictionary *)crashReport:(NSDictionary *)report {

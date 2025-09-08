@@ -57,7 +57,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
 // MARK: - BugsnagConfiguration
 // =============================================================================
 
-BSG_OBJC_DIRECT_MEMBERS
+
 @implementation BugsnagConfiguration
 
 + (instancetype _Nonnull)loadConfig {
@@ -168,7 +168,7 @@ BSG_OBJC_DIRECT_MEMBERS
     }
     _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
     _metadata = [[BugsnagMetadata alloc] init];
-    _endpoints = [BugsnagEndpointConfiguration new];
+    _endpoints = [BugsnagEndpointConfiguration defaultForApiKey:apiKey ?: @""];
     _autoDetectErrors = YES;
 #if BSG_HAVE_APP_HANG_DETECTION
     _appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
@@ -353,6 +353,14 @@ BSG_OBJC_DIRECT_MEMBERS
 // =============================================================================
 // MARK: -
 // =============================================================================
+
+- (void)setApiKey:(NSString *)apiKey {
+    _apiKey = [apiKey copy];
+
+    if (!self.endpoints.isCustom) {
+        self.endpoints = [BugsnagEndpointConfiguration defaultForApiKey:apiKey ?: @""];
+    }
+}
 
 - (void)setEndpoints:(BugsnagEndpointConfiguration *)endpoints {
     if ([self isValidURLString:endpoints.notify]) {
