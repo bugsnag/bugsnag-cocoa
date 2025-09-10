@@ -75,11 +75,12 @@ BUGSNAG_EXTERN BSGBreadcrumbType BSGBreadcrumbTypeFromString(NSString * _Nullabl
 #pragma mark -
 
 typedef NS_ENUM(NSInteger, BSGClientObserverEvent) {
-    BSGClientObserverAddFeatureFlag,    // value: BugsnagFeatureFlag
-    BSGClientObserverClearFeatureFlag,  // value: NSString
-    BSGClientObserverUpdateContext,     // value: NSString
-    BSGClientObserverUpdateMetadata,    // value: BugsnagMetadata
-    BSGClientObserverUpdateUser,        // value: BugsnagUser
+    BSGClientObserverAddFeatureFlag,              // value: BugsnagFeatureFlag
+    BSGClientObserverClearFeatureFlag,            // value: NSString
+    BSGClientObserverUpdateContext,               // value: NSString
+    BSGClientObserverUpdateMetadata,              // value: BugsnagMetadata
+    BSGClientObserverUpdateUser,                  // value: BugsnagUser
+    BSGClientObserverUpdateGroupingDiscriminator, // value: NSString
 };
 
 typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id value);
