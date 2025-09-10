@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 6.33.1 (2025-09-10)
+
+### Enhancements
+
+* Send observer event on grouping discriminator update [#1846](https://github.com/bugsnag/bugsnag-cocoa/pull/1846)
+
 ## 6.33.0 (2025-09-08)
 
 ### Enhancements
