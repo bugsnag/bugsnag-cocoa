@@ -657,6 +657,9 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         NSString *previous = self.groupingDiscriminator_;
         self.groupingDiscriminator_ = groupingDiscriminator;
         [self.state addMetadata:groupingDiscriminator withKey:BSGKeyGroupingDiscriminator toSection:BSGKeyClient];
+        if (self.observer) {
+            self.observer(BSGClientObserverUpdateGroupingDiscriminator, groupingDiscriminator);
+        }
         return previous;
     }
 }
@@ -1030,7 +1033,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (observer) {
         observer(BSGClientObserverUpdateContext, self.context);
         observer(BSGClientObserverUpdateUser, self.user);
-        
+        observer(BSGClientObserverUpdateGroupingDiscriminator, self.groupingDiscriminator);
+
         observer(BSGClientObserverUpdateMetadata, self.metadata);
         self.metadata.observer = ^(BugsnagMetadata *metadata) {
             observer(BSGClientObserverUpdateMetadata, metadata);
