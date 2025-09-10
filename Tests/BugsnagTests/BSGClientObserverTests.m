@@ -57,6 +57,12 @@
     XCTAssertEqualObjects(self.value, self.client.metadata);
 }
 
+- (void)testGroupingDiscriminatorUpdate {
+    [self.client setGroupingDiscriminator:@"group-2"];
+    XCTAssertEqual(self.event, BSGClientObserverUpdateGroupingDiscriminator);
+    XCTAssertEqualObjects(self.value, @"group-2");
+}
+
 - (void)testRemoveObserver {
     self.event = -1;
     self.value = nil;
@@ -72,11 +78,13 @@
     [self.client setContext:@"Foo"];
     [self.client addMetadata:@"Bar" withKey:@"Foo" toSection:@"test"];
     [self.client addFeatureFlagWithName:@"Testing" variant:@"unit"];
+    [self.client setGroupingDiscriminator:@"group-1"];
 
     __block NSDictionary *user;
     __block NSString *context;
     __block BugsnagMetadata *metadata;
     __block BugsnagFeatureFlag *featureFlag;
+    __block NSString *groupingDiscriminator;
 
     BSGClientObserver observer = ^(BSGClientObserverEvent event, id value) {
         switch (event) {
@@ -95,11 +103,15 @@
             case BSGClientObserverUpdateUser:
                 user = [(BugsnagUser *)value toJson];
                 break;
+            case BSGClientObserverUpdateGroupingDiscriminator:
+                groupingDiscriminator = value;
+                break;
         }
     };
     XCTAssertNil(user);
     XCTAssertNil(context);
     XCTAssertNil(metadata);
+    XCTAssertNil(groupingDiscriminator);
     self.client.observer = observer;
 
     NSDictionary *expectedUser = @{@"id": @"123", @"email": @"test@example.com", @"name": @"Jamie"};
@@ -108,6 +120,7 @@
     XCTAssertEqualObjects(self.client.metadata, metadata);
     XCTAssertEqualObjects(featureFlag.name, @"Testing");
     XCTAssertEqualObjects(featureFlag.variant, @"unit");
+    XCTAssertEqualObjects(groupingDiscriminator, @"group-1");
 }
 
 - (void)testFeatureFlags {
