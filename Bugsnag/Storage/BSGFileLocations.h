@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSString *kscrashReports;
 @property (readonly, nonatomic) NSString *sessions;
 @property (readonly, nonatomic) NSString *featureFlags;
+@property (readonly, nonatomic) NSString *remoteConfigurations;
 
 /**
  * File containing details of the current app hang (if the app is hung)
