@@ -12,23 +12,22 @@
 
 @interface BSGRemoteConfigStore ()
 @property (nonatomic, strong) BSGFileLocations *fileLocations;
-@property (nonatomic, strong) NSString *appVersion;
+@property (nonatomic, strong) BugsnagConfiguration *configuration;
 @end
 
 @implementation BSGRemoteConfigStore
 
-+ (instancetype)repositoryWithLocations:(BSGFileLocations *)fileLocations
-                             appVersion:(NSString *)appVersion {
-    return [[self alloc] initWithLocations:fileLocations
-                                appVersion:appVersion];
++ (instancetype)storeWithLocations:(BSGFileLocations *)fileLocations
+                     configuration:(BugsnagConfiguration *)configuration {
+    return [[self alloc] initWithLocations:fileLocations configuration:configuration];
 }
 
 - (instancetype)initWithLocations:(BSGFileLocations *)fileLocations
-                       appVersion:(NSString *)appVersion {
+                    configuration:(BugsnagConfiguration *)configuration {
     self = [super init];
     if (self) {
         _fileLocations = fileLocations;
-        _appVersion = appVersion;
+        _configuration = configuration;
     }
     return self;
 }
@@ -51,7 +50,7 @@
 }
 
 - (NSString *)configurationFilePath {
-    NSString *fileName = [NSString stringWithFormat:@"core-%@", self.appVersion];
+    NSString *fileName = [NSString stringWithFormat:@"core-%@", self.configuration.appVersion];
     return [[self.fileLocations remoteConfigurations] stringByAppendingPathComponent:fileName];
 }
 

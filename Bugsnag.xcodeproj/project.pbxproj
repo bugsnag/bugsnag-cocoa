@@ -860,6 +860,22 @@
 		964AE4F02E73415500C2E75C /* BSGRemoteConfigStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */; };
 		964AE4F12E73415500C2E75C /* BSGRemoteConfigStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */; };
 		964AE4F22E73415500C2E75C /* BSGRemoteConfigStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */; };
+		964AE50F2E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */; };
+		964AE5102E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */; };
+		964AE5112E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE5092E75943F00C2E75C /* BSGRemoteConfigHandler.h */; };
+		964AE5122E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */; };
+		964AE5132E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */; };
+		964AE5142E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */; };
+		964AE5152E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE5092E75943F00C2E75C /* BSGRemoteConfigHandler.h */; };
+		964AE5162E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */; };
+		964AE5172E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */; };
+		964AE5182E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */; };
+		964AE5192E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE5092E75943F00C2E75C /* BSGRemoteConfigHandler.h */; };
+		964AE51A2E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */; };
+		964AE51B2E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */; };
+		964AE51C2E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */; };
+		964AE51D2E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE5092E75943F00C2E75C /* BSGRemoteConfigHandler.h */; };
+		964AE51E2E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -1675,6 +1691,10 @@
 		964AE4E22E7302E300C2E75C /* BSGRemoteConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfiguration.m; sourceTree = "<group>"; };
 		964AE4E92E73414800C2E75C /* BSGRemoteConfigStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRemoteConfigStore.h; sourceTree = "<group>"; };
 		964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfigStore.m; sourceTree = "<group>"; };
+		964AE5092E75943F00C2E75C /* BSGRemoteConfigHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRemoteConfigHandler.h; sourceTree = "<group>"; };
+		964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfigHandler.m; sourceTree = "<group>"; };
+		964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRemoteConfigService.h; sourceTree = "<group>"; };
+		964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfigService.m; sourceTree = "<group>"; };
 		968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGPersistentFeatureFlagStore.h; sourceTree = "<group>"; };
 		968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStore.m; sourceTree = "<group>"; };
 		968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGStoredFeatureFlag.m; sourceTree = "<group>"; };
@@ -2371,8 +2391,9 @@
 		964AE4DC2E73028E00C2E75C /* RemoteConfig */ = {
 			isa = PBXGroup;
 			children = (
-				964AE4E72E73033100C2E75C /* Model */,
-				964AE4E82E7340FF00C2E75C /* Repository */,
+				964AE50B2E75943F00C2E75C /* Handler */,
+				964AE50E2E75943F00C2E75C /* Service */,
+				964AE4E82E7340FF00C2E75C /* Store */,
 			);
 			path = RemoteConfig;
 			sourceTree = "<group>";
@@ -2386,13 +2407,32 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		964AE4E82E7340FF00C2E75C /* Repository */ = {
+		964AE4E82E7340FF00C2E75C /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				964AE4E72E73033100C2E75C /* Model */,
 				964AE4E92E73414800C2E75C /* BSGRemoteConfigStore.h */,
 				964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */,
 			);
-			path = Repository;
+			path = Store;
+			sourceTree = "<group>";
+		};
+		964AE50B2E75943F00C2E75C /* Handler */ = {
+			isa = PBXGroup;
+			children = (
+				964AE5092E75943F00C2E75C /* BSGRemoteConfigHandler.h */,
+				964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */,
+			);
+			path = Handler;
+			sourceTree = "<group>";
+		};
+		964AE50E2E75943F00C2E75C /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */,
+				964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 		968BFBC82CFFE21B00DCC24B /* FeatureFlags */ = {
@@ -2519,6 +2559,8 @@
 				010FF28425ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */,
 				008967F42486DA4500DC48C2 /* BSGSessionUploader.h in Headers */,
 				01CB95BF278F0C830077744A /* BSG_KSFile.h in Headers */,
+				964AE5152E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */,
+				964AE5162E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */,
 				008969E12486DAD100DC48C2 /* BSG_KSSystemInfo.h in Headers */,
 				00896A0E2486DAD100DC48C2 /* BSG_KSCrashSentry.h in Headers */,
 				008969D22486DAD100DC48C2 /* BSG_KSCrashContext.h in Headers */,
@@ -2661,6 +2703,8 @@
 				00896A062486DAD100DC48C2 /* BSG_KSCrashSentry_MachException.h in Headers */,
 				008968D02486DA9600DC48C2 /* BugsnagNotifier.h in Headers */,
 				008969882486DAD100DC48C2 /* BSG_KSMachApple.h in Headers */,
+				964AE51D2E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */,
+				964AE51E2E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */,
 				008969CA2486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */,
 				008969F42486DAD100DC48C2 /* BSG_KSCrashState.h in Headers */,
 				0109939D273D13D800128BBE /* BSGMemoryFeatureFlagStore.h in Headers */,
@@ -2774,6 +2818,8 @@
 				00896A072486DAD100DC48C2 /* BSG_KSCrashSentry_MachException.h in Headers */,
 				008968D12486DA9600DC48C2 /* BugsnagNotifier.h in Headers */,
 				008969892486DAD100DC48C2 /* BSG_KSMachApple.h in Headers */,
+				964AE5192E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */,
+				964AE51A2E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */,
 				008969CB2486DAD100DC48C2 /* BSG_RFC3339DateTool.h in Headers */,
 				008969F52486DAD100DC48C2 /* BSG_KSCrashState.h in Headers */,
 				0109939E273D13D800128BBE /* BSGMemoryFeatureFlagStore.h in Headers */,
@@ -2885,6 +2931,8 @@
 				CBBDE9B0280069B20070DCD3 /* BSG_KSLogger.h in Headers */,
 				CBBDE936280068C40070DCD3 /* BSG_RFC3339DateTool.h in Headers */,
 				96E45C072D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.h in Headers */,
+				964AE5112E75943F00C2E75C /* BSGRemoteConfigHandler.h in Headers */,
+				964AE5122E75943F00C2E75C /* BSGRemoteConfigService.h in Headers */,
 				CBBDE9942800698F0070DCD3 /* BSG_KSSystemInfoC.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3310,6 +3358,8 @@
 				01CB95C2278F0C830077744A /* BSG_KSFile.c in Sources */,
 				008968A72486DA9600DC48C2 /* BugsnagSession.m in Sources */,
 				0089683A2486DA6C00DC48C2 /* BugsnagMetadata.m in Sources */,
+				964AE5132E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */,
+				964AE5142E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */,
 				008969F62486DAD100DC48C2 /* BSG_KSCrash.m in Sources */,
 				0089695D2486DAD000DC48C2 /* BSG_KSMach_x86_32.c in Sources */,
 				00896A1A2486DAD100DC48C2 /* BSG_KSCrashSentry_MachException.c in Sources */,
@@ -3499,6 +3549,8 @@
 				01099397273D123800128BBE /* BugsnagFeatureFlag.m in Sources */,
 				01840B7325DC26E200F95648 /* BSGEventUploader.m in Sources */,
 				008968C42486DA9600DC48C2 /* BugsnagUser.m in Sources */,
+				964AE51B2E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */,
+				964AE51C2E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */,
 				008968A82486DA9600DC48C2 /* BugsnagSession.m in Sources */,
 				0089683B2486DA6C00DC48C2 /* BugsnagMetadata.m in Sources */,
 				008969F72486DAD100DC48C2 /* BSG_KSCrash.m in Sources */,
@@ -3685,6 +3737,8 @@
 				008968C52486DA9600DC48C2 /* BugsnagUser.m in Sources */,
 				01CB95C4278F0C830077744A /* BSG_KSFile.c in Sources */,
 				008968A92486DA9600DC48C2 /* BugsnagSession.m in Sources */,
+				964AE5172E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */,
+				964AE5182E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */,
 				0089683C2486DA6C00DC48C2 /* BugsnagMetadata.m in Sources */,
 				008969F82486DAD100DC48C2 /* BSG_KSCrash.m in Sources */,
 				0089695F2486DAD000DC48C2 /* BSG_KSMach_x86_32.c in Sources */,
@@ -3976,6 +4030,8 @@
 				CBBDE932280068AD0070DCD3 /* BugsnagApiClient.m in Sources */,
 				CBBDE91E280068860070DCD3 /* BugsnagClient.m in Sources */,
 				CBBDE928280068AD0070DCD3 /* BSGSessionUploader.m in Sources */,
+				964AE50F2E75943F00C2E75C /* BSGRemoteConfigService.m in Sources */,
+				964AE5102E75943F00C2E75C /* BSGRemoteConfigHandler.m in Sources */,
 				CBBDE9632800690A0070DCD3 /* BugsnagMetadata.m in Sources */,
 				CBBDE96E2800693F0070DCD3 /* BugsnagHandledState.m in Sources */,
 				CBBDE9242800689A0070DCD3 /* BugsnagErrorTypes.m in Sources */,

@@ -75,6 +75,8 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "BSGRemoteConfigHandler.h"
+#import "BugsnagDevice+Private.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -183,6 +185,8 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (copy, nullable, atomic) NSString *groupingDiscriminator_;
 
+@property (nonatomic, strong) BSGRemoteConfigHandler *remoteConfigHandler;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -271,6 +275,21 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
+    
+    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
+                                             config:self.configuration
+                                       codeBundleId:self.codeBundleId];
+    BSGRemoteConfigService *remoteConfigService = [BSGRemoteConfigService serviceWithSession:[NSURLSession sharedSession]
+                                                                               configuration:self.configuration
+                                                                                    notifier:self.notifier
+                                                                                      device:device
+                                                                                         app:app];
+    BSGRemoteConfigStore *remoteConfigStore = [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current]
+                                                                         configuration:self.configuration];
+    self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
+                                                                    store:remoteConfigStore
+                                                            configuration:self.configuration];
 
     [self computeDidCrashLastLaunch];
 
@@ -350,6 +369,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
     
     [self.eventUploader uploadStoredEvents];
+    [self.remoteConfigHandler start];
     
 #if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)

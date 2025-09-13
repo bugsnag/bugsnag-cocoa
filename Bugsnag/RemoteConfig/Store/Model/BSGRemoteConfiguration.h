@@ -33,6 +33,7 @@
 @property (nonatomic, strong) BSGRemoteConfigurationInternals *internals;
 
 + (instancetype)configFromJson:(NSDictionary *)json;
++ (instancetype)configFromJson:(NSDictionary *)json eTag:(NSString *)eTag;
 - (NSDictionary *)toJson;
 
 @end

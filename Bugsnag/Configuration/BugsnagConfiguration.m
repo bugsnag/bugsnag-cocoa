@@ -445,6 +445,15 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     return self.endpoints.sessions.length ? [NSURL URLWithString:self.endpoints.sessions] : nil;
 }
 
+- (NSURL *)configurationURL {
+    NSString *configurationUrlString = self.endpoints.configuration;
+    if (!configurationUrlString) {
+        return nil;
+    }
+    return self.endpoints.configuration
+        .length ? [NSURL URLWithString:configurationUrlString] : nil;
+}
+
 - (BOOL)shouldDiscardErrorClass:(NSString *)errorClass {
     for (id obj in self.discardClasses) {
         if ([obj isKindOfClass:[NSString class]]) {

@@ -85,9 +85,13 @@ static NSString const *InternalsKey = @"internals";
 
 + (instancetype)configFromJson:(NSDictionary *)json {
     NSString *configurationTag = json[ConfigurationTagKey];
+    return [self configFromJson:json eTag:configurationTag];
+}
+
++ (instancetype)configFromJson:(NSDictionary *)json eTag:(NSString *)eTag {
     NSDate *expiryDate = [BSG_RFC3339DateTool dateFromString:json[ExpiryDateKey]];
     NSDictionary *internalsJson = json[InternalsKey];
-    if (![configurationTag isKindOfClass:[NSString class]] ||
+    if (![eTag isKindOfClass:[NSString class]] ||
         ![expiryDate isKindOfClass:[NSDate class]] ||
         ![internalsJson isKindOfClass:[NSDictionary class]]) {
         return nil;
@@ -96,7 +100,7 @@ static NSString const *InternalsKey = @"internals";
     if (internals == nil) {
         return nil;
     }
-    return [[self alloc] initWithConfigurationTag:configurationTag
+    return [[self alloc] initWithConfigurationTag:eTag
                                        expiryDate:expiryDate
                                         internals:internals];
 }

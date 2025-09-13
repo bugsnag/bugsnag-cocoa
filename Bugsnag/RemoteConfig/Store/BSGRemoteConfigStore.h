@@ -6,13 +6,14 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
+#import <Bugsnag/BugsnagConfiguration.h>
 #import "BSGRemoteConfiguration.h"
 #import "BSGFileLocations.h"
 
 @interface BSGRemoteConfigStore: NSObject
 
-+ (instancetype)repositoryWithLocations:(BSGFileLocations *)fileLocations
-                             appVersion:(NSString *)appVersion;
++ (instancetype)storeWithLocations:(BSGFileLocations *)fileLocations
+                     configuration:(BugsnagConfiguration *)configuration;
 
 - (void)saveConfiguration:(BSGRemoteConfiguration *)configuration;
 - (BSGRemoteConfiguration *)loadConfiguration;
