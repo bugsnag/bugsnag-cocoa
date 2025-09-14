@@ -19,6 +19,12 @@ static NSString *ReleaseStageQueryParam = @"releaseStage";
 static NSString *BinaryArchQueryParam = @"binaryArch";
 static NSString *AppIdQueryParam = @"appId";
 
+static NSString *ContentTypeHeader = @"Content-Type";
+static NSString *IfNoneMatchHeader = @"If-None-Match";
+static NSString *ETagHeader = @"ETag";
+static NSString *CacheControlHeader = @"Cache-Control";
+static NSString *CacheControlMaxAgePrefix = @"max-age=";
+
 @interface BSGRemoteConfigService ()
 
 @property (nonatomic, strong) BugsnagConfiguration *configuration;
@@ -80,10 +86,16 @@ static NSString *AppIdQueryParam = @"appId";
 - (void)downloadRemoteConfigWithRequest:(NSURLRequest *)request
                                didRetry:(BOOL)didRetry
                              completion:(BSGRemoteConfigServiceCompletion)completion {
+    __weak typeof(self) weakSelf = self;
     [[self.session dataTaskWithRequest:request
                      completionHandler:^(NSData * _Nullable data,
                                          NSURLResponse * _Nullable response,
                                          NSError * _Nullable error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        if (!strongSelf) {
+            completion(nil, error);
+            return;
+        }
         if (!data) {
             completion(nil, error);
             return;
@@ -99,10 +111,16 @@ static NSString *AppIdQueryParam = @"appId";
         
         BSGRemoteConfiguration *remoteConfig;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-            NSString *etag = ((NSHTTPURLResponse *)response).allHeaderFields[@"ETag"];
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            NSString *etag = httpResponse.allHeaderFields[ETagHeader];
+            NSString *cacheControl = httpResponse.allHeaderFields[CacheControlHeader];
+            
+            NSDate *expiryDate = [strongSelf expiryDateFromCacheControl:cacheControl];
+            
             remoteConfig = [BSGRemoteConfiguration configFromJson:configJson
                                                              eTag:etag
-                                                       appVersion:self.configuration.appVersion];
+                                                       expiryDate:expiryDate
+                                                       appVersion:strongSelf.configuration.appVersion];
         } else {
             remoteConfig = [BSGRemoteConfiguration configFromJson:configJson];
         }
@@ -111,9 +129,9 @@ static NSString *AppIdQueryParam = @"appId";
             completion(remoteConfig, nil);
         } else {
             if (didRetry) {
-                completion(nil, [self configNotValidError]);
+                completion(nil, [strongSelf configNotValidError]);
             } else {
-                [self downloadRemoteConfigWithRequest:request didRetry:YES completion:completion];
+                [strongSelf downloadRemoteConfigWithRequest:request didRetry:YES completion:completion];
             }
         }
     }] resume];
@@ -131,11 +149,41 @@ static NSString *AppIdQueryParam = @"appId";
     return [NSError errorWithDomain:@"BSGRemoteConfigServiceDomain" code:2 userInfo:@{}];
 }
 
+- (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {
+    NSTimeInterval maxAge = [self parseMaxAgeFromCacheControl:cacheControl];
+    if (maxAge > 0) {
+        return [NSDate dateWithTimeIntervalSinceNow:maxAge];
+    }
+    
+    NSTimeInterval defaultExpireTime = self.configuration.remoteConfigRefreshInterval +
+                                        self.configuration.remoteConfigRefreshTolerance;
+    return [NSDate dateWithTimeIntervalSinceNow:defaultExpireTime];
+}
+
+- (NSTimeInterval)parseMaxAgeFromCacheControl:(NSString *)cacheControl {
+    if (!cacheControl || cacheControl.length == 0) {
+        return 0;
+    }
+    NSArray *directives = [cacheControl componentsSeparatedByString:@","];
+    
+    for (NSString *directive in directives) {
+        NSString *trimmedDirective = [directive stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        
+        if ([trimmedDirective hasPrefix:CacheControlMaxAgePrefix]) {
+            NSString *maxAgeValue = [trimmedDirective substringFromIndex:[CacheControlMaxAgePrefix length]];
+            NSTimeInterval maxAge = [maxAgeValue doubleValue];
+            return maxAge > 0 ? maxAge : 0;
+        }
+    }
+    
+    return 0;
+}
+
 - (NSURLRequest *)requestWithUrl:(NSURL *)url currentTag:(NSString *)tag {
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    headers[@"Content-Type"] = @"application/json";
+    headers[ContentTypeHeader] = @"application/json";
     if (tag) {
-        headers[@"If-None-Match"] = tag;
+        headers[IfNoneMatchHeader] = tag;
     }
     headers[BugsnagHTTPHeaderNameApiKey] = self.configuration.apiKey;
     headers[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];

@@ -87,13 +87,17 @@ static NSString const *MatchTypeKey = @"matchType";
 + (instancetype)configFromJson:(NSDictionary *)json {
     NSString *configurationTag = json[ConfigurationTagKey];
     NSString *appVersion = json[AppVersionKey];
-    return [self configFromJson:json eTag:configurationTag appVersion:appVersion];
+    NSDate *expiryDate = [BSG_RFC3339DateTool dateFromString:json[ExpiryDateKey]];
+    return [self configFromJson:json
+                           eTag:configurationTag
+                     expiryDate:expiryDate
+                     appVersion:appVersion];
 }
 
 + (instancetype)configFromJson:(NSDictionary *)json
                           eTag:(NSString *)eTag
+                    expiryDate:(NSDate *)expiryDate
                     appVersion:(NSString *)appVersion {
-    NSDate *expiryDate = [BSG_RFC3339DateTool dateFromString:json[ExpiryDateKey]];
     NSDictionary *internalsJson = json[InternalsKey];
     if (![eTag isKindOfClass:[NSString class]] ||
         ![expiryDate isKindOfClass:[NSDate class]] ||

@@ -36,6 +36,7 @@
 + (instancetype)configFromJson:(NSDictionary *)json;
 + (instancetype)configFromJson:(NSDictionary *)json
                           eTag:(NSString *)eTag
+                    expiryDate:(NSDate *)expiryDate
                     appVersion:(NSString *)appVersion;
 - (NSDictionary *)toJson;
 
