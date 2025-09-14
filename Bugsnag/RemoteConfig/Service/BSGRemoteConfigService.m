@@ -155,8 +155,8 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
         return [NSDate dateWithTimeIntervalSinceNow:maxAge];
     }
     
-    NSTimeInterval defaultExpireTime = self.configuration.remoteConfigRefreshInterval +
-                                        self.configuration.remoteConfigRefreshTolerance;
+    NSTimeInterval defaultExpireTime = self.configuration.remoteConfigUpdateInterval +
+                                        self.configuration.remoteConfigUpdateTolerance;
     return [NSDate dateWithTimeIntervalSinceNow:defaultExpireTime];
 }
 

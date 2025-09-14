@@ -115,7 +115,7 @@
 
 - (void)startPeriodicUpdateTimer {
     __block __weak __typeof(self) weakSelf = self;
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.configuration.remoteConfigRefreshInterval
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.configuration.remoteConfigUpdateInterval
                                                  repeats:YES
                                                    block:^(NSTimer * _Nonnull timer) {
         __strong __typeof(weakSelf) strongSelf = weakSelf;
@@ -127,7 +127,7 @@
             [timer invalidate];
         }
     }];
-    self.timer.tolerance = self.configuration.remoteConfigRefreshTolerance;
+    self.timer.tolerance = self.configuration.remoteConfigUpdateTolerance;
 }
 
 - (void)clearLocalStore {
