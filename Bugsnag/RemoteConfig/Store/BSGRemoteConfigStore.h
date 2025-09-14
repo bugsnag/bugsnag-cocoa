@@ -17,5 +17,6 @@
 
 - (void)saveConfiguration:(BSGRemoteConfiguration *)configuration;
 - (BSGRemoteConfiguration *)loadConfiguration;
+- (void)clear;
 
 @end

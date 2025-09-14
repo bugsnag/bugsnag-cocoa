@@ -19,7 +19,8 @@
 
 + (instancetype)storeWithLocations:(BSGFileLocations *)fileLocations
                      configuration:(BugsnagConfiguration *)configuration {
-    return [[self alloc] initWithLocations:fileLocations configuration:configuration];
+    return [[self alloc] initWithLocations:fileLocations
+                             configuration:configuration];
 }
 
 - (instancetype)initWithLocations:(BSGFileLocations *)fileLocations
@@ -48,6 +49,27 @@
     NSDictionary *configurationJson = BSGJSONDictionaryFromData(configurationData, 0, &error);
     return [BSGRemoteConfiguration configFromJson:configurationJson];
 }
+
+- (void)clear {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *remoteConfigPath = [self.fileLocations remoteConfigurations];
+    NSError *error = nil;
+    NSArray<NSString *> *files = [fileManager contentsOfDirectoryAtPath:remoteConfigPath error:&error];
+    if (error) {
+        bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+        return;
+    }
+    for (NSString *file in files) {
+        NSString *filePath = [remoteConfigPath stringByAppendingPathComponent:file];
+        NSError *removeError = nil;
+        [fileManager removeItemAtPath:filePath error:&removeError];
+        if (removeError) {
+            bsg_log_debug(@"%s: %@", __FUNCTION__, removeError);
+        }
+    }
+}
+
+#pragma mark - Helpers
 
 - (NSString *)configurationFilePath {
     NSString *fileName = [NSString stringWithFormat:@"core-%@", self.configuration.appVersion];

@@ -100,7 +100,9 @@ static NSString *AppIdQueryParam = @"appId";
         BSGRemoteConfiguration *remoteConfig;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             NSString *etag = ((NSHTTPURLResponse *)response).allHeaderFields[@"ETag"];
-            remoteConfig = [BSGRemoteConfiguration configFromJson:configJson eTag:etag];
+            remoteConfig = [BSGRemoteConfiguration configFromJson:configJson
+                                                             eTag:etag
+                                                       appVersion:self.configuration.appVersion];
         } else {
             remoteConfig = [BSGRemoteConfiguration configFromJson:configJson];
         }

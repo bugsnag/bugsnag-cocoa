@@ -29,11 +29,14 @@
 @interface BSGRemoteConfiguration : NSObject
 
 @property (nonatomic, strong) NSString *configurationTag;
+@property (nonatomic, strong) NSString *appVersion;
 @property (nonatomic, strong) NSDate *expiryDate;
 @property (nonatomic, strong) BSGRemoteConfigurationInternals *internals;
 
 + (instancetype)configFromJson:(NSDictionary *)json;
-+ (instancetype)configFromJson:(NSDictionary *)json eTag:(NSString *)eTag;
++ (instancetype)configFromJson:(NSDictionary *)json
+                          eTag:(NSString *)eTag
+                    appVersion:(NSString *)appVersion;
 - (NSDictionary *)toJson;
 
 @end

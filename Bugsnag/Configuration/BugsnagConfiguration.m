@@ -188,6 +188,8 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     _maxPersistedSessions = 128;
     _maxStringValueLength = 10000;
     _autoTrackSessions = YES;
+    _remoteConfigRefreshInterval = 86400;
+    _remoteConfigRefreshTolerance = 7200;
 #if BSG_HAVE_MACH_THREADS
     _sendThreads = BSGThreadSendPolicyAlways;
 #else

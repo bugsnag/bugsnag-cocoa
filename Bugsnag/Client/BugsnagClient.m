@@ -276,20 +276,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
     
-    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
-    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
-                                             config:self.configuration
-                                       codeBundleId:self.codeBundleId];
-    BSGRemoteConfigService *remoteConfigService = [BSGRemoteConfigService serviceWithSession:[NSURLSession sharedSession]
-                                                                               configuration:self.configuration
-                                                                                    notifier:self.notifier
-                                                                                      device:device
-                                                                                         app:app];
-    BSGRemoteConfigStore *remoteConfigStore = [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current]
-                                                                         configuration:self.configuration];
-    self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
-                                                                    store:remoteConfigStore
-                                                            configuration:self.configuration];
+    [self setupRemoteConfigHandlerWithSystemInfo:systemInfo];
 
     [self computeDidCrashLastLaunch];
 
@@ -978,6 +965,26 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (self.observer) {
         self.observer(BSGClientObserverClearFeatureFlag, nil);
     }
+}
+
+// MARK: - RemoteConfigStore
+
+- (void)setupRemoteConfigHandlerWithSystemInfo:(NSDictionary *)systemInfo {
+    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
+    NSString *codeBundleId = self.codeBundleId;
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
+                                             config:self.configuration
+                                       codeBundleId:codeBundleId];
+    BSGRemoteConfigService *remoteConfigService = [BSGRemoteConfigService serviceWithSession:[NSURLSession sharedSession]
+                                                                               configuration:self.configuration
+                                                                                    notifier:self.notifier
+                                                                                      device:device
+                                                                                         app:app];
+    BSGRemoteConfigStore *remoteConfigStore = [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current]
+                                                                         configuration:self.configuration];
+    self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
+                                                                    store:remoteConfigStore
+                                                            configuration:self.configuration];
 }
 
 // MARK: - <BugsnagMetadataStore>

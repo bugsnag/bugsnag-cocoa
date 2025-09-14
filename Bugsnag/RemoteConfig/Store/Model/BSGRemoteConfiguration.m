@@ -9,11 +9,12 @@
 #import "BSGRemoteConfiguration.h"
 #import "BSG_RFC3339DateTool.h"
 
-static NSString const *MatchTypeKey = @"matchType";
-static NSString const *DiscardRulesKey = @"discardRules";
 static NSString const *ConfigurationTagKey = @"configurationTag";
 static NSString const *ExpiryDateKey = @"expiryDate";
+static NSString const *AppVersionKey = @"appVersion";
 static NSString const *InternalsKey = @"internals";
+static NSString const *DiscardRulesKey = @"discardRules";
+static NSString const *MatchTypeKey = @"matchType";
 
 @implementation BSGRemoteConfigurationDiscardRule
 
@@ -85,10 +86,13 @@ static NSString const *InternalsKey = @"internals";
 
 + (instancetype)configFromJson:(NSDictionary *)json {
     NSString *configurationTag = json[ConfigurationTagKey];
-    return [self configFromJson:json eTag:configurationTag];
+    NSString *appVersion = json[AppVersionKey];
+    return [self configFromJson:json eTag:configurationTag appVersion:appVersion];
 }
 
-+ (instancetype)configFromJson:(NSDictionary *)json eTag:(NSString *)eTag {
++ (instancetype)configFromJson:(NSDictionary *)json
+                          eTag:(NSString *)eTag
+                    appVersion:(NSString *)appVersion {
     NSDate *expiryDate = [BSG_RFC3339DateTool dateFromString:json[ExpiryDateKey]];
     NSDictionary *internalsJson = json[InternalsKey];
     if (![eTag isKindOfClass:[NSString class]] ||
@@ -101,15 +105,18 @@ static NSString const *InternalsKey = @"internals";
         return nil;
     }
     return [[self alloc] initWithConfigurationTag:eTag
+                                       appVersion:appVersion
                                        expiryDate:expiryDate
                                         internals:internals];
 }
 
 - (instancetype)initWithConfigurationTag:(NSString *)configurationTag
+                              appVersion:(NSString *)appVersion
                               expiryDate:(NSDate *)expiryDate
                                internals:(BSGRemoteConfigurationInternals *)internals {
     if ((self = [super init])) {
         _configurationTag = configurationTag;
+        _appVersion = appVersion;
         _expiryDate = expiryDate;
         _internals = internals;
     }
@@ -120,6 +127,9 @@ static NSString const *InternalsKey = @"internals";
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     if (self.configurationTag) {
         result[ConfigurationTagKey] = self.configurationTag;
+    }
+    if (self.appVersion) {
+        result[AppVersionKey] = self.appVersion;
     }
     NSString *expiryDateJson = [BSG_RFC3339DateTool stringFromDate:self.expiryDate];
     if (expiryDateJson) {
