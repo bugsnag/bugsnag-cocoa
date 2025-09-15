@@ -7,6 +7,15 @@ steps:
   # Build
   #
 
+  - label: iOS 14 unit tests default
+    timeout_in_minutes: 10
+    agents:
+      queue: ms-arm-12-1
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
+    artifact_paths:
+      - logs/*
+
   - label: iOS 14 unit tests 13
     timeout_in_minutes: 10
     agents:
@@ -26,6 +35,17 @@ steps:
       XCODE_VERSION: "14.1.0"
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
+    artifact_paths:
+      - logs/*
+
+  - label: tvOS 14 unit tests default
+    timeout_in_minutes: 10
+    agents:
+      queue: ms-arm-12-1
+    env:
+      XCODE_VERSION: "13.2.1"
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
     artifact_paths:
       - logs/*
 
