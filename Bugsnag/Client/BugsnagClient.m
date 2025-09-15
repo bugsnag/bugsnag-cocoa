@@ -985,6 +985,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
                                                                     store:remoteConfigStore
                                                             configuration:self.configuration];
+    [self.remoteConfigHandler initialize];
 }
 
 // MARK: - <BugsnagMetadataStore>

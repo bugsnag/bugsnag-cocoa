@@ -186,7 +186,6 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
         headers[IfNoneMatchHeader] = tag;
     }
     headers[BugsnagHTTPHeaderNameApiKey] = self.configuration.apiKey;
-    headers[BugsnagHTTPHeaderNameSentAt] = [BSG_RFC3339DateTool stringFromDate:[NSDate date]];
     headers[BugsnagHTTPHeaderNameNotifierName] = self.notifier.name;
     headers[BugsnagHTTPHeaderNameNotifierVersion] = self.notifier.version;
     

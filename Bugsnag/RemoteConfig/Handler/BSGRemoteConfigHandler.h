@@ -16,6 +16,7 @@
                      configuration:(BugsnagConfiguration *)configuration;
 
 - (BSGRemoteConfiguration *)currentConfiguration;
+- (void)initialize;
 - (void)start;
 
 @end

@@ -6,6 +6,7 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import "BSGRemoteConfigHandler.h"
 #import "BugsnagLogger.h"
 #import "BugsnagConfiguration+Private.h"
@@ -40,6 +41,19 @@
         _configuration = configuration;
     }
     return self;
+}
+
+- (void)initialize {
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        @synchronized (strongSelf) {
+            [strongSelf loadLocalConfigIfNeeded];
+        }
+    });
 }
 
 - (BSGRemoteConfiguration *)currentConfiguration {
@@ -105,7 +119,8 @@
 
 - (BSGRemoteConfiguration *)readAndValidateRemoteConfig {
     BSGRemoteConfiguration *remoteConfig = [self.store loadConfiguration];
-    BOOL isConfigObsolete = remoteConfig.appVersion != self.configuration.appVersion;
+    NSString *configVersion = remoteConfig.appVersion ?: @"";
+    BOOL isConfigObsolete = ![remoteConfig.appVersion isEqualToString:configVersion];
     BOOL configExpired = remoteConfig.expiryDate && [remoteConfig.expiryDate timeIntervalSinceNow] < 0;
     if (isConfigObsolete || configExpired) {
         return nil;
@@ -114,7 +129,11 @@
 }
 
 - (void)startPeriodicUpdateTimer {
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.configuration.remoteConfigUpdateInterval
+    CGFloat randomMultiplier = (CGFloat)arc4random() / (CGFloat)UINT32_MAX;
+    NSTimeInterval updateInterval = self.configuration.remoteConfigUpdateInterval -
+                                     (self.configuration.remoteConfigUpdateTolerance * randomMultiplier);
+    
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:updateInterval
                                                   target:self
                                                 selector:@selector(updateRemoteConfig)
                                                 userInfo:nil
