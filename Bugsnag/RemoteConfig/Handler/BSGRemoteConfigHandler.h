@@ -6,8 +6,8 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGRemoteConfigService.h"
-#import "BSGRemoteConfigStore.h"
+#import "../Service/BSGRemoteConfigService.h"
+#import "../Store/BSGRemoteConfigStore.h"
 
 @interface BSGRemoteConfigHandler : NSObject
 

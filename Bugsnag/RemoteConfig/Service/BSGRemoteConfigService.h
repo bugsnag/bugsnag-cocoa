@@ -7,7 +7,7 @@
 //
 
 #import <Bugsnag/BugsnagConfiguration.h>
-#import "BSGRemoteConfiguration.h"
+#import "../Store/Model/BSGRemoteConfiguration.h"
 #import "BugsnagNotifier.h"
 #import "BugsnagDevice.h"
 #import "BugsnagApp.h"

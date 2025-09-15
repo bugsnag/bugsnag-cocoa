@@ -894,6 +894,10 @@
 		968BFBDC2D0125CF00DCC24B /* BSGStoredFeatureFlag.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */; };
 		968BFBDD2D0125D000DCC24B /* BSGStoredFeatureFlag.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */; };
 		968BFBDE2D0125D000DCC24B /* BSGStoredFeatureFlag.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */; };
+		969EE0DC2E7821C300600F63 /* BSGRemoteConfigService.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */; };
+		969EE0DD2E7821CA00600F63 /* BSGRemoteConfigHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */; };
+		969EE0DE2E7821D200600F63 /* BSGRemoteConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4E22E7302E300C2E75C /* BSGRemoteConfiguration.m */; };
+		969EE0DF2E7821D800600F63 /* BSGRemoteConfigStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */; };
 		96E45BF32D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
 		96E45BF42D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
 		96E45BF52D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
@@ -3886,6 +3890,8 @@
 				E746291A248907E500F92D67 /* BSG_KSCrashSentry.c in Sources */,
 				E746291B248907E500F92D67 /* BSG_KSCrashReport.c in Sources */,
 				E746291C248907E500F92D67 /* BSG_KSCrashC.c in Sources */,
+				969EE0DD2E7821CA00600F63 /* BSGRemoteConfigHandler.m in Sources */,
+				969EE0DF2E7821D800600F63 /* BSGRemoteConfigStore.m in Sources */,
 				0126F7C125DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m in Sources */,
 				E74628FC248907C100F92D67 /* BSG_KSCrashDoctor.m in Sources */,
 				E74628FF248907C100F92D67 /* BSG_KSMachHeaders.c in Sources */,
@@ -3900,6 +3906,7 @@
 				09E313372BF4A7CB0081F219 /* BugsnagCorrelation.m in Sources */,
 				E7462908248907C100F92D67 /* BSG_KSSystemInfo.m in Sources */,
 				008968CA2486DA9600DC48C2 /* BugsnagApp.m in Sources */,
+				969EE0DE2E7821D200600F63 /* BSGRemoteConfiguration.m in Sources */,
 				008967C12486DA1900DC48C2 /* BugsnagClient.m in Sources */,
 				CBEC89362A4AC7A90088A3CE /* BSGPersistentDeviceID.m in Sources */,
 				008968752486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
@@ -3928,6 +3935,7 @@
 				CBE9063025A34DAB0045B965 /* BSGStorageMigratorV0V1.m in Sources */,
 				0089683D2486DA6C00DC48C2 /* BugsnagMetadata.m in Sources */,
 				CBEC89322A4AC2920088A3CE /* BSGFilesystem.m in Sources */,
+				969EE0DC2E7821C300600F63 /* BSGRemoteConfigService.m in Sources */,
 				0089682E2486DA5600DC48C2 /* BSGSerialization.m in Sources */,
 				015F528725C15BB7000D1915 /* MRCCanary.m in Sources */,
 				0089686E2486DA9500DC48C2 /* BugsnagEvent.m in Sources */,

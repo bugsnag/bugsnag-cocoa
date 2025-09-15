@@ -7,7 +7,7 @@
 //
 
 #import <Bugsnag/BugsnagConfiguration.h>
-#import "BSGRemoteConfiguration.h"
+#import "Model/BSGRemoteConfiguration.h"
 #import "BSGFileLocations.h"
 
 @interface BSGRemoteConfigStore: NSObject

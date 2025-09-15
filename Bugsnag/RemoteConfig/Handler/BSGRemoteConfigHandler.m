@@ -114,20 +114,15 @@
 }
 
 - (void)startPeriodicUpdateTimer {
-    __block __weak __typeof(self) weakSelf = self;
     self.timer = [NSTimer scheduledTimerWithTimeInterval:self.configuration.remoteConfigUpdateInterval
-                                                 repeats:YES
-                                                   block:^(NSTimer * _Nonnull timer) {
-        __strong __typeof(weakSelf) strongSelf = weakSelf;
-        if (strongSelf) {
-            @synchronized (strongSelf) {
-                [strongSelf updateRemoteConfig];
-            }
-        } else {
-            [timer invalidate];
-        }
-    }];
-    self.timer.tolerance = self.configuration.remoteConfigUpdateTolerance;
+                                                  target:self
+                                                selector:@selector(updateRemoteConfig)
+                                                userInfo:nil
+                                                 repeats:YES];
+    
+    if (@available(iOS 10.0, macOS 10.12, tvOS 10.0, watchOS 3.0, *)) {
+        self.timer.tolerance = self.configuration.remoteConfigUpdateTolerance;
+    }
 }
 
 - (void)clearLocalStore {

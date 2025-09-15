@@ -75,8 +75,8 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
-#import "BSGRemoteConfigHandler.h"
 #import "BugsnagDevice+Private.h"
+#import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
