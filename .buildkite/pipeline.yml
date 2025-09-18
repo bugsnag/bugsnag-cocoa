@@ -180,6 +180,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-12-arm
+    env:
+      XCODE_VERSION: 14.1.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
     artifact_paths:
@@ -211,6 +213,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-12-arm
+    env:
+      XCODE_VERSION: 14.1.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
     artifact_paths:

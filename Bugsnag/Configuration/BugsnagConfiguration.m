@@ -188,6 +188,8 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     _maxPersistedSessions = 128;
     _maxStringValueLength = 10000;
     _autoTrackSessions = YES;
+    _remoteConfigUpdateInterval = 86400;
+    _remoteConfigUpdateTolerance = 7200;
 #if BSG_HAVE_MACH_THREADS
     _sendThreads = BSGThreadSendPolicyAlways;
 #else
@@ -443,6 +445,15 @@ static NSURLSession *getConfigDefaultURLSession(void) {
 
 - (NSURL *)sessionURL {
     return self.endpoints.sessions.length ? [NSURL URLWithString:self.endpoints.sessions] : nil;
+}
+
+- (NSURL *)configurationURL {
+    NSString *configurationUrlString = self.endpoints.configuration;
+    if (!configurationUrlString) {
+        return nil;
+    }
+    return self.endpoints.configuration
+        .length ? [NSURL URLWithString:configurationUrlString] : nil;
 }
 
 - (BOOL)shouldDiscardErrorClass:(NSString *)errorClass {

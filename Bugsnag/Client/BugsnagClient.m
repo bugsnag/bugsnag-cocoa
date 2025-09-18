@@ -75,6 +75,8 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "BugsnagDevice+Private.h"
+#import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -183,6 +185,8 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (copy, nullable, atomic) NSString *groupingDiscriminator_;
 
+@property (nonatomic, strong) BSGRemoteConfigHandler *remoteConfigHandler;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -271,6 +275,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
+    
+    [self setupRemoteConfigHandlerWithSystemInfo:systemInfo];
 
     [self computeDidCrashLastLaunch];
 
@@ -350,6 +356,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
     
     [self.eventUploader uploadStoredEvents];
+    [self.remoteConfigHandler start];
     
 #if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
@@ -958,6 +965,27 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (self.observer) {
         self.observer(BSGClientObserverClearFeatureFlag, nil);
     }
+}
+
+// MARK: - RemoteConfigStore
+
+- (void)setupRemoteConfigHandlerWithSystemInfo:(NSDictionary *)systemInfo {
+    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
+    NSString *codeBundleId = self.codeBundleId;
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
+                                             config:self.configuration
+                                       codeBundleId:codeBundleId];
+    BSGRemoteConfigService *remoteConfigService = [BSGRemoteConfigService serviceWithSession:[NSURLSession sharedSession]
+                                                                               configuration:self.configuration
+                                                                                    notifier:self.notifier
+                                                                                      device:device
+                                                                                         app:app];
+    BSGRemoteConfigStore *remoteConfigStore = [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current]
+                                                                         configuration:self.configuration];
+    self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
+                                                                    store:remoteConfigStore
+                                                            configuration:self.configuration];
+    [self.remoteConfigHandler initialize];
 }
 
 // MARK: - <BugsnagMetadataStore>
