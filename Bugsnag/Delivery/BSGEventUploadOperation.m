@@ -159,6 +159,13 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         }
     }
     
+    if ([delegate shouldDiscardEvent:eventPayload]) {
+        bsg_log_info(@"Discarding event %@ because [delegate shouldDiscardEvent:] returned YES", self.name);
+        [self deleteEvent];
+        completionHandler();
+        return;
+    }
+    
     BSGPostJSONData(configuration.sessionOrDefault, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {
             case BSGDeliveryStatusDelivered:
