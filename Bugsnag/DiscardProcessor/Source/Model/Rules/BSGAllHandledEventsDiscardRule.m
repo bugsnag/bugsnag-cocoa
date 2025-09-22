@@ -7,7 +7,7 @@
 //
 
 #import "BSGAllHandledEventsDiscardRule.h"
-#import "../../Helpers/BSGKeys.h"
+#import "../../../../Helpers/BSGKeys.h"
 
 @implementation BSGAllHandledEventsDiscardRule
 

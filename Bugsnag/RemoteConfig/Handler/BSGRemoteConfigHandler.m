@@ -18,6 +18,7 @@
 @property (nonatomic, strong) BugsnagConfiguration *configuration;
 @property (nonatomic, strong) BSGRemoteConfiguration *remoteConfig;
 @property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) NSDate *lastConfigUpdateTime;
 @property (nonatomic) BOOL didReadLocalConfig;
 @property (nonatomic) BOOL didClearLocalStore;
 
@@ -53,7 +54,7 @@
         @synchronized (strongSelf) {
             if ([strongSelf isRemoteConfigEnabled]) {
                 [strongSelf loadLocalConfigIfNeeded];
-                [strongSelf clearConfigIfExpired];
+                [strongSelf clearConfigIfNotValid];
             } else {
                 if (!strongSelf.didClearLocalStore) {
                     [strongSelf clearLocalStore];
@@ -69,7 +70,7 @@
             return nil;
         }
         [self loadLocalConfigIfNeeded];
-        [self clearConfigIfExpired];
+        [self clearConfigIfNotValid];
         return self.remoteConfig;
     }
 }
@@ -85,6 +86,16 @@
 
 - (void)dealloc {
     [self.timer invalidate];
+}
+
+- (void)setRemoteConfig:(BSGRemoteConfiguration *)remoteConfig {
+    _remoteConfig = remoteConfig;
+    self.lastConfigUpdateTime = [NSDate date];
+}
+
+- (BOOL)hasValidConfig {
+    return self.remoteConfig.expiryDate &&
+        [self.remoteConfig.expiryDate timeIntervalSinceNow] < 0;
 }
 
 #pragma mark - Helpers
@@ -120,10 +131,8 @@
     self.didReadLocalConfig = YES;
 }
 
-- (void)clearConfigIfExpired {
-    BOOL configExpired = self.remoteConfig.expiryDate &&
-                            [self.remoteConfig.expiryDate timeIntervalSinceNow] < 0;
-    if (configExpired) {
+- (void)clearConfigIfNotValid {
+    if (![self hasValidConfig]) {
         self.remoteConfig = nil;
         [self clearLocalStore];
     }

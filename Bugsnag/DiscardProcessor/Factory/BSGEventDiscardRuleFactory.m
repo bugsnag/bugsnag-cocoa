@@ -7,8 +7,8 @@
 //
 
 #import "BSGEventDiscardRuleFactory.h"
-#import "Rules/BSGAllEventsDiscardRule.h"
-#import "Rules/BSGAllHandledEventsDiscardRule.h"
+#import "../Source/Model/Rules/BSGAllEventsDiscardRule.h"
+#import "../Source/Model/Rules/BSGAllHandledEventsDiscardRule.h"
 
 static NSString *const BSGDiscardRuleTypeAllEvents = @"ALL";
 static NSString *const BSGDiscardRuleTypeAllHandledEvents = @"ALL_HANDLED";

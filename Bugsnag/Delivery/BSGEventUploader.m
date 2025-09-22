@@ -18,7 +18,7 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
-#import "../DiscardProcessor/BSGEventDiscardProcessor.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
 
 
 static NSString * const CrashReportPrefix = @"CrashReport-";

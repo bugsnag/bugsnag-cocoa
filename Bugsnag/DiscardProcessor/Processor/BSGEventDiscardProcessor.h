@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSGEventDiscardProcessorDelegate.h"
+#import "BSGEventDiscardRulesetSource.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGEventDiscardProcessor : NSObject
 
-- (instancetype)initWithDelegate:(id<BSGEventDiscardProcessorDelegate>)delegate;
+@property (nonatomic, strong) BSGEventDiscardRulesetSource *source;
 
 - (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload;
 

@@ -77,8 +77,8 @@
 #import "BSGCompositeFeatureFlagStore.h"
 #import "BugsnagDevice+Private.h"
 #import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
-#import "../DiscardProcessor/BSGEventDiscardProcessor.h"
-#import "../DiscardProcessor/BSGEventDiscardRuleFactory.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../DiscardProcessor/Factory/BSGEventDiscardRuleFactory.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -173,7 +173,7 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 // MARK: -
 
 
-@interface BugsnagClient () <BSGBreadcrumbSink, BSGEventDiscardProcessorDelegate>
+@interface BugsnagClient () <BSGBreadcrumbSink>
 
 @property (nonatomic) BSGNotificationBreadcrumbs *notificationBreadcrumbs;
 
@@ -190,8 +190,6 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 @property (nonatomic, strong) BSGRemoteConfigHandler *remoteConfigHandler;
 
 @property (nonatomic, strong) BSGEventDiscardProcessor *discardProcessor;
-
-@property (nonatomic, strong) BSGEventDiscardRuleFactory *discardRuleFactory;
 
 @end
 
@@ -247,7 +245,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         self.extraRuntimeInfo = [NSMutableDictionary new];
         
         _discardProcessor = [BSGEventDiscardProcessor new];
-        _discardRuleFactory = [BSGEventDiscardRuleFactory new];
         _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration
                                                                 notifier:_notifier
                                                         discardProcessor:_discardProcessor];
@@ -977,22 +974,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 }
 
-// MARK: - BSGEventDiscardProcessorDelegate
-
-- (NSArray<id<BSGEventDiscardRule>> *)discardRules {
-    NSMutableArray<id<BSGEventDiscardRule>> *rules = [NSMutableArray array];
-    BSGRemoteConfiguration *remoteConfig = self.remoteConfigHandler.currentConfiguration;
-    if (remoteConfig) {
-        for (BSGRemoteConfigurationDiscardRule *rule in remoteConfig.internals.discardRules) {
-            id<BSGEventDiscardRule> discardRule = [self.discardRuleFactory ruleFromRemoteConfig:rule];
-            if (discardRule) {
-                [rules addObject:discardRule];
-            }
-        }
-    }
-    return rules;
-}
-
 // MARK: - RemoteConfigStore
 
 - (void)setupRemoteConfigHandlerWithSystemInfo:(NSDictionary *)systemInfo {
@@ -1011,6 +992,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
                                                                     store:remoteConfigStore
                                                             configuration:self.configuration];
+    
+    BSGEventDiscardRuleFactory *discardRuleFactory = [BSGEventDiscardRuleFactory new];
+    BSGEventDiscardRulesetSource *rulesetSource = [BSGEventDiscardRulesetSource sourceWithRemoteConfigHandler:self.remoteConfigHandler
+                                                                                           discardRuleFactory:discardRuleFactory];
+    self.discardProcessor.source = rulesetSource;
     [self.remoteConfigHandler initialize];
 }
 
