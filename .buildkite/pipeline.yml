@@ -351,6 +351,11 @@ steps:
       queue: macos-12-arm
     env:
       STRESS_TEST: "true"
+    plugins:
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        #branch: "^master|next$$"
     commands:
       - echo "--- Bundle install"
       - bundle install
