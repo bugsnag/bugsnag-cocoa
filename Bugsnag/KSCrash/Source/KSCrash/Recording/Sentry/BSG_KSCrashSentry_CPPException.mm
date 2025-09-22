@@ -30,7 +30,6 @@
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSCrashStringConversion.h"
 #include "BSG_KSMach.h"
-#include "BSGDiagnostics.h"
 #include "../Tools/BSG_KSCxaThrowSwapper.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
@@ -91,13 +90,10 @@ void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
 
 void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
                  void (*dest)(void *)) {
-    logDiagnosticMessage("__cxa_throw:: Did call __cxa_throw");
     if (bsg_g_captureNextStackTrace) {
-        logDiagnosticMessage("__cxa_throw:: Will save stack trace");
         bsg_g_stackTraceCount =
             backtrace((void **)bsg_g_stackTrace,
                       sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
-        logDiagnosticMessage("__cxa_throw:: Did save stack trace");
     }
 
     static cxa_throw_type orig_cxa_throw = NULL;
@@ -124,7 +120,6 @@ static const char *getExceptionTypeName(std::type_info *tinfo) {
 }
 
 static void CPPExceptionTerminate(void) {
-    logDiagnosticMessage("CPPExceptionTerminate:: Trapped c++ exception");
     BSG_KSLOG_DEBUG("Trapped c++ exception");
 
     char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
@@ -134,11 +129,9 @@ static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Get exception type name.");
     std::type_info *tinfo = __cxxabiv1::__cxa_current_exception_type();
     if (tinfo == NULL) {
-        logDiagnosticMessage("CPPExceptionTerminate:: tinfo is NULL");
         name = "std::terminate";
         crashReason = "throw may have been called without an exception";
         if (!bsg_g_stackTraceCount) {
-            logDiagnosticMessage("CPPExceptionTerminate:: No exception backtrace");
             BSG_KSLOG_DEBUG("No exception backtrace");
             bsg_g_stackTraceCount =
             backtrace((void **)bsg_g_stackTrace,
@@ -149,7 +142,6 @@ static void CPPExceptionTerminate(void) {
 
     name = getExceptionTypeName(tinfo);
     if (name == NULL) {
-        logDiagnosticMessage("CPPExceptionTerminate:: No exception name");
         name = "unknown";
         crashReason = "unable to determine C++ exception type";
         goto after_rethrow;
@@ -158,25 +150,19 @@ static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Discovering what kind of exception was thrown.");
     bsg_g_captureNextStackTrace = false;
     try {
-        logDiagnosticMessage("CPPExceptionTerminate:: Throwing exception");
         throw;
     } catch (NSException *exception) {
-        logDiagnosticMessage("CPPExceptionTerminate:: Detected NSException");
         if (bsg_g_originalTerminateHandler != NULL) {
-            logDiagnosticMessage("CPPExceptionTerminate:: Passing NSException to handler");
             BSG_KSLOG_DEBUG("Detected NSException. Passing to the current NSException handler.");
             bsg_g_originalTerminateHandler();
         } else {
-            logDiagnosticMessage("CPPExceptionTerminate:: Detected NSException, but there was no original C++ terminate handler");
             BSG_KSLOG_DEBUG("Detected NSException, but there was no original C++ terminate handler.");
         }
         return;
     } catch (std::exception &exc) {
-        logDiagnosticMessage("CPPExceptionTerminate:: Detected a reference");
         strlcpy(descriptionBuff, exc.what(), sizeof(descriptionBuff));
         crashReason = descriptionBuff;
     } catch (std::exception *exc) {
-        logDiagnosticMessage("CPPExceptionTerminate:: Detected a pointer");
         strlcpy(descriptionBuff, exc->what(), sizeof(descriptionBuff));
         crashReason = descriptionBuff;
     }
@@ -220,7 +206,6 @@ static void CPPExceptionTerminate(void) {
     }
 
 after_rethrow:
-    logDiagnosticMessage("CPPExceptionTerminate:: Entering after throw");
     bsg_g_captureNextStackTrace = (bsg_g_installed != 0);
 
     if (bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
@@ -244,10 +229,6 @@ after_rethrow:
         bsg_g_context->stackTraceLength = bsg_g_stackTraceCount - 1;
         bsg_g_context->CPPException.name = name;
         bsg_g_context->crashReason = crashReason;
-        
-        if (bsg_g_context->stackTraceLength > 0) {
-            logDiagnosticMessage("CPPExceptionTerminate:: Found a stack trace");
-        }
 
         BSG_KSLOG_DEBUG("Calling main crash handler.");
         bsg_g_context->onCrash(crashContext());
@@ -272,7 +253,6 @@ after_rethrow:
 extern "C" bool bsg_kscrashsentry_installCPPExceptionHandler(
     BSG_KSCrash_SentryContext *context) {
     BSG_KSLOG_DEBUG("Installing C++ exception handler.");
-    logDiagnosticMessage("bsg_kscrashsentry_installCPPExceptionHandler:: Installing C++ exception handler.");
 
     if (bsg_g_installed) {
         return true;
@@ -283,11 +263,7 @@ extern "C" bool bsg_kscrashsentry_installCPPExceptionHandler(
 
     bsg_g_originalTerminateHandler = std::set_terminate(CPPExceptionTerminate);
     bsg_g_captureNextStackTrace = true;
-    logDiagnosticMessage("bsg_kscrashsentry_installCPPExceptionHandler:: Swapping __cxa_throw");
-    int result = bsg_ksct_swap(BSG__cxa_throw_override);
-    if (result == 0) {
-        logDiagnosticMessage("bsg_kscrashsentry_installCPPExceptionHandler:: Swapping __cxa_throw successful");
-    }
+    bsg_ksct_swap(BSG__cxa_throw_override);
     return true;
 }
 

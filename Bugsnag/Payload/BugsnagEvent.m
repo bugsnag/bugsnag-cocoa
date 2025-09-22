@@ -429,7 +429,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     obj.customException = BSGParseCustomException(event, [errors[0].errorClass copy], [errors[0].errorMessage copy]);
     obj.depth = depth;
     obj.usage = [event valueForKeyPath:@"user._usage"];
-    obj.diagnostics = [event valueForKeyPath:@"user.diagnostics"] ?: @[];
 
     if (traceId.length > 0 || spanId.length > 0) {
         obj.correlation = [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
@@ -619,7 +618,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeyThreads] = [BugsnagThread serializeThreads:self.threads];
     event[BSGKeySeverity] = BSGFormatSeverity(self.severity);
     event[BSGKeyBreadcrumbs] = [self serializeBreadcrumbsWithRedactedKeys:redactedKeys];
-    event[@"diagnostics"] = [self diagnostics];
 
     NSMutableDictionary *metadata = [[[self metadata] toDictionary] mutableCopy];
     @try {

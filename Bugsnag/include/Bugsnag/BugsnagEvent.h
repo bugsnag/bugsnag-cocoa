@@ -126,8 +126,6 @@ BUGSNAG_EXTERN
  */
 @property (readonly, nonnull, nonatomic) BugsnagUser *user;
 
-@property (readwrite, copy, nonnull, nonatomic) NSArray<NSString *> *diagnostics;
-
 /**
  *  Set user metadata
  *
