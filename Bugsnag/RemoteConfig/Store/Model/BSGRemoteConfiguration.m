@@ -11,7 +11,6 @@
 
 static NSString const *ConfigurationTagKey = @"configurationTag";
 static NSString const *ExpiryDateKey = @"expiryDate";
-static NSString const *AppVersionKey = @"appVersion";
 static NSString const *InternalsKey = @"internals";
 static NSString const *DiscardRulesKey = @"discardRules";
 static NSString const *MatchTypeKey = @"matchType";
@@ -86,18 +85,15 @@ static NSString const *MatchTypeKey = @"matchType";
 
 + (instancetype)configFromJson:(NSDictionary *)json {
     NSString *configurationTag = json[ConfigurationTagKey];
-    NSString *appVersion = json[AppVersionKey];
     NSDate *expiryDate = [BSG_RFC3339DateTool dateFromString:json[ExpiryDateKey]];
     return [self configFromJson:json
                            eTag:configurationTag
-                     expiryDate:expiryDate
-                     appVersion:appVersion];
+                     expiryDate:expiryDate];
 }
 
 + (instancetype)configFromJson:(NSDictionary *)json
                           eTag:(NSString *)eTag
-                    expiryDate:(NSDate *)expiryDate
-                    appVersion:(NSString *)appVersion {
+                    expiryDate:(NSDate *)expiryDate {
     NSDictionary *internalsJson = json[InternalsKey];
     if (![eTag isKindOfClass:[NSString class]] ||
         ![expiryDate isKindOfClass:[NSDate class]] ||
@@ -109,18 +105,15 @@ static NSString const *MatchTypeKey = @"matchType";
         return nil;
     }
     return [[self alloc] initWithConfigurationTag:eTag
-                                       appVersion:appVersion
                                        expiryDate:expiryDate
                                         internals:internals];
 }
 
 - (instancetype)initWithConfigurationTag:(NSString *)configurationTag
-                              appVersion:(NSString *)appVersion
                               expiryDate:(NSDate *)expiryDate
                                internals:(BSGRemoteConfigurationInternals *)internals {
     if ((self = [super init])) {
         _configurationTag = configurationTag;
-        _appVersion = appVersion;
         _expiryDate = expiryDate;
         _internals = internals;
     }
@@ -131,9 +124,6 @@ static NSString const *MatchTypeKey = @"matchType";
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     if (self.configurationTag) {
         result[ConfigurationTagKey] = self.configurationTag;
-    }
-    if (self.appVersion) {
-        result[AppVersionKey] = self.appVersion;
     }
     NSString *expiryDateJson = [BSG_RFC3339DateTool stringFromDate:self.expiryDate];
     if (expiryDateJson) {

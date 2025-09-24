@@ -77,6 +77,8 @@
 #import "BSGCompositeFeatureFlagStore.h"
 #import "BugsnagDevice+Private.h"
 #import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../DiscardProcessor/Factory/BSGEventDiscardRuleFactory.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -187,6 +189,8 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (nonatomic, strong) BSGRemoteConfigHandler *remoteConfigHandler;
 
+@property (nonatomic, strong) BSGEventDiscardProcessor *discardProcessor;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -239,8 +243,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
-
-        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
+        
+        _discardProcessor = [BSGEventDiscardProcessor new];
+        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration
+                                                                notifier:_notifier
+                                                        discardProcessor:_discardProcessor];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
@@ -985,6 +992,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
                                                                     store:remoteConfigStore
                                                             configuration:self.configuration];
+    
+    BSGEventDiscardRuleFactory *discardRuleFactory = [BSGEventDiscardRuleFactory new];
+    BSGEventDiscardRulesetSource *rulesetSource = [BSGEventDiscardRulesetSource sourceWithRemoteConfigHandler:self.remoteConfigHandler
+                                                                                           discardRuleFactory:discardRuleFactory];
+    self.discardProcessor.source = rulesetSource;
     [self.remoteConfigHandler initialize];
 }
 

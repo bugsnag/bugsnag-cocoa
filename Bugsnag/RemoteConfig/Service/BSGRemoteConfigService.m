@@ -119,8 +119,7 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
             
             remoteConfig = [BSGRemoteConfiguration configFromJson:configJson
                                                              eTag:etag
-                                                       expiryDate:expiryDate
-                                                       appVersion:strongSelf.configuration.appVersion];
+                                                       expiryDate:expiryDate];
         } else {
             remoteConfig = [BSGRemoteConfiguration configFromJson:configJson];
         }

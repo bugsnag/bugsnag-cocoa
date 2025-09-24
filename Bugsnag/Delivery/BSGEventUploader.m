@@ -18,11 +18,17 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
 
 
 static NSString * const CrashReportPrefix = @"CrashReport-";
 static NSString * const RecrashReportPrefix = @"RecrashReport-";
 
+@interface BSGEventUploader ()
+
+@property (nonatomic, strong) BSGEventDiscardProcessor *discardProcessor;
+
+@end
 
 @interface BSGEventUploader () <BSGEventUploadOperationDelegate>
 
@@ -45,7 +51,9 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 @synthesize configuration = _configuration;
 @synthesize notifier = _notifier;
 
-- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration
+                             notifier:(BugsnagNotifier *)notifier
+                     discardProcessor:(BSGEventDiscardProcessor *)discardProcessor {
     if ((self = [super init])) {
         _configuration = configuration;
         _eventsDirectory = [BSGFileLocations current].events;
@@ -57,6 +65,7 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
         _uploadQueue = [[NSOperationQueue alloc] init];
         _uploadQueue.maxConcurrentOperationCount = 1;
         _uploadQueue.name = @"com.bugsnag.event-uploader";
+        _discardProcessor = discardProcessor;
     }
     return self;
 }
@@ -266,6 +275,10 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
         }
         [self deleteExcessFiles:[self sortedEventFiles]];
     });
+}
+
+- (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload {
+    return [self.discardProcessor shouldDiscardEvent:eventPayload];
 }
 
 @end

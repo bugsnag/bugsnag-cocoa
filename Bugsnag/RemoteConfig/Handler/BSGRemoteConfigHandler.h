@@ -18,5 +18,7 @@
 - (BSGRemoteConfiguration *)currentConfiguration;
 - (void)initialize;
 - (void)start;
+- (NSDate *)lastConfigUpdateTime;
+- (BOOL)hasValidConfig;
 
 @end

@@ -14,13 +14,17 @@
 @class BugsnagConfiguration;
 @class BugsnagEvent;
 @class BugsnagNotifier;
+@class BSGEventDiscardProcessor;
 
 NS_ASSUME_NONNULL_BEGIN
 
 
 @interface BSGEventUploader : NSObject
 
-- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier;
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration
+                             notifier:(BugsnagNotifier *)notifier
+                     discardProcessor:(BSGEventDiscardProcessor *)discardProcessor;
+                         
 
 - (void)storeEvent:(BugsnagEvent *)event;
 
