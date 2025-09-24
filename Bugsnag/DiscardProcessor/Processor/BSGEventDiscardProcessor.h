@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSGEventDiscardRulesetSource.h"
+#import "../Source/BSGEventDiscardRulesetSource.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

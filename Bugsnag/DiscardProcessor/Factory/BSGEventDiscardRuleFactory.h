@@ -6,7 +6,7 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGEventDiscardRule.h"
+#import "../Source/Model/BSGEventDiscardRule.h"
 #import "BSGRemoteConfiguration.h"
 
 @interface BSGEventDiscardRuleFactory : NSObject
