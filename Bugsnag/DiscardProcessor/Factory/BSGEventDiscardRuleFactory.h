@@ -7,7 +7,7 @@
 //
 
 #import "../Source/Model/BSGEventDiscardRule.h"
-#import "BSGRemoteConfiguration.h"
+#import "../../RemoteConfig/Store/Model/BSGRemoteConfiguration.h"
 
 @interface BSGEventDiscardRuleFactory : NSObject
 
