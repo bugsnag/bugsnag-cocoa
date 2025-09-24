@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Improved C++ exception stack trace capturing.
+  [1855](https://github.com/bugsnag/bugsnag-cocoa/pull/1855)
+
 ## 6.33.1 (2025-09-10)
 
 ### Enhancements
