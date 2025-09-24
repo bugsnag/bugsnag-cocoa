@@ -10,7 +10,7 @@
 
 @implementation BSGAllEventsDiscardRule
 
-- (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload {
+- (BOOL)shouldDiscardEvent:(__unused NSDictionary *)eventPayload {
     return YES;
 }
 
