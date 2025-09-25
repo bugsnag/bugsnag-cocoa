@@ -30,6 +30,7 @@
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSCrashStringConversion.h"
 #include "BSG_KSMach.h"
+#include "../Tools/BSG_KSCxaThrowSwapper.h"
 
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
@@ -84,10 +85,10 @@ static BSG_KSCrash_SentryContext *bsg_g_context;
 typedef void (*cxa_throw_type)(void *, std::type_info *, void (*)(void *));
 
 extern "C" {
-void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
+void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
                  void (*dest)(void *)) __attribute__((weak));
 
-void __cxa_throw(void *thrown_exception, std::type_info *tinfo,
+void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
                  void (*dest)(void *)) {
     if (bsg_g_captureNextStackTrace) {
         bsg_g_stackTraceCount =
@@ -262,6 +263,7 @@ extern "C" bool bsg_kscrashsentry_installCPPExceptionHandler(
 
     bsg_g_originalTerminateHandler = std::set_terminate(CPPExceptionTerminate);
     bsg_g_captureNextStackTrace = true;
+    bsg_ksct_swap(BSG__cxa_throw_override);
     return true;
 }
 
