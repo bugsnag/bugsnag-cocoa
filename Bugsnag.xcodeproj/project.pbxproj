@@ -4161,7 +4161,7 @@
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -4205,7 +4205,7 @@
 				INFOPLIST_FILE = ./Framework/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -4244,7 +4244,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4269,7 +4269,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				MODULEMAP_FILE = "$(PROJECT_DIR)/Framework/module.modulemap";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4288,7 +4288,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
@@ -4309,7 +4309,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagTests/Tests-Bridging-Header.h";
@@ -4337,7 +4337,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -4361,7 +4361,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -4380,7 +4380,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4400,7 +4400,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-macOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4425,7 +4425,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -4448,7 +4448,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
@@ -4467,7 +4467,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -4487,7 +4487,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.Bugsnag-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
@@ -4503,7 +4503,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4516,7 +4516,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4534,7 +4534,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.TestHost-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4552,7 +4552,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.TestHost-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4608,7 +4608,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = watchos;
@@ -4666,7 +4666,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Bugsnag;
 				PRODUCT_NAME = Bugsnag;
 				SDKROOT = watchos;
@@ -4713,7 +4713,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -4760,7 +4760,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 6.33.1;
+				MARKETING_VERSION = 6.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
