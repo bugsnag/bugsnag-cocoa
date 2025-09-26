@@ -1,0 +1,9 @@
+{
+    "discardRules": [
+      {
+        "matchType": "ALL_HANDLED",
+      },
+      {
+        "matchType": "TEST_UNKNOWN_RULE",
+      },
+}
