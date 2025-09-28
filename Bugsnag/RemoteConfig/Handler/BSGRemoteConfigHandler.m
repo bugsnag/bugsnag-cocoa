@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSDate *lastConfigUpdateTime;
 @property (nonatomic) BOOL didReadLocalConfig;
+@property (nonatomic) BOOL isLoadingRemoteConfig;
+@property (nonatomic) BOOL didLoadRemoteConfig;
 @property (nonatomic) BOOL didClearLocalStore;
 
 @end
@@ -71,6 +73,7 @@
         }
         [self loadLocalConfigIfNeeded];
         [self clearConfigIfNotValid];
+        [self updateRemoteConfigIfNeeded];
         return self.remoteConfig;
     }
 }
@@ -105,6 +108,7 @@
 }
 
 - (void)updateRemoteConfig {
+    self.isLoadingRemoteConfig = YES;
     [self.service loadRemoteConfigWithCurrentTag:self.remoteConfig.configurationTag
                                       completion:^(BSGRemoteConfiguration * _Nullable config, NSError * _Nullable error) {
         @synchronized (self) {
@@ -115,6 +119,8 @@
             if (error) {
                 bsg_log_err(@"Unable to load remote config: %@", error);
             }
+            self.didLoadRemoteConfig = YES;
+            self.isLoadingRemoteConfig = NO;
         }
     }];
 }
@@ -158,6 +164,14 @@
     [self.store clear];
     self.remoteConfig = nil;
     self.didClearLocalStore = YES;
+}
+
+- (void)updateRemoteConfigIfNeeded {
+    if (self.remoteConfig == nil &&
+        self.didLoadRemoteConfig &&
+        !self.isLoadingRemoteConfig) {
+        [self updateRemoteConfig];
+    }
 }
 
 @end

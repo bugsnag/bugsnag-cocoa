@@ -191,6 +191,7 @@
 		09F1E35E2CDCCAB2007F5933 /* BugsnagNetworkRequestPlugin.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 09F1E3562CDCCA8D007F5933 /* BugsnagNetworkRequestPlugin.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		96A25F382D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F372D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */; };
 		96C7358E2E89E44300F3CB3C /* RemoteConfigBasicScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */; };
+		96C735962E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C735952E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -403,6 +404,7 @@
 		710618F62CF0BBCE00423249 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		96A25F372D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionFeatureFlagsScenario.m; sourceTree = "<group>"; };
 		96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigBasicScenario.m; sourceTree = "<group>"; };
+		96C735952E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigExpiryScenario.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -568,6 +570,7 @@
 				09AABBDA2CDCED61007D6FC0 /* RecrashScenarios.mm */,
 				09AABBDB2CDCED61007D6FC0 /* ReleasedObjectScenario.m */,
 				96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */,
+				96C735952E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m */,
 				09AABBDD2CDCED61007D6FC0 /* ResumedSessionScenario.swift */,
 				09AABBDE2CDCED61007D6FC0 /* ResumeSessionOOMScenario.m */,
 				09AABBDF2CDCED61007D6FC0 /* Scenario.h */,
@@ -761,6 +764,7 @@
 				09AABC722CDCED61007D6FC0 /* NSExceptionShiftScenario.m in Sources */,
 				09AABC262CDCED61007D6FC0 /* AutoCaptureRunScenario.m in Sources */,
 				09AABCBA2CDCED61007D6FC0 /* UnhandledInternalNotifyScenario.swift in Sources */,
+				96C735962E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m in Sources */,
 				09AABC522CDCED61007D6FC0 /* EnabledReleaseStageManualSessionScenario.swift in Sources */,
 				09F1E1C82CDCBD10007F5933 /* main.m in Sources */,
 				09AABCA42CDCED61007D6FC0 /* SIGBUSScenario.m in Sources */,
