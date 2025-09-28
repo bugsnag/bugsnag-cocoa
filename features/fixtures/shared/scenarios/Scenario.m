@@ -78,6 +78,7 @@ static __weak Scenario *currentScenario;
     self.config = [[BugsnagConfiguration alloc] initWithApiKey:self.fixtureConfig.apiKey];
     self.config.endpoints.notify = self.fixtureConfig.notifyURL.absoluteString;
     self.config.endpoints.sessions = self.fixtureConfig.sessionsURL.absoluteString;
+    self.config.endpoints.configuration = self.fixtureConfig.configurationURL.absoluteString;
 #if !TARGET_OS_WATCH
     self.config.enabledErrorTypes.ooms = NO;
 #endif
