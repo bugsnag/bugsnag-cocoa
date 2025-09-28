@@ -190,6 +190,7 @@
 		09F1E35D2CDCCAB2007F5933 /* BugsnagNetworkRequestPlugin.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09F1E3562CDCCA8D007F5933 /* BugsnagNetworkRequestPlugin.xcframework */; };
 		09F1E35E2CDCCAB2007F5933 /* BugsnagNetworkRequestPlugin.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 09F1E3562CDCCA8D007F5933 /* BugsnagNetworkRequestPlugin.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		96A25F382D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F372D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */; };
+		96C7358E2E89E44300F3CB3C /* RemoteConfigBasicScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -401,6 +402,7 @@
 		09F1E3572CDCCA8D007F5933 /* Bugsnag.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Bugsnag.xcframework; path = ../../../../build/xcframeworks/products/Bugsnag.xcframework; sourceTree = "<group>"; };
 		710618F62CF0BBCE00423249 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		96A25F372D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionFeatureFlagsScenario.m; sourceTree = "<group>"; };
+		96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigBasicScenario.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -565,6 +567,7 @@
 				09AABBD92CDCED61007D6FC0 /* ReadOnlyPageScenario.m */,
 				09AABBDA2CDCED61007D6FC0 /* RecrashScenarios.mm */,
 				09AABBDB2CDCED61007D6FC0 /* ReleasedObjectScenario.m */,
+				96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */,
 				09AABBDD2CDCED61007D6FC0 /* ResumedSessionScenario.swift */,
 				09AABBDE2CDCED61007D6FC0 /* ResumeSessionOOMScenario.m */,
 				09AABBDF2CDCED61007D6FC0 /* Scenario.h */,
@@ -893,6 +896,7 @@
 				09AABCB52CDCED61007D6FC0 /* UnhandledErrorChangeValidReleaseStageScenario.swift in Sources */,
 				09AABC302CDCED61007D6FC0 /* AutoSessionUnhandledScenario.m in Sources */,
 				09AABC662CDCED61007D6FC0 /* MarkUnhandledHandledScenario.m in Sources */,
+				96C7358E2E89E44300F3CB3C /* RemoteConfigBasicScenario.m in Sources */,
 				09AABCBB2CDCED61007D6FC0 /* UnhandledMachExceptionOverrideScenario.m in Sources */,
 				09AABC1A2CDCED61007D6FC0 /* AppDurationScenario.swift in Sources */,
 				09AABC742CDCED61007D6FC0 /* ObjCExceptionOverrideScenario.m in Sources */,
