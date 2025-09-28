@@ -378,6 +378,12 @@ static NSURLSession *getConfigDefaultURLSession(void) {
         bsg_log_err(@"Invalid URL supplied for session endpoint");
         _endpoints.sessions = @"";
     }
+    if ([self isValidURLString:endpoints.configuration]) {
+        _endpoints.configuration = [endpoints.configuration copy];
+    } else {
+        bsg_log_err(@"Invalid URL supplied for configuration endpoint");
+        _endpoints.configuration = @"";
+    }
 }
 
 - (BOOL)isValidURLString:(NSString *)URLString {

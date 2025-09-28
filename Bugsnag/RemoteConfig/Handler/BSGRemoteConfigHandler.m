@@ -95,7 +95,7 @@
 
 - (BOOL)hasValidConfig {
     return self.remoteConfig.expiryDate &&
-        [self.remoteConfig.expiryDate timeIntervalSinceNow] < 0;
+        [self.remoteConfig.expiryDate timeIntervalSinceNow] > 0;
 }
 
 #pragma mark - Helpers

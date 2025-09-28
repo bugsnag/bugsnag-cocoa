@@ -42,14 +42,14 @@
 }
 
 - (BOOL)isRulesetValid:(BSGEventDiscardRuleset *)ruleset {
-    return [ruleset.createdAt timeIntervalSinceDate:self.remoteConfigHandler.lastConfigUpdateTime] > 0 && [self.remoteConfigHandler hasValidConfig];
+    return [self.remoteConfigHandler.lastConfigUpdateTime timeIntervalSinceDate:ruleset.createdAt] > 0 && [self.remoteConfigHandler hasValidConfig];
 }
 
 - (NSArray<id<BSGEventDiscardRule>> *)discardRules {
     NSMutableArray<id<BSGEventDiscardRule>> *rules = [NSMutableArray array];
     BSGRemoteConfiguration *remoteConfig = self.remoteConfigHandler.currentConfiguration;
     if (remoteConfig) {
-        for (BSGRemoteConfigurationDiscardRule *rule in remoteConfig.internals.discardRules) {
+        for (BSGRemoteConfigurationDiscardRule *rule in remoteConfig.discardRules) {
             id<BSGEventDiscardRule> discardRule = [self.discardRuleFactory ruleFromRemoteConfig:rule];
             if (discardRule) {
                 [rules addObject:discardRule];
