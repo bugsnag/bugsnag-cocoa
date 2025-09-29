@@ -40,6 +40,10 @@ steps:
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
+    retry:
+      manual:
+        permit_on_passed: true
+
 
 #  - label: ':browserstack: iOS 18'
 #    depends_on: cocoa_fixture
