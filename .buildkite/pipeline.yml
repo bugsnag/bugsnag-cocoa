@@ -1,3 +1,5 @@
+agents:
+  queue: opensource
 env:
   LANG: "en_GB.UTF-8"
 
@@ -12,23 +14,17 @@ steps:
       XCODE_VERSION: 16.3.0
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp_Release.ipa
-      - features/fixtures/ios/output/iOSTestApp_Debug.ipa
-      - features/fixtures/macos/output/macOSTestApp_Release.zip
-      - features/fixtures/macos/output/macOSTestApp_Debug.zip
-      - features/fixtures/ios/output/ipa_url_bb_release.txt
       - features/fixtures/ios/output/ipa_url_bs_release.txt
-      - features/fixtures/ios/output/ipa_url_bb_debug.txt
-      - features/fixtures/ios/output/ipa_url_bs_debug.txt
     commands:
       - ruby scripts/build-test-fixture.rb
 
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -36,15 +32,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -52,10 +44,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -63,15 +55,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -79,10 +67,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -90,15 +78,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -106,10 +90,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -117,15 +101,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -133,10 +113,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -144,15 +124,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -160,10 +136,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -171,15 +147,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -187,10 +159,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -198,15 +170,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -214,10 +182,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -225,15 +193,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -241,10 +205,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -252,15 +216,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
@@ -268,10 +228,10 @@ steps:
   - label: ':browserstack: iOS 18'
     depends_on: cocoa_fixture
     timeout_in_minutes: 10
-    agents:
-      queue: opensource
     plugins:
       artifacts#v1.9.4:
+        download:
+          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -279,15 +239,11 @@ steps:
         pull: cocoa-maze-runner
         run: cocoa-maze-runner
         command:
-          - "--app=bs://dd46940f19e192021dc15900dcaa00c244ae7d57"
+          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:45"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
     concurrency: 5
     concurrency_group: 'browserstack-app'
     concurrency_method: eager
