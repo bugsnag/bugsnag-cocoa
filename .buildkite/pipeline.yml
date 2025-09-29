@@ -67,7 +67,7 @@ steps:
   #
   # BrowserStack
   #
-  - label: ':browserstack: iOS 18 E2E tests batch 1'
+  - label: ':browserstack: iOS 18 State breadcrumbs v1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -89,6 +89,42 @@ steps:
           - "--device=IOS_18"
           - "--appium-version=1.21.0"
           - "--a11y-locator"
+          - "features/release/breadcrumbs_2.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 5
+    concurrency_group: 'browserstack-app'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+          
+          
+  - label: ':browserstack: iOS 18 State breadcrumbs v2'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 60
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v5.8.0:
+        pull: cocoa-maze-runner
+        run: cocoa-maze-runner
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bs_release.txt"
+          - "--farm=bs"
+          - "--device=IOS_18"
           - "features/release/breadcrumbs_2.feature"
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
