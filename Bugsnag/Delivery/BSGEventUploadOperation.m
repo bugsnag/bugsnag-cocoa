@@ -20,6 +20,8 @@
 #import "BugsnagLogger.h"
 #import "BugsnagNotifier.h"
 
+#import "../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
+
 
 static NSString * const EventPayloadVersion = @"4.0";
 
@@ -159,12 +161,17 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         }
     }
     
+    bsg_i_kslog_logCBasic("Should discard?");
+    
     if ([delegate shouldDiscardEvent:eventPayload]) {
+        bsg_i_kslog_logCBasic("DISCARDED");
         bsg_log_info(@"Discarding event %@ because [delegate shouldDiscardEvent:] returned YES", self.name);
         [self deleteEvent];
         completionHandler();
         return;
     }
+    
+    bsg_i_kslog_logCBasic("NOT DISCARDED");
     
     BSGPostJSONData(configuration.sessionOrDefault, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {

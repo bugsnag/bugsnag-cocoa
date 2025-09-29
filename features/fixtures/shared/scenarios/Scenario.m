@@ -90,6 +90,9 @@ static __weak Scenario *currentScenario;
 }
 
 - (void)startBugsnag {
+    logInfo(@"self.config.endpoints.notify = %s", [self.config.endpoints.notify cStringUsingEncoding:NSUTF8StringEncoding]);
+    logInfo(@"self.config.endpoints.sessions = %s", [self.config.endpoints.sessions cStringUsingEncoding:NSUTF8StringEncoding]);
+    logInfo(@"self.config.endpoints.configuration = %s", [self.config.endpoints.configuration cStringUsingEncoding:NSUTF8StringEncoding]);
     [Bugsnag startWithConfiguration:self.config];
 }
 

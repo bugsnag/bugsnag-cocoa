@@ -37,6 +37,8 @@
 #import "BugsnagMetadata+Private.h"
 #import "BugsnagUser+Private.h"
 
+void bsg_i_kslog_logCBasic(__unused const char *const fmt, ...);
+
 const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
 
 static const int BSGApiKeyLength = 32;
@@ -103,6 +105,15 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     [copy setFeatureFlagStore:self.featureFlagStore];
     [copy setMetadata:self.metadata];
     [copy setEndpoints:self.endpoints];
+    bsg_i_kslog_logCBasic("Config URL c1 %s",
+                          [[copy.configurationURL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+    bsg_i_kslog_logCBasic("Config URL c2 %s",
+                          [[self.configurationURL absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
+    bsg_i_kslog_logCBasic("Config URL c3 %s",
+                          [copy.endpoints.configuration cStringUsingEncoding:NSUTF8StringEncoding]);
+    bsg_i_kslog_logCBasic("Config URL c4 %s",
+                          [self.endpoints.configuration cStringUsingEncoding:NSUTF8StringEncoding]);
+
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];
     [copy setPlugins:[self.plugins mutableCopyWithZone:zone]];

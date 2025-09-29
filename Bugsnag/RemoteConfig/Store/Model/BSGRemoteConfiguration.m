@@ -8,6 +8,7 @@
 
 #import "BSGRemoteConfiguration.h"
 #import "BSG_RFC3339DateTool.h"
+#import "../../../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 static NSString const *ConfigurationTagKey = @"configurationTag";
 static NSString const *ExpiryDateKey = @"expiryDate";
@@ -18,6 +19,8 @@ static NSString const *MatchTypeKey = @"matchType";
 
 + (instancetype)ruleFromJson:(NSDictionary *)json {
     NSString *matchType = json[MatchTypeKey];
+    bsg_i_kslog_logCBasic("matchType %s",
+                          [matchType cStringUsingEncoding:NSUTF8StringEncoding]);
     if (![matchType isKindOfClass:[NSString class]]) {
         return nil;
     }
@@ -54,6 +57,9 @@ static NSString const *MatchTypeKey = @"matchType";
 + (instancetype)configFromJson:(NSDictionary *)json
                           eTag:(NSString *)eTag
                     expiryDate:(NSDate *)expiryDate {
+    bsg_i_kslog_logCBasic("Config from JSON");
+    bsg_i_kslog_logCBasic("eTag %s",
+                          [eTag cStringUsingEncoding:NSUTF8StringEncoding]);
     if (![eTag isKindOfClass:[NSString class]] ||
         ![expiryDate isKindOfClass:[NSDate class]]) {
         return nil;

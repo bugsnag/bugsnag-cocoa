@@ -191,12 +191,12 @@ void bsg_i_kslog_logCBasic(const char *fmt, ...) __printflike(1, 2);
 #define TRACE BSG_KSLogger_Level_Trace
 
 #ifndef BSG_KSLogger_LocalLevel
-#define BSG_KSLogger_LocalLevel BSG_KSLogger_Level_None
+#define BSG_KSLogger_LocalLevel BSG_KSLogger_Level_Trace
 #endif
 
 #if !BSG_KSLOG_ENABLED
 #undef BSG_LOG_LEVEL
-#define BSG_LOG_LEVEL BSG_KSLogger_Level_None
+#define BSG_LOG_LEVEL BSG_KSLogger_Level_Trace
 #undef BSG_KSLogger_LocalLevel
 #define BSG_KSLogger_LocalLevel BSG_KSLogger_Level_None
 #endif

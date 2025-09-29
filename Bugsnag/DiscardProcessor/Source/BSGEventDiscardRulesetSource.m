@@ -7,6 +7,7 @@
 //
 
 #import "BSGEventDiscardRulesetSource.h"
+#import "../../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 @interface BSGEventDiscardRulesetSource ()
 
@@ -48,13 +49,17 @@
 - (NSArray<id<BSGEventDiscardRule>> *)discardRules {
     NSMutableArray<id<BSGEventDiscardRule>> *rules = [NSMutableArray array];
     BSGRemoteConfiguration *remoteConfig = self.remoteConfigHandler.currentConfiguration;
+    bsg_i_kslog_logCBasic("Has config?");
     if (remoteConfig) {
+        bsg_i_kslog_logCBasic("Parsing config");
         for (BSGRemoteConfigurationDiscardRule *rule in remoteConfig.discardRules) {
             id<BSGEventDiscardRule> discardRule = [self.discardRuleFactory ruleFromRemoteConfig:rule];
             if (discardRule) {
                 [rules addObject:discardRule];
             }
         }
+    } else {
+        bsg_i_kslog_logCBasic("No config");
     }
     return rules;
 }

@@ -11,6 +11,7 @@
 #import "BugsnagApiClient.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BSGJSONSerialization.h"
+#import "../../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 static NSString *VersionQueryParam = @"version";
 static NSString *BundleVersionQueryParam = @"bundleVersion";
@@ -67,6 +68,8 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
 
 - (void)loadRemoteConfigWithCurrentTag:(NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion {
     NSURL *configUrl = self.configuration.configurationURL;
+    bsg_i_kslog_logCBasic("Config URL %s",
+                          [[configUrl absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
     if (!configUrl) {
         completion(nil, [self noUrlError]);
         return;
@@ -86,17 +89,23 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
 - (void)downloadRemoteConfigWithRequest:(NSURLRequest *)request
                                didRetry:(BOOL)didRetry
                              completion:(BSGRemoteConfigServiceCompletion)completion {
+    bsg_i_kslog_logCBasic("Downloading config");
     __weak typeof(self) weakSelf = self;
     [[self.session dataTaskWithRequest:request
                      completionHandler:^(NSData * _Nullable data,
                                          NSURLResponse * _Nullable response,
                                          NSError * _Nullable error) {
         __strong typeof(self) strongSelf = weakSelf;
+        bsg_i_kslog_logCBasic("Task completion started");
         if (!strongSelf) {
+            bsg_i_kslog_logCBasic("strongSelf does not exist");
             completion(nil, error);
             return;
         }
         if (!data) {
+            bsg_i_kslog_logCBasic("Data is empty");
+            bsg_i_kslog_logCBasic("Error: %s",
+                                  [[error description] cStringUsingEncoding:NSUTF8StringEncoding]);
             completion(nil, error);
             return;
         }
@@ -105,15 +114,21 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
         NSError *jsonError = nil;
         NSDictionary *configJson = BSGJSONDictionaryFromData(content, 0, &jsonError);
         if (!configJson) {
+            bsg_i_kslog_logCBasic("Config not a JSON");
+            bsg_i_kslog_logCBasic("Error: %s",
+                                  [[jsonError description] cStringUsingEncoding:NSUTF8StringEncoding]);
             completion(nil, jsonError);
             return;
         }
+        bsg_i_kslog_logCBasic("Parsing config");
         
         BSGRemoteConfiguration *remoteConfig;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
             NSString *etag = httpResponse.allHeaderFields[ETagHeader];
             NSString *cacheControl = httpResponse.allHeaderFields[CacheControlHeader];
+            bsg_i_kslog_logCBasic("downloaded ETag %s",
+                                  [etag cStringUsingEncoding:NSUTF8StringEncoding]);
             
             NSDate *expiryDate = [strongSelf expiryDateFromCacheControl:cacheControl];
             
@@ -125,11 +140,14 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
         }
         
         if (remoteConfig) {
+            bsg_i_kslog_logCBasic("Config parsed");
             completion(remoteConfig, nil);
         } else {
             if (didRetry) {
+                bsg_i_kslog_logCBasic("Config loading failed");
                 completion(nil, [strongSelf configNotValidError]);
             } else {
+                bsg_i_kslog_logCBasic("Config parsing unsuccessful, retrying...");
                 [strongSelf downloadRemoteConfigWithRequest:request didRetry:YES completion:completion];
             }
         }
@@ -149,8 +167,11 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
 }
 
 - (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {
+    bsg_i_kslog_logCBasic("Cache control %s",
+                          [cacheControl cStringUsingEncoding:NSUTF8StringEncoding]);
     NSTimeInterval maxAge = [self parseMaxAgeFromCacheControl:cacheControl];
     if (maxAge > 0) {
+        bsg_i_kslog_logCBasic("Max age %f", maxAge);
         return [NSDate dateWithTimeIntervalSinceNow:maxAge];
     }
     

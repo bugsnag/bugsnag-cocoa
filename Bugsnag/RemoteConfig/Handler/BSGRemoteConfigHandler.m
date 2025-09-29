@@ -10,6 +10,7 @@
 #import "BSGRemoteConfigHandler.h"
 #import "BugsnagLogger.h"
 #import "BugsnagConfiguration+Private.h"
+#import "../../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 @interface BSGRemoteConfigHandler ()
 
@@ -69,6 +70,7 @@
 - (BSGRemoteConfiguration *)currentConfiguration {
     @synchronized (self) {
         if (![self isRemoteConfigEnabled]) {
+            bsg_i_kslog_logCBasic("Remote config not enabled");
             return nil;
         }
         [self loadLocalConfigIfNeeded];
@@ -138,7 +140,9 @@
 }
 
 - (void)clearConfigIfNotValid {
+    bsg_i_kslog_logCBasic("Clear remote config if not valid");
     if (![self hasValidConfig]) {
+        bsg_i_kslog_logCBasic("Clearing config");
         self.remoteConfig = nil;
         [self clearLocalStore];
     }
@@ -167,11 +171,28 @@
 }
 
 - (void)updateRemoteConfigIfNeeded {
-    if (self.remoteConfig == nil &&
-        self.didLoadRemoteConfig &&
-        !self.isLoadingRemoteConfig) {
-        [self updateRemoteConfig];
+    bsg_i_kslog_logCBasic("Update config if needed");
+    if (self.remoteConfig) {
+        bsg_i_kslog_logCBasic("Not updating config because it exists");
+        return;
     }
+    if (!self.didLoadRemoteConfig) {
+        bsg_i_kslog_logCBasic("Not updating config because did not read remote config");
+        return;
+    }
+    if (self.isLoadingRemoteConfig) {
+        bsg_i_kslog_logCBasic("Not updating config because is loading config");
+        return;
+    }
+    [self updateRemoteConfig];
+//    if (self.remoteConfig == nil &&
+//        self.didLoadRemoteConfig &&
+//        !self.isLoadingRemoteConfig) {
+//        [self updateRemoteConfig];
+//        bsg_i_kslog_logCBasic("Updating config");
+//    } else {
+//        bsg_i_kslog_logCBasic("Not updating config");
+//    }
 }
 
 @end

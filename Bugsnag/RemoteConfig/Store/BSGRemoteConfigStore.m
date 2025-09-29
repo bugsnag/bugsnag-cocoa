@@ -9,6 +9,7 @@
 #import "BSGRemoteConfigStore.h"
 #import "BSGJSONSerialization.h"
 #import "BugsnagLogger.h"
+#import "../../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 @interface BSGRemoteConfigStore ()
 @property (nonatomic, strong) BSGFileLocations *fileLocations;
@@ -34,6 +35,7 @@
 }
 
 - (void)saveConfiguration:(BSGRemoteConfiguration *)configuration {
+    bsg_i_kslog_logCBasic("Saving configuration");
     NSDictionary *configurationJson = [configuration toJson];
     if (configurationJson) {
         NSError *error = nil;
@@ -44,9 +46,12 @@
 }
 
 - (BSGRemoteConfiguration *)loadConfiguration {
+    bsg_i_kslog_logCBasic("Loading config");
     NSData *configurationData = [NSData dataWithContentsOfFile:[self configurationFilePath]];
     NSError *error = nil;
     NSDictionary *configurationJson = BSGJSONDictionaryFromData(configurationData, 0, &error);
+    bsg_i_kslog_logCBasic("Config json %s",
+                          [[[NSString alloc] initWithData:configurationData encoding:NSUTF8StringEncoding] cStringUsingEncoding:NSUTF8StringEncoding]);
     return [BSGRemoteConfiguration configFromJson:configurationJson];
 }
 

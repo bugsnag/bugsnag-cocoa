@@ -7,10 +7,12 @@
 //
 
 #import "BSGAllEventsDiscardRule.h"
+#import "../../../../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 @implementation BSGAllEventsDiscardRule
 
 - (BOOL)shouldDiscardEvent:(__unused NSDictionary *)eventPayload {
+    bsg_i_kslog_logCBasic("RULE: ALL");
     return YES;
 }
 

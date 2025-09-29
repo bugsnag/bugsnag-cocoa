@@ -19,6 +19,7 @@
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 #import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../KSCrash/Source/KSCrash/Recording/Tools/BSG_KSLogger.h"
 
 
 static NSString * const CrashReportPrefix = @"CrashReport-";
@@ -278,6 +279,7 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 }
 
 - (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload {
+    bsg_i_kslog_logCBasic("APPLYING RULES");
     return [self.discardProcessor shouldDiscardEvent:eventPayload];
 }
 
