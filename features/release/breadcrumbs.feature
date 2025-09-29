@@ -41,7 +41,6 @@ Feature: Attaching a series of notable events leading up to errors
     Then the event has a "manual" breadcrumb named "Cache locked"
 
   # TODO: Flaky on iOS 18 - see PLAT-14585
-  @skip_ios_18
   @skip_below_ios_13
   @skip_macos
   Scenario: State breadcrumbs
