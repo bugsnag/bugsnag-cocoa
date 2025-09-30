@@ -25,6 +25,8 @@ static NSString *ETagHeader = @"ETag";
 static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
 
+static const NSInteger HTTPStatusCodeNotModified = 304;
+
 @implementation BSGRemoteConfigServiceResponse
 
 + (instancetype)responseWithConfig:(BSGRemoteConfiguration *)config {
@@ -149,7 +151,7 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
             NSString *cacheControl = httpResponse.allHeaderFields[CacheControlHeader];
             
             expiryDate = [strongSelf expiryDateFromCacheControl:cacheControl];
-            if (httpResponse.statusCode == 304) {
+            if (httpResponse.statusCode == HTTPStatusCodeNotModified) {
                 completion([BSGRemoteConfigServiceResponse responseWithNewExpiryDate:expiryDate
                                                                     configurationTag:etag]);
                 return;
