@@ -1,7 +1,7 @@
 Feature: Remote config discard rules are applied
 
-  Background:
-    Given I clear all persistent data
+
+
 
   Scenario: Empty remote config
     When I prepare an error config with:

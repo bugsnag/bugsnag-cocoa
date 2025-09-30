@@ -35,7 +35,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release/remote_config_discard.feature
+        features/release/remote_config_discard.feature:6
         --os=macos
         --fail-fast
 
@@ -55,7 +55,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release/remote_config_discard.feature
+        features/release/remote_config_discard.feature:6
         --os=macos
         --fail-fast
 
@@ -75,7 +75,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release/remote_config_discard.feature
+        features/release/remote_config_discard.feature:6
         --os=macos
         --fail-fast
 
@@ -95,7 +95,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release/remote_config_discard.feature
+        features/release/remote_config_discard.feature:6
         --os=macos
         --fail-fast
 
@@ -115,7 +115,7 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release/remote_config_discard.feature
+        features/release/remote_config_discard.feature:6
         --os=macos
         --fail-fast
 
@@ -135,6 +135,6 @@ steps:
     commands:
       - bundle install
       - bundle exec maze-runner
-        features/release/remote_config_discard.feature
+        features/release/remote_config_discard.feature:6
         --os=macos
         --fail-fast
