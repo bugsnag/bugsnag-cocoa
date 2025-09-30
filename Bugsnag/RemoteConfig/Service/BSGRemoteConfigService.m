@@ -218,6 +218,7 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:finalUrl];
     request.allHTTPHeaderFields = headers;
     request.HTTPMethod = @"GET";
+    request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
     
     return request;
 }
