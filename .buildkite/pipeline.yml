@@ -60,7 +60,7 @@ steps:
   # Unit tests
   #
 
-  - label: ARM macOS 15 unit tests
+  - label: macOS 15 unit tests
     timeout_in_minutes: 10
     agents:
       queue: macos-15
@@ -69,7 +69,7 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: ARM macOS 14 unit tests
+  - label: macOS 14 unit tests
     timeout_in_minutes: 10
     agents:
       queue: macos-14
@@ -78,7 +78,7 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: ARM macOS 13 unit tests
+  - label: macOS 13 unit tests
     timeout_in_minutes: 10
     agents:
       queue: macos-13-arm
@@ -87,7 +87,7 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: ARM macOS 12 unit tests
+  - label: macOS 12 unit tests
     timeout_in_minutes: 10
     agents:
       queue: macos-12-arm
@@ -249,7 +249,7 @@ steps:
     artifact_paths:
       - logs/*
 
-  - label: 'ARM macOS 15 E2E tests'
+  - label: 'macOS 15 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 120
@@ -273,7 +273,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'ARM macOS 14 E2E tests'
+  - label: 'macOS 14 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 120
@@ -297,7 +297,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'ARM macOS 13 barebones E2E tests'
+  - label: 'macOS 13 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -321,7 +321,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'ARM macOS 12 barebones E2E tests'
+  - label: 'macOS 12 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -370,7 +370,7 @@ steps:
       - features/fixtures/macos-stress-test/*.log
       - features/fixtures/macos-stress-test/*.crash
 
-  - label: 'macOS 11 barebones E2E tests'
+  - label: 'macOS 11 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -394,7 +394,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.15 barebones E2E tests'
+  - label: 'macOS 10.15 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -414,7 +414,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.14 barebones E2E tests'
+  - label: 'macOS 10.14 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -434,7 +434,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.13 barebones E2E tests'
+  - label: 'macOS 10.13 barebones e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10
@@ -456,13 +456,13 @@ steps:
 
   ##############################################################################
   #
-  # Full set of E2E tests on one iOS version
+  # Full set of e2e tests on one iOS version
   #
 
   #
   # BrowserStack
   #
-  - label: ':browserstack: iOS 18 E2E tests batch 1'
+  - label: ':browserstack: iOS 18 e2e tests batch 1'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -501,7 +501,7 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: ':browserstack: iOS 18 E2E tests batch 2'
+  - label: ':browserstack: iOS 18 e2e tests batch 2'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -581,7 +581,7 @@ steps:
 
   ##############################################################################
   #
-  # Basic build E2E tests - Release Configuration
+  # Basic build e2e tests - Release Configuration
   #
 
   #
@@ -635,7 +635,7 @@ steps:
 
   ##############################################################################
   #
-  # Debug configration E2E tests
+  # Debug configration e2e tests
   #
 
   - label: ':browserstack: iOS 18 debug configuration tests'
@@ -715,7 +715,7 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: 'macOS 15 debug E2E tests'
+  - label: 'macOS 15 debug e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 20
@@ -741,7 +741,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.13 debug E2E tests'
+  - label: 'macOS 10.13 debug e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 10

@@ -29,15 +29,15 @@ steps:
 
   ##############################################################################
   #
-  # E2E tests
+  # e2e tests
   #
 
   ##############################################################################
   #
-  # XcFramework E2E tests
+  # XcFramework e2e tests
   #
 
-  - label: ':bitbar: {{matrix}} XcFramework barebone E2E tests'
+  - label: ':bitbar: {{matrix}} XcFramework barebone e2e tests'
     matrix:
       - "IOS_17"
       - "IOS_13"
@@ -79,7 +79,7 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: 'macOS 14 XcFramework barebone E2E tests'
+  - label: 'macOS 14 XcFramework barebone e2e tests'
     depends_on:
       - xcframework_cocoa_fixture
     timeout_in_minutes: 10
@@ -106,7 +106,7 @@ steps:
         --repeater-api-key=
         --hub-repeater-api-key=
 
-  - label: 'macOS 10.13 XcFramework barebone E2E tests'
+  - label: 'macOS 10.13 XcFramework barebone e2e tests'
     depends_on:
       - xcframework_cocoa_fixture
     timeout_in_minutes: 10
@@ -136,7 +136,7 @@ steps:
   #
   # BitBar
   #
-  - label: ':bitbar: {{matrix}} E2E tests batch 1'
+  - label: ':bitbar: {{matrix}} e2e tests batch 1'
     matrix:
       - "IOS_17"
       - "IOS_16"
@@ -181,7 +181,7 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: ':bitbar: {{matrix}} E2E tests batch 2'
+  - label: ':bitbar: {{matrix}} e2e tests batch 2'
     matrix:
       - "IOS_17"
       - "IOS_16"
@@ -278,7 +278,7 @@ steps:
   #
   # macOS e2e tests
   #
-  - label: 'macOS 14 E2E tests'
+  - label: 'macOS 14 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -302,7 +302,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 13 E2E tests'
+  - label: 'macOS 13 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -326,7 +326,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 12 E2E tests'
+  - label: 'macOS 12 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -350,7 +350,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 11 E2E tests'
+  - label: 'macOS 11 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -374,7 +374,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.15 E2E tests'
+  - label: 'macOS 10.15 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -394,7 +394,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.14 E2E tests'
+  - label: 'macOS 10.14 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
@@ -414,7 +414,7 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 10.13 E2E tests'
+  - label: 'macOS 10.13 e2e tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 60
