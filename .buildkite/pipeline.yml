@@ -18,9 +18,30 @@ steps:
     commands:
       - ruby scripts/build-test-fixture.rb
 
-  - label: ':browserstack: iOS 26'
+  - label: ':browserstack: {{matrix}}'
+    matrix:
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_18"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
+      - "IOS_26"
     depends_on: cocoa_fixture
-    timeout_in_minutes: 60
+    timeout_in_minutes: 15
     plugins:
       artifacts#v1.9.4:
         download:
@@ -34,7 +55,7 @@ steps:
         command:
           - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
           - "--farm=bs"
-          - "--device=IOS_26"
+          - "--device={{matrix}}"
           - "--appium-version=1.21.0"
           - "features/release/breadcrumbs.feature:46"
     concurrency: 5
@@ -43,211 +64,3 @@ steps:
     retry:
       manual:
         permit_on_passed: true
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
-  - label: ':browserstack: iOS 26'
-    depends_on: cocoa_fixture
-    timeout_in_minutes: 10
-    plugins:
-      artifacts#v1.9.4:
-        download:
-          - "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
-        command:
-          - "--app=@features/fixtures/ios/output/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "features/release/breadcrumbs.feature:46"
-    concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
-
