@@ -108,7 +108,9 @@
 }
 
 - (void)updateRemoteConfig {
-    self.isLoadingRemoteConfig = YES;
+    @synchronized (self) {
+        self.isLoadingRemoteConfig = YES;
+    }
     [self.service loadRemoteConfigWithCurrentTag:self.remoteConfig.configurationTag
                                       completion:^(BSGRemoteConfigServiceResponse *response) {
         @synchronized (self) {
