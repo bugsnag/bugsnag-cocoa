@@ -8,7 +8,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	             |
      | property | body                  | @features/support/config/no_rules.json     |
      | property | status                | 200                                        |
-     | header   | header:Cache-Control  | max-age=604800                             |
+     | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
@@ -29,7 +29,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	             |
      | property | body                  | @features/support/config/invalid.json      |
      | property | status                | 200                                        |
-     | header   | header:Cache-Control  | max-age=604800                             |
+     | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
@@ -50,7 +50,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	                  |
      | property | body                  | @features/support/config/rules_all-handled.json |
      | property | status                | 200                                             |
-     | header   | header:Cache-Control  | max-age=604800                                  |
+     | header   | Cache-Control         | max-age=604800                                  |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
@@ -66,7 +66,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	             |
      | property | body                  | @features/support/config/rules_all.json    |
      | property | status                | 200                                        |
-     | header   | header:Cache-Control  | max-age=604800                             |
+     | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
@@ -76,7 +76,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	                        |
      | property | body                  | @features/support/config/rules_all_all-handled.json   |
      | property | status                | 200                                                   |
-     | header   | header:Cache-Control  | max-age=604800                                        |
+     | header   | Cache-Control         | max-age=604800                                        |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
@@ -86,7 +86,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	                        |
      | property | body                  | @features/support/config/rules_all-handled_all.json   |
      | property | status                | 200                                                   |
-     | header   | header:Cache-Control  | max-age=604800                                        |
+     | header   | Cache-Control         | max-age=604800                                        |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
@@ -96,7 +96,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	                            |
      | property | body                  | @features/support/config/rules_all-handled_unknown.json   |
      | property | status                | 200                                                       |
-     | header   | header:Cache-Control  | max-age=604800                                            |
+     | header   | Cache-Control         | max-age=604800                                            |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
