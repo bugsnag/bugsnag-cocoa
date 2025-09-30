@@ -132,10 +132,7 @@ test: ## Run unit tests
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
 test-fixtures: ## Build the end-to-end test fixture
-	@./features/scripts/export_ios_app.sh Release
-	@./features/scripts/export_ios_app.sh Debug
 	@./features/scripts/export_mac_app.sh Release
-	@./features/scripts/export_mac_app.sh Debug
 
 xcframework-test-fixtures: ## Build the xcframework end-to-end test fixture
 	@./features/scripts/export_xcframework_ios_app.sh
