@@ -110,14 +110,19 @@
 - (void)updateRemoteConfig {
     self.isLoadingRemoteConfig = YES;
     [self.service loadRemoteConfigWithCurrentTag:self.remoteConfig.configurationTag
-                                      completion:^(BSGRemoteConfiguration * _Nullable config, NSError * _Nullable error) {
+                                      completion:^(BSGRemoteConfigServiceResponse *response) {
         @synchronized (self) {
-            if (config) {
-                self.remoteConfig = config;
-                [self.store saveConfiguration:config];
-            }
-            if (error) {
-                bsg_log_err(@"Unable to load remote config: %@", error);
+            switch (response.type) {
+                case BSGRemoteConfigServiceResponseTypeSuccess:
+                    self.remoteConfig = [self.store saveConfiguration:response.configuration];
+                    break;
+                case BSGRemoteConfigServiceResponseTypeError:
+                    bsg_log_err(@"Unable to load remote config: %@", response.error);
+                    break;
+                case BSGRemoteConfigServiceResponseTypeNotModified:
+                    self.remoteConfig = [self.store updateExpiryDate:response.expiryDate
+                                                    configurationTag:response.configurationTag];
+                    break;
             }
             self.didLoadRemoteConfig = YES;
             self.isLoadingRemoteConfig = NO;
@@ -140,7 +145,6 @@
 - (void)clearConfigIfNotValid {
     if (![self hasValidConfig]) {
         self.remoteConfig = nil;
-        [self clearLocalStore];
     }
 }
 

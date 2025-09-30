@@ -33,14 +33,27 @@
     return self;
 }
 
-- (void)saveConfiguration:(BSGRemoteConfiguration *)configuration {
+- (BSGRemoteConfiguration *)saveConfiguration:(BSGRemoteConfiguration *)configuration {
     NSDictionary *configurationJson = [configuration toJson];
     if (configurationJson) {
         NSError *error = nil;
         if(!BSGJSONWriteToFileAtomically(configurationJson, [self configurationFilePath], &error)) {
             bsg_log_debug(@"%s: %@", __FUNCTION__, error);
         }
+        return configuration;
     }
+    return nil;
+}
+
+- (BSGRemoteConfiguration *)updateExpiryDate:(NSDate *)expiryDate
+                            configurationTag:(NSString *)configurationTag {
+    BSGRemoteConfiguration *configuration = [self loadConfiguration];
+    if ([configuration.configurationTag isEqualToString:configurationTag]) {
+        configuration.expiryDate = expiryDate;
+        [self saveConfiguration:configuration];
+        return configuration;
+    }
+    return nil;
 }
 
 - (BSGRemoteConfiguration *)loadConfiguration {

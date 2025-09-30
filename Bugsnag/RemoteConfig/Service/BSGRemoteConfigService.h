@@ -12,7 +12,23 @@
 #import "BugsnagDevice.h"
 #import "BugsnagApp.h"
 
-typedef void (^BSGRemoteConfigServiceCompletion)(BSGRemoteConfiguration *_Nullable, NSError *_Nullable error);
+typedef NS_ENUM(NSUInteger, BSGRemoteConfigServiceResponseType) {
+    BSGRemoteConfigServiceResponseTypeSuccess,
+    BSGRemoteConfigServiceResponseTypeError,
+    BSGRemoteConfigServiceResponseTypeNotModified,
+};
+
+@interface BSGRemoteConfigServiceResponse: NSObject
+
+@property (nonatomic) BSGRemoteConfigServiceResponseType type;
+@property (nonatomic, nullable) BSGRemoteConfiguration *configuration;
+@property (nonatomic, nullable) NSError *error;
+@property (nonatomic, nullable) NSString *configurationTag;
+@property (nonatomic, nullable) NSDate *expiryDate;
+
+@end
+
+typedef void (^BSGRemoteConfigServiceCompletion)(BSGRemoteConfigServiceResponse *_Nonnull response);
 
 NS_ASSUME_NONNULL_BEGIN
 

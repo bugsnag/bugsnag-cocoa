@@ -15,7 +15,8 @@
 + (instancetype)storeWithLocations:(BSGFileLocations *)fileLocations
                      configuration:(BugsnagConfiguration *)configuration;
 
-- (void)saveConfiguration:(BSGRemoteConfiguration *)configuration;
+- (BSGRemoteConfiguration *)saveConfiguration:(BSGRemoteConfiguration *)configuration;
+- (BSGRemoteConfiguration *)updateExpiryDate:(NSDate *)expiryDate configurationTag:(NSString *)configurationTag;
 - (BSGRemoteConfiguration *)loadConfiguration;
 - (void)clear;
 
