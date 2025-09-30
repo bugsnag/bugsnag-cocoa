@@ -52,7 +52,7 @@ Feature: Attaching a series of notable events leading up to errors
     # Now we know that the backgrounding will occur at an appropriate time
     And I switch to the web browser for 2 seconds
     # Give iOS sufficient time to raise the notification for foregrounding the app
-    And I make the test fixture wait for 1 second
+    And I make the test fixture wait for 5 seconds
     # This next error should have the notification breadcrumbs
     And I invoke "notify_error"
     And I wait to receive an error
