@@ -43,7 +43,7 @@
 }
 
 - (BOOL)isRulesetValid:(BSGEventDiscardRuleset *)ruleset {
-    return [self.remoteConfigHandler.lastConfigUpdateTime timeIntervalSinceDate:ruleset.createdAt] > 0 && [self.remoteConfigHandler hasValidConfig];
+    return [ruleset.createdAt timeIntervalSinceDate:self.remoteConfigHandler.lastConfigUpdateTime] > 0 && [self.remoteConfigHandler hasValidConfig];
 }
 
 - (NSArray<id<BSGEventDiscardRule>> *)discardRules {

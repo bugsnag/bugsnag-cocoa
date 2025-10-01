@@ -26,6 +26,52 @@ static NSString *ETagHeader = @"ETag";
 static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
 
+static const NSInteger HTTPStatusCodeNotModified = 304;
+
+@implementation BSGRemoteConfigServiceResponse
+
++ (instancetype)responseWithConfig:(BSGRemoteConfiguration *)config {
+    return [[self alloc] initWithType:BSGRemoteConfigServiceResponseTypeSuccess
+                               config:config
+                                error:nil
+                     configurationTag:config.configurationTag
+                           expiryDate:config.expiryDate];
+}
+
++ (instancetype)responseWithError:(NSError *)error {
+    return [[self alloc] initWithType:BSGRemoteConfigServiceResponseTypeError
+                               config:nil
+                                error:error
+                     configurationTag:nil
+                           expiryDate:nil];
+}
+
++ (instancetype)responseWithNewExpiryDate:(NSDate *)expiryDate configurationTag:(NSString *)configurationTag {
+    return [[self alloc] initWithType:BSGRemoteConfigServiceResponseTypeNotModified
+                               config:nil
+                                error:nil
+                     configurationTag:configurationTag
+                           expiryDate:expiryDate];
+}
+
+- (instancetype)initWithType:(BSGRemoteConfigServiceResponseType)type
+                      config:(BSGRemoteConfiguration *)config
+                       error:(NSError *)error
+            configurationTag:(NSString *)configurationTag
+                  expiryDate:(NSDate *)expiryDate {
+    self = [super init];
+    if (self) {
+        _type = type;
+        _configuration = config;
+        _error = error;
+        _configurationTag = configurationTag;
+        _expiryDate = expiryDate;
+    }
+    return self;
+}
+
+@end
+
 @interface BSGRemoteConfigService ()
 
 @property (nonatomic, strong) BugsnagConfiguration *configuration;
@@ -71,12 +117,12 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
     bsg_i_kslog_logCBasic("Config URL %s",
                           [[configUrl absoluteString] cStringUsingEncoding:NSUTF8StringEncoding]);
     if (!configUrl) {
-        completion(nil, [self noUrlError]);
+        completion([BSGRemoteConfigServiceResponse responseWithError:[self noUrlError]]);
         return;
     }
     NSURLRequest *request = [self requestWithUrl:configUrl currentTag:tag];
     if (!request) {
-        completion(nil, [self requestBuildingError]);
+        completion([BSGRemoteConfigServiceResponse responseWithError:[self requestBuildingError]]);
         return;
     }
     [self downloadRemoteConfigWithRequest:request
@@ -97,41 +143,40 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
                                          NSError * _Nullable error) {
         __strong typeof(self) strongSelf = weakSelf;
         bsg_i_kslog_logCBasic("Task completion started");
-        if (!strongSelf) {
-            bsg_i_kslog_logCBasic("strongSelf does not exist");
-            completion(nil, error);
-            return;
-        }
-        if (!data) {
-            bsg_i_kslog_logCBasic("Data is empty");
+        if (!strongSelf || !data) {
+            bsg_i_kslog_logCBasic("strongSelf or data does not exist");
             bsg_i_kslog_logCBasic("Error: %s",
                                   [[error description] cStringUsingEncoding:NSUTF8StringEncoding]);
-            completion(nil, error);
+            completion([BSGRemoteConfigServiceResponse responseWithError:error]);
             return;
+        }
+        
+        NSString *etag;
+        NSDate *expiryDate;
+        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            etag = httpResponse.allHeaderFields[ETagHeader];
+            NSString *cacheControl = httpResponse.allHeaderFields[CacheControlHeader];
+            
+            expiryDate = [strongSelf expiryDateFromCacheControl:cacheControl];
+            if (httpResponse.statusCode == HTTPStatusCodeNotModified) {
+                completion([BSGRemoteConfigServiceResponse responseWithNewExpiryDate:expiryDate
+                                                                    configurationTag:etag]);
+                return;
+            }
         }
         
         NSData *content = data;
         NSError *jsonError = nil;
         NSDictionary *configJson = BSGJSONDictionaryFromData(content, 0, &jsonError);
         if (!configJson) {
-            bsg_i_kslog_logCBasic("Config not a JSON");
-            bsg_i_kslog_logCBasic("Error: %s",
-                                  [[jsonError description] cStringUsingEncoding:NSUTF8StringEncoding]);
-            completion(nil, jsonError);
+            completion([BSGRemoteConfigServiceResponse responseWithError:jsonError]);
             return;
         }
         bsg_i_kslog_logCBasic("Parsing config");
         
         BSGRemoteConfiguration *remoteConfig;
-        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-            NSString *etag = httpResponse.allHeaderFields[ETagHeader];
-            NSString *cacheControl = httpResponse.allHeaderFields[CacheControlHeader];
-            bsg_i_kslog_logCBasic("downloaded ETag %s",
-                                  [etag cStringUsingEncoding:NSUTF8StringEncoding]);
-            
-            NSDate *expiryDate = [strongSelf expiryDateFromCacheControl:cacheControl];
-            
+        if (etag != nil || expiryDate != nil) {
             remoteConfig = [BSGRemoteConfiguration configFromJson:configJson
                                                              eTag:etag
                                                        expiryDate:expiryDate];
@@ -140,12 +185,10 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
         }
         
         if (remoteConfig) {
-            bsg_i_kslog_logCBasic("Config parsed");
-            completion(remoteConfig, nil);
+            completion([BSGRemoteConfigServiceResponse responseWithConfig:remoteConfig]);
         } else {
             if (didRetry) {
-                bsg_i_kslog_logCBasic("Config loading failed");
-                completion(nil, [strongSelf configNotValidError]);
+                completion([BSGRemoteConfigServiceResponse responseWithError:[strongSelf configNotValidError]]);
             } else {
                 bsg_i_kslog_logCBasic("Config parsing unsuccessful, retrying...");
                 [strongSelf downloadRemoteConfigWithRequest:request didRetry:YES completion:completion];
@@ -175,6 +218,10 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
         return [NSDate dateWithTimeIntervalSinceNow:maxAge];
     }
     
+    return [self defaultExpiryDate];
+}
+
+- (NSDate *)defaultExpiryDate {
     NSTimeInterval defaultExpireTime = self.configuration.remoteConfigUpdateInterval +
                                         self.configuration.remoteConfigUpdateTolerance;
     return [NSDate dateWithTimeIntervalSinceNow:defaultExpireTime];

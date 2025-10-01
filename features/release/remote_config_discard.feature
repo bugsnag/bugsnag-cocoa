@@ -8,7 +8,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	             |
      | property | body                  | @features/support/config/no_rules.json     |
      | property | status                | 200                                        |
-     | header   | header:Cache-Control  | max-age=604800                             |
+     | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
@@ -29,7 +29,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	             |
      | property | body                  | @features/support/config/invalid.json      |
      | property | status                | 200                                        |
-     | header   | header:Cache-Control  | max-age=604800                             |
+     | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
@@ -48,9 +48,9 @@ Feature: Remote config discard rules are applied
   Scenario: Remote config with ALL_HANDLED rule
     When I prepare an error config with:
      | type     | name                  | value                 	                  |
-     | property | body                  | @features/support/config/rules_allHandled.json  |
+     | property | body                  | @features/support/config/rules_all-handled.json |
      | property | status                | 200                                             |
-     | header   | header:Cache-Control  | max-age=604800                                  |
+     | header   | Cache-Control         | max-age=604800                                  |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
@@ -66,7 +66,7 @@ Feature: Remote config discard rules are applied
      | type     | name                  | value                 	             |
      | property | body                  | @features/support/config/rules_all.json    |
      | property | status                | 200                                        |
-     | header   | header:Cache-Control  | max-age=604800                             |
+     | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
@@ -74,9 +74,9 @@ Feature: Remote config discard rules are applied
   Scenario: Remote config with ALL, ALL_HANDLED rules
     When I prepare an error config with:
      | type     | name                  | value                 	                        |
-     | property | body                  | @features/support/config/rules_all_allHandled.json    |
+     | property | body                  | @features/support/config/rules_all_all-handled.json   |
      | property | status                | 200                                                   |
-     | header   | header:Cache-Control  | max-age=604800                                        |
+     | header   | Cache-Control         | max-age=604800                                        |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
@@ -84,9 +84,9 @@ Feature: Remote config discard rules are applied
   Scenario: Remote config with ALL_HANDLED, ALL rules
     When I prepare an error config with:
      | type     | name                  | value                 	                        |
-     | property | body                  | @features/support/config/rules_allHandled_all.json    |
+     | property | body                  | @features/support/config/rules_all-handled_all.json   |
      | property | status                | 200                                                   |
-     | header   | header:Cache-Control  | max-age=604800                                        |
+     | header   | Cache-Control         | max-age=604800                                        |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
@@ -94,9 +94,9 @@ Feature: Remote config discard rules are applied
   Scenario: Remote config with ALL_HANDLED, unknown rules - unknown rule should not change the behaviour
     When I prepare an error config with:
      | type     | name                  | value                 	                            |
-     | property | body                  | @features/support/config/rules_allhandled_unknown.json    |
+     | property | body                  | @features/support/config/rules_all-handled_unknown.json   |
      | property | status                | 200                                                       |
-     | header   | header:Cache-Control  | max-age=604800                                            |
+     | header   | Cache-Control         | max-age=604800                                            |
     And I run "RemoteConfigBasicScenario" and relaunch the crashed app
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error

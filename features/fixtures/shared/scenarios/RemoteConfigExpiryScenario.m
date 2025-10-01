@@ -19,6 +19,11 @@
 
 @implementation RemoteConfigExpiryScenario
 
+- (void)configure {
+    [super configure];
+    self.config.endpoints.configuration = self.fixtureConfig.configurationURL.absoluteString;
+}
+
 - (void)run {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSString *message1 = @"Err 0";
