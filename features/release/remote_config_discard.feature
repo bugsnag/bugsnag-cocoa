@@ -10,8 +10,8 @@ Feature: Remote config discard rules are applied
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=604800                             |
     And I run "RemoteConfigBasicScenario" 
-    And I wait for 10 seconds
-    And I relaunch the crashed app
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
     And the received errors match:
@@ -32,7 +32,9 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/invalid.json      |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=604800                             |
-    And I run "RemoteConfigBasicScenario" and relaunch the crashed app
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
     And the received errors match:
@@ -53,7 +55,9 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/rules_all-handled.json |
      | property | status                | 200                                             |
      | header   | Cache-Control         | max-age=604800                                  |
-    And I run "RemoteConfigBasicScenario" and relaunch the crashed app
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
     And the received errors match:
@@ -69,7 +73,9 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/rules_all.json    |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=604800                             |
-    And I run "RemoteConfigBasicScenario" and relaunch the crashed app
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
 
@@ -79,7 +85,9 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/rules_all_all-handled.json   |
      | property | status                | 200                                                   |
      | header   | Cache-Control         | max-age=604800                                        |
-    And I run "RemoteConfigBasicScenario" and relaunch the crashed app
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
 
@@ -89,7 +97,9 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/rules_all-handled_all.json   |
      | property | status                | 200                                                   |
      | header   | Cache-Control         | max-age=604800                                        |
-    And I run "RemoteConfigBasicScenario" and relaunch the crashed app
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
 
@@ -99,7 +109,9 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/rules_all-handled_unknown.json   |
      | property | status                | 200                                                       |
      | header   | Cache-Control         | max-age=604800                                            |
-    And I run "RemoteConfigBasicScenario" and relaunch the crashed app
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
     And the received errors match:
