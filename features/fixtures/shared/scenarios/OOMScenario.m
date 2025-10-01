@@ -57,6 +57,9 @@ void onCrashHandler(const BSG_KSCrashReportWriter *writer) {
 - (void)run {
     [Bugsnag setContext:@"OOM Scenario"];
     [Bugsnag setGroupingDiscriminator:@"OOMScenarioGroupingDiscriminator"];
+    [Bugsnag addFeatureFlagWithName:@"Feature-Flag/A"];
+    [Bugsnag addFeatureFlagWithName:@"Feature-Flag/B"];
+    [Bugsnag clearFeatureFlagWithName:@"Feature-Flag/B"];
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidReceiveMemoryWarningNotification object:nil
                                                      queue:nil usingBlock:^(NSNotification *note) {
         logDebug(@"*** Received memory warning");
