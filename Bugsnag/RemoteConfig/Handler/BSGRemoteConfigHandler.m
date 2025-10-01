@@ -109,6 +109,9 @@
 
 - (void)updateRemoteConfig {
     @synchronized (self) {
+        if (self.isLoadingRemoteConfig) {
+            return;
+        }
         self.isLoadingRemoteConfig = YES;
     }
     [self.service loadRemoteConfigWithCurrentTag:self.remoteConfig.configurationTag
