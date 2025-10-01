@@ -21,6 +21,7 @@
         _notifyURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"notify"];
         _sessionsURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"sessions"];
         _reflectURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"reflect"];
+        _configurationURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"error-config"];
     }
     return self;
 }

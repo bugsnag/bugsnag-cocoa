@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSDate *lastConfigUpdateTime;
 @property (nonatomic) BOOL didReadLocalConfig;
+@property (nonatomic) BOOL isLoadingRemoteConfig;
+@property (nonatomic) BOOL didLoadRemoteConfig;
 @property (nonatomic) BOOL didClearLocalStore;
 
 @end
@@ -71,6 +73,7 @@
         }
         [self loadLocalConfigIfNeeded];
         [self clearConfigIfNotValid];
+        [self updateRemoteConfigIfNeeded];
         return self.remoteConfig;
     }
 }
@@ -95,7 +98,7 @@
 
 - (BOOL)hasValidConfig {
     return self.remoteConfig.expiryDate &&
-        [self.remoteConfig.expiryDate timeIntervalSinceNow] < 0;
+        [self.remoteConfig.expiryDate timeIntervalSinceNow] > 0;
 }
 
 #pragma mark - Helpers
@@ -105,16 +108,29 @@
 }
 
 - (void)updateRemoteConfig {
+    @synchronized (self) {
+        if (self.isLoadingRemoteConfig) {
+            return;
+        }
+        self.isLoadingRemoteConfig = YES;
+    }
     [self.service loadRemoteConfigWithCurrentTag:self.remoteConfig.configurationTag
-                                      completion:^(BSGRemoteConfiguration * _Nullable config, NSError * _Nullable error) {
+                                      completion:^(BSGRemoteConfigServiceResponse *response) {
         @synchronized (self) {
-            if (config) {
-                self.remoteConfig = config;
-                [self.store saveConfiguration:config];
+            switch (response.type) {
+                case BSGRemoteConfigServiceResponseTypeSuccess:
+                    self.remoteConfig = [self.store saveConfiguration:response.configuration];
+                    break;
+                case BSGRemoteConfigServiceResponseTypeError:
+                    bsg_log_err(@"Unable to load remote config: %@", response.error);
+                    break;
+                case BSGRemoteConfigServiceResponseTypeNotModified:
+                    self.remoteConfig = [self.store updateExpiryDate:response.expiryDate
+                                                    configurationTag:response.configurationTag];
+                    break;
             }
-            if (error) {
-                bsg_log_err(@"Unable to load remote config: %@", error);
-            }
+            self.didLoadRemoteConfig = YES;
+            self.isLoadingRemoteConfig = NO;
         }
     }];
 }
@@ -134,7 +150,6 @@
 - (void)clearConfigIfNotValid {
     if (![self hasValidConfig]) {
         self.remoteConfig = nil;
-        [self clearLocalStore];
     }
 }
 
@@ -158,6 +173,14 @@
     [self.store clear];
     self.remoteConfig = nil;
     self.didClearLocalStore = YES;
+}
+
+- (void)updateRemoteConfigIfNeeded {
+    if (self.remoteConfig == nil &&
+        self.didLoadRemoteConfig &&
+        !self.isLoadingRemoteConfig) {
+        [self updateRemoteConfig];
+    }
 }
 
 @end

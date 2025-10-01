@@ -122,6 +122,8 @@
 		8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */; };
 		967F6F1229B2236A0054EED8 /* InternalWorkingsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1129B2236A0054EED8 /* InternalWorkingsScenario.swift */; };
 		96A25F322D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F312D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m */; };
+		96C7357E2E870E7500F3CB3C /* RemoteConfigBasicScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C7357D2E870E7500F3CB3C /* RemoteConfigBasicScenario.m */; };
+		96C735902E89E58200F3CB3C /* RemoteConfigExpiryScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C7358F2E89E56A00F3CB3C /* RemoteConfigExpiryScenario.m */; };
 		A1117E552535A59100014FDA /* OOMLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E542535A59100014FDA /* OOMLoadScenario.swift */; };
 		A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */; };
 		A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */; };
@@ -330,6 +332,8 @@
 		8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandledInternalNotifyScenario.swift; sourceTree = "<group>"; };
 		967F6F1129B2236A0054EED8 /* InternalWorkingsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalWorkingsScenario.swift; sourceTree = "<group>"; };
 		96A25F312D66AFAE00A18116 /* ObjCExceptionFeatureFlagsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionFeatureFlagsScenario.m; sourceTree = "<group>"; };
+		96C7357D2E870E7500F3CB3C /* RemoteConfigBasicScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigBasicScenario.m; sourceTree = "<group>"; };
+		96C7358F2E89E56A00F3CB3C /* RemoteConfigExpiryScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigExpiryScenario.m; sourceTree = "<group>"; };
 		A1117E542535A59100014FDA /* OOMLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMLoadScenario.swift; sourceTree = "<group>"; };
 		A1117E562535B22300014FDA /* OOMAutoDetectErrorsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMAutoDetectErrorsScenario.swift; sourceTree = "<group>"; };
 		A1117E582535B29800014FDA /* OOMEnabledErrorTypesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OOMEnabledErrorTypesScenario.swift; sourceTree = "<group>"; };
@@ -634,6 +638,8 @@
 				F4295871D1BCF211398CAEBA /* ReadOnlyPageScenario.m */,
 				0104B47D275A7B3C003EBDF0 /* RecrashScenarios.mm */,
 				F4295E71D7B2DFE77057F3DA /* ReleasedObjectScenario.m */,
+				96C7357D2E870E7500F3CB3C /* RemoteConfigBasicScenario.m */,
+				96C7358F2E89E56A00F3CB3C /* RemoteConfigExpiryScenario.m */,
 				010BDFB82885562D007025F9 /* ReportBackgroundAppHangScenario.swift */,
 				E7767F12221C21E30006648C /* ResumedSessionScenario.swift */,
 				8AF6FD79225E3FA00056EF9E /* ResumeSessionOOMScenario.m */,
@@ -887,6 +893,7 @@
 				8A840FBA21AF5C450041DBFA /* SwiftAssertionScenario.swift in Sources */,
 				E753F24824927412001FB671 /* OnSendErrorCallbackCrashScenario.swift in Sources */,
 				01847DD626453D4E00ADA4C7 /* InvalidCrashReportScenario.m in Sources */,
+				96C735902E89E58200F3CB3C /* RemoteConfigExpiryScenario.m in Sources */,
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				0104085F258CA0A100933C60 /* DispatchCrashScenario.swift in Sources */,
 				E700EE55247D3204008CFFB6 /* OnSendOverwriteScenario.swift in Sources */,
@@ -951,6 +958,7 @@
 				F42951BF19D7F35A03273CFB /* AutoSessionScenario.m in Sources */,
 				E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */,
 				8AF6FD77225E3F870056EF9E /* StopSessionOOMScenario.m in Sources */,
+				96C7357E2E870E7500F3CB3C /* RemoteConfigBasicScenario.m in Sources */,
 				F4295109FCAB93708FDAFE12 /* DisabledSessionTrackingScenario.m in Sources */,
 				010BAB392833D21A0003FF36 /* UnhandledErrorChangeValidReleaseStageScenario.swift in Sources */,
 				010BAB3F2833D29A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift in Sources */,

@@ -11,7 +11,6 @@
 
 static NSString const *ConfigurationTagKey = @"configurationTag";
 static NSString const *ExpiryDateKey = @"expiryDate";
-static NSString const *InternalsKey = @"internals";
 static NSString const *DiscardRulesKey = @"discardRules";
 static NSString const *MatchTypeKey = @"matchType";
 
@@ -42,45 +41,6 @@ static NSString const *MatchTypeKey = @"matchType";
 
 @end
 
-@implementation BSGRemoteConfigurationInternals
-
-+ (instancetype)internalsFromJson:(NSDictionary *)json {
-    NSMutableArray *discardRules = [NSMutableArray array];
-    NSArray *discardRulesJson = json[DiscardRulesKey];
-    for (NSDictionary *ruleJson in discardRulesJson) {
-        if (![ruleJson isKindOfClass:[NSDictionary class]]) {
-            continue;
-        }
-        BSGRemoteConfigurationDiscardRule *rule = [BSGRemoteConfigurationDiscardRule ruleFromJson:ruleJson];
-        if (rule) {
-            [discardRules addObject:rule];
-        }
-    }
-    return [[self alloc] initWithDiscardRules:discardRules];
-}
-
-- (instancetype)initWithDiscardRules:(NSArray<BSGRemoteConfigurationDiscardRule *> *)discardRules {
-    if ((self = [super init])) {
-        _discardRules = discardRules;
-    }
-    return self;
-}
-
-- (NSDictionary *)toJson {
-    NSMutableArray *discardRulesJson = [NSMutableArray array];
-    for (BSGRemoteConfigurationDiscardRule *rule in self.discardRules) {
-        NSDictionary *ruleJson = [rule toJson];
-        if (rule) {
-            [discardRulesJson addObject:ruleJson];
-        }
-    }
-    return @{
-        DiscardRulesKey: discardRulesJson
-    };
-}
-
-@end
-
 @implementation BSGRemoteConfiguration
 
 + (instancetype)configFromJson:(NSDictionary *)json {
@@ -94,28 +54,33 @@ static NSString const *MatchTypeKey = @"matchType";
 + (instancetype)configFromJson:(NSDictionary *)json
                           eTag:(NSString *)eTag
                     expiryDate:(NSDate *)expiryDate {
-    NSDictionary *internalsJson = json[InternalsKey];
     if (![eTag isKindOfClass:[NSString class]] ||
-        ![expiryDate isKindOfClass:[NSDate class]] ||
-        ![internalsJson isKindOfClass:[NSDictionary class]]) {
+        ![expiryDate isKindOfClass:[NSDate class]]) {
         return nil;
     }
-    BSGRemoteConfigurationInternals *internals = [BSGRemoteConfigurationInternals internalsFromJson:internalsJson];
-    if (internals == nil) {
-        return nil;
+    NSMutableArray *discardRules = [NSMutableArray array];
+    NSArray *discardRulesJson = json[DiscardRulesKey];
+    for (NSDictionary *ruleJson in discardRulesJson) {
+        if (![ruleJson isKindOfClass:[NSDictionary class]]) {
+            continue;
+        }
+        BSGRemoteConfigurationDiscardRule *rule = [BSGRemoteConfigurationDiscardRule ruleFromJson:ruleJson];
+        if (rule) {
+            [discardRules addObject:rule];
+        }
     }
     return [[self alloc] initWithConfigurationTag:eTag
                                        expiryDate:expiryDate
-                                        internals:internals];
+                                     discardRules:discardRules];
 }
 
 - (instancetype)initWithConfigurationTag:(NSString *)configurationTag
                               expiryDate:(NSDate *)expiryDate
-                               internals:(BSGRemoteConfigurationInternals *)internals {
+                            discardRules:(NSArray<BSGRemoteConfigurationDiscardRule *> *)discardRules {
     if ((self = [super init])) {
         _configurationTag = configurationTag;
         _expiryDate = expiryDate;
-        _internals = internals;
+        _discardRules = discardRules;
     }
     return self;
 }
@@ -129,10 +94,15 @@ static NSString const *MatchTypeKey = @"matchType";
     if (expiryDateJson) {
         result[ExpiryDateKey] = expiryDateJson;
     }
-    NSDictionary *internalsJson = [self.internals toJson];
-    if (internalsJson) {
-        result[InternalsKey] = internalsJson;
+    NSMutableArray *discardRulesJson = [NSMutableArray array];
+    for (BSGRemoteConfigurationDiscardRule *rule in self.discardRules) {
+        NSDictionary *ruleJson = [rule toJson];
+        if (rule) {
+            [discardRulesJson addObject:ruleJson];
+        }
     }
+    result[DiscardRulesKey] = discardRulesJson;
+    
     return result;
 }
 

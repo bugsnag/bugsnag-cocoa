@@ -49,7 +49,7 @@
     NSMutableArray<id<BSGEventDiscardRule>> *rules = [NSMutableArray array];
     BSGRemoteConfiguration *remoteConfig = self.remoteConfigHandler.currentConfiguration;
     if (remoteConfig) {
-        for (BSGRemoteConfigurationDiscardRule *rule in remoteConfig.internals.discardRules) {
+        for (BSGRemoteConfigurationDiscardRule *rule in remoteConfig.discardRules) {
             id<BSGEventDiscardRule> discardRule = [self.discardRuleFactory ruleFromRemoteConfig:rule];
             if (discardRule) {
                 [rules addObject:discardRule];
