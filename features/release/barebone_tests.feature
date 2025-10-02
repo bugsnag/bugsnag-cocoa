@@ -329,8 +329,9 @@ Feature: Barebone tests
     And the event "user.id" equals "foobar"
     And the event "user.name" equals "Foo Bar"
     And the event contains the following feature flags:
-      | featureFlag | variant |
-      | Testing     |         |
+      | featureFlag        | variant |
+      | Testing            |         |
+      | Feature-Flag/A     |         |
     And the error payload field "events.0.app.dsymUUIDs" is a non-empty array
     And the error payload field "events.0.app.duration" is null
     And the error payload field "events.0.app.durationInForeground" is null

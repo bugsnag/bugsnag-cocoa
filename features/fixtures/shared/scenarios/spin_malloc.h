@@ -10,7 +10,6 @@ extern "C" {
 #include <mach/vm_map.h>
 #include <malloc/malloc.h>
 
-
 // Custom malloc implementation that deadlocks the current thread.
 static void * spin_malloc(struct _malloc_zone_t *zone, size_t size) {
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
