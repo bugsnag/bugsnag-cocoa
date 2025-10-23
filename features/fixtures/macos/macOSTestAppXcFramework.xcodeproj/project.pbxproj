@@ -55,7 +55,6 @@
 		09AABC3E2CDCED61007D6FC0 /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB822CDCED61007D6FC0 /* CxxBareThrowScenario.mm */; };
 		09AABC3F2CDCED61007D6FC0 /* CxxExceptionOverrideScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB832CDCED61007D6FC0 /* CxxExceptionOverrideScenario.mm */; };
 		09AABC402CDCED61007D6FC0 /* CxxExceptionScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB842CDCED61007D6FC0 /* CxxExceptionScenario.mm */; };
-		09AABC422CDCED61007D6FC0 /* DelayedNotifyErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB862CDCED61007D6FC0 /* DelayedNotifyErrorScenario.swift */; };
 		09AABC432CDCED61007D6FC0 /* DisableAllExceptManualExceptionsAndCrashScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB872CDCED61007D6FC0 /* DisableAllExceptManualExceptionsAndCrashScenario.m */; };
 		09AABC442CDCED61007D6FC0 /* DisabledReleaseStageAutoSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB882CDCED61007D6FC0 /* DisabledReleaseStageAutoSessionScenario.swift */; };
 		09AABC452CDCED61007D6FC0 /* DisabledReleaseStageManualSessionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09AABB892CDCED61007D6FC0 /* DisabledReleaseStageManualSessionScenario.swift */; };
@@ -260,7 +259,6 @@
 		09AABB822CDCED61007D6FC0 /* CxxBareThrowScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxBareThrowScenario.mm; sourceTree = "<group>"; };
 		09AABB832CDCED61007D6FC0 /* CxxExceptionOverrideScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionOverrideScenario.mm; sourceTree = "<group>"; };
 		09AABB842CDCED61007D6FC0 /* CxxExceptionScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxExceptionScenario.mm; sourceTree = "<group>"; };
-		09AABB862CDCED61007D6FC0 /* DelayedNotifyErrorScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayedNotifyErrorScenario.swift; sourceTree = "<group>"; };
 		09AABB872CDCED61007D6FC0 /* DisableAllExceptManualExceptionsAndCrashScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisableAllExceptManualExceptionsAndCrashScenario.m; sourceTree = "<group>"; };
 		09AABB882CDCED61007D6FC0 /* DisabledReleaseStageAutoSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisabledReleaseStageAutoSessionScenario.swift; sourceTree = "<group>"; };
 		09AABB892CDCED61007D6FC0 /* DisabledReleaseStageManualSessionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisabledReleaseStageManualSessionScenario.swift; sourceTree = "<group>"; };
@@ -486,7 +484,6 @@
 				09AABB822CDCED61007D6FC0 /* CxxBareThrowScenario.mm */,
 				09AABB832CDCED61007D6FC0 /* CxxExceptionOverrideScenario.mm */,
 				09AABB842CDCED61007D6FC0 /* CxxExceptionScenario.mm */,
-				09AABB862CDCED61007D6FC0 /* DelayedNotifyErrorScenario.swift */,
 				09AABB872CDCED61007D6FC0 /* DisableAllExceptManualExceptionsAndCrashScenario.m */,
 				09AABB882CDCED61007D6FC0 /* DisabledReleaseStageAutoSessionScenario.swift */,
 				09AABB892CDCED61007D6FC0 /* DisabledReleaseStageManualSessionScenario.swift */,
@@ -802,7 +799,6 @@
 				09AABC232CDCED61007D6FC0 /* AsyncSafeMallocScenario.m in Sources */,
 				09AABCA62CDCED61007D6FC0 /* SIGILLScenario.m in Sources */,
 				09AABC4E2CDCED61007D6FC0 /* DispatchCrashScenario.swift in Sources */,
-				09AABC422CDCED61007D6FC0 /* DelayedNotifyErrorScenario.swift in Sources */,
 				09AABC592CDCED61007D6FC0 /* HandledExceptionScenario.swift in Sources */,
 				09AABC392CDCED61007D6FC0 /* BuiltinTrapScenario.m in Sources */,
 				09AABC362CDCED61007D6FC0 /* BreadcrumbCallbackOrderScenario.swift in Sources */,
