@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.34.1 (2025-10-09)
+
+### Bug Fixes
+
+* Fixed the issue causing feature flags with names that contain a slash to not appear in OOM crash reports.
+  [#1863](https://github.com/bugsnag/bugsnag-cocoa/pull/1863)
+
 ## 6.34.0 (2025-09-25)
 
 ### Enhancements
