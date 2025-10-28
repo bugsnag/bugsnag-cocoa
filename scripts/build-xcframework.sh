@@ -130,7 +130,24 @@ build_frameworks() {
             local added_args=$( build_framework ${framework} ${project} ${current_scheme} ${platform} )
             xcframework_args="${xcframework_args} ${added_args}"
         done
+
         xcodebuild -create-xcframework ${xcframework_args} -output "${PRODUCTS_DIR}/${framework}.xcframework"
+
+        # Try to find a "Developer ID Application" certificate automatically
+        DEVELOPER_ID=$(security find-identity -p codesigning -v | grep "XPX5J97992" | head -n1 | awk '{print $2}')
+
+        if [ -z "$DEVELOPER_ID" ]; then
+            echo "⚠️  No 'Developer ID Application' certificate found. Falling back to ad-hoc signing."
+            CODESIGN_IDENTITY="-"
+        else
+            echo "✅ Using Developer ID certificate: $DEVELOPER_ID"
+            CODESIGN_IDENTITY="$DEVELOPER_ID"
+        fi
+
+        codesign --force --deep --options runtime \
+            --sign "$CODESIGN_IDENTITY" \
+            "${PRODUCTS_DIR}/${framework}.xcframework"
+
         fixup_xcframework $framework
         pushd "${PRODUCTS_DIR}"
         zip --symlinks -rq "${framework}.xcframework.zip" "${framework}.xcframework"
