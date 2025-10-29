@@ -130,7 +130,13 @@ build_frameworks() {
             local added_args=$( build_framework ${framework} ${project} ${current_scheme} ${platform} )
             xcframework_args="${xcframework_args} ${added_args}"
         done
+
         xcodebuild -create-xcframework ${xcframework_args} -output "${PRODUCTS_DIR}/${framework}.xcframework"
+
+        codesign --force --deep --options runtime \
+            --sign "-" \
+            "${PRODUCTS_DIR}/${framework}.xcframework"
+
         fixup_xcframework $framework
         pushd "${PRODUCTS_DIR}"
         zip --symlinks -rq "${framework}.xcframework.zip" "${framework}.xcframework"
