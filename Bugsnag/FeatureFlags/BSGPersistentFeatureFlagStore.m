@@ -121,7 +121,8 @@
 }
 
 - (NSString *)pathForFlagWithName:(NSString *)name {
-    return [self.directoryPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.json", name]];
+    NSString *fileName = [name stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.alphanumericCharacterSet];
+    return [self.directoryPath stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.json", fileName]];
 }
 
 - (void)deleteFile:(NSString *)path {

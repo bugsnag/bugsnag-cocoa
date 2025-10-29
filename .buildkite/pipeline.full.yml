@@ -232,12 +232,12 @@ steps:
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ':browserstack: {{matrix}} app hang tests'
     matrix:
-      - "IOS_17"
-      - "IOS_16"
-      - "IOS_15"
-      - "IOS_14"
-      # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
-      #- "IOS_13"
+        - "IOS_17"
+        - "IOS_16"
+        - "IOS_15"
+        - "IOS_14"
+        # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
+        #- "IOS_13"
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 30

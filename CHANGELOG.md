@@ -1,9 +1,39 @@
 Changelog
 =========
 
-## TBD
+## 6.34.1 (2025-10-09)
 
+### Bug Fixes
+
+* Fixed the issue causing feature flags with names that contain a slash to not appear in OOM crash reports.
+  [#1863](https://github.com/bugsnag/bugsnag-cocoa/pull/1863)
+
+## 6.34.0 (2025-09-25)
+
+### Enhancements
+
+* Improved C++ exception stack trace capturing.
+  [1855](https://github.com/bugsnag/bugsnag-cocoa/pull/1855)
+
+## 6.33.1 (2025-09-10)
+
+### Enhancements
+
+* Send observer event on grouping discriminator update [#1846](https://github.com/bugsnag/bugsnag-cocoa/pull/1846)
+
+## 6.33.0 (2025-09-08)
+
+### Enhancements
+
+* Added `groupingDiscriminator` property to `BugsnagEvent` and methods for setting and getting the global `groupingDiscriminator` to `Bugsnag` and `BugsnagClient`.
+  [#1830](https://github.com/bugsnag/bugsnag-cocoa/pull/1830)
+  
 * Set default endpoints based on API key [#1801](https://github.com/bugsnag/bugsnag-cocoa/pull/1801)
+
+### Bug Fixes
+
+* Added the missing `PrivacyInfo.xcprivacy` file to xcframeworks.
+  [#1837](https://github.com/bugsnag/bugsnag-cocoa/pull/1837)
 
 * Added missing MARKETING_VERSION build setting to multiple targets. This is required for generating CFBundleShortVersionString in some situations.
   [#1766](https://github.com/bugsnag/bugsnag-cocoa/pull/1766)

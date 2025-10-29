@@ -40,8 +40,6 @@ Feature: Attaching a series of notable events leading up to errors
     And I wait to receive an error
     Then the event has a "manual" breadcrumb named "Cache locked"
 
-  # TODO: Flaky on iOS 18 - see PLAT-14585
-  @skip_ios_18
   @skip_below_ios_13
   @skip_macos
   Scenario: State breadcrumbs
@@ -50,12 +48,10 @@ Feature: Attaching a series of notable events leading up to errors
     And I invoke "notify_error"
     And I wait to receive an error
     And I discard the oldest error
+    And I invoke "notify_error_on_foreground"
     # Now we know that the backgrounding will occur at an appropriate time
     And I switch to the web browser for 2 seconds
-    # Give iOS sufficient time to raise the notification for foregrounding the app
-    And I make the test fixture wait for 1 second
     # This next error should have the notification breadcrumbs
-    And I invoke "notify_error"
     And I wait to receive an error
     Then the event has a "state" breadcrumb named "Bugsnag loaded"
     # Bugsnag has been started too late to capture some early notifications

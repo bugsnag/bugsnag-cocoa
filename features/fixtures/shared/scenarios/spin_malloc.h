@@ -5,17 +5,17 @@
 extern "C" {
 #endif
 
+#include <libkern/OSSpinLockDeprecated.h>
 #include <mach/mach_init.h>
 #include <mach/vm_map.h>
 #include <malloc/malloc.h>
-#include <os/lock.h>
-
 
 // Custom malloc implementation that deadlocks the current thread.
 static void * spin_malloc(struct _malloc_zone_t *zone, size_t size) {
-    static os_unfair_lock spinLock = OS_UNFAIR_LOCK_INIT;
-    os_unfair_lock_lock(&spinLock);
-    os_unfair_lock_lock(&spinLock);
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    static OSSpinLock spinLock = OS_SPINLOCK_INIT;
+    OSSpinLockLock(&spinLock);
+    OSSpinLockLock(&spinLock);
     return NULL;
 }
 
