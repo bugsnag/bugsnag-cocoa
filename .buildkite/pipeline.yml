@@ -14,6 +14,7 @@ steps:
       queue: macos-15
     env:
       XCODE_VERSION: 16.3.0
+      CODE_SIGN_XCFRAMEWORK: true
     commands:
       - make build_xcframework
       - make build_swift

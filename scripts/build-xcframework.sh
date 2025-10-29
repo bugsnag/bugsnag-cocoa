@@ -133,9 +133,13 @@ build_frameworks() {
 
         xcodebuild -create-xcframework ${xcframework_args} -output "${PRODUCTS_DIR}/${framework}.xcframework"
 
-        codesign --force --deep --options runtime \
-            --sign "-" \
-            "${PRODUCTS_DIR}/${framework}.xcframework"
+        # Code sign for CI if needed
+        if [ -n "${CODE_SIGN_XCFRAMEWORK:-}" ]; then
+          echo "Code signing ${framework}.xcframework for CI environment"
+          codesign --force --deep --options runtime \
+              --sign "-" \
+              "${PRODUCTS_DIR}/${framework}.xcframework"
+        fi
 
         fixup_xcframework $framework
         pushd "${PRODUCTS_DIR}"
