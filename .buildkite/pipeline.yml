@@ -11,9 +11,9 @@ steps:
     key: framework_build
     timeout_in_minutes: 10
     agents:
-      queue: macos-15
+      queue: macos-26
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.1
       CODE_SIGN_XCFRAMEWORK: true
     commands:
       - make build_xcframework
@@ -31,9 +31,9 @@ steps:
     key: cocoa_fixture
     timeout_in_minutes: 15
     agents:
-      queue: macos-15
+      queue: macos-26
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.1
     artifact_paths:
       - features/fixtures/ios/output/iOSTestApp_Release.ipa
       - features/fixtures/ios/output/iOSTestApp_Debug.ipa
@@ -49,7 +49,7 @@ steps:
   - label: Carthage
     timeout_in_minutes: 15
     agents:
-      queue: macos-15
+      queue: macos-26
     commands:
       - ./scripts/build-carthage.sh
     plugins:
@@ -60,6 +60,15 @@ steps:
   #
   # Unit tests
   #
+
+  - label: macOS 26 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-26
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=macOS
+    artifact_paths:
+      - logs/*
 
   - label: macOS 15 unit tests
     timeout_in_minutes: 10
@@ -133,6 +142,17 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: iOS 26 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-26-isolated
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.0.1 DEVICE="iPhone 17"
+    env:
+      XCODE_VERSION: 26.0.1
+    artifact_paths:
+      - logs/*
+
   - label: iOS 18 unit tests
     timeout_in_minutes: 10
     agents:
@@ -186,6 +206,17 @@ steps:
     artifact_paths:
       - logs/*
 
+  - label: tvOS 26 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-26-isolated
+    env:
+      XCODE_VERSION: 26.0.1
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=26
+    artifact_paths:
+      - logs/*
+
   - label: tvOS 18 unit tests
     timeout_in_minutes: 10
     agents:
@@ -214,6 +245,17 @@ steps:
       queue: macos-12-arm
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5
+    artifact_paths:
+      - logs/*
+
+  - label: watchOS 26 unit tests
+    timeout_in_minutes: 10
+    agents:
+      queue: macos-26-isolated
+    env:
+      XCODE_VERSION: 26.0.1
+    commands:
+      - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=26 SDK=watchsimulator26 DEVICE="Apple Watch Series 11 (46mm)"
     artifact_paths:
       - logs/*
 
@@ -249,6 +291,30 @@ steps:
       - ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.0
     artifact_paths:
       - logs/*
+
+  - label: 'macOS 26 e2e tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 120
+    agents:
+      queue: macos-26-isolated
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
+        upload:
+          - "macOSTestApp.log"
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    commands:
+      - bundle install
+      - bundle exec maze-runner
+        features/release
+        --os=macos
+        --fail-fast
 
   - label: 'macOS 15 e2e tests'
     depends_on:

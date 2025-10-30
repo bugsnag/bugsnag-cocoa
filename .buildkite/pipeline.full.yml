@@ -2,15 +2,14 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
-
   - label: Build XcFramework test fixtures
     key: xcframework_cocoa_fixture
     depends_on: framework_build
     timeout_in_minutes: 30
     agents:
-      queue: macos-15
+      queue: macos-26
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: 26.0.1
     plugins:
       - artifacts#v1.9.4:
           download:
@@ -79,12 +78,12 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: 'macOS 14 XcFramework barebone e2e tests'
+  - label: 'macOS 26 XcFramework barebone e2e tests'
     depends_on:
       - xcframework_cocoa_fixture
     timeout_in_minutes: 10
     agents:
-      queue: macos-14-isolated
+      queue: macos-26-isolated
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
