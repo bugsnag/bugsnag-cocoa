@@ -32,6 +32,7 @@
 #import <Bugsnag/BugsnagFeatureFlagStore.h>
 #import <Bugsnag/BugsnagMetadata.h>
 #import <Bugsnag/BugsnagMetadataStore.h>
+#import <Bugsnag/BugsnagCaptureOptions.h>
 
 @class BugsnagSessionTracker;
 
@@ -61,6 +62,17 @@ BUGSNAG_EXTERN
  */
 - (void)notify:(NSException *_Nonnull)exception;
 
+/** Send a custom or caught exception to Bugsnag.
+ *
+ * The exception will be sent to Bugsnag in the background allowing your
+ * app to continue running.
+ *
+ * @param exception  The exception.
+ * @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ */
+- (void)notify:(NSException *_Nonnull)exception
+         options:(BugsnagErrorOptions *_Nullable)options;
+
 /**
  *  Send a custom or caught exception to Bugsnag
  *
@@ -68,6 +80,17 @@ BUGSNAG_EXTERN
  *  @param block     A block for optionally configuring the error report
  */
 - (void)notify:(NSException *_Nonnull)exception
+         block:(BugsnagOnErrorBlock _Nullable)block;
+
+/**
+ *  Send a custom or caught exception to Bugsnag
+ *
+ *  @param exception The exception
+ *  @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ *  @param block     A block for optionally configuring the error report
+ */
+- (void)notify:(NSException *_Nonnull)exception
+         options:(BugsnagErrorOptions *_Nullable)options
          block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
@@ -81,9 +104,29 @@ BUGSNAG_EXTERN
  *  Send an error to Bugsnag
  *
  *  @param error The error
+ *  @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ */
+- (void)notifyError:(NSError *_Nonnull)error
+            options:(BugsnagErrorOptions *_Nullable)options;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
  *  @param block A block for optionally configuring the error report
  */
 - (void)notifyError:(NSError *_Nonnull)error
+              block:(BugsnagOnErrorBlock _Nullable)block;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error
+ *  @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ *  @param block A block for optionally configuring the error report
+ */
+- (void)notifyError:(NSError *_Nonnull)error
+            options:(BugsnagErrorOptions *_Nullable)options
               block:(BugsnagOnErrorBlock _Nullable)block;
 
 // =============================================================================
