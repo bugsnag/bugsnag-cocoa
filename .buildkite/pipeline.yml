@@ -348,10 +348,10 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 12 stress test'
+  - label: 'macOS 15 stress test'
     timeout_in_minutes: 3
     agents:
-      queue: macos-12-arm
+      queue: macos-15
     env:
       STRESS_TEST: "true"
     plugins:
@@ -365,10 +365,7 @@ steps:
       - echo "--- Build"
       - make -C features/fixtures/macos-stress-test
       - echo "--- Test"
-      - bundle exec maze-runner
-        features/release/stress_test.feature
-        --os=macos
-        --no-log-requests
+      - bundle exec maze-runner features/release/stress_test.feature        --os=macos        --no-log-requests
     artifact_paths:
       - features/fixtures/macos-stress-test/*.log
       - features/fixtures/macos-stress-test/*.crash
