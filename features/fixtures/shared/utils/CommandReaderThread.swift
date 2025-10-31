@@ -117,7 +117,8 @@ class CommandFetchTask {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 do {
-                    logDebug("Command response: \(String(describing: String(data: data, encoding: .utf8)))")
+                    logDebug("Received command:\n\(String(data: data, encoding: .utf8)!)")
+
                     let command = try decoder.decode(MazeRunnerCommand.self, from: data)
                     logInfo("Command fetched and decoded")
                     self.command = command;

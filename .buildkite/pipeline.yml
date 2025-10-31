@@ -262,7 +262,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -286,7 +286,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -310,7 +310,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -334,7 +334,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -384,7 +384,7 @@ steps:
       artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -408,7 +408,7 @@ steps:
       artifacts#v1.9.4:
         download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
     commands:
@@ -428,7 +428,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
     commands:
@@ -448,7 +448,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
     commands:
@@ -729,7 +729,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -755,7 +755,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
     commands:
