@@ -349,6 +349,7 @@ steps:
         --fail-fast
 
   - label: 'macOS 15 stress test'
+    skip: Skipped pending PLAT-15123
     timeout_in_minutes: 3
     agents:
       queue: macos-15
