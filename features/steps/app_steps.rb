@@ -84,8 +84,26 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
 end
 
-# No platform relevance
+When("I wait for the macOS app to stop") do
+  # The macOS app can vary wildly in how long it takes to stop, so use pgrep to detect when it has fully exited
+  # Also wait for a second before polling as pgrep may return false positives if checked too quickly
+  sleep 1
 
+  process = if ENV['RUN_XCFRAMEWORK_APP']
+              'macOSTestAppXcFramework'
+            else
+              'macOSTestApp'
+            end
+
+  wait = Maze::Wait.new(timeout: 30, interval: 1)
+  stopped = wait.until do
+    `pgrep #{process}`
+    running = $?.exitstatus
+    running == 1
+  end
+
+  Maze.check.true(stopped, "The app did not stop within the timeout period")
+end
 
 def execute_command(action, args)
   Maze::Server.commands.add({ action: action, args: args, launch_count: $launch_count })
@@ -105,9 +123,6 @@ def launch_app
 end
 
 def relaunch_crashed_app
-  # Give it time to settle down
-  sleep 1
-
   case Maze::Helper.get_current_platform
   when 'ios'
     # Wait for the app to stop running before relaunching
@@ -115,7 +130,7 @@ def relaunch_crashed_app
 
     Maze::Api::Appium::AppManager.new.activate
   when 'macos'
-    sleep 4
+    step 'I wait for the macOS app to stop'
     launch_app
   when 'watchos'
     sleep 5 # We have no way to poll the app state on watchOS

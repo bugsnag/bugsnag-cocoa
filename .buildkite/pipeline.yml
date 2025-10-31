@@ -65,6 +65,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
@@ -346,7 +348,8 @@ steps:
         --os=macos
         --fail-fast
 
-  - label: 'macOS 12 stress test'
+  - label: 'macOS 15 stress test'
+    skip: Skipped pending PLAT-15123
     timeout_in_minutes: 3
     agents:
       queue: macos-12-arm
