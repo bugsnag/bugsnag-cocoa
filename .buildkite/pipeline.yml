@@ -65,6 +65,8 @@ steps:
     timeout_in_minutes: 10
     agents:
       queue: macos-15
+    env:
+      XCODE_VERSION: 16.3.0
     commands:
       - ./scripts/run-unit-tests.sh PLATFORM=macOS
     artifact_paths:
