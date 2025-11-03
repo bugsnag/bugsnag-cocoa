@@ -177,6 +177,8 @@ def run_macos_app
 
   system("unzip -qd #{dir} #{dir}/macOSTestApp*.zip", exception: true) unless File.exist? exe
   $fixture_pid = Process.spawn($app_env, exe, %i[err out] => '/dev/null')
+
+  $logger.debug "Launched app with PID #{$fixture_pid}"
 end
 
 def run_watchos_app
