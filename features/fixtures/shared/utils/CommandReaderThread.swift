@@ -70,7 +70,8 @@ class CommandReaderThread: Thread {
                     // No change
                     break
                 default:
-                    assertionFailure("\(command.action): Unknown command")
+                    logError("\(command.action): Unknown command")
+                    abort()
                 }
                 saveLastCommandID(uuid: uuid)
                 return
