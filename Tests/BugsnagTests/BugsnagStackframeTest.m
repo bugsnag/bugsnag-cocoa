@@ -271,7 +271,8 @@
         [stackframe symbolicateIfNeeded];
         XCTAssertNotNil(stackframe.symbolAddress);
         XCTAssertNil(stackframe.type);
-        
+
+        // Currently 6 checks - reevaluate test if anything more has to be added
         BOOL isStackframeValid = [callStackSymbols[idx] containsString:stackframe.method] ||
             // Sometimes we do a better job at symbolication (-:
             [callStackSymbols[idx] containsString:@"???"] ||
@@ -281,7 +282,10 @@
             // lldb agrees that the symbol should be "__RunTests_block_invoke_2"
             [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"] ||
             // Internal test function
-        [stackframe.method isEqualToString:@"RunTestsFromRunLoop"];
+            [stackframe.method isEqualToString:@"RunTestsFromRunLoop"] ||
+            // Since xcode 26 [NSThread callStackSymbols] returns main as `xctest + 7896`
+            // and we are checking symbolicated output here
+            [stackframe.method isEqualToString:@"main"];
 
         if (!isStackframeValid) {
             NSLog(@"callStackSymbol[%lu]: %@", (unsigned long)idx, callStackSymbols[idx]);
