@@ -16,7 +16,7 @@
         _mazeRunnerURL = mazeRunnerBaseAddress;
         _docsURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"docs"];
         _tracesURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"traces"];
-        _commandURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"command"];
+        _commandURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"idem-command"];
         _metricsURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"metrics"];
         _notifyURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"notify"];
         _sessionsURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"sessions"];
