@@ -765,6 +765,7 @@
 		1C7ADF792EB1608F00A930A6 /* BugsnagCaptureOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7ADF762EB1608700A930A6 /* BugsnagCaptureOptions.m */; };
 		1C7ADF7A2EB1608F00A930A6 /* BugsnagCaptureOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7ADF762EB1608700A930A6 /* BugsnagCaptureOptions.m */; };
 		1C7ADF7B2EB1608F00A930A6 /* BugsnagCaptureOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7ADF762EB1608700A930A6 /* BugsnagCaptureOptions.m */; };
+		1C8CB8B12EB968EA007BF492 /* BugsnagCaptureOptions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C3E2DB52EAD462500B32AD2 /* BugsnagCaptureOptions.h */; };
 		3A700A9424A63ABC0068CD1B /* BugsnagThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8024A63A8E0068CD1B /* BugsnagThread.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A700A9524A63AC50068CD1B /* BugsnagSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8124A63A8E0068CD1B /* BugsnagSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A700A9624A63AC60068CD1B /* BugsnagStackframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8224A63A8E0068CD1B /* BugsnagStackframe.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1354,6 +1355,7 @@
 			dstPath = include/Bugsnag;
 			dstSubfolderSpec = 16;
 			files = (
+				1C8CB8B12EB968EA007BF492 /* BugsnagCaptureOptions.h in CopyFiles */,
 				09E312FC2BF2492C0081F219 /* BugsnagCorrelation.h in CopyFiles */,
 				3A700AED24A6492F0068CD1B /* BSG_KSCrashReportWriter.h in CopyFiles */,
 				3A700AF324A6492F0068CD1B /* Bugsnag.h in CopyFiles */,
