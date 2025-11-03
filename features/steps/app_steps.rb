@@ -87,6 +87,7 @@ end
 When("I wait for the macOS app to stop") do
   # Consider the macOS app stopped once all file handles have been released.  Strange behaviour was seen on macOS 12
   # when using pgrep to check for the process ending - the process name appearing in brackets and never going away.
+  sleep 1 # Without this sleep we don't see any file handles and it continues too quickly
   wait = Maze::Wait.new(timeout: 300, interval: 1)
   stopped = wait.until do
     open_files = `lsof | grep "com.bugsnag.fixtures.macOSTestApp"`
