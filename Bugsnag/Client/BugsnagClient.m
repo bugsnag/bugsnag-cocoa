@@ -874,6 +874,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     BugsnagCaptureOptions *capture = options != nil ? options.capture : nil;
+    if (handledState == nil) {
+        // should not happen
+        handledState = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+    }
     metadata = [self metadataCapture:capture metadata:metadata unhandled:handledState.unhandled];
     breadcrumbs = [self breadcrumbsCapture:capture unhandled:handledState.unhandled];
     threads = [self threadsCapture:capture callstack:callStack unhandled:handledState.unhandled];

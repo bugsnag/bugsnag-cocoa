@@ -306,5 +306,34 @@
     }];
 }
 
+- (void)testUnlikelyUnhandledShouldHaveEverything {
+    BugsnagClient *client = [self prepareClient];
+
+    // everything turned off - should be ignored for unhandled
+    BugsnagErrorOptions *options = [[BugsnagErrorOptions alloc] init];
+    options.capture.breadcrumbs = NO;
+    options.capture.threads = NO;
+    options.capture.user = NO;
+    options.capture.featureFlags = NO;
+    options.capture.stacktrace = NO;
+    options.capture.metadata = @[];
+
+    // Not nsexception/nserror so unhandled
+    NSString *exception1 = @"stringexc";
+    [client notifyErrorOrException:exception1 stackStripDepth:4 options:options block:^BOOL(BugsnagEvent * _Nonnull event) {
+
+        XCTAssertNotNil([event.metadata getMetadataFromSection:@"app"]);
+        XCTAssertNotNil([event.metadata getMetadataFromSection:@"device"]);
+
+        [self customMetadataCheck:event client:client];
+        [self breadcrumbsCheck:event client:client];
+        [self userCheck:event];
+        [self featureFlagCheck:event];
+        XCTAssertNotNil(event.threads);
+        XCTAssertNotNil(event.errors[0].stacktrace);
+
+        return NO;
+    }];
+}
 
 @end
