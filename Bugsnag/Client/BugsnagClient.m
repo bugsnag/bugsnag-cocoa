@@ -739,10 +739,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
 }
 
-- (void)metadataCapture:(BugsnagCaptureOptions *)capture
+- (BugsnagMetadata *)metadataCapture:(BugsnagCaptureOptions *)capture
                metadata:(BugsnagMetadata *)metadata
               unhandled:(BOOL)unhandled {
-    if (unhandled == TRUE && (capture == nil || capture.metadata == nil)) {
+    if (unhandled == TRUE || capture == nil || capture.metadata == nil) {
         // Copy all of the current metadata from self
         for (NSString* sectionKey in self.metadata.dictionary) {
             if (sectionKey == nil) {
@@ -753,10 +753,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                 [metadata addMetadata:metadataInSection toSection:sectionKey];
             }
         }
-        return;
+        return metadata;
     }
     if ([capture.metadata count] == 0) {
-        return;
+        return metadata;
     }
 
     // Copy only specified metadata tabs
@@ -769,52 +769,49 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             [metadata addMetadata:metadataInSection toSection:sectionKey];
         }
     }
+    return metadata;
 }
 
-- (void)breadcrumbsCapture:(BugsnagCaptureOptions *)capture
-               breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
+- (NSArray<BugsnagBreadcrumb *> *)breadcrumbsCapture:(BugsnagCaptureOptions *)capture
                  unhandled:(BOOL)unhandled {
-    if (unhandled == FALSE && capture != nil && capture.breadcrumbs == FALSE) {
-        breadcrumbs = @[];
-        return;
+    if (unhandled == TRUE || capture == nil || capture.breadcrumbs == TRUE) {
+        return [self breadcrumbs];
     }
 
-    breadcrumbs = [self breadcrumbs];
+    return nil;
 }
 
-- (void)threadsCapture:(BugsnagCaptureOptions *)capture
-               threads:(NSArray *)threads
+- (NSArray<BugsnagThread *> *)threadsCapture:(BugsnagCaptureOptions *)capture
              callstack:(NSArray<NSNumber *> *)callstack
              unhandled:(BOOL)unhandled {
 #if BSG_HAVE_MACH_THREADS
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
-    if (unhandled == TRUE || capture == nil || capture.threads == TRUE || recordAllThreads == TRUE) {
-        threads = [BugsnagThread allThreads:YES callStackReturnAddresses:callstack];
+    if (recordAllThreads) {
+        if (unhandled == TRUE || capture == nil || capture.threads == TRUE) {
+            return [BugsnagThread allThreads:YES callStackReturnAddresses:callstack];
+        }
     }
 #endif
+    return nil;
 }
 
-- (void)stacktraceCapture:(BugsnagCaptureOptions *)capture
-               stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
+- (NSArray<BugsnagStackframe *> *)stacktraceCapture:(BugsnagCaptureOptions *)capture
                 callstack:(NSArray<NSNumber *> *)callstack
                 unhandled:(BOOL)unhandled {
-    if (unhandled == FALSE && capture != nil && capture.stacktrace == FALSE) {
-        stacktrace = @[];
-        return;
+    if (unhandled == TRUE || capture == nil || capture.stacktrace == TRUE) {
+        return [BugsnagStackframe stackframesWithCallStackReturnAddresses:callstack];
     }
 
-    stacktrace = [BugsnagStackframe stackframesWithCallStackReturnAddresses:callstack];
+    return nil;
 }
 
-- (void)userCapture:(BugsnagCaptureOptions *)capture
-               user:user
+- (BugsnagUser *)userCapture:(BugsnagCaptureOptions *)capture
           unhandled:(BOOL)unhandled {
-    if (unhandled == FALSE && capture != nil && capture.user == FALSE) {
-        user = nil;
-        return;
+    if (unhandled == TRUE || capture == nil || capture.user == TRUE){
+        return [self.user withId];
     }
 
-    user = [self.user withId];
+    return nil;
 }
 
 - (void)notifyErrorOrException:(id)errorOrException
@@ -826,8 +823,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     // Potentially not captured data
     BugsnagMetadata *metadata = [[BugsnagMetadata alloc] init];
-    NSArray<BugsnagBreadcrumb *> *breadcrumbs = [[NSArray alloc] init];
-    NSArray *threads = @[];
+    NSArray<BugsnagBreadcrumb *> *breadcrumbs = nil;
+    NSArray<BugsnagThread *> *threads = nil;
     NSArray<NSNumber *> *callStack = nil;
     NSArray<BugsnagStackframe *> *stacktrace = nil;
     BugsnagUser *user = nil;
@@ -877,11 +874,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     BugsnagCaptureOptions *capture = options != nil ? options.capture : nil;
-    [self metadataCapture:capture metadata:metadata unhandled:handledState.unhandled];
-    [self breadcrumbsCapture:capture breadcrumbs:breadcrumbs unhandled:handledState.unhandled];
-    [self threadsCapture:capture threads:threads callstack:callStack unhandled:handledState.unhandled];
-    [self stacktraceCapture:capture stacktrace:stacktrace callstack:callStack unhandled:handledState.unhandled];
-    [self userCapture:capture user:user unhandled:handledState.unhandled];
+    metadata = [self metadataCapture:capture metadata:metadata unhandled:handledState.unhandled];
+    breadcrumbs = [self breadcrumbsCapture:capture unhandled:handledState.unhandled];
+    threads = [self threadsCapture:capture callstack:callStack unhandled:handledState.unhandled];
+    stacktrace = [self stacktraceCapture:capture callstack:callStack unhandled:handledState.unhandled];
+    user = [self userCapture:capture unhandled:handledState.unhandled];
 
     BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
                                                       errorMessage:errorMessage
@@ -940,13 +937,6 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 #endif
     [event.metadata addMetadata:BSGAppMetadataFromRunContext(bsg_runContext) toSection:BSGKeyApp];
     [event.metadata addMetadata:BSGDeviceMetadataFromRunContext(bsg_runContext) toSection:BSGKeyDevice];
-
-    // App hang events will already contain feature flags
-    if (event.featureFlagStore.isEmpty) {
-        @synchronized (self.featureFlagStore) {
-            event.featureFlagStore = [self.featureFlagStore copyMemoryStore];
-        }
-    }
 
     event.user = [event.user withId];
 

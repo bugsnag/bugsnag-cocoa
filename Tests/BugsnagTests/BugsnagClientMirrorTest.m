@@ -132,11 +132,16 @@
             @"systemState @16@0:8",
             @"thermalStateDidChange: v24@0:8@16",
             @"updateSession: v24@0:8@?16",
-            @"notifyErrorOrException:stackStripDepth:block: v40@0:8@16Q24@?32",
+            @"notifyErrorOrException:stackStripDepth:options:block: v48@0:8@16Q24@32@?40",
             @"setFeatureFlags: v24@0:8@16",
             @"featureFlags @16@0:8",
             @"groupingDiscriminator_ @16@0:8",
             @"setGroupingDiscriminator_: v24@0:8@16",
+            @"breadcrumbsCapture:unhandled: @28@0:8@16B24",
+            @"metadataCapture:metadata:unhandled: @36@0:8@16@24B32",
+            @"threadsCapture:callstack:unhandled: @36@0:8@16@24B32",
+            @"stacktraceCapture:callstack:unhandled: @36@0:8@16@24B32",
+            @"userCapture:unhandled: @28@0:8@16B24",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

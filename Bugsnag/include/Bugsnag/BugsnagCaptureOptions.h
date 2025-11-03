@@ -65,6 +65,6 @@ BUGSNAG_EXTERN
 BUGSNAG_EXTERN
 @interface BugsnagErrorOptions : NSObject
 
-@property (copy, nullable, nonatomic) BugsnagCaptureOptions *capture;
+@property (strong, nullable, nonatomic) BugsnagCaptureOptions *capture;
 
 @end

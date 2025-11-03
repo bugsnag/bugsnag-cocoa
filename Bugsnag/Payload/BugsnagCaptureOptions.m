@@ -17,7 +17,7 @@
     if (!(self = [super init])) {
         return nil;
     }
-    self.capture = [BugsnagCaptureOptions init];
+    self.capture = [[BugsnagCaptureOptions alloc] init];
     return self;
 }
 
@@ -35,7 +35,7 @@
 
     self.breadcrumbs = TRUE;
     self.featureFlags = TRUE;
-    self.metadata = [[NSArray alloc] init];
+    self.metadata = nil;
     self.stacktrace = TRUE;
     self.threads = TRUE;
     self.user = TRUE;
