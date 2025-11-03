@@ -85,15 +85,31 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
 end
 
 When("I wait for the macOS app to stop") do
-  # Consider the macOS app stopped once all file handles have been released.  Strange behaviour was seen on macOS 12
-  # when using pgrep to check for the process ending - the process name appearing in brackets and never going away.
-  sleep 1 # Without this sleep we don't see any file handles and it continues too quickly
-  wait = Maze::Wait.new(timeout: 300, interval: 1)
+  # Consider the macOS app stopped once either:
+  #  - pgrep tells us it's no longer running
+  #  - all file handles have been released
+  # Strange behaviour was seen on macOS 12 when using pgrep to check for the process ending - the process name
+  # appearing in brackets and never going away, hence the alternative condition.
+  sleep 1 # Without this sleep we don't see any file handles or processes and it continues too quickly
+  wait = Maze::Wait.new(timeout: 30, interval: 1)
   stopped = wait.until do
-    open_files = `lsof | grep "com.bugsnag.fixtures.macOSTestApp"`
-    count = open_files.split("\n").size
-    $logger.debug "#{count} file handle(s) open:\n#{open_files}"
-    count == 0
+    # Check for the process ending
+    process = if ENV['RUN_XCFRAMEWORK_APP']
+                'macOSTestAppXcFramework'
+              else
+                'macOSTestApp'
+              end
+    `pgrep #{process}`
+    running = $?.exitstatus
+    if running == 1
+      true
+    else
+      # Check for open file handles
+      open_files = `lsof | grep "com.bugsnag.fixtures.macOSTestApp"`
+      file_count = open_files.split("\n").size
+      $logger.debug "#{file_count} file handle(s) open:\n#{open_files}"
+      file_count == 0
+    end
   end
 
   Maze.check.true(stopped, "The app appears to be running still after the timeout period (did it process the command to crash?).")
