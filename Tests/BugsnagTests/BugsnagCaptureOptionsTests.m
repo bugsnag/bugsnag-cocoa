@@ -100,7 +100,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -124,7 +126,9 @@
         XCTAssertNil(event.breadcrumbs);
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -148,7 +152,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -172,7 +178,9 @@
         [self breadcrumbsCheck:event client:client];
         XCTAssertNil(event.user);
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -196,7 +204,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         XCTAssertTrue([event.featureFlags count] == 0);
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -220,7 +230,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertTrue([event.errors[0].stacktrace count] == 0);
 
         return NO;
@@ -244,7 +256,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -270,7 +284,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
@@ -299,7 +315,9 @@
         [self breadcrumbsCheck:event client:client];
         XCTAssertNil(event.user);
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertTrue([event.errors[0].stacktrace count] == 0);
 
         return NO;
@@ -329,7 +347,9 @@
         [self breadcrumbsCheck:event client:client];
         [self userCheck:event];
         [self featureFlagCheck:event];
+#if BSG_HAVE_MACH_THREADS
         XCTAssertNotNil(event.threads);
+#endif
         XCTAssertNotNil(event.errors[0].stacktrace);
 
         return NO;
