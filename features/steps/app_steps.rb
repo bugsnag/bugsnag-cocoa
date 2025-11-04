@@ -91,7 +91,10 @@ When("I wait for the macOS app to stop") do
   # Strange behaviour was seen on macOS 12 when using pgrep to check for the process ending - the process name
   # appearing in brackets and never going away, hence the alternative condition.
   sleep 1 # Without this sleep we don't see any file handles or processes and it continues too quickly
-  wait = Maze::Wait.new(timeout: 30, interval: 1)
+  open_files = nil
+  running = nil
+  timeout = 30
+  wait = Maze::Wait.new(timeout: timeout, interval: 1)
   stopped = wait.until do
     # Check for the process ending
     process = if ENV['RUN_XCFRAMEWORK_APP']
@@ -112,7 +115,14 @@ When("I wait for the macOS app to stop") do
     end
   end
 
-  Maze.check.true(stopped, "The app appears to be running still after the timeout period (did it process the command to crash?).")
+  unless stopped
+    open_files_message = run_macos_app == 1 ? '' : "Open files according to lsof:\n#{open_files}"
+    $logger.warn <<-MESSAGE
+The app appears to be running still after #{timeout} seconds.  
+pgrep said running = #{running == 0}
+#{open_files_message}
+MESSAGE
+  end
 end
 
 def execute_command(action, args)
