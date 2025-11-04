@@ -138,10 +138,15 @@
             @"groupingDiscriminator_ @16@0:8",
             @"setGroupingDiscriminator_: v24@0:8@16",
             @"breadcrumbsCapture:unhandled: @28@0:8@16B24",
+            @"breadcrumbsCapture:unhandled: @28@0:8@16c24",
             @"metadataCapture:metadata:unhandled: @36@0:8@16@24B32",
+            @"metadataCapture:metadata:unhandled: @36@0:8@16@24c32",
             @"threadsCapture:callstack:unhandled: @36@0:8@16@24B32",
+            @"threadsCapture:callstack:unhandled: @36@0:8@16@24c32",
             @"stacktraceCapture:callstack:unhandled: @36@0:8@16@24B32",
+            @"stacktraceCapture:callstack:unhandled: @36@0:8@16@24c32",
             @"userCapture:unhandled: @28@0:8@16B24",
+            @"userCapture:unhandled: @28@0:8@16c24",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to
