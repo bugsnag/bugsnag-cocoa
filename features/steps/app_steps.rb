@@ -85,24 +85,44 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
 end
 
 When("I wait for the macOS app to stop") do
-  # The macOS app can vary wildly in how long it takes to stop, so use pgrep to detect when it has fully exited
-  # Also wait for a second before polling as pgrep may return false positives if checked too quickly
-  sleep 1
-
-  process = if ENV['RUN_XCFRAMEWORK_APP']
-              'macOSTestAppXcFramework'
-            else
-              'macOSTestApp'
-            end
-
-  wait = Maze::Wait.new(timeout: 30, interval: 1)
+  # Consider the macOS app stopped once either:
+  #  - pgrep tells us it's no longer running
+  #  - all file handles have been released
+  # Strange behaviour was seen on macOS 12 when using pgrep to check for the process ending - the process name
+  # appearing in brackets and never going away, hence the alternative condition.
+  sleep 1 # Without this sleep we don't see any file handles or processes and it continues too quickly
+  open_files = nil
+  running = nil
+  timeout = 30
+  wait = Maze::Wait.new(timeout: timeout, interval: 1)
   stopped = wait.until do
+    # Check for the process ending
+    process = if ENV['RUN_XCFRAMEWORK_APP']
+                'macOSTestAppXcFramework'
+              else
+                'macOSTestApp'
+              end
     `pgrep #{process}`
     running = $?.exitstatus
-    running == 1
+    if running == 1
+      true
+    else
+      # Check for open file handles
+      open_files = `lsof | grep "com.bugsnag.fixtures.macOSTestApp"`
+      file_count = open_files.split("\n").size
+      $logger.debug "#{file_count} file handle(s) open:\n#{open_files}"
+      file_count == 0
+    end
   end
 
-  Maze.check.true(stopped, "The app did not stop within the timeout period")
+  unless stopped
+    open_files_message = run_macos_app == 1 ? '' : "Open files according to lsof:\n#{open_files}"
+    $logger.warn <<-MESSAGE
+The app appears to be running still after #{timeout} seconds.  
+pgrep said running = #{running == 0}
+#{open_files_message}
+MESSAGE
+  end
 end
 
 def execute_command(action, args)
@@ -183,6 +203,8 @@ def run_macos_app
 
   system("unzip -qd #{dir} #{dir}/macOSTestApp*.zip", exception: true) unless File.exist? exe
   $fixture_pid = Process.spawn($app_env, exe, %i[err out] => '/dev/null')
+
+  $logger.debug "Launched app with PID #{$fixture_pid}"
 end
 
 def run_watchos_app

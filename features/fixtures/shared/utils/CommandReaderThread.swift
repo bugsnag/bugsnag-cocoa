@@ -55,10 +55,25 @@ class CommandReaderThread: Thread {
             case CommandFetchState.success:
                 logDebug("Command fetch: Request succeeded")
                 let command = fetchTask.command!
-                if (command.uuid != "") {
-                    saveLastCommandID(uuid: command.uuid)
-                }
                 commandReceiver.receiveCommand(command: command)
+
+                // Determine UUID to follow on from
+                var uuid = self.lastCommandID
+                switch command.action {
+                case "run_scenario","start_bugsnag","invoke_method","reset_data","background","wait":
+                    uuid = command.uuid
+                    break
+                case "reset_uuid":
+                    uuid = ""
+                    break
+                case "noop":
+                    // No change
+                    break
+                default:
+                    logError("\(command.action): Unknown command")
+                    abort()
+                }
+                saveLastCommandID(uuid: uuid)
                 return
             case CommandFetchState.fetching:
                 let duration = Date() - startTime
@@ -68,12 +83,6 @@ class CommandReaderThread: Thread {
                     fetchTask = newStartedFetchTask()
                 }
                 break
-            case CommandFetchState.unknownCommandID:
-                logInfo("Command fetch: Unknown command ID. Starting from the first command...")
-                self.lastCommandID = ""
-                fetchTask = newStartedFetchTask()
-                break
-
             case CommandFetchState.failed:
                 logInfo("Command fetch: Request failed. Trying again...")
                 fetchTask = newStartedFetchTask()
@@ -91,7 +100,7 @@ extension Date {
 }
 
 enum CommandFetchState {
-    case failed, unknownCommandID, fetching, success
+    case failed, fetching, success
 }
 
 class CommandFetchTask {
@@ -126,12 +135,7 @@ class CommandFetchTask {
                 } catch {
                     self.state = CommandFetchState.failed
                     let dataAsString = String(data: data, encoding: .utf8)
-                    let isInvalidUUID = dataAsString != nil && dataAsString!.contains("there is no command with a UUID of")
-                    if isInvalidUUID {
-                        self.state = CommandFetchState.unknownCommandID
-                    } else {
-                        logError("Failed to fetch command: Invalid Response from \(String(describing: self.url)): [\(String(describing: dataAsString))]: Error is: \(error)")
-                    }
+                    logError("Failed to fetch command: Invalid Response from \(String(describing: self.url)): [\(String(describing: dataAsString))]: Error is: \(error)")
                 }
             } else if let error = error {
                 self.state = CommandFetchState.failed
