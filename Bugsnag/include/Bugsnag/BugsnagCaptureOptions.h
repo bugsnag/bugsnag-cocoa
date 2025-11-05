@@ -30,7 +30,7 @@ BUGSNAG_EXTERN
 /**
  * Controls which **custom metadata tabs** are included.
  * `app` and `device` data will **always** be added.
- * When `metadata` is not provided or is `null`/`undefined`, all custom metadata tabs shall be captured.
+ * When `metadata` is not provided or is `nil`, all custom metadata tabs shall be captured.
  * When `metadata` is provided as an empty array (`[]`), no custom metadata tabs shall be captured.
  * When `metadata` is provided as a string array:
  *  - Each value shall represent a metadata tab name to include.
