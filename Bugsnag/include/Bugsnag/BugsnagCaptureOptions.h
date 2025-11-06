@@ -13,6 +13,10 @@
 /**
  * The `BugsnagCaptureOptions` interface defines the set of granular flags for controlling data capture at `notify` time.
  * All properties are optional, and default to `true` unless otherwise stated.
+ * `capture` shall only affect handled errors reported through the `notify` method.
+ * `capture` shall have no effect on automatically detected errors.
+ * When a capture flag is set to `false`, the corresponding data shall **not be captured** during `Event` creation (rather than being captured and removed later).
+ * The `Error` properties (`errorClass`, `errorMessage`, `type`) shall **always** be captured regardless of capture settings.
  */
 BUGSNAG_EXTERN
 @interface BugsnagCaptureOptions : NSObject
@@ -56,11 +60,7 @@ BUGSNAG_EXTERN
 @end
 
 /**
- * The `BugsnagErrorOptions` interface allows developers to control how handled errors are reported and which optional data fields should be captured.
- * `capture` shall only affect handled errors reported through the `notify` method.
- * `capture` shall have no effect on automatically detected errors.
- * When a capture flag is set to `false`, the corresponding data shall **not be captured** during `Event` creation (rather than being captured and removed later).
- * The `Error` properties (`errorClass`, `errorMessage`, `type`) shall **always** be captured regardless of capture settings.
+ * The `BugsnagErrorOptions` interface provides the set of options to control how an event is generated.
  */
 BUGSNAG_EXTERN
 @interface BugsnagErrorOptions : NSObject

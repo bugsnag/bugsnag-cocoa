@@ -740,9 +740,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (BugsnagMetadata *)metadataCapture:(BugsnagCaptureOptions *)capture
-               metadata:(BugsnagMetadata *)metadata
-              unhandled:(BOOL)unhandled {
-    if (unhandled == TRUE || capture == nil || capture.metadata == nil) {
+               metadata:(BugsnagMetadata *)metadata {
+    if (capture == nil || capture.metadata == nil) {
         // Copy all of the current metadata from self
         for (NSString* sectionKey in self.metadata.dictionary) {
             if (sectionKey == nil) {
@@ -772,9 +771,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return metadata;
 }
 
-- (NSArray<BugsnagBreadcrumb *> *)breadcrumbsCapture:(BugsnagCaptureOptions *)capture
-                 unhandled:(BOOL)unhandled {
-    if (unhandled == TRUE || capture == nil || capture.breadcrumbs == TRUE) {
+- (NSArray<BugsnagBreadcrumb *> *)breadcrumbsCapture:(BugsnagCaptureOptions *)capture {
+    if (capture == nil || capture.breadcrumbs == YES) {
         return [self breadcrumbs];
     }
 
@@ -782,32 +780,27 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 - (NSArray<BugsnagThread *> *)threadsCapture:(BugsnagCaptureOptions *)capture
-             callstack:(NSArray<NSNumber *> *)callstack
-             unhandled:(BOOL)unhandled {
+             callstack:(NSArray<NSNumber *> *)callstack {
 #if BSG_HAVE_MACH_THREADS
     BOOL recordAllThreads = self.configuration.sendThreads == BSGThreadSendPolicyAlways;
-    if (recordAllThreads) {
-        if (unhandled == TRUE || capture == nil || capture.threads == TRUE) {
-            return [BugsnagThread allThreads:YES callStackReturnAddresses:callstack];
-        }
+    if (recordAllThreads && (capture == nil || capture.threads == YES)) {
+        return [BugsnagThread allThreads:YES callStackReturnAddresses:callstack];
     }
 #endif
     return nil;
 }
 
 - (NSArray<BugsnagStackframe *> *)stacktraceCapture:(BugsnagCaptureOptions *)capture
-                callstack:(NSArray<NSNumber *> *)callstack
-                unhandled:(BOOL)unhandled {
-    if (unhandled == TRUE || capture == nil || capture.stacktrace == TRUE) {
+                callstack:(NSArray<NSNumber *> *)callstack {
+    if (capture == nil || capture.stacktrace == YES) {
         return [BugsnagStackframe stackframesWithCallStackReturnAddresses:callstack];
     }
 
     return nil;
 }
 
-- (BugsnagUser *)userCapture:(BugsnagCaptureOptions *)capture
-          unhandled:(BOOL)unhandled {
-    if (unhandled == TRUE || capture == nil || capture.user == TRUE){
+- (BugsnagUser *)userCapture:(BugsnagCaptureOptions *)capture {
+    if (capture == nil || capture.user == YES){
         return [self.user withId];
     }
 
@@ -874,15 +867,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     BugsnagCaptureOptions *capture = options != nil ? options.capture : nil;
-    if (handledState == nil) {
-        // should not happen
-        handledState = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
-    }
-    metadata = [self metadataCapture:capture metadata:metadata unhandled:handledState.unhandled];
-    breadcrumbs = [self breadcrumbsCapture:capture unhandled:handledState.unhandled];
-    threads = [self threadsCapture:capture callstack:callStack unhandled:handledState.unhandled];
-    stacktrace = [self stacktraceCapture:capture callstack:callStack unhandled:handledState.unhandled];
-    user = [self userCapture:capture unhandled:handledState.unhandled];
+    metadata = [self metadataCapture:capture metadata:metadata];
+    breadcrumbs = [self breadcrumbsCapture:capture];
+    threads = [self threadsCapture:capture callstack:callStack];
+    stacktrace = [self stacktraceCapture:capture callstack:callStack];
+    user = [self userCapture:capture];
 
     BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
                                                       errorMessage:errorMessage
@@ -904,7 +893,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     event.originalError = errorOrException;
     event.correlation = correlation;
 
-    if (handledState.unhandled == TRUE || capture == nil || capture.featureFlags == TRUE) {
+    if (capture == nil || capture.featureFlags == YES) {
         @synchronized (self.featureFlagStore) {
             event.featureFlagStore = [self.featureFlagStore copyMemoryStore];
         }
@@ -914,7 +903,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 }
 
 /**
- *  Notify Bugsnag of an exception. Used for user-reported (handled) errors, React Native, and Unity.
+ *  Notify Bugsnag of an exception. Used for user-reported (handled) errors, React Native, and Flutter.
  *
  *  @param event    the event
  *  @param block     Configuration block for adding additional report information

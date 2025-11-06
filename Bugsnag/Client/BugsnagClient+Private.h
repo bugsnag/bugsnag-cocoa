@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param errorOrException the error or exception to report.
  * @param stackStripDepth The number of stack trace entries to strip from the top of the stack.
- * @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ * @param options Defines the set of options to control how the event is generated.
  * @param block Called after reporting.
  */
 - (void)notifyErrorOrException:(id)errorOrException

@@ -148,7 +148,7 @@ BUGSNAG_EXTERN
  * app to continue running.
  *
  * @param exception The exception.
- * @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ * @param options Defines the set of options to control how the event is generated.
  */
 + (void)notify:(NSException *_Nonnull)exception
          options:(BugsnagErrorOptions *_Nullable)options;
