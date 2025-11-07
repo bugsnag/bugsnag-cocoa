@@ -109,28 +109,56 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 + (void)notify:(NSException *)exception {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"Prevent");
-        [self.client notifyErrorOrException:exception stackStripDepth:2 block:nil];
+        [self.client notifyErrorOrException:exception stackStripDepth:2 options:nil block:nil];
+    }
+}
+
++ (void)notify:(NSException *)exception options:(BugsnagErrorOptions *)options{
+    if ([self bugsnagReadyForInternalCalls]) {
+        BSGPreventInlining(@"Prevent");
+        [self.client notifyErrorOrException:exception stackStripDepth:2 options:options block:nil];
     }
 }
 
 + (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"inlining");
-        [self.client notifyErrorOrException:exception stackStripDepth:2 block:block];
+        [self.client notifyErrorOrException:exception stackStripDepth:2 options:nil block:block];
+    }
+}
+
++ (void)notify:(NSException *)exception options:(BugsnagErrorOptions *)options block:(BugsnagOnErrorBlock)block {
+    if ([self bugsnagReadyForInternalCalls]) {
+        BSGPreventInlining(@"inlining");
+        [self.client notifyErrorOrException:exception stackStripDepth:2 options:options block:block];
     }
 }
 
 + (void)notifyError:(NSError *)error {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"and");
-        [self.client notifyErrorOrException:error stackStripDepth:2 block:nil];
+        [self.client notifyErrorOrException:error stackStripDepth:2 options:nil block:nil];
+    }
+}
+
++ (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *)options{
+    if ([self bugsnagReadyForInternalCalls]) {
+        BSGPreventInlining(@"and");
+        [self.client notifyErrorOrException:error stackStripDepth:2 options:options block:nil];
     }
 }
 
 + (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"outlining");
-        [self.client notifyErrorOrException:error stackStripDepth:2 block:block];
+        [self.client notifyErrorOrException:error stackStripDepth:2 options:nil block:block];
+    }
+}
+
++ (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *)options block:(BugsnagOnErrorBlock)block {
+    if ([self bugsnagReadyForInternalCalls]) {
+        BSGPreventInlining(@"outlining");
+        [self.client notifyErrorOrException:error stackStripDepth:2 options:options block:block];
     }
 }
 

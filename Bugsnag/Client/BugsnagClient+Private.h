@@ -90,10 +90,12 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * @param errorOrException the error or exception to report.
  * @param stackStripDepth The number of stack trace entries to strip from the top of the stack.
+ * @param options Defines the set of options to control how the event is generated.
  * @param block Called after reporting.
  */
 - (void)notifyErrorOrException:(id)errorOrException
                stackStripDepth:(NSUInteger)stackStripDepth
+                       options:(BugsnagErrorOptions *_Nullable)options
                          block:(_Nullable BugsnagOnErrorBlock)block;
 
 @end
