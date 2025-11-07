@@ -166,7 +166,7 @@ BUGSNAG_EXTERN
  *  Send a custom or caught exception to Bugsnag
  *
  *  @param exception The exception.
- *  @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ *  @param options Defines the set of options to control how the event is generated.
  *  @param block A block for optionally configuring the error report.
  */
 + (void)notify:(NSException *_Nonnull)exception
@@ -184,7 +184,7 @@ BUGSNAG_EXTERN
  *  Send an error to Bugsnag
  *
  *  @param error The error.
- *  @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ *  @param options Defines the set of options to control how the event is generated.
  */
 + (void)notifyError:(NSError *_Nonnull)error
          options:(BugsnagErrorOptions *_Nullable)options;
@@ -202,7 +202,7 @@ BUGSNAG_EXTERN
  *  Send an error to Bugsnag
  *
  *  @param error The error.
- *  @param options Defines the set of granular flags for controlling data capture at `notify` time.
+ *  @param options Defines the set of options to control how the event is generated.
  *  @param block A block for optionally configuring the error report.
  */
 + (void)notifyError:(NSError *_Nonnull)error
