@@ -739,6 +739,18 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     return [[BugsnagCorrelation alloc] initWithTraceId:traceId spanId:spanId];
 }
 
+- (BugsnagMetadata *)copyAppDeviceMetadata:(BugsnagMetadata *)metadata {
+    NSMutableDictionary *metadataInSection = [self.metadata getMetadataFromSection:@"app"];
+    if (metadataInSection != nil) {
+        [metadata addMetadata:metadataInSection toSection:@"app"];
+    }
+    metadataInSection = [self.metadata getMetadataFromSection:@"device"];
+    if (metadataInSection != nil) {
+        [metadata addMetadata:metadataInSection toSection:@"device"];
+    }
+    return metadata;
+}
+
 - (BugsnagMetadata *)metadataCapture:(BugsnagCaptureOptions *)capture
                metadata:(BugsnagMetadata *)metadata {
     if (capture == nil || capture.metadata == nil) {
@@ -755,6 +767,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
         return metadata;
     }
     if ([capture.metadata count] == 0) {
+        metadata = [self copyAppDeviceMetadata:metadata];
         return metadata;
     }
 
@@ -768,6 +781,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             [metadata addMetadata:metadataInSection toSection:sectionKey];
         }
     }
+    metadata = [self copyAppDeviceMetadata:metadata];
     return metadata;
 }
 

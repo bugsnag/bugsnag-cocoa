@@ -137,6 +137,7 @@
             @"featureFlags @16@0:8",
             @"groupingDiscriminator_ @16@0:8",
             @"setGroupingDiscriminator_: v24@0:8@16",
+            @"copyAppDeviceMetadata: @24@0:8@16",
             @"breadcrumbsCapture: @24@0:8@16",
             @"metadataCapture:metadata: @32@0:8@16@24",
             @"threadsCapture:callstack: @32@0:8@16@24",
