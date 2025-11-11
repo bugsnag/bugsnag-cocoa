@@ -2,30 +2,29 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
-
-  - label: Build XcFramework test fixtures
-    key: xcframework_cocoa_fixture
-    depends_on: framework_build
+  - label: "Build XcFramework test fixtures"
+    key: "xcframework_cocoa_fixture"
+    depends_on: "framework_build"
     timeout_in_minutes: 30
     agents:
-      queue: macos-15
+      queue: "macos-26"
     env:
-      XCODE_VERSION: 16.3.0
+      XCODE_VERSION: "26.1.1"
     plugins:
       - artifacts#v1.9.4:
           download:
             - "Bugsnag.xcframework.zip"
             - "BugsnagNetworkRequestPlugin.xcframework.zip"
           upload:
-            - features/fixtures/ios/output/iOSTestAppXcFramework.ipa
-            - features/fixtures/ios/output/xcframework_ipa_url_bb.txt
-            - features/fixtures/macos/output/macOSTestAppXcFramework.zip
+            - "features/fixtures/ios/output/iOSTestAppXcFramework.ipa"
+            - "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+            - "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
     commands:
-      - unzip Bugsnag.xcframework.zip
-      - unzip BugsnagNetworkRequestPlugin.xcframework.zip
-      - bundle install
-      - make xcframework-test-fixtures
-      - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt
+      - "unzip Bugsnag.xcframework.zip"
+      - "unzip BugsnagNetworkRequestPlugin.xcframework.zip"
+      - "bundle install"
+      - "make xcframework-test-fixtures"
+      - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
 
   ##############################################################################
   #
@@ -37,15 +36,14 @@ steps:
   # XcFramework e2e tests
   #
 
-  - label: ':bitbar: {{matrix}} XcFramework barebone e2e tests'
+  - label: ":bitbar: {{matrix}} XcFramework barebone e2e tests"
     matrix:
-      - "IOS_17"
+      - "IOS_18"
       - "IOS_13"
-    depends_on:
-      - xcframework_cocoa_fixture
+    depends_on: "xcframework_cocoa_fixture"
     timeout_in_minutes: 20
     agents:
-      queue: opensource
+      queue: "opensource"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
@@ -53,8 +51,8 @@ steps:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
+        pull: "cocoa-maze-runner-bitbar"
+        run: "cocoa-maze-runner-bitbar"
         service-ports: true
         command:
           - "--app=@/app/build/xcframework_ipa_url_bb.txt"
@@ -70,8 +68,8 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
+    concurrency_group: "bitbar"
+    concurrency_method: "eager"
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -79,12 +77,14 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: 'macOS 14 XcFramework barebone e2e tests'
-    depends_on:
-      - xcframework_cocoa_fixture
+  - label: "macOS {{matrix.os}} XcFramework barebone e2e tests"
+    matrix:
+      setup:
+        os: [ "26", "10.13" ]
+    depends_on: "xcframework_cocoa_fixture"
     timeout_in_minutes: 10
     agents:
-      queue: macos-14-isolated
+      queue: "macos-{{matrix.os}}-isolated"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
@@ -99,55 +99,24 @@ steps:
     env:
       RUN_XCFRAMEWORK_APP: "true"
     commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release/barebone_tests.feature
-        --os=macos
-        --repeater-api-key=
-        --hub-repeater-api-key=
-
-  - label: 'macOS 10.13 XcFramework barebone e2e tests'
-    depends_on:
-      - xcframework_cocoa_fixture
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-10.13
-    plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
-        upload:
-          - "*.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    env:
-      RUN_XCFRAMEWORK_APP: "true"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release/barebone_tests.feature
-        --os=macos
-        --repeater-api-key=
-        --hub-repeater-api-key=
+      - "bundle install"
+      - "bundle exec maze-runner features/release/barebone_tests.feature --os=macos --repeater-api-key= --hub-repeater-api-key="
 
   #
   # BitBar
   #
-  - label: ':bitbar: {{matrix}} e2e tests batch 1'
+  - label: ":bitbar: {{matrix}} e2e tests batch 1"
     matrix:
+      - "IOS_18"
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
       - "IOS_14"
       - "IOS_13"
-    depends_on:
-      - cocoa_fixture
+    depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
-      queue: opensource
+      queue: "opensource"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
@@ -155,9 +124,9 @@ steps:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
+        pull: "cocoa-maze-runner-bitbar"
+        run: "cocoa-maze-runner-bitbar"
+        service-ports: "true"
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -172,8 +141,8 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
+    concurrency_group: "bitbar"
+    concurrency_method: "eager"
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -181,18 +150,18 @@ steps:
         - exit_status: 103  # Appium session failed
           limit: 2
 
-  - label: ':bitbar: {{matrix}} e2e tests batch 2'
+  - label: ":bitbar: {{matrix}} e2e tests batch 2"
     matrix:
+      - "IOS_18"
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
       - "IOS_14"
       - "IOS_13"
-    depends_on:
-      - cocoa_fixture
+    depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
-      queue: opensource
+      queue: "opensource"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
@@ -200,9 +169,9 @@ steps:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       docker-compose#v4.7.0:
-        pull: cocoa-maze-runner-bitbar
-        run: cocoa-maze-runner-bitbar
-        service-ports: true
+        pull: "cocoa-maze-runner-bitbar"
+        run: "cocoa-maze-runner-bitbar"
+        service-ports: "true"
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -217,8 +186,8 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 25
-    concurrency_group: 'bitbar'
-    concurrency_method: eager
+    concurrency_group: "bitbar"
+    concurrency_method: "eager"
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -230,19 +199,19 @@ steps:
   # BrowserStack
   #
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
-  - label: ':browserstack: {{matrix}} app hang tests'
+  - label: ":browserstack: {{matrix}} app hang tests"
     matrix:
-        - "IOS_17"
-        - "IOS_16"
-        - "IOS_15"
-        - "IOS_14"
-        # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
-        #- "IOS_13"
-    depends_on:
-      - cocoa_fixture
+      - "IOS_18"
+      - "IOS_17"
+      - "IOS_16"
+      - "IOS_15"
+      - "IOS_14"
+      # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
+      #- "IOS_13"
+    depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
-      queue: opensource
+      queue: "opensource"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
@@ -250,8 +219,8 @@ steps:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       docker-compose#v5.8.0:
-        pull: cocoa-maze-runner
-        run: cocoa-maze-runner
+        pull: "cocoa-maze-runner"
+        run: "cocoa-maze-runner"
         command:
           - "--app=@build/ipa_url_bs_release.txt"
           - "--farm=bs"
@@ -264,8 +233,8 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     concurrency: 5
-    concurrency_group: 'browserstack-app'
-    concurrency_method: eager
+    concurrency_group: "browserstack-app"
+    concurrency_method: "eager"
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -278,12 +247,14 @@ steps:
   #
   # macOS e2e tests
   #
-  - label: 'macOS 14 e2e tests'
-    depends_on:
-      - cocoa_fixture
+  - label: "macOS {{matrix.os}} e2e tests"
+    matrix:
+      setup:
+        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+    depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
-      queue: macos-14-isolated
+      queue: "macos-{{matrix.os}}-isolated"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
@@ -296,225 +267,91 @@ steps:
         format: "junit"
         branch: "^master|next$$"
     commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 13 e2e tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-13-arm
-    plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 12 e2e tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-12-arm
-    plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 11 e2e tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-11
-    plugins:
-      artifacts#v1.9.4:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 10.15 e2e tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-10.15
-    plugins:
-      artifacts#v1.9.4:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 10.14 e2e tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-10.14
-    plugins:
-      artifacts#v1.9.4:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
-
-  - label: 'macOS 10.13 e2e tests'
-    depends_on:
-      - cocoa_fixture
-    timeout_in_minutes: 60
-    agents:
-      queue: macos-10.13
-    plugins:
-      artifacts#v1.9.4:
-        download: ["features/fixtures/macos/output/macOSTestApp_Release.zip"]
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-    commands:
-      - bundle install
-      - bundle exec maze-runner
-        features/release
-        --os=macos
-        --fail-fast
+      - "bundle install"
+      - "bundle exec maze-runner features/release --os=macos --fail-fast"
 
   ##############################################################################
   #
   # Build example apps
   #
+  - group: "Build Example Apps"
+    steps:
+      - label: 'examples/objective-c-ios'
+        timeout_in_minutes: 10
+        agents:
+          queue: macos-26
+        commands:
+          - bundle install
+          - cd examples/objective-c-ios
+          - echo "--- Pod install"
+          - pod install
+          - echo "+++ Build Release iOS"
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug iOS Simulator"
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug Mac Catalyst"
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
 
-  - label: 'examples/objective-c-ios'
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-15
-    commands:
-      - bundle install
-      - cd examples/objective-c-ios
-      - echo "--- Pod install"
-      - pod install
-      - echo "+++ Build Release iOS"
-      - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug Mac Catalyst"
-      - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
+      - label: 'examples/objective-c-osx'
+        timeout_in_minutes: 10
+        agents:
+          queue: macos-26
+        commands:
+          - bundle install
+          - cd examples/objective-c-osx
+          - echo "--- Pod install"
+          - pod install
+          - echo "+++ Build Release iOS"
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug iOS Simulator"
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-  - label: 'examples/objective-c-osx'
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-15
-    commands:
-      - bundle install
-      - cd examples/objective-c-osx
-      - echo "--- Pod install"
-      - pod install
-      - echo "+++ Build Release iOS"
-      - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - label: 'examples/swift-ios'
+        timeout_in_minutes: 10
+        agents:
+          queue: macos-26
+        commands:
+          - bundle install
+          - cd examples/swift-ios
+          - echo "--- Pod install"
+          - pod install
+          - echo "+++ Build Release iOS"
+          - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug iOS Simulator"
+          - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-  - label: 'examples/swift-ios'
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-15
-    commands:
-      - bundle install
-      - cd examples/swift-ios
-      - echo "--- Pod install"
-      - pod install
-      - echo "+++ Build Release iOS"
-      - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - label: 'examples/swift-package-manager'
+        timeout_in_minutes: 10
+        agents:
+          queue: macos-26
+        commands:
+          - bundle install
+          - cd examples/swift-package-manager
+          - echo "--- Resolve Swift Package Dependencies"
+          - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swift-package-manager.xcodeproj/project.pbxproj
+          - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -derivedDataPath DerivedData -resolvePackageDependencies
+          - echo "+++ Build Release iOS"
+          - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug iOS Simulator"
+          - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-  - label: 'examples/swift-package-manager'
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-15
-    commands:
-      - bundle install
-      - cd examples/swift-package-manager
-      - echo "--- Resolve Swift Package Dependencies"
-      - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swift-package-manager.xcodeproj/project.pbxproj
-      - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -derivedDataPath DerivedData -resolvePackageDependencies
-      - echo "+++ Build Release iOS"
-      - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-
-  - label: 'examples/swiftui'
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-15
-    commands:
-      - bundle install
-      - cd examples/swiftui
-      - echo "--- Resolve Swift Package Dependencies"
-      - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swiftui.xcodeproj/project.pbxproj
-      - xcodebuild -allowProvisioningUpdates -scheme "swiftui (iOS)" -derivedDataPath DerivedData -resolvePackageDependencies
-      - echo "+++ Build Release iOS"
-      - xcodebuild -allowProvisioningUpdates -scheme "swiftui (iOS)" -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug iOS Simulator"
-      - xcodebuild -allowProvisioningUpdates -scheme "swiftui (iOS)" -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Release macOS"
-      - xcodebuild -allowProvisioningUpdates -scheme "swiftui (macOS)" -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Release tvOS"
-      - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-      - echo "+++ Build Debug tvOS Simulator"
-      - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+      - label: 'examples/swiftui'
+        timeout_in_minutes: 10
+        agents:
+          queue: macos-26
+        commands:
+          - bundle install
+          - cd examples/swiftui
+          - echo "--- Resolve Swift Package Dependencies"
+          - sed -i '' -e 's/kind = branch/kind = revision/' -e "s/branch = master/revision = ${BUILDKITE_COMMIT}/" swiftui.xcodeproj/project.pbxproj
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (iOS)" -derivedDataPath DerivedData -resolvePackageDependencies
+          - echo "+++ Build Release iOS"
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (iOS)" -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug iOS Simulator"
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (iOS)" -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Release macOS"
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (macOS)" -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Release tvOS"
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - echo "+++ Build Debug tvOS Simulator"
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
