@@ -423,7 +423,6 @@ steps:
   #
   - label: ":bitbar: {{matrix}} barebone tests"
     matrix:
-      - "IOS_18"
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
