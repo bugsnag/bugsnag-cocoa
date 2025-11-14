@@ -209,8 +209,6 @@ Feature: Reporting crash events
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
 
-  @skip_macos_26
-  @skip_ios_26
   Scenario: Misuse of libdispatch
     When I run "DispatchCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "DispatchCrashScenario"
