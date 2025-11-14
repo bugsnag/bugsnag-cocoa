@@ -38,7 +38,7 @@ steps:
 
   - label: ":bitbar: {{matrix}} XcFramework barebone e2e tests"
     matrix:
-      - "IOS_18"
+      - "IOS_17"
       - "IOS_13"
     depends_on: "xcframework_cocoa_fixture"
     timeout_in_minutes: 20
