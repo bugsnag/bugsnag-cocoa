@@ -241,7 +241,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -264,7 +264,7 @@ steps:
       artifacts#v1.9.4:
         download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
         upload:
-          - "macOSTestApp.log"
+          - "macOSTestApp.stderr.log"
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
       test-collector#v1.11.0:
@@ -423,6 +423,7 @@ steps:
   #
   - label: ":bitbar: {{matrix}} barebone tests"
     matrix:
+      - "IOS_18"
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
