@@ -275,10 +275,10 @@ steps:
       - "bundle install"
       - "bundle exec maze-runner features/release/barebone_tests.feature --os=macos --fail-fast"
 
-  - label: "macOS 12 stress test"
+  - label: "macOS stress test"
     timeout_in_minutes: 5
     agents:
-      queue: "macos-12-isolated"
+      queue: "macos-26-isolated"
     env:
       STRESS_TEST: "true"
     plugins:
