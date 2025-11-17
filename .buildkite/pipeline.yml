@@ -7,25 +7,25 @@ steps:
   # Build
   #
 
-  - label: Static framework and Swift Package Manager builds
-    key: framework_build
-    timeout_in_minutes: 10
-    agents:
-      queue: macos-15
-    env:
-      XCODE_VERSION: 16.3.0
-      CODE_SIGN_XCFRAMEWORK: true
-    commands:
-      - make build_xcframework
-      - make build_swift
-      - make build_ios_static
-      - zip -ry Bugsnag.xcframework.zip build/xcframeworks/products/Bugsnag.xcframework
-      - zip -ry BugsnagNetworkRequestPlugin.xcframework.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework
-    plugins:
-      - artifacts#v1.9.4:
-          upload:
-            - "Bugsnag.xcframework.zip"
-            - "BugsnagNetworkRequestPlugin.xcframework.zip"
+#  - label: Static framework and Swift Package Manager builds
+#    key: framework_build
+#    timeout_in_minutes: 10
+#    agents:
+#      queue: macos-15
+#    env:
+#      XCODE_VERSION: 16.3.0
+#      CODE_SIGN_XCFRAMEWORK: true
+#    commands:
+#      - make build_xcframework
+#      - make build_swift
+#      - make build_ios_static
+#      - zip -ry Bugsnag.xcframework.zip build/xcframeworks/products/Bugsnag.xcframework
+#      - zip -ry BugsnagNetworkRequestPlugin.xcframework.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework
+#    plugins:
+#      - artifacts#v1.9.4:
+#          upload:
+#            - "Bugsnag.xcframework.zip"
+#            - "BugsnagNetworkRequestPlugin.xcframework.zip"
 
   - label: Build test fixtures
     key: cocoa_fixture
@@ -46,15 +46,15 @@ steps:
     commands:
       - ruby scripts/build-test-fixture.rb
 
-  - label: Carthage
-    timeout_in_minutes: 15
-    agents:
-      queue: macos-15
-    commands:
-      - ./scripts/build-carthage.sh
-    plugins:
-      artifacts#v1.9.4:
-        upload: "features/fixtures/carthage/carthage-*.log"
+#  - label: Carthage
+#    timeout_in_minutes: 15
+#    agents:
+#      queue: macos-15
+#    commands:
+#      - ./scripts/build-carthage.sh
+#    plugins:
+#      artifacts#v1.9.4:
+#        upload: "features/fixtures/carthage/carthage-*.log"
 
 #  ##############################################################################
 #  #
@@ -592,13 +592,7 @@ steps:
   # BitBar
   #
 
-  - label: ':bitbar: {{matrix}} barebone tests'
-    matrix:
-      - "IOS_17"
-      - "IOS_16"
-      - "IOS_15"
-      - "IOS_14"
-      - "IOS_13"
+  - label: ':bitbar: iOS 17 barebone tests'
     depends_on:
       - cocoa_fixture
     timeout_in_minutes: 30
@@ -617,7 +611,7 @@ steps:
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
-          - "--device={{matrix}}"
+          - "--device=IOS_17"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
@@ -635,6 +629,238 @@ steps:
           limit: 2
         - exit_status: 103  # Appium session failed
           limit: 2
+
+  - label: ':bitbar: iOS 16 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+
+  - label: ':bitbar: iOS 16 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+
+  - label: ':bitbar: iOS 17 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+
+
+  - label: ':bitbar: iOS 17 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_17"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+
+
+  - label: ':bitbar: iOS 16 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+
+
+  - label: ':bitbar: iOS 16 barebone tests'
+    depends_on:
+      - cocoa_fixture
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.4:
+        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+        upload:
+          - "maze_output/failed/**/*"
+          - "maze_output/maze_output.zip"
+      docker-compose#v4.7.0:
+        pull: cocoa-maze-runner-bitbar
+        run: cocoa-maze-runner-bitbar
+        service-ports: true
+        command:
+          - "--app=@/app/build/ipa_url_bb_release.txt"
+          - "--farm=bb"
+          - "--device=IOS_16"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+          - "features/release/barebone_tests.feature"
+      test-collector#v1.11.0:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
+    concurrency: 25
+    concurrency_group: 'bitbar'
+    concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 103  # Appium session failed
+          limit: 2
+
 
 
 #  ##############################################################################
