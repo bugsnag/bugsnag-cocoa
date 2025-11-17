@@ -241,7 +241,7 @@ Feature: Barebone tests
     And the "isLR" of stack frame 0 is null
 
   @skip_macos
-  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-9724
+  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-9724 && PLAT-15190
   @skip_ios_17
   @skip_ios_18
   Scenario: Barebone test: Out Of Memory
