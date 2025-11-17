@@ -304,7 +304,8 @@ Feature: Barebone tests
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number
     And the event "metaData.device.charging" is a boolean
-    And the event "metaData.device.lowMemoryWarning" is true
+#    Skipping: https://smartbear.atlassian.net/browse/PLAT-9724 && https://smartbear.atlassian.net/browse/PLAT-15190
+#    And the event "metaData.device.lowMemoryWarning" is true
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null
