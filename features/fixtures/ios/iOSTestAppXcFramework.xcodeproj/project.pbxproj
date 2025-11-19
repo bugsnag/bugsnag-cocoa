@@ -91,6 +91,7 @@
 		09F024FA2B9F3ACD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024F92B9F3ACD007D9F73 /* Fixture.swift */; };
 		09F024FC2B9F3B16007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */; };
 		09F025172BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */; };
+		1C8CB8B92EBE3CBE007BF492 /* CaptureOptionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8B82EBE3CBE007BF492 /* CaptureOptionsScenario.swift */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A096DFC27C7E77600DB6ECC /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */; };
 		8A14F0F62282D4AE00337B05 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -316,6 +317,7 @@
 		09F024F92B9F3ACD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedNotifyErrorScenario.swift; sourceTree = "<group>"; };
+		1C8CB8B82EBE3CBE007BF492 /* CaptureOptionsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionsScenario.swift; sourceTree = "<group>"; };
 		6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
 		8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxBareThrowScenario.mm; sourceTree = "<group>"; };
 		8A32DB8122424E3000EDD92F /* NSExceptionShiftScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSExceptionShiftScenario.m; sourceTree = "<group>"; };
@@ -519,6 +521,7 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1C8CB8B82EBE3CBE007BF492 /* CaptureOptionsScenario.swift */,
 				010BAAF62833CE570003FF36 /* AbortOverrideScenario.m */,
 				F429534164257A2BE23ED72D /* AbortScenario.m */,
 				F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */,
@@ -885,6 +888,7 @@
 				A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */,
 				8AF8FCAE22BD23BA00A967CA /* HandledInternalNotifyScenario.swift in Sources */,
 				01F6B75B2832756300B75C5D /* OldHandledErrorScenario.swift in Sources */,
+				1C8CB8B92EBE3CBE007BF492 /* CaptureOptionsScenario.swift in Sources */,
 				CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */,
 				010BAB042833CE570003FF36 /* UserPersistencePersistUserClientScenario.m in Sources */,
 				8A42FD35225DEE04007AE561 /* SessionOOMScenario.m in Sources */,

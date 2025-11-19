@@ -142,6 +142,21 @@ Then('the stacktrace is valid for the event') do
   end
 end
 
+Then('the event has no stacktrace') do
+  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
+  Maze.check.equal(stacktrace, [], 'Expected stacktrace to be empty')
+end
+
+Then('the event has no threads') do
+  threads = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.threads')
+  Maze.check.equal(threads, [], 'Expected threads to be empty')
+end
+
+Then('the event has no user') do
+  user = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.user')
+  Maze.check.equal(user, nil, 'Expected user to be empty')
+end
+
 Then('the thread information is valid for the event') do
   # verify that thread/stacktrace information was captured at all
   thread_traces = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.threads')

@@ -43,6 +43,7 @@
 #import <Bugsnag/BugsnagSession.h>
 #import <Bugsnag/BugsnagStackframe.h>
 #import <Bugsnag/BugsnagThread.h>
+#import <Bugsnag/BugsnagCaptureOptions.h>
 
 /**
  * Static access to a Bugsnag Client, the easiest way to use Bugsnag in your app.
@@ -141,29 +142,72 @@ BUGSNAG_EXTERN
 + (void)notify:(NSException *_Nonnull)exception;
 
 /**
+ * Send a custom or caught exception to Bugsnag.
+ *
+ * The exception will be sent to Bugsnag in the background allowing your
+ * app to continue running.
+ *
+ * @param exception The exception.
+ * @param options Defines the set of options to control how the event is generated.
+ */
++ (void)notify:(NSException *_Nonnull)exception
+         options:(BugsnagErrorOptions *_Nullable)options;
+
+/**
  *  Send a custom or caught exception to Bugsnag
  *
- *  @param exception The exception
- *  @param block     A block for optionally configuring the error report
+ *  @param exception The exception.
+ *  @param block A block for optionally configuring the error report.
  */
 + (void)notify:(NSException *_Nonnull)exception
          block:(BugsnagOnErrorBlock _Nullable)block;
 
 /**
+ *  Send a custom or caught exception to Bugsnag
+ *
+ *  @param exception The exception.
+ *  @param options Defines the set of options to control how the event is generated.
+ *  @param block A block for optionally configuring the error report.
+ */
++ (void)notify:(NSException *_Nonnull)exception
+         options:(BugsnagErrorOptions *_Nullable)options
+         block:(BugsnagOnErrorBlock _Nullable)block;
+
+/**
  *  Send an error to Bugsnag
  *
- *  @param error The error
+ *  @param error The error.
  */
 + (void)notifyError:(NSError *_Nonnull)error;
 
 /**
  *  Send an error to Bugsnag
  *
- *  @param error The error
- *  @param block A block for optionally configuring the error report
+ *  @param error The error.
+ *  @param options Defines the set of options to control how the event is generated.
+ */
++ (void)notifyError:(NSError *_Nonnull)error
+         options:(BugsnagErrorOptions *_Nullable)options;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error.
+ *  @param block A block for optionally configuring the error report.
  */
 + (void)notifyError:(NSError *_Nonnull)error
               block:(BugsnagOnErrorBlock _Nullable)block;
+
+/**
+ *  Send an error to Bugsnag
+ *
+ *  @param error The error.
+ *  @param options Defines the set of options to control how the event is generated.
+ *  @param block A block for optionally configuring the error report.
+ */
++ (void)notifyError:(NSError *_Nonnull)error
+         options:(BugsnagErrorOptions *_Nullable)options
+         block:(BugsnagOnErrorBlock _Nullable)block;
 
 // =============================================================================
 // MARK: - Breadcrumbs

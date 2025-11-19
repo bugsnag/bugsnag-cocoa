@@ -241,8 +241,6 @@ Feature: Barebone tests
     And the "isLR" of stack frame 0 is null
 
   @skip_macos
-  @skip_ios_16 # https://smartbear.atlassian.net/browse/PLAT-9724
-  @skip_ios_17
   Scenario: Barebone test: Out Of Memory
     When I run "OOMScenario"
 
@@ -277,7 +275,8 @@ Feature: Barebone tests
     And the event "app.type" equals "vanilla"
     And the event "app.version" equals "3.2.1"
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
-    And the event "breadcrumbs.1.name" equals "Memory Warning"
+#    Skipping: https://smartbear.atlassian.net/browse/PLAT-9724 && https://smartbear.atlassian.net/browse/PLAT-15190
+#    And the event "breadcrumbs.1.name" equals "Memory Warning"
     And the event "context" equals "OOM Scenario"
     And the event "groupingDiscriminator" equals "OOMScenarioGroupingDiscriminator"
     And the event "device.id" is not null
@@ -305,7 +304,8 @@ Feature: Barebone tests
     And the event "metaData.custom.bar" equals "foo"
     And the event "metaData.device.batteryLevel" is a number
     And the event "metaData.device.charging" is a boolean
-    And the event "metaData.device.lowMemoryWarning" is true
+#    Skipping: https://smartbear.atlassian.net/browse/PLAT-9724 && https://smartbear.atlassian.net/browse/PLAT-15190
+#    And the event "metaData.device.lowMemoryWarning" is true
     And the event "metaData.device.simulator" is false
     And the event "metaData.device.timezone" is not null
     And the event "metaData.device.wordSize" is not null

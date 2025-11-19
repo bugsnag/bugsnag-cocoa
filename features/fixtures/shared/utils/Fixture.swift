@@ -126,10 +126,11 @@ class Fixture: NSObject, CommandReceiver {
                 self.pauseCommandReader(forSeconds: Int(command.args[0])!)
                 isReady = false;
                 break
-            case "noop":
+            case "reset_uuid","noop":
                 break
             default:
-                assertionFailure("\(command.action): Unknown command")
+                logError("\(command.action): Unknown command")
+                abort()
             }
             if isReady {
                 self.readyToReceiveCommand = true

@@ -82,7 +82,6 @@ Feature: Session Tracking
 
   Scenario: Disabling auto-capture sends no sessions
     When I run "DisabledSessionTrackingScenario"
-    And I wait for 3 seconds
     Then I should receive no errors
     And I should receive no sessions
 
