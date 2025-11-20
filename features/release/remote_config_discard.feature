@@ -5,12 +5,18 @@ Feature: Remote config discard rules are applied
 
   Scenario: Empty remote config
     When I prepare an error config with:
-     | type     | name                  | value                 	             |
+     | type     | name                  | value                 	                 |
      | property | body                  | @features/support/config/no_rules.json     |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
@@ -28,12 +34,18 @@ Feature: Remote config discard rules are applied
 
   Scenario: Invalid remote config
     When I prepare an error config with:
-     | type     | name                  | value                 	             |
+     | type     | name                  | value                 	                 |
      | property | body                  | @features/support/config/invalid.json      |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive 2 errors
@@ -51,12 +63,18 @@ Feature: Remote config discard rules are applied
 
   Scenario: Remote config with ALL_HANDLED rule
     When I prepare an error config with:
-     | type     | name                  | value                 	                  |
+     | type     | name                  | value                 	                      |
      | property | body                  | @features/support/config/rules_all-handled.json |
      | property | status                | 200                                             |
      | header   | Cache-Control         | max-age=604800                                  |
+     | header   | ETag                  | "42"                                            |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
@@ -69,48 +87,77 @@ Feature: Remote config discard rules are applied
 
   Scenario: Remote config with ALL rule
     When I prepare an error config with:
-     | type     | name                  | value                 	             |
+     | type     | name                  | value                 	                 |
      | property | body                  | @features/support/config/rules_all.json    |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
 
   Scenario: Remote config with ALL, ALL_HANDLED rules
     When I prepare an error config with:
-     | type     | name                  | value                 	                        |
+     | type     | name                  | value                 	                            |
      | property | body                  | @features/support/config/rules_all_all-handled.json   |
      | property | status                | 200                                                   |
      | header   | Cache-Control         | max-age=604800                                        |
+     | header   | ETag                  | "42"                                                  |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	             |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
 
   Scenario: Remote config with ALL_HANDLED, ALL rules
     When I prepare an error config with:
-     | type     | name                  | value                 	                        |
+     | type     | name                  | value                 	                            |
      | property | body                  | @features/support/config/rules_all-handled_all.json   |
      | property | status                | 200                                                   |
      | header   | Cache-Control         | max-age=604800                                        |
+     | header   | ETag                  | "42"                                                  |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     Then I should receive no errors
 
   Scenario: Remote config with ALL_HANDLED, unknown rules - unknown rule should not change the behaviour
     When I prepare an error config with:
-     | type     | name                  | value                 	                            |
+     | type     | name                  | value                 	                                |
      | property | body                  | @features/support/config/rules_all-handled_unknown.json   |
      | property | status                | 200                                                       |
      | header   | Cache-Control         | max-age=604800                                            |
+     | header   | ETag                  | "42"                                                      |
     And I run "RemoteConfigBasicScenario" 
     And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
     And I relaunch the app after a crash
     And I configure Bugsnag for "RemoteConfigBasicScenario"
     And I wait to receive an error
