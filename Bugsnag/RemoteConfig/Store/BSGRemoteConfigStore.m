@@ -57,8 +57,11 @@
 }
 
 - (BSGRemoteConfiguration *)loadConfiguration {
-    NSData *configurationData = [NSData dataWithContentsOfFile:[self configurationFilePath]];
     NSError *error = nil;
+    NSData *configurationData = [NSData dataWithContentsOfFile:[self configurationFilePath] options:0 error:&error];
+    if (error) {
+        return nil;
+    }
     NSDictionary *configurationJson = BSGJSONDictionaryFromData(configurationData, 0, &error);
     return [BSGRemoteConfiguration configFromJson:configurationJson];
 }
