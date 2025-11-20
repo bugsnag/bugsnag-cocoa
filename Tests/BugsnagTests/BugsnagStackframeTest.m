@@ -271,17 +271,29 @@
         [stackframe symbolicateIfNeeded];
         XCTAssertNotNil(stackframe.symbolAddress);
         XCTAssertNil(stackframe.type);
-        
-        XCTAssertTrue([callStackSymbols[idx] containsString:stackframe.method] ||
-                      // Sometimes we do a better job at symbolication (-:
-                      [callStackSymbols[idx] containsString:@"???"] ||
-                      // But sometimes the best we can do is not great
-                      [stackframe.method isEqualToString:@"<redacted>"] ||
-                      // callStackSymbols contains the wrong symbol name - "__copy_helper_block_e8_32s"
-                      // lldb agrees that the symbol should be "__RunTests_block_invoke_2"
-                      [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"] ||
-                      // Internal test function
-                      [stackframe.method isEqualToString:@"RunTestsFromRunLoop"]);
+
+        // Currently 6 checks - reevaluate test if anything more has to be added
+        BOOL isStackframeValid = [callStackSymbols[idx] containsString:stackframe.method] ||
+            // Sometimes we do a better job at symbolication (-:
+            [callStackSymbols[idx] containsString:@"???"] ||
+            // But sometimes the best we can do is not great
+            [stackframe.method isEqualToString:@"<redacted>"] ||
+            // callStackSymbols contains the wrong symbol name - "__copy_helper_block_e8_32s"
+            // lldb agrees that the symbol should be "__RunTests_block_invoke_2"
+            [stackframe.method isEqualToString:@"__RunTests_block_invoke_2"] ||
+            // Internal test function
+            [stackframe.method isEqualToString:@"RunTestsFromRunLoop"] ||
+            // Since xcode 26 [NSThread callStackSymbols] returns main as `xctest + 7896`
+            // and we are checking symbolicated output here
+            [stackframe.method isEqualToString:@"main"];
+
+        if (!isStackframeValid) {
+            NSLog(@"callStackSymbol[%lu]: %@", (unsigned long)idx, callStackSymbols[idx]);
+            NSLog(@"stackframe.method=%s", [stackframe.method cStringUsingEncoding:NSUTF8StringEncoding]);
+            NSLog(@"stackframe.machoFile=%s", [stackframe.machoFile cStringUsingEncoding:NSUTF8StringEncoding]);
+            NSLog(@"stackframe.frameAddress=0x%llx", stackframe.frameAddress.unsignedLongLongValue);
+        }
+        XCTAssertTrue(isStackframeValid);
         
         if ([stackframe.method isEqualToString:@"main"]) {
             didSeeMain = YES;

@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add error options to allow control over captured fields of handled events.
+  [#1879](https://github.com/bugsnag/bugsnag-cocoa/pull/1879)
+
 ## 6.34.1 (2025-10-09)
 
 ### Bug Fixes

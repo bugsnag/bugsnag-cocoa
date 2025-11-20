@@ -18,7 +18,8 @@ static const int kNumberOfIterations = 15000;
 static const NSInteger kMaxConcurrentNotifies = 8;
 
 // Note: memory usage increases in line with the number of threads and config.maxPersistedEvents
-static const mach_vm_size_t kMemoryLimit = 45 * 1024 * 1024;
+// Memory limit increased - PLAT-15123
+static const mach_vm_size_t kMemoryLimit = 75 * 1024 * 1024;
 
 int main(int argc, const char * argv[]) {
     if (getenv("QUIET")) {
