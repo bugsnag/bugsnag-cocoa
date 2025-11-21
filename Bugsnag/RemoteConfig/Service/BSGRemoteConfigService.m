@@ -26,6 +26,7 @@ static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
 
 static const NSInteger HTTPStatusCodeNotModified = 304;
+static const NSInteger HTTPStatusCodeBadRequest = 400;
 
 @implementation BSGRemoteConfigServiceResponse
 
@@ -154,6 +155,14 @@ static const NSInteger HTTPStatusCodeNotModified = 304;
             if (httpResponse.statusCode == HTTPStatusCodeNotModified) {
                 completion([BSGRemoteConfigServiceResponse responseWithNewExpiryDate:expiryDate
                                                                     configurationTag:etag]);
+                return;
+            }
+            if (httpResponse.statusCode == HTTPStatusCodeBadRequest ||
+                [data length] == 0) {
+                BSGRemoteConfiguration *emptyConfig = [BSGRemoteConfiguration configFromJson:@{}
+                                                                                        eTag:etag
+                                                                                  expiryDate:expiryDate];
+                completion([BSGRemoteConfigServiceResponse responseWithConfig:emptyConfig]);
                 return;
             }
         }
