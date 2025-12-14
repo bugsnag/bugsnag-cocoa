@@ -65,6 +65,8 @@ BUGSNAG_EXTERN
 BUGSNAG_EXTERN
 @interface BugsnagErrorOptions : NSObject
 
+@property (readwrite, nonatomic) BOOL fatal;
+
 @property (strong, nullable, nonatomic) BugsnagCaptureOptions *capture;
 
 @end

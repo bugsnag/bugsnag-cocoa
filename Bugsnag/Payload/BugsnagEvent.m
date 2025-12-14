@@ -149,6 +149,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 // MARK: -
 
+@interface BugsnagEvent ()
+
+@property (nonatomic) BOOL isDeliveryStrategySet;
+@property (nonatomic) BOOL attemptDeliveryOnCrash;
+
+@end
+
 
 @implementation BugsnagEvent
 
@@ -192,8 +199,34 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
         _threads = threads;
         _session = [session copy];
+        _isDeliveryStrategySet = NO;
+        _attemptDeliveryOnCrash = NO;
     }
     return self;
+}
+
+- (instancetype)initWithApp:(BugsnagAppWithState *)app
+                     device:(BugsnagDeviceWithState *)device
+               handledState:(BugsnagHandledState *)handledState
+                       user:(BugsnagUser *)user
+                   metadata:(BugsnagMetadata *)metadata
+                breadcrumbs:(NSArray<BugsnagBreadcrumb *> *)breadcrumbs
+                     errors:(NSArray<BugsnagError *> *)errors
+                    threads:(NSArray<BugsnagThread *> *)threads
+                    session:(BugsnagSession *)session
+     attemptDeliveryOnCrash:(BOOL) attemptDeliveryOnCrash {
+    BugsnagEvent *obj = [self initWithApp:app
+                                   device:device
+                             handledState:handledState
+                                     user:user
+                                 metadata:metadata
+                              breadcrumbs:breadcrumbs
+                                   errors:errors
+                                  threads:threads
+                                  session:session];
+
+    obj.attemptDeliveryOnCrash = attemptDeliveryOnCrash;
+    return obj;
 }
 
 - (instancetype)initWithJson:(NSDictionary *)json {
@@ -242,6 +275,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         }) ?: [[BugsnagUser alloc] init];
 
         _session = BSGSessionFromEventJson(json[BSGKeySession], _app, _device, _user);
+        _isDeliveryStrategySet = NO;
+        _attemptDeliveryOnCrash = NO;
     }
     return self;
 }
@@ -901,6 +936,33 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     }
     
     return stacktraceTypes.allObjects;
+}
+
+// MARK: - <BugsnagDeliveryStrategy>
+
+- (BugsnagDeliveryStrategy)deliveryStrategy {
+    if (self.isDeliveryStrategySet == YES) {
+        return self.deliveryStrategy;
+    }
+
+    BOOL promiseRejection = self.handledState.severityReasonType == PromiseRejection;
+
+    if (self.handledState.originalUnhandledValue == YES) {
+        if (promiseRejection == YES) {
+            return StoreAndFlush;
+        } else if (self.attemptDeliveryOnCrash == YES) {
+            return StoreAndSend;
+        } else {
+            return StoreOnly;
+        }
+    }
+
+    return SendImmediately;
+}
+
+- (void)setDeliveryStrategy:(BugsnagDeliveryStrategy)newStrategy {
+    self.isDeliveryStrategySet = YES;
+    self.deliveryStrategy = newStrategy;
 }
 
 @end

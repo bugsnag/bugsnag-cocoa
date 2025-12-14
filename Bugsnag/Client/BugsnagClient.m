@@ -887,6 +887,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     stacktrace = [self stacktraceCapture:capture callstack:callStack];
     user = [self userCapture:capture];
 
+    // Overwrite handled state if error manually marked as fatal
+    if (options.fatal) {
+        handledState = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+    }
+
     BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
                                                       errorMessage:errorMessage
                                                          errorType:BSGErrorTypeCocoa
@@ -900,7 +905,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                 breadcrumbs:breadcrumbs
                                                      errors:@[error]
                                                     threads:threads
-                                                    session:nil /* the session's event counts have not yet been incremented! */];
+                                                    session:nil /* the session's event counts have not yet been incremented! */
+                                     attemptDeliveryOnCrash:self.configuration.attemptDeliveryOnCrash];
     event.apiKey = self.configuration.apiKey;
     event.context = context;
     event.groupingDiscriminator = self.groupingDiscriminator_;
@@ -914,6 +920,10 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     [self notifyInternal:event block:block];
+
+    if (options.fatal) {
+        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);
+    }
 }
 
 /**
@@ -964,17 +974,20 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     event.usage = BSGTelemetryCreateUsage(self.configuration);
 
-    if (event.handledState.originalUnhandledValue) {
-        // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the
-        // call to notifyInternal, so the event needs to be persisted to disk for sending in the next session.
-        // The fatal "RCTFatalException" / "Unhandled JS Exception" is explicitly ignored by
-        // BugsnagReactNativePlugin's OnSendErrorBlock.
-        [self.eventUploader storeEvent:event];
-        // Replicate previous delivery mechanism's behaviour of waiting 1 second before delivering the event.
-        // This should prevent potential duplicate uploads of unhandled errors where the app subsequently terminates.
-        [self.eventUploader uploadStoredEventsAfterDelay:1];
-    } else {
-        [self.eventUploader uploadEvent:event completionHandler:nil];
+    BugsnagDeliveryStrategy deliveryStrategy = [event deliveryStrategy];
+    switch (deliveryStrategy) {
+        case StoreOnly:
+            [self.eventUploader storeEvent:event];
+            break;
+        case StoreAndSend:
+            [self.eventUploader storeEventAndSend:event];
+            break;
+        case StoreAndFlush:
+            [self.eventUploader storeEventAndFlush:event];
+            break;
+        case SendImmediately:
+        default:
+            [self.eventUploader uploadEvent:event completionHandler:nil];
     }
 
     [self addAutoBreadcrumbForEvent:event];

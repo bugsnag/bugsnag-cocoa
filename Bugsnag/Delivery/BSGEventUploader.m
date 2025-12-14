@@ -22,7 +22,7 @@
 
 static NSString * const CrashReportPrefix = @"CrashReport-";
 static NSString * const RecrashReportPrefix = @"RecrashReport-";
-
+static NSTimeInterval CrashTimeDeliveryTimeout = 1;
 
 @interface BSGEventUploader () <BSGEventUploadOperationDelegate>
 
@@ -71,6 +71,41 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 - (void)storeEvent:(BugsnagEvent *)event {
     [event symbolicateIfNeeded];
     [self storeEventPayload:[event toJsonWithRedactedKeys:self.configuration.redactedKeys]];
+}
+
+- (void)storeEventAndSend:(BugsnagEvent *)event {
+    [event symbolicateIfNeeded];
+
+    self.scanQueue.suspended = YES;
+
+    NSString *eventFile = [self storeEventPayload:[event toJsonWithRedactedKeys:self.configuration.redactedKeys]];
+    BSGEventUploadFileOperation *operation = [self operationForFile:eventFile];
+    if (!operation) {
+        self.scanQueue.suspended = NO;
+        return;
+    }
+
+    bsg_log_info(@"Attempting crash-time delivery of %@", eventFile);
+    int64_t timeout = (int64_t)(CrashTimeDeliveryTimeout * NSEC_PER_SEC);
+    dispatch_time_t deadline = dispatch_time(DISPATCH_TIME_NOW, timeout);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+
+    operation.completionBlock = ^{
+        bsg_log_debug(@"Sent crash.");
+        dispatch_semaphore_signal(semaphore);
+    };
+    [self.uploadQueue addOperation:operation];
+    if (dispatch_semaphore_wait(semaphore, deadline)) {
+        bsg_log_debug(@"Timed out waiting for crash to be sent.");
+    }
+
+    self.scanQueue.suspended = NO;
+}
+
+- (void)storeEventAndFlush:(BugsnagEvent *)event {
+    [event symbolicateIfNeeded];
+    [self storeEventPayload:[event toJsonWithRedactedKeys:self.configuration.redactedKeys]];
+    [self uploadStoredEvents];
 }
 
 - (void)uploadEvent:(BugsnagEvent *)event completionHandler:(nullable void (^)(void))completionHandler {
@@ -254,11 +289,25 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
     return operations;
 }
 
+- (BSGEventUploadFileOperation *)operationForFile:(NSString *)file {
+    BSGEventUploadFileOperation *operation = nil;
+
+    NSString *directory = file.stringByDeletingLastPathComponent;
+    if ([directory isEqualToString:self.kscrashReportsDirectory]) {
+        operation = [[BSGEventUploadKSCrashReportOperation alloc] initWithFile:file delegate:self];
+    } else {
+        operation = [[BSGEventUploadFileOperation alloc] initWithFile:file delegate:self];
+    }
+
+    return operation;
+}
+
 // MARK: - BSGEventUploadOperationDelegate
 
-- (void)storeEventPayload:(NSDictionary *)eventPayload {
+- (NSString *)storeEventPayload:(NSDictionary *)eventPayload {
+    __block NSString *file = nil;
     dispatch_sync(BSGGetFileSystemQueue(), ^{
-        NSString *file = [[self.eventsDirectory stringByAppendingPathComponent:[NSUUID UUID].UUIDString] stringByAppendingPathExtension:@"json"];
+        file = [[self.eventsDirectory stringByAppendingPathComponent:[NSUUID UUID].UUIDString] stringByAppendingPathExtension:@"json"];
         NSError *error = nil;
         if (!BSGJSONWriteToFileAtomically(eventPayload, file, &error)) {
             bsg_log_err(@"Error encountered while saving event payload for retry: %@", error);
@@ -266,6 +315,8 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
         }
         [self deleteExcessFiles:[self sortedEventFiles]];
     });
+
+    return file;
 }
 
 @end
