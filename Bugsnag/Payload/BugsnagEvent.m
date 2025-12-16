@@ -200,6 +200,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _threads = threads;
         _session = [session copy];
         _isDeliveryStrategySet = NO;
+        _deliveryStrategy = SendImmediately;
         _attemptDeliveryOnCrash = NO;
     }
     return self;
@@ -940,9 +941,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 // MARK: - <BugsnagDeliveryStrategy>
 
+@synthesize deliveryStrategy = _deliveryStrategy;
+
 - (BugsnagDeliveryStrategy)deliveryStrategy {
     if (self.isDeliveryStrategySet == YES) {
-        return self.deliveryStrategy;
+        return _deliveryStrategy;
     }
 
     BOOL promiseRejection = self.handledState.severityReasonType == PromiseRejection;
@@ -962,7 +965,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (void)setDeliveryStrategy:(BugsnagDeliveryStrategy)newStrategy {
     self.isDeliveryStrategySet = YES;
-    self.deliveryStrategy = newStrategy;
+    _deliveryStrategy = newStrategy;
 }
 
 @end

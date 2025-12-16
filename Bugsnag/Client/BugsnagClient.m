@@ -922,6 +922,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self notifyInternal:event block:block];
 
     if (options.fatal) {
+        self.configuration.autoDetectErrors = NO;
         bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);
     }
 }

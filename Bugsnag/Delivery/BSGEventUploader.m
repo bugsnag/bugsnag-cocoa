@@ -105,7 +105,7 @@ static NSTimeInterval CrashTimeDeliveryTimeout = 1;
 - (void)storeEventAndFlush:(BugsnagEvent *)event {
     [event symbolicateIfNeeded];
     [self storeEventPayload:[event toJsonWithRedactedKeys:self.configuration.redactedKeys]];
-    [self uploadStoredEvents];
+    [self uploadStoredEventsAfterDelay:1];
 }
 
 - (void)uploadEvent:(BugsnagEvent *)event completionHandler:(nullable void (^)(void))completionHandler {
