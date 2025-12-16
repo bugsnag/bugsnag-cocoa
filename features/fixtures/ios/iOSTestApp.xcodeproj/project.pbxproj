@@ -92,6 +92,8 @@
 		09F024FA2B9F3ACD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024F92B9F3ACD007D9F73 /* Fixture.swift */; };
 		09F024FC2B9F3B16007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */; };
 		09F025172BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */; };
+		1C70DEA52EF07EF300F52112 /* FatalErrorOptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */; };
+		1C70DEA72EF09AFD00F52112 /* CustomerControlledDeliveryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */; };
 		1C8CB8B52EBB994A007BF492 /* CaptureOptionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */; };
 		6526A0D4248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */; };
 		8A096DFC27C7E77600DB6ECC /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */; };
@@ -300,6 +302,8 @@
 		09F024F92B9F3ACD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedNotifyErrorScenario.swift; sourceTree = "<group>"; };
+		1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatalErrorOptionScenario.swift; sourceTree = "<group>"; };
+		1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerControlledDeliveryScenario.swift; sourceTree = "<group>"; };
 		1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionsScenario.swift; sourceTree = "<group>"; };
 		6526A0D3248A83350002E2C9 /* LoadConfigFromFileAutoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadConfigFromFileAutoScenario.swift; sourceTree = "<group>"; };
 		8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxBareThrowScenario.mm; sourceTree = "<group>"; };
@@ -500,6 +504,8 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */,
+				1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */,
 				1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */,
 				010BAAF62833CE570003FF36 /* AbortOverrideScenario.m */,
 				F429534164257A2BE23ED72D /* AbortScenario.m */,
@@ -804,6 +810,7 @@
 				8AB1081923301FE600672818 /* HandledErrorValidReleaseStageScenario.swift in Sources */,
 				010BAB062833CE570003FF36 /* ObjCExceptionOverrideScenario.m in Sources */,
 				8AF6FD7A225E3FA00056EF9E /* ResumeSessionOOMScenario.m in Sources */,
+				1C70DEA52EF07EF300F52112 /* FatalErrorOptionScenario.swift in Sources */,
 				E700EE78247D7A15008CFFB6 /* SIGILLScenario.m in Sources */,
 				E75040B22478214F005D33BD /* MetadataRedactionNestedScenario.swift in Sources */,
 				E700EE65247D6C08008CFFB6 /* OnSendCallbackRemovalScenario.m in Sources */,
@@ -827,6 +834,7 @@
 				E700EE62247D4D42008CFFB6 /* OnCrashHandlerScenario.m in Sources */,
 				E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */,
 				010BAB0F2833CE570003FF36 /* UserPersistenceNoUserScenario.m in Sources */,
+				1C70DEA72EF09AFD00F52112 /* CustomerControlledDeliveryScenario.swift in Sources */,
 				F429502603396F8671B333B3 /* HandledExceptionScenario.swift in Sources */,
 				F4295497A1582010C16F1861 /* AbortScenario.m in Sources */,
 				A1117E572535B22300014FDA /* OOMAutoDetectErrorsScenario.swift in Sources */,
