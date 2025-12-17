@@ -32,6 +32,13 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityInfo,
 };
 
+typedef NS_ENUM(NSUInteger, BugsnagDeliveryStrategy) {
+    StoreOnly,
+    StoreAndFlush,
+    StoreAndSend,
+    SendImmediately,
+};
+
 /**
  * Represents an occurrence of an error, along with information about the state of the app and device.
  */
@@ -106,6 +113,13 @@ BUGSNAG_EXTERN
  * Thread traces for the error that occurred, if collection was enabled.
  */
 @property (readwrite, copy, nonnull, nonatomic) NSArray<BugsnagThread *> *threads;
+
+/**
+ *  Delivery strategy for the event, which determines how the event
+ *  should be delivered to the Bugsnag API. This allows customization of delivery
+ *  behavior on a per-event basis.
+ */
+@property (readwrite, nonatomic) BugsnagDeliveryStrategy deliveryStrategy;
 
 /**
  * The original object that caused the error in your application. This value will only be populated for
