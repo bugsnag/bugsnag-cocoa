@@ -858,6 +858,10 @@
 		962CE8142E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
 		962CE8152E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
 		962CE8162E65945200380522 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = ED0951B22B232A2E006FE348 /* PrivacyInfo.xcprivacy */; };
+		9630820E2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
+		9630820F2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
+		963082102E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
+		963082112E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
 		964AE4DE2E7302DC00C2E75C /* BSGRemoteConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE4DD2E7302A800C2E75C /* BSGRemoteConfiguration.h */; };
 		964AE4DF2E7302DC00C2E75C /* BSGRemoteConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE4DD2E7302A800C2E75C /* BSGRemoteConfiguration.h */; };
 		964AE4E02E7302DC00C2E75C /* BSGRemoteConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 964AE4DD2E7302A800C2E75C /* BSGRemoteConfiguration.h */; };
@@ -896,10 +900,64 @@
 		9650A6092E842E5700946C9F /* BSGEventDiscardRuleset.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A143AE2E80BDD8009138C3 /* BSGEventDiscardRuleset.m */; };
 		9650A60A2E842E5E00946C9F /* BSGAllEventsDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A1439A2E7D8775009138C3 /* BSGAllEventsDiscardRule.m */; };
 		9650A60B2E842E6300946C9F /* BSGAllHandledEventsDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A143A42E7D8795009138C3 /* BSGAllHandledEventsDiscardRule.m */; };
-		9630820E2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
-		9630820F2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
-		963082102E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
-		963082112E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */; };
+		96828AA02F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */; };
+		96828AA22F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */; };
+		96828AA32F0A9F1F0020821F /* BSGPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A852F0A9F1F0020821F /* BSGPathNode.m */; };
+		96828AA62F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */; };
+		96828AA72F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */; };
+		96828AA82F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */; };
+		96828AA92F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7D2F0A9F1F0020821F /* BSGPropertyPathNode.h */; };
+		96828AAA2F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7F2F0A9F1F0020821F /* BSGTerminalPathNode.h */; };
+		96828AAB2F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A992F0A9F1F0020821F /* BSGJsonCollectionPath.h */; };
+		96828AAC2F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A812F0A9F1F0020821F /* BSGWildcardPathNode.h */; };
+		96828AAF2F0A9F1F0020821F /* BSGPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A842F0A9F1F0020821F /* BSGPathNode.h */; };
+		96828AB32F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7B2F0A9F1F0020821F /* BSGIndexPathNode.h */; };
+		96828ABA2F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */; };
+		96828ABC2F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */; };
+		96828ABD2F0A9F1F0020821F /* BSGPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A852F0A9F1F0020821F /* BSGPathNode.m */; };
+		96828AC02F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */; };
+		96828AC12F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */; };
+		96828AC22F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */; };
+		96828AC72F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */; };
+		96828AC92F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */; };
+		96828ACA2F0A9F1F0020821F /* BSGPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A852F0A9F1F0020821F /* BSGPathNode.m */; };
+		96828ACD2F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */; };
+		96828ACE2F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */; };
+		96828ACF2F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */; };
+		96828AD02F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7D2F0A9F1F0020821F /* BSGPropertyPathNode.h */; };
+		96828AD12F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7F2F0A9F1F0020821F /* BSGTerminalPathNode.h */; };
+		96828AD22F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A992F0A9F1F0020821F /* BSGJsonCollectionPath.h */; };
+		96828AD32F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A812F0A9F1F0020821F /* BSGWildcardPathNode.h */; };
+		96828AD62F0A9F1F0020821F /* BSGPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A842F0A9F1F0020821F /* BSGPathNode.h */; };
+		96828ADA2F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7B2F0A9F1F0020821F /* BSGIndexPathNode.h */; };
+		96828AE12F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */; };
+		96828AE32F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */; };
+		96828AE42F0A9F1F0020821F /* BSGPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A852F0A9F1F0020821F /* BSGPathNode.m */; };
+		96828AE72F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */; };
+		96828AE82F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */; };
+		96828AE92F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */; };
+		96828AEA2F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7D2F0A9F1F0020821F /* BSGPropertyPathNode.h */; };
+		96828AEB2F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7F2F0A9F1F0020821F /* BSGTerminalPathNode.h */; };
+		96828AEC2F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A992F0A9F1F0020821F /* BSGJsonCollectionPath.h */; };
+		96828AED2F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A812F0A9F1F0020821F /* BSGWildcardPathNode.h */; };
+		96828AF02F0A9F1F0020821F /* BSGPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A842F0A9F1F0020821F /* BSGPathNode.h */; };
+		96828AF42F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7B2F0A9F1F0020821F /* BSGIndexPathNode.h */; };
+		96828AF72F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7D2F0A9F1F0020821F /* BSGPropertyPathNode.h */; };
+		96828AF82F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7F2F0A9F1F0020821F /* BSGTerminalPathNode.h */; };
+		96828AF92F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A992F0A9F1F0020821F /* BSGJsonCollectionPath.h */; };
+		96828AFA2F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A812F0A9F1F0020821F /* BSGWildcardPathNode.h */; };
+		96828AFD2F0A9F1F0020821F /* BSGPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A842F0A9F1F0020821F /* BSGPathNode.h */; };
+		96828B012F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828A7B2F0A9F1F0020821F /* BSGIndexPathNode.h */; };
+		96828B082F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */; };
+		96828B0A2F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */; };
+		96828B0B2F0A9F1F0020821F /* BSGPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A852F0A9F1F0020821F /* BSGPathNode.m */; };
+		96828B0E2F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */; };
+		96828B0F2F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */; };
+		96828B102F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */; };
+		96828B122F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */; };
+		96828B132F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */; };
+		96828B142F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */; };
+		96828B152F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -922,6 +980,24 @@
 		969EE0DD2E7821CA00600F63 /* BSGRemoteConfigHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */; };
 		969EE0DE2E7821D200600F63 /* BSGRemoteConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4E22E7302E300C2E75C /* BSGRemoteConfiguration.m */; };
 		969EE0DF2E7821D800600F63 /* BSGRemoteConfigStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 964AE4EE2E73415300C2E75C /* BSGRemoteConfigStore.m */; };
+		969EE1072E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
+		969EE1082E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
+		969EE1092E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
+		969EE10A2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
+		969EE10B2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
+		969EE10C2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
+		969EE10D2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
+		969EE10E2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
+		969EE10F2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
+		969EE1122E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
+		969EE1132E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
+		969EE1142E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
+		969EE1152E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
+		969EE1162E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
+		969EE1172E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
+		969EE1182E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
+		969EE1192E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
+		969EE11A2E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
 		96A143762E7D76BC009138C3 /* BSGEventDiscardProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143752E7D76A6009138C3 /* BSGEventDiscardProcessor.h */; };
 		96A143772E7D76BC009138C3 /* BSGEventDiscardProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143752E7D76A6009138C3 /* BSGEventDiscardProcessor.h */; };
 		96A143782E7D76BC009138C3 /* BSGEventDiscardProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143752E7D76A6009138C3 /* BSGEventDiscardProcessor.h */; };
@@ -974,24 +1050,6 @@
 		96A143BA2E80C2E8009138C3 /* BSGEventDiscardRulesetSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A143B82E80C2E5009138C3 /* BSGEventDiscardRulesetSource.m */; };
 		96A143BB2E80C2E8009138C3 /* BSGEventDiscardRulesetSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A143B82E80C2E5009138C3 /* BSGEventDiscardRulesetSource.m */; };
 		96A143BC2E80C2E8009138C3 /* BSGEventDiscardRulesetSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A143B82E80C2E5009138C3 /* BSGEventDiscardRulesetSource.m */; };
-		969EE1072E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
-		969EE1082E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
-		969EE1092E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
-		969EE10A2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
-		969EE10B2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
-		969EE10C2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
-		969EE10D2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
-		969EE10E2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */; };
-		969EE10F2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */; };
-		969EE1122E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
-		969EE1132E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
-		969EE1142E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
-		969EE1152E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
-		969EE1162E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
-		969EE1172E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
-		969EE1182E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
-		969EE1192E7A9FA300600F63 /* BSG_KSMach-O.c in Sources */ = {isa = PBXBuildFile; fileRef = 969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */; };
-		969EE11A2E7A9FA300600F63 /* BSG_KSMach-O.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */; };
 		96E45BF32D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
 		96E45BF42D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
 		96E45BF52D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */; };
@@ -1789,6 +1847,7 @@
 		9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAtomicFeatureFlagStoreTests.m; sourceTree = "<group>"; };
 		9627A1392D92200300696E3C /* WriterTestsSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WriterTestsSupport.h; sourceTree = "<group>"; };
 		9627A13A2D92201B00696E3C /* WriterTestsSupport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WriterTestsSupport.m; sourceTree = "<group>"; };
+		9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSPlatformSpecificDefines.h; sourceTree = "<group>"; };
 		964AE4DD2E7302A800C2E75C /* BSGRemoteConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRemoteConfiguration.h; sourceTree = "<group>"; };
 		964AE4E22E7302E300C2E75C /* BSGRemoteConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfiguration.m; sourceTree = "<group>"; };
 		964AE4E92E73414800C2E75C /* BSGRemoteConfigStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRemoteConfigStore.h; sourceTree = "<group>"; };
@@ -1797,11 +1856,27 @@
 		964AE50A2E75943F00C2E75C /* BSGRemoteConfigHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfigHandler.m; sourceTree = "<group>"; };
 		964AE50C2E75943F00C2E75C /* BSGRemoteConfigService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRemoteConfigService.h; sourceTree = "<group>"; };
 		964AE50D2E75943F00C2E75C /* BSGRemoteConfigService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRemoteConfigService.m; sourceTree = "<group>"; };
-		9630820D2E7C1FB7002F3E63 /* BSG_KSPlatformSpecificDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSPlatformSpecificDefines.h; sourceTree = "<group>"; };
+		96828A7B2F0A9F1F0020821F /* BSGIndexPathNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGIndexPathNode.h; sourceTree = "<group>"; };
+		96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGIndexPathNode.m; sourceTree = "<group>"; };
+		96828A7D2F0A9F1F0020821F /* BSGPropertyPathNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPropertyPathNode.h; sourceTree = "<group>"; };
+		96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPropertyPathNode.m; sourceTree = "<group>"; };
+		96828A7F2F0A9F1F0020821F /* BSGTerminalPathNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGTerminalPathNode.h; sourceTree = "<group>"; };
+		96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGTerminalPathNode.m; sourceTree = "<group>"; };
+		96828A812F0A9F1F0020821F /* BSGWildcardPathNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGWildcardPathNode.h; sourceTree = "<group>"; };
+		96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGWildcardPathNode.m; sourceTree = "<group>"; };
+		96828A842F0A9F1F0020821F /* BSGPathNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPathNode.h; sourceTree = "<group>"; };
+		96828A852F0A9F1F0020821F /* BSGPathNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPathNode.m; sourceTree = "<group>"; };
+		96828A992F0A9F1F0020821F /* BSGJsonCollectionPath.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGJsonCollectionPath.h; sourceTree = "<group>"; };
+		96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGJsonCollectionPath.m; sourceTree = "<group>"; };
+		96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGJsonCollectionPathTests.m; sourceTree = "<group>"; };
 		968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGPersistentFeatureFlagStore.h; sourceTree = "<group>"; };
 		968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStore.m; sourceTree = "<group>"; };
 		968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGStoredFeatureFlag.m; sourceTree = "<group>"; };
 		968BFBD52D0125C800DCC24B /* BSGStoredFeatureFlag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGStoredFeatureFlag.h; sourceTree = "<group>"; };
+		969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSCxaThrowSwapper.h; sourceTree = "<group>"; };
+		969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSG_KSCxaThrowSwapper.c; sourceTree = "<group>"; };
+		969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BSG_KSMach-O.h"; sourceTree = "<group>"; };
+		969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "BSG_KSMach-O.c"; sourceTree = "<group>"; };
 		96A143752E7D76A6009138C3 /* BSGEventDiscardProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGEventDiscardProcessor.h; sourceTree = "<group>"; };
 		96A1437A2E7D76C4009138C3 /* BSGEventDiscardProcessor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventDiscardProcessor.m; sourceTree = "<group>"; };
 		96A1437F2E7D76E5009138C3 /* BSGEventDiscardRule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGEventDiscardRule.h; sourceTree = "<group>"; };
@@ -1815,10 +1890,6 @@
 		96A143AE2E80BDD8009138C3 /* BSGEventDiscardRuleset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventDiscardRuleset.m; sourceTree = "<group>"; };
 		96A143B32E80C2C1009138C3 /* BSGEventDiscardRulesetSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGEventDiscardRulesetSource.h; sourceTree = "<group>"; };
 		96A143B82E80C2E5009138C3 /* BSGEventDiscardRulesetSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventDiscardRulesetSource.m; sourceTree = "<group>"; };
-		969EE1052E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSCxaThrowSwapper.h; sourceTree = "<group>"; };
-		969EE1062E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSG_KSCxaThrowSwapper.c; sourceTree = "<group>"; };
-		969EE1102E7A9FA300600F63 /* BSG_KSMach-O.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BSG_KSMach-O.h"; sourceTree = "<group>"; };
-		969EE1112E7A9FA300600F63 /* BSG_KSMach-O.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "BSG_KSMach-O.c"; sourceTree = "<group>"; };
 		96E45BF22D1039F200BEF978 /* BSGAtomicFeatureFlagStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGAtomicFeatureFlagStore.h; sourceTree = "<group>"; };
 		96E45BF72D103AA200BEF978 /* BSGAtomicFeatureFlagStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAtomicFeatureFlagStore.m; sourceTree = "<group>"; };
 		96E45BFD2D103B1F00BEF978 /* BSGFeatureFlagStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGFeatureFlagStore.h; sourceTree = "<group>"; };
@@ -2209,7 +2280,6 @@
 		00AD1C7F24869B0E00A27979 /* BugsnagTests */ = {
 			isa = PBXGroup;
 			children = (
-				1C55AD8D2EB91E9B0097F3C2 /* BugsnagCaptureOptionsTests.m */,
 				019480D32625F3EB00E833ED /* BSGAppKitTests.m */,
 				9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */,
 				008966BD2486D43500DC48C2 /* BSGClientObserverTests.m */,
@@ -2218,6 +2288,7 @@
 				010F80C128645B4200D6569E /* BSGDefinesTests.m */,
 				01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */,
 				01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */,
+				96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */,
 				CBCF77AA250142E0004AF22A /* BSGJSONSerializationTests.m */,
 				010993A3273D188B00128BBE /* BSGMemoryFeatureFlagStoreTests.m */,
 				01A2958528B667C2005FCC8C /* BSGNetworkBreadcrumbTests.m */,
@@ -2235,6 +2306,7 @@
 				E701FA9E2490EF4A008D842F /* BugsnagApiValidationTest.m */,
 				008966C22486D43600DC48C2 /* BugsnagAppTest.m */,
 				008966CD2486D43600DC48C2 /* BugsnagBreadcrumbsTest.m */,
+				1C55AD8D2EB91E9B0097F3C2 /* BugsnagCaptureOptionsTests.m */,
 				008966CA2486D43600DC48C2 /* BugsnagClientMirrorTest.m */,
 				008966A52486D43400DC48C2 /* BugsnagClientPayloadInfoTest.m */,
 				008966BE2486D43500DC48C2 /* BugsnagClientTests.m */,
@@ -2276,8 +2348,8 @@
 				CBEC893E2A4ACD230088A3CE /* FileBasedTest.h */,
 				CBEC893F2A4ACD230088A3CE /* FileBasedTest.m */,
 				00E636C324878FFC006CBF1A /* Info.plist */,
-				01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */,
 				008966B72486D43500DC48C2 /* report.json */,
+				01B14C55251CE55F00118748 /* report-react-native-promise-rejection.json */,
 				093EB65E2AFE447E006EB7E3 /* Swizzle.h */,
 				093EB65F2AFE447E006EB7E3 /* Swizzle.mm */,
 				004E35392487B375007FBAE4 /* Tests-Bridging-Header.h */,
@@ -2564,6 +2636,41 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		96828A832F0A9F1F0020821F /* Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				96828A7B2F0A9F1F0020821F /* BSGIndexPathNode.h */,
+				96828A7C2F0A9F1F0020821F /* BSGIndexPathNode.m */,
+				96828A7D2F0A9F1F0020821F /* BSGPropertyPathNode.h */,
+				96828A7E2F0A9F1F0020821F /* BSGPropertyPathNode.m */,
+				96828A7F2F0A9F1F0020821F /* BSGTerminalPathNode.h */,
+				96828A802F0A9F1F0020821F /* BSGTerminalPathNode.m */,
+				96828A812F0A9F1F0020821F /* BSGWildcardPathNode.h */,
+				96828A822F0A9F1F0020821F /* BSGWildcardPathNode.m */,
+			);
+			path = Nodes;
+			sourceTree = "<group>";
+		};
+		96828A862F0A9F1F0020821F /* Node */ = {
+			isa = PBXGroup;
+			children = (
+				96828A832F0A9F1F0020821F /* Nodes */,
+				96828A842F0A9F1F0020821F /* BSGPathNode.h */,
+				96828A852F0A9F1F0020821F /* BSGPathNode.m */,
+			);
+			path = Node;
+			sourceTree = "<group>";
+		};
+		96828A9B2F0A9F1F0020821F /* Path */ = {
+			isa = PBXGroup;
+			children = (
+				96828A862F0A9F1F0020821F /* Node */,
+				96828A992F0A9F1F0020821F /* BSGJsonCollectionPath.h */,
+				96828A9A2F0A9F1F0020821F /* BSGJsonCollectionPath.m */,
+			);
+			path = Path;
+			sourceTree = "<group>";
+		};
 		968BFBC82CFFE21B00DCC24B /* FeatureFlags */ = {
 			isa = PBXGroup;
 			children = (
@@ -2585,6 +2692,7 @@
 		96A143742E7D769A009138C3 /* DiscardProcessor */ = {
 			isa = PBXGroup;
 			children = (
+				96828A9B2F0A9F1F0020821F /* Path */,
 				96A143C02E80C5C1009138C3 /* Factory */,
 				96A143BF2E80C5B7009138C3 /* Processor */,
 				96A143BD2E80C58C009138C3 /* Source */,
@@ -2771,6 +2879,12 @@
 				008969F92486DAD100DC48C2 /* BSG_KSCrashReportVersion.h in Headers */,
 				0089680A2486DA4500DC48C2 /* BSGConnectivity.h in Headers */,
 				008968252486DA5600DC48C2 /* BugsnagLogger.h in Headers */,
+				96828AD02F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */,
+				96828AD12F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */,
+				96828AD22F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */,
+				96828AD32F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */,
+				96828AD62F0A9F1F0020821F /* BSGPathNode.h in Headers */,
+				96828ADA2F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */,
 				0089698A2486DAD100DC48C2 /* BSG_KSString.h in Headers */,
 				96A1438C2E7D82A7009138C3 /* BSGEventDiscardRuleFactory.h in Headers */,
 				964AE4E12E7302DC00C2E75C /* BSGRemoteConfiguration.h in Headers */,
@@ -2809,6 +2923,12 @@
 				3A700AAD24A63CFD0068CD1B /* BugsnagBreadcrumb.h in Headers */,
 				968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */,
 				0126F7AC25DD5118008483C2 /* BSGEventUploadFileOperation.h in Headers */,
+				96828AF72F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */,
+				96828AF82F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */,
+				96828AF92F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */,
+				96828AFA2F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */,
+				96828AFD2F0A9F1F0020821F /* BSGPathNode.h in Headers */,
+				96828B012F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */,
 				96A143982E7D8746009138C3 /* BSGAllEventsDiscardRule.h in Headers */,
 				3A700AAE24A63CFD0068CD1B /* BSG_KSCrashReportWriter.h in Headers */,
 				3A700AAF24A63CFD0068CD1B /* BugsnagErrorTypes.h in Headers */,
@@ -2935,6 +3055,12 @@
 				3A700AC124A63D110068CD1B /* BugsnagBreadcrumb.h in Headers */,
 				968BFBCE2D011BC400DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */,
 				0126F7AD25DD5118008483C2 /* BSGEventUploadFileOperation.h in Headers */,
+				96828AA92F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */,
+				96828AAA2F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */,
+				96828AAB2F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */,
+				96828AAC2F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */,
+				96828AAF2F0A9F1F0020821F /* BSGPathNode.h in Headers */,
+				96828AB32F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */,
 				96A143992E7D8746009138C3 /* BSGAllEventsDiscardRule.h in Headers */,
 				3A700AC224A63D110068CD1B /* BSG_KSCrashReportWriter.h in Headers */,
 				3A700AC324A63D110068CD1B /* BugsnagErrorTypes.h in Headers */,
@@ -3129,6 +3255,12 @@
 				CBBDE978280069670070DCD3 /* BSGStorageMigratorV0V1.h in Headers */,
 				968BFBDA2D0125CC00DCC24B /* BSGStoredFeatureFlag.h in Headers */,
 				CBBDE979280069670070DCD3 /* BSGFileLocations.h in Headers */,
+				96828AEA2F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */,
+				96828AEB2F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */,
+				96828AEC2F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */,
+				96828AED2F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */,
+				96828AF02F0A9F1F0020821F /* BSGPathNode.h in Headers */,
+				96828AF42F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */,
 				CBBDE9AB280069B20070DCD3 /* BSG_KSJSONCodec.h in Headers */,
 				CBBDE960280068FD0070DCD3 /* BSG_KSCrashReportWriter.h in Headers */,
 				CBBDE91F280068880070DCD3 /* BugsnagClient+Private.h in Headers */,
@@ -3546,6 +3678,12 @@
 				008967DE2486DA2D00DC48C2 /* BSGConfigurationBuilder.m in Sources */,
 				008968C72486DA9600DC48C2 /* BugsnagApp.m in Sources */,
 				00AD1F232486A17900A27979 /* Bugsnag.m in Sources */,
+				96828AC72F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */,
+				96828AC92F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */,
+				96828ACA2F0A9F1F0020821F /* BSGPathNode.m in Sources */,
+				96828ACD2F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */,
+				96828ACE2F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */,
+				96828ACF2F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */,
 				008967B42486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */,
 				00AD1F2E2486A17900A27979 /* BugsnagSessionTracker.m in Sources */,
 				0126F7BE25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.m in Sources */,
@@ -3632,6 +3770,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C55AD8E2EB91EA30097F3C2 /* BugsnagCaptureOptionsTests.m in Sources */,
+				96828B122F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */,
 				008967512486D43700DC48C2 /* BSGOutOfMemoryTests.m in Sources */,
 				E701FA9F2490EF4A008D842F /* BugsnagApiValidationTest.m in Sources */,
 				008967902486D43700DC48C2 /* KSJSONCodec_Tests.m in Sources */,
@@ -3747,6 +3886,12 @@
 				01CCAEEE25D414D60057268D /* BugsnagLastRunInfo.m in Sources */,
 				CBCAF6FE25A457F90095771F /* BSGFileLocations.m in Sources */,
 				008968C82486DA9600DC48C2 /* BugsnagApp.m in Sources */,
+				96828B082F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */,
+				96828B0A2F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */,
+				96828B0B2F0A9F1F0020821F /* BSGPathNode.m in Sources */,
+				96828B0E2F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */,
+				96828B0F2F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */,
+				96828B102F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */,
 				00AD1F242486A17900A27979 /* Bugsnag.m in Sources */,
 				008967B52486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */,
 				00AD1F2F2486A17900A27979 /* BugsnagSessionTracker.m in Sources */,
@@ -3915,6 +4060,7 @@
 				E701FAA82490EF77008D842F /* ClientApiValidationTest.m in Sources */,
 				1C55AD912EB91EA30097F3C2 /* BugsnagCaptureOptionsTests.m in Sources */,
 				008967042486D43700DC48C2 /* BugsnagThreadSerializationTest.m in Sources */,
+				96828B132F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */,
 				008966FE2486D43700DC48C2 /* BugsnagOnBreadcrumbTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3945,6 +4091,12 @@
 				008967E02486DA2D00DC48C2 /* BSGConfigurationBuilder.m in Sources */,
 				01CCAEEF25D414D60057268D /* BugsnagLastRunInfo.m in Sources */,
 				CBCAF6FF25A457F90095771F /* BSGFileLocations.m in Sources */,
+				96828AA02F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */,
+				96828AA22F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */,
+				96828AA32F0A9F1F0020821F /* BSGPathNode.m in Sources */,
+				96828AA62F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */,
+				96828AA72F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */,
+				96828AA82F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */,
 				008968C92486DA9600DC48C2 /* BugsnagApp.m in Sources */,
 				00AD1F252486A17900A27979 /* Bugsnag.m in Sources */,
 				008967B62486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */,
@@ -4041,6 +4193,7 @@
 				CBDD6D0F25AC3EFF00A2E12B /* BSGStorageMigratorV0V1Tests.m in Sources */,
 				008967502486D43700DC48C2 /* BugsnagPluginTest.m in Sources */,
 				09E313312BF3867C0081F219 /* BugsnagPerformanceBridgeTests.m in Sources */,
+				96828B142F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */,
 				008967142486D43700DC48C2 /* BugsnagEventTests.m in Sources */,
 				0089675C2486D43700DC48C2 /* BugsnagEnabledBreadcrumbTest.m in Sources */,
 				008966ED2486D43700DC48C2 /* BugsnagDeviceTest.m in Sources */,
@@ -4210,6 +4363,12 @@
 				008967D62486DA2D00DC48C2 /* BugsnagEndpointConfiguration.m in Sources */,
 				96E45C0C2D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m in Sources */,
 				01847D9C2644140F00ADA4C7 /* BSGInternalErrorReporter.m in Sources */,
+				96828ABA2F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */,
+				96828ABC2F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */,
+				96828ABD2F0A9F1F0020821F /* BSGPathNode.m in Sources */,
+				96828AC02F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */,
+				96828AC12F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */,
+				96828AC22F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */,
 				00AD1F262486A17900A27979 /* Bugsnag.m in Sources */,
 				9650A6072E842E4C00946C9F /* BSGEventDiscardProcessor.m in Sources */,
 				008968CE2486DA9600DC48C2 /* BugsnagThread.m in Sources */,
@@ -4261,6 +4420,12 @@
 				CBBDE9892800698F0070DCD3 /* BSG_KSCrashC.c in Sources */,
 				CBBDE9BB280069B20070DCD3 /* BSG_KSMach.c in Sources */,
 				CBBDE98A2800698F0070DCD3 /* BSG_KSCrash.m in Sources */,
+				96828AE12F0A9F1F0020821F /* BSGTerminalPathNode.m in Sources */,
+				96828AE32F0A9F1F0020821F /* BSGIndexPathNode.m in Sources */,
+				96828AE42F0A9F1F0020821F /* BSGPathNode.m in Sources */,
+				96828AE72F0A9F1F0020821F /* BSGPropertyPathNode.m in Sources */,
+				96828AE82F0A9F1F0020821F /* BSGJsonCollectionPath.m in Sources */,
+				96828AE92F0A9F1F0020821F /* BSGWildcardPathNode.m in Sources */,
 				CBBDE915280068560070DCD3 /* Bugsnag.m in Sources */,
 				CBBDE965280069180070DCD3 /* BugsnagAppWithState.m in Sources */,
 				CBBDE93B280068D40070DCD3 /* BSGSerialization.m in Sources */,
@@ -4419,6 +4584,7 @@
 				CB28F0E2282A4BEF003AB200 /* BugsnagStackframeTest.m in Sources */,
 				CB28F0CF282A4A2E003AB200 /* BugsnagClientTests.m in Sources */,
 				CB28F0E0282A4BEE003AB200 /* BugsnagOnBreadcrumbTest.m in Sources */,
+				96828B152F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */,
 				CB28F0D1282A4B91003AB200 /* BugsnagEnabledBreadcrumbTest.m in Sources */,
 				0130DEFC2880203A00E5953F /* BSGRunContextTests.m in Sources */,
 				CB28F125282A7DAB003AB200 /* BugsnagUserTest.m in Sources */,
