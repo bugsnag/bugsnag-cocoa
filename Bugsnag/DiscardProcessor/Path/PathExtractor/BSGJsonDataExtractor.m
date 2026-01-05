@@ -30,7 +30,7 @@
 - (instancetype)initWithPath:(BSGJsonCollectionPath *)path {
     self = [super init];
     if (self) {
-        self.path = path;
+        _path = path;
     }
     return self;
 }

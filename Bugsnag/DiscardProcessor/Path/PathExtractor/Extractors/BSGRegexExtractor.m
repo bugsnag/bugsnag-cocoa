@@ -20,7 +20,7 @@
 - (instancetype)initWithPath:(BSGJsonCollectionPath *)path regex:(NSString *)regex {
     self = [super initWithPath:path];
     if (self) {
-        self.regex = [NSRegularExpression regularExpressionWithPattern:regex options:0 error:nil];;
+        _regex = [NSRegularExpression regularExpressionWithPattern:regex options:0 error:nil];
     }
     return self;
 }
