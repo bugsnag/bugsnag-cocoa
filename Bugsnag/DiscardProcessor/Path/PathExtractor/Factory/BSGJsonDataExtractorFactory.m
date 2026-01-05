@@ -8,12 +8,14 @@
 
 #import "BSGJsonDataExtractorFactory.h"
 #import "BSGRegexExtractor.h"
+#import "BSGRelativeAddressExtractor.h"
 #import "BSGSimplePathExtractor.h"
 
 static NSString * const JsonKeyPathMode = @"pathMode";
 static NSString * const JsonKeyPath = @"path";
 static NSString * const JsonKeyRegex = @"regex";
 static NSString * const PathModeRegex = @"REGEX";
+static NSString * const PathModeRelativeAddress = @"RELATIVE_ADDRESS";
 
 @implementation BSGJsonDataExtractorFactory
 
@@ -29,6 +31,11 @@ static NSString * const PathModeRegex = @"REGEX";
         NSString *regex = json[JsonKeyRegex];
         return [[BSGRegexExtractor alloc] initWithPath:collectionPath regex:regex];
     }
+    
+    if ([pathMode isEqualToString:PathModeRelativeAddress]) {
+        return [[BSGRelativeAddressExtractor alloc] initWithPath:collectionPath];
+    }
+
     return [[BSGSimplePathExtractor alloc] initWithPath:collectionPath];
 }
 

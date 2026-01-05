@@ -994,6 +994,15 @@
 		96828B6F2F0B3FA70020821F /* BSGRegexExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B672F0B3FA70020821F /* BSGRegexExtractor.h */; };
 		96828B702F0B3FA70020821F /* BSGRegexExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B682F0B3FA70020821F /* BSGRegexExtractor.m */; };
 		96828B712F0B3FA70020821F /* BSGRegexExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B672F0B3FA70020821F /* BSGRegexExtractor.h */; };
+		96828B742F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B722F0B49730020821F /* BSGRelativeAddressExtractor.h */; };
+		96828B752F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */; };
+		96828B762F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */; };
+		96828B772F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B722F0B49730020821F /* BSGRelativeAddressExtractor.h */; };
+		96828B782F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */; };
+		96828B792F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */; };
+		96828B7A2F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B722F0B49730020821F /* BSGRelativeAddressExtractor.h */; };
+		96828B7B2F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */; };
+		96828B7C2F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B722F0B49730020821F /* BSGRelativeAddressExtractor.h */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -1913,6 +1922,8 @@
 		96828B262F0AB6620020821F /* BSGJsonDataExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGJsonDataExtractor.m; sourceTree = "<group>"; };
 		96828B672F0B3FA70020821F /* BSGRegexExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRegexExtractor.h; sourceTree = "<group>"; };
 		96828B682F0B3FA70020821F /* BSGRegexExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRegexExtractor.m; sourceTree = "<group>"; };
+		96828B722F0B49730020821F /* BSGRelativeAddressExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGRelativeAddressExtractor.h; sourceTree = "<group>"; };
+		96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRelativeAddressExtractor.m; sourceTree = "<group>"; };
 		968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGPersistentFeatureFlagStore.h; sourceTree = "<group>"; };
 		968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStore.m; sourceTree = "<group>"; };
 		968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGStoredFeatureFlag.m; sourceTree = "<group>"; };
@@ -2721,6 +2732,8 @@
 			children = (
 				96828B672F0B3FA70020821F /* BSGRegexExtractor.h */,
 				96828B682F0B3FA70020821F /* BSGRegexExtractor.m */,
+				96828B722F0B49730020821F /* BSGRelativeAddressExtractor.h */,
+				96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */,
 				96828B1C2F0AB6620020821F /* BSGSimplePathExtractor.h */,
 				96828B1D2F0AB6620020821F /* BSGSimplePathExtractor.m */,
 			);
@@ -2960,6 +2973,7 @@
 				0089680A2486DA4500DC48C2 /* BSGConnectivity.h in Headers */,
 				008968252486DA5600DC48C2 /* BugsnagLogger.h in Headers */,
 				96828AD02F0A9F1F0020821F /* BSGPropertyPathNode.h in Headers */,
+				96828B772F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */,
 				96828AD12F0A9F1F0020821F /* BSGTerminalPathNode.h in Headers */,
 				96828AD22F0A9F1F0020821F /* BSGJsonCollectionPath.h in Headers */,
 				96828AD32F0A9F1F0020821F /* BSGWildcardPathNode.h in Headers */,
@@ -3087,6 +3101,7 @@
 				008967F52486DA4500DC48C2 /* BSGSessionUploader.h in Headers */,
 				010FF28525ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */,
 				008969E22486DAD100DC48C2 /* BSG_KSSystemInfo.h in Headers */,
+				96828B742F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */,
 				09E312F02BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.h in Headers */,
 				01CB95C0278F0C830077744A /* BSG_KSFile.h in Headers */,
 				00896A0F2486DAD100DC48C2 /* BSG_KSCrashSentry.h in Headers */,
@@ -3223,6 +3238,7 @@
 				008967F62486DA4500DC48C2 /* BSGSessionUploader.h in Headers */,
 				010FF28625ED2A8D00E4F2B0 /* BSGAppHangDetector.h in Headers */,
 				008969E32486DAD100DC48C2 /* BSG_KSSystemInfo.h in Headers */,
+				96828B7A2F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */,
 				09E312F12BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.h in Headers */,
 				01CB95C1278F0C830077744A /* BSG_KSFile.h in Headers */,
 				00896A102486DAD100DC48C2 /* BSG_KSCrashSentry.h in Headers */,
@@ -3327,6 +3343,7 @@
 				CBBDE9A9280069B20070DCD3 /* BSG_KSMachApple.h in Headers */,
 				964AE4DE2E7302DC00C2E75C /* BSGRemoteConfiguration.h in Headers */,
 				CBBDE95A280068FD0070DCD3 /* BugsnagEndpointConfiguration.h in Headers */,
+				96828B7C2F0B49730020821F /* BSGRelativeAddressExtractor.h in Headers */,
 				CBBDE94F280068FD0070DCD3 /* BugsnagFeatureFlagStore.h in Headers */,
 				CBBDE95C280068FD0070DCD3 /* BugsnagError.h in Headers */,
 				CBBDE94C280068FD0070DCD3 /* BugsnagThread.h in Headers */,
@@ -3755,6 +3772,7 @@
 				96A1439D2E7D877C009138C3 /* BSGAllEventsDiscardRule.m in Sources */,
 				96828B3D2F0AB6620020821F /* BSGJsonDataExtractorFactory.m in Sources */,
 				96828B3F2F0AB6620020821F /* BSGSimplePathExtractor.m in Sources */,
+				96828B762F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */,
 				96828B402F0AB6620020821F /* BSGJsonDataExtractor.m in Sources */,
 				008968722486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
 				008969842486DAD100DC48C2 /* BSG_KSMachHeaders.c in Sources */,
@@ -3967,6 +3985,7 @@
 				96A1439B2E7D877C009138C3 /* BSGAllEventsDiscardRule.m in Sources */,
 				96828B602F0AB6620020821F /* BSGJsonDataExtractorFactory.m in Sources */,
 				96828B622F0AB6620020821F /* BSGSimplePathExtractor.m in Sources */,
+				96828B752F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */,
 				96828B632F0AB6620020821F /* BSGJsonDataExtractor.m in Sources */,
 				008968732486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
 				01A2C543271EB9B400A27B23 /* BSG_Symbolicate.c in Sources */,
@@ -4176,6 +4195,7 @@
 				96A1439E2E7D877C009138C3 /* BSGAllEventsDiscardRule.m in Sources */,
 				96828B2F2F0AB6620020821F /* BSGJsonDataExtractorFactory.m in Sources */,
 				96828B312F0AB6620020821F /* BSGSimplePathExtractor.m in Sources */,
+				96828B792F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */,
 				96828B322F0AB6620020821F /* BSGJsonDataExtractor.m in Sources */,
 				008968742486DA9500DC48C2 /* BugsnagDevice.m in Sources */,
 				0126F7B025DD5118008483C2 /* BSGEventUploadFileOperation.m in Sources */,
@@ -4381,6 +4401,7 @@
 			files = (
 				0154E20828070AEA009044E4 /* BSGRunContext.m in Sources */,
 				1C7ADF7B2EB1608F00A930A6 /* BugsnagCaptureOptions.m in Sources */,
+				96828B782F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */,
 				CB33CD042703438400C76656 /* BSG_KSCrashNames.c in Sources */,
 				E7462909248907E500F92D67 /* BSG_KSMach_x86_32.c in Sources */,
 				E746290B248907E500F92D67 /* BSG_KSMach_Arm.c in Sources */,
@@ -4513,6 +4534,7 @@
 				96A1439C2E7D877C009138C3 /* BSGAllEventsDiscardRule.m in Sources */,
 				96828B4B2F0AB6620020821F /* BSGJsonDataExtractorFactory.m in Sources */,
 				96828B4D2F0AB6620020821F /* BSGSimplePathExtractor.m in Sources */,
+				96828B7B2F0B49730020821F /* BSGRelativeAddressExtractor.m in Sources */,
 				96828B4E2F0AB6620020821F /* BSGJsonDataExtractor.m in Sources */,
 				CBBDE9A6280069B20070DCD3 /* BSG_KSSignalInfo.c in Sources */,
 				CBBDE92D280068AD0070DCD3 /* BSGEventUploader.m in Sources */,
