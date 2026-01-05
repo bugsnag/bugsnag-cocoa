@@ -15,6 +15,18 @@
 
 @implementation BSGJsonDataExtractor
 
++ (NSString *)stringifyElement:(id)element {
+    if ([element isKindOfClass:[NSString class]]) {
+        return element;
+    } else if ([element isKindOfClass:[NSNumber class]]) {
+        return [element stringValue];
+    } else if ([element isKindOfClass:[NSNull class]]) {
+        return nil;
+    }
+    // For other types, try description
+    return [element description];
+}
+
 - (instancetype)initWithPath:(BSGJsonCollectionPath *)path {
     self = [super init];
     if (self) {

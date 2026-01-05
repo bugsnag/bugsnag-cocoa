@@ -15,6 +15,8 @@ typedef void (^BSGJsonDataOnElementExtracedBlock)(NSString *element);
 
 @property (nonatomic, readonly) BSGJsonCollectionPath *path;
 
++ (NSString *)stringifyElement:(id)element;
+
 - (instancetype)initWithPath:(BSGJsonCollectionPath *)path;
 
 - (void)extractFromJSON:(NSDictionary<NSString *, id> *)json

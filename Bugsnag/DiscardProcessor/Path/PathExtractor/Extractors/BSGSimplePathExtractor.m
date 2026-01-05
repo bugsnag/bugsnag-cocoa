@@ -11,9 +11,9 @@
 @implementation BSGSimplePathExtractor
 
 - (void)extractFromJSON:(NSDictionary<NSString *,id> *)json onElementExtracted:(void (^)(NSString *))onElementExtracted {
-    for(id element in [self.path extractFromJSON:json]) {
+    for (id element in [self.path extractFromJSON:json]) {
         if (onElementExtracted) {
-            onElementExtracted([element stringValue]);
+            onElementExtracted([[self class] stringifyElement:element]);
         }
     }
 }

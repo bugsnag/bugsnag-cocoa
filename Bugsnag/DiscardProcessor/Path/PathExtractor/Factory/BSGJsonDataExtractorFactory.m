@@ -7,7 +7,13 @@
 //
 
 #import "BSGJsonDataExtractorFactory.h"
+#import "BSGRegexExtractor.h"
 #import "BSGSimplePathExtractor.h"
+
+static NSString * const JsonKeyPathMode = @"pathMode";
+static NSString * const JsonKeyPath = @"path";
+static NSString * const JsonKeyRegex = @"regex";
+static NSString * const PathModeRegex = @"REGEX";
 
 @implementation BSGJsonDataExtractorFactory
 
@@ -17,6 +23,12 @@
         return nil;
     }
     BSGJsonCollectionPath *collectionPath = [BSGJsonCollectionPath pathFromString:path];
+    
+    NSString *pathMode = json[JsonKeyPathMode];
+    if ([pathMode isEqualToString:PathModeRegex]) {
+        NSString *regex = json[JsonKeyRegex];
+        return [[BSGRegexExtractor alloc] initWithPath:collectionPath regex:regex];
+    }
     return [[BSGSimplePathExtractor alloc] initWithPath:collectionPath];
 }
 
