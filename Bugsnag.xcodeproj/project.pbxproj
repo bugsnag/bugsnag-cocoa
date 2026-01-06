@@ -1012,6 +1012,15 @@
 		96828B852F0B4F270020821F /* BSGFilterExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B7D2F0B4F270020821F /* BSGFilterExtractor.h */; };
 		96828B862F0B4F270020821F /* BSGFilterExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B7D2F0B4F270020821F /* BSGFilterExtractor.h */; };
 		96828B872F0B4F270020821F /* BSGFilterExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B7E2F0B4F270020821F /* BSGFilterExtractor.m */; };
+		96828B892F0B667F0020821F /* BSGHashDiscardRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B882F0B66730020821F /* BSGHashDiscardRule.h */; };
+		96828B8A2F0B667F0020821F /* BSGHashDiscardRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B882F0B66730020821F /* BSGHashDiscardRule.h */; };
+		96828B8B2F0B667F0020821F /* BSGHashDiscardRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B882F0B66730020821F /* BSGHashDiscardRule.h */; };
+		96828B8C2F0B667F0020821F /* BSGHashDiscardRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 96828B882F0B66730020821F /* BSGHashDiscardRule.h */; };
+		96828B8E2F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
+		96828B8F2F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
+		96828B902F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
+		96828B912F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
+		96828B922F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -1935,6 +1944,8 @@
 		96828B732F0B49730020821F /* BSGRelativeAddressExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGRelativeAddressExtractor.m; sourceTree = "<group>"; };
 		96828B7D2F0B4F270020821F /* BSGFilterExtractor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGFilterExtractor.h; sourceTree = "<group>"; };
 		96828B7E2F0B4F270020821F /* BSGFilterExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGFilterExtractor.m; sourceTree = "<group>"; };
+		96828B882F0B66730020821F /* BSGHashDiscardRule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGHashDiscardRule.h; sourceTree = "<group>"; };
+		96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGHashDiscardRule.m; sourceTree = "<group>"; };
 		968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGPersistentFeatureFlagStore.h; sourceTree = "<group>"; };
 		968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStore.m; sourceTree = "<group>"; };
 		968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGStoredFeatureFlag.m; sourceTree = "<group>"; };
@@ -2809,6 +2820,8 @@
 				96A1439A2E7D8775009138C3 /* BSGAllEventsDiscardRule.m */,
 				96A1439F2E7D8784009138C3 /* BSGAllHandledEventsDiscardRule.h */,
 				96A143A42E7D8795009138C3 /* BSGAllHandledEventsDiscardRule.m */,
+				96828B882F0B66730020821F /* BSGHashDiscardRule.h */,
+				96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -2994,6 +3007,7 @@
 				96828AD62F0A9F1F0020821F /* BSGPathNode.h in Headers */,
 				96828ADA2F0A9F1F0020821F /* BSGIndexPathNode.h in Headers */,
 				0089698A2486DAD100DC48C2 /* BSG_KSString.h in Headers */,
+				96828B892F0B667F0020821F /* BSGHashDiscardRule.h in Headers */,
 				96A1438C2E7D82A7009138C3 /* BSGEventDiscardRuleFactory.h in Headers */,
 				964AE4E12E7302DC00C2E75C /* BSGRemoteConfiguration.h in Headers */,
 				008969962486DAD100DC48C2 /* BSG_KSBacktrace_Private.h in Headers */,
@@ -3070,6 +3084,7 @@
 				008969CD2486DAD100DC48C2 /* BSG_KSMach.h in Headers */,
 				008968292486DA5600DC48C2 /* BSGKeys.h in Headers */,
 				CBCAF6FB25A457F90095771F /* BSGFileLocations.h in Headers */,
+				96828B8C2F0B667F0020821F /* BSGHashDiscardRule.h in Headers */,
 				01A2C547271EB9B400A27B23 /* BSG_Symbolicate.h in Headers */,
 				008969BE2486DAD100DC48C2 /* BSG_KSMachHeaders.h in Headers */,
 				0126F7BC25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.h in Headers */,
@@ -3208,6 +3223,7 @@
 				008969CE2486DAD100DC48C2 /* BSG_KSMach.h in Headers */,
 				0089682A2486DA5600DC48C2 /* BSGKeys.h in Headers */,
 				CBCAF6FC25A457F90095771F /* BSGFileLocations.h in Headers */,
+				96828B8B2F0B667F0020821F /* BSGHashDiscardRule.h in Headers */,
 				01A2C548271EB9B400A27B23 /* BSG_Symbolicate.h in Headers */,
 				008969BF2486DAD100DC48C2 /* BSG_KSMachHeaders.h in Headers */,
 				0126F7BD25DD512B008483C2 /* BSGEventUploadKSCrashReportOperation.h in Headers */,
@@ -3390,6 +3406,7 @@
 				CBBDE9AB280069B20070DCD3 /* BSG_KSJSONCodec.h in Headers */,
 				CBBDE960280068FD0070DCD3 /* BSG_KSCrashReportWriter.h in Headers */,
 				CBBDE91F280068880070DCD3 /* BugsnagClient+Private.h in Headers */,
+				96828B8A2F0B667F0020821F /* BSGHashDiscardRule.h in Headers */,
 				CBBDE9852800698F0070DCD3 /* BSG_KSCrashC.h in Headers */,
 				969EE10F2E7A9DC200600F63 /* BSG_KSCxaThrowSwapper.h in Headers */,
 				CBBDE9202800688D0070DCD3 /* BSGConfigurationBuilder.h in Headers */,
@@ -3803,6 +3820,7 @@
 				008968912486DA9600DC48C2 /* BugsnagError.m in Sources */,
 				0089687C2486DA9500DC48C2 /* BugsnagBreadcrumb.m in Sources */,
 				01A2958028B665F5005FCC8C /* BSGNetworkBreadcrumb.m in Sources */,
+				96828B922F0B66870020821F /* BSGHashDiscardRule.m in Sources */,
 				008967FA2486DA4500DC48C2 /* BugsnagApiClient.m in Sources */,
 				01CCAEED25D414D60057268D /* BugsnagLastRunInfo.m in Sources */,
 				CBCAF6FD25A457F90095771F /* BSGFileLocations.m in Sources */,
@@ -4017,6 +4035,7 @@
 				CBEC892F2A4AC2920088A3CE /* BSGFilesystem.m in Sources */,
 				CBCF77A725010648004AF22A /* BSGJSONSerialization.m in Sources */,
 				0089687D2486DA9500DC48C2 /* BugsnagBreadcrumb.m in Sources */,
+				96828B912F0B66870020821F /* BSGHashDiscardRule.m in Sources */,
 				008967FB2486DA4500DC48C2 /* BugsnagApiClient.m in Sources */,
 				01A2958128B665F5005FCC8C /* BSGNetworkBreadcrumb.m in Sources */,
 				008967DF2486DA2D00DC48C2 /* BSGConfigurationBuilder.m in Sources */,
@@ -4228,6 +4247,7 @@
 				CBEC89302A4AC2920088A3CE /* BSGFilesystem.m in Sources */,
 				008968932486DA9600DC48C2 /* BugsnagError.m in Sources */,
 				CBCF77A825010648004AF22A /* BSGJSONSerialization.m in Sources */,
+				96828B8E2F0B66870020821F /* BSGHashDiscardRule.m in Sources */,
 				0089687E2486DA9600DC48C2 /* BugsnagBreadcrumb.m in Sources */,
 				01A2958228B665F5005FCC8C /* BSGNetworkBreadcrumb.m in Sources */,
 				008967FC2486DA4500DC48C2 /* BugsnagApiClient.m in Sources */,
@@ -4498,6 +4518,7 @@
 				008967B72486D9D800DC48C2 /* BugsnagBreadcrumbs.m in Sources */,
 				008968872486DA9600DC48C2 /* BugsnagNotifier.m in Sources */,
 				CBE9063025A34DAB0045B965 /* BSGStorageMigratorV0V1.m in Sources */,
+				96828B902F0B66870020821F /* BSGHashDiscardRule.m in Sources */,
 				0089683D2486DA6C00DC48C2 /* BugsnagMetadata.m in Sources */,
 				CBEC89322A4AC2920088A3CE /* BSGFilesystem.m in Sources */,
 				96828B7F2F0B4F270020821F /* BSGFilterExtractor.m in Sources */,
@@ -4569,6 +4590,7 @@
 				CBEC89312A4AC2920088A3CE /* BSGFilesystem.m in Sources */,
 				CBBDE927280068AD0070DCD3 /* BSGEventUploadFileOperation.m in Sources */,
 				CBBDE968280069210070DCD3 /* BugsnagDeviceWithState.m in Sources */,
+				96828B8F2F0B66870020821F /* BSGHashDiscardRule.m in Sources */,
 				CBBDE946280068E60070DCD3 /* BugsnagCollections.m in Sources */,
 				01A2958328B665F5005FCC8C /* BSGNetworkBreadcrumb.m in Sources */,
 				CBBDE9B7280069B20070DCD3 /* BSG_KSMachHeaders.c in Sources */,
