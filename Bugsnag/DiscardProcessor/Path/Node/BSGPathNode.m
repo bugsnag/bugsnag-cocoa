@@ -34,8 +34,8 @@
     }
 }
 
-- (void)extractFromJSONObject:(NSDictionary<NSString *,id> *)object collector:(BSGPathNodeCollector)collector {}
+- (void)extractFromJSONObject:(__unused NSDictionary<NSString *,id> *)object collector:(__unused BSGPathNodeCollector)collector {}
 
-- (void)extractFromJSONArray:(NSArray<id> *)array collector:(BSGPathNodeCollector)collector {}
+- (void)extractFromJSONArray:(__unused NSArray<id> *)array collector:(__unused BSGPathNodeCollector)collector {}
 
 @end

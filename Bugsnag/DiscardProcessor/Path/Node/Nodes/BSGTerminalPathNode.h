@@ -6,7 +6,7 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGPathNode.h"
+#import "../BSGPathNode.h"
 
 @interface BSGTerminalPathNode : BSGPathNode
 
