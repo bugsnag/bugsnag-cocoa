@@ -7,11 +7,11 @@
 //
 
 #import "BSGJsonCollectionPath.h"
-#import "BSGPathNode.h"
-#import "BSGTerminalPathNode.h"
-#import "BSGWildcardPathNode.h"
-#import "BSGIndexPathNode.h"
-#import "BSGPropertyPathNode.h"
+#import "Node/BSGPathNode.h"
+#import "Node/Nodes/BSGTerminalPathNode.h"
+#import "Node/Nodes/BSGWildcardPathNode.h"
+#import "Node/Nodes/BSGIndexPathNode.h"
+#import "Node/Nodes/BSGPropertyPathNode.h"
 
 static NSString * const IdentityPath = @"$";
 static NSString * const Wildcard = @"*";
