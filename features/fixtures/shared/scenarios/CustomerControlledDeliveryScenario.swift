@@ -32,6 +32,11 @@ class CustomerControlledDeliveryScenario: Scenario {
     }
 
     @objc func storeAndFlushStrategy() {
+        // prepare some files to be flushed
+        storeOnlyStrategy();
+        storeOnlyStrategy();
+        storeOnlyStrategy();
+
         let onSendErrorBlock: BugsnagOnSendErrorBlock = { (event) -> Bool in
             event.deliveryStrategy = BugsnagDeliveryStrategy.StoreAndFlush
             return true }
