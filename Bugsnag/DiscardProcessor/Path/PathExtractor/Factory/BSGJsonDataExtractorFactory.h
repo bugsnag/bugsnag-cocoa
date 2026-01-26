@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "BSGJsonDataExtractor.h"
+#import "../BSGJsonDataExtractor.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

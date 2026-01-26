@@ -7,7 +7,6 @@
 //
 
 #import "BSGJsonDataExtractor.h"
-#import "BSGJsonCollectionPath.h"
 
 @interface BSGJsonDataExtractor ()
 @property (nonatomic, strong) BSGJsonCollectionPath *path;
@@ -35,7 +34,7 @@
     return self;
 }
 
-- (void)extractFromJSON:(NSDictionary<NSString *, id> *)json
-     onElementExtracted:(BSGJsonDataOnElementExtracedBlock)onElementExtracted {}
+- (void)extractFromJSON:(__unused NSDictionary<NSString *, id> *)json
+     onElementExtracted:(__unused BSGJsonDataOnElementExtracedBlock)onElementExtracted {}
 
 @end
