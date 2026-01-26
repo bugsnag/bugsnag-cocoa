@@ -24,6 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)storeEvent:(BugsnagEvent *)event;
 
+- (void)storeEventAndSend:(BugsnagEvent *)event;
+
+- (void)storeEventAndFlush:(BugsnagEvent *)event;
+
 - (void)uploadEvent:(BugsnagEvent *)event completionHandler:(nullable void (^)(void))completionHandler;
 
 - (void)uploadKSCrashReportWithFile:(NSString *)file completionHandler:(nullable void (^)(void))completionHandler;

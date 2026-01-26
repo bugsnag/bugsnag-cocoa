@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 6.35.0 (2026-01-26)
+
+### Enhancements
+
+* Added customer controlled delivery strategy per notify call.
+  [#1899](https://github.com/bugsnag/bugsnag-cocoa/pull/1899)
+
+* Add error options to allow control over captured fields of handled events.
+  [#1879](https://github.com/bugsnag/bugsnag-cocoa/pull/1879)
+
 ## 6.34.1 (2025-10-09)
 
 ### Bug Fixes

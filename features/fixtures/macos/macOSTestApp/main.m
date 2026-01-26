@@ -24,6 +24,10 @@ int main(int argc, const char * argv[]) {
         // Stop NSApplication swallowing NSExceptions thrown on the main thread.
         @"NSApplicationCrashOnExceptions": @YES,
     }];
-    
+
+    // Write logs to files
+    freopen("macOSTestApp.stdout.log", "a", stdout);
+    freopen("macOSTestApp.stderr.log", "a", stderr);
+
     return NSApplicationMain(argc, argv);
 }

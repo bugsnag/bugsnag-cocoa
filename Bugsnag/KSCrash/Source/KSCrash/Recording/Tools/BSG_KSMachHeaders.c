@@ -20,9 +20,10 @@
 
 // Copied from https://github.com/apple/swift/blob/swift-5.0-RELEASE/include/swift/Runtime/Debug.h#L28-L40
 
-#define CRASHREPORTER_ANNOTATIONS_VERSION 5
+#define CRASHREPORTER_ANNOTATIONS_VERSION 7
 #define CRASHREPORTER_ANNOTATIONS_SECTION "__crash_info"
 
+// TODO: Update after PLAT-15173
 struct crashreporter_annotations_t {
     uint64_t version;          // unsigned long
     uint64_t message;          // char *
