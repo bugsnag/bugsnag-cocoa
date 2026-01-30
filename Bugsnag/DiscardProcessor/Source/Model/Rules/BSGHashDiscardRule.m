@@ -7,7 +7,7 @@
 //
 
 #import "BSGHashDiscardRule.h"
-#import "BSGJsonDataExtractor.h"
+#import "../../../Path/PathExtractor/BSGJsonDataExtractor.h"
 #import <CommonCrypto/CommonDigest.h>
 
 static NSString * const JsonKeyPaths = @"paths";

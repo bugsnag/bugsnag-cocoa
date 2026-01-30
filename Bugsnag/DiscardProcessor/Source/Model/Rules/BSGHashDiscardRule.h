@@ -6,8 +6,8 @@
 //  Copyright © 2026 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGEventDiscardRule.h"
-#import "BSGJsonDataExtractorFactory.h"
+#import "../BSGEventDiscardRule.h"
+#import "../../../Path/PathExtractor/Factory/BSGJsonDataExtractorFactory.h"
 
 @interface BSGHashDiscardRule : NSObject <BSGEventDiscardRule>
 
