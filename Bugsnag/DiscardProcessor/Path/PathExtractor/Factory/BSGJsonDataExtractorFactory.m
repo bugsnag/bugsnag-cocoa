@@ -7,10 +7,10 @@
 //
 
 #import "BSGJsonDataExtractorFactory.h"
-#import "BSGFilterExtractor.h"
-#import "BSGRegexExtractor.h"
-#import "BSGRelativeAddressExtractor.h"
-#import "BSGSimplePathExtractor.h"
+#import "../Extractors/BSGFilterExtractor.h"
+#import "../Extractors/BSGRegexExtractor.h"
+#import "../Extractors/BSGRelativeAddressExtractor.h"
+#import "../Extractors/BSGSimplePathExtractor.h"
 
 static NSString * const JsonKeyPathMode = @"pathMode";
 static NSString * const JsonKeyPath = @"path";

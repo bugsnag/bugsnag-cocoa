@@ -6,7 +6,7 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
-#import "BSGJsonDataExtractor.h"
+#import "../BSGJsonDataExtractor.h"
 
 @interface BSGRegexExtractor : BSGJsonDataExtractor
 

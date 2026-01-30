@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSGJsonCollectionPath.h"
+#import "../BSGJsonCollectionPath.h"
 
 typedef void (^BSGJsonDataOnElementExtracedBlock)(NSString *element);
 
