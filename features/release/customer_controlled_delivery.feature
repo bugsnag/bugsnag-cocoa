@@ -17,6 +17,9 @@ Feature: Check customer control over delivery per notify call
 
   Scenario: Store and flush strategy should also send existing error files
     When I run "CustomerControlledDeliveryScenario"
+    And I invoke "storeOnlyStrategy"
+    And I invoke "storeOnlyStrategy"
+    And I invoke "storeOnlyStrategy"
     And I invoke "storeAndFlushStrategy"
     And I wait to receive 4 errors
     And the event "metaData.error.reason" equals "Store only type error"
