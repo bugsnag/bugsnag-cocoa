@@ -11,9 +11,9 @@
 @interface BSGRemoteConfigurationDiscardRule : NSObject
 
 @property (nonatomic, strong) NSString *matchType;
+@property (nonatomic, strong) NSDictionary<NSString *, id> *json;
 
 + (instancetype)ruleFromJson:(NSDictionary *)json;
-- (NSDictionary *)toJson;
 
 @end
 

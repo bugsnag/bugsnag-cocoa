@@ -21,22 +21,15 @@ static NSString const *MatchTypeKey = @"matchType";
     if (![matchType isKindOfClass:[NSString class]]) {
         return nil;
     }
-    return [[self alloc] initWithMatchType:matchType];
+    return [[self alloc] initWithMatchType:matchType json:json];
 }
 
-- (instancetype)initWithMatchType:(NSString *)matchType {
+- (instancetype)initWithMatchType:(NSString *)matchType json:(NSDictionary *)json {
     if ((self = [super init])) {
         _matchType = matchType;
+        _json = json;
     }
     return self;
-}
-
-- (NSDictionary *)toJson {
-    NSMutableDictionary *result = [NSMutableDictionary dictionary];
-    if (self.matchType) {
-        result[MatchTypeKey] = self.matchType;
-    }
-    return result;
 }
 
 @end
@@ -96,7 +89,7 @@ static NSString const *MatchTypeKey = @"matchType";
     }
     NSMutableArray *discardRulesJson = [NSMutableArray array];
     for (BSGRemoteConfigurationDiscardRule *rule in self.discardRules) {
-        NSDictionary *ruleJson = [rule toJson];
+        NSDictionary *ruleJson = [rule json];
         if (rule) {
             [discardRulesJson addObject:ruleJson];
         }

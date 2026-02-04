@@ -18,6 +18,7 @@ static NSString *OSVersionQueryParam = @"osVersion";
 static NSString *ReleaseStageQueryParam = @"releaseStage";
 static NSString *BinaryArchQueryParam = @"binaryArch";
 static NSString *AppIdQueryParam = @"appId";
+static NSString *PayloadVersionParam = @"payloadVersion";
 
 static NSString *ContentTypeHeader = @"Content-Type";
 static NSString *IfNoneMatchHeader = @"If-None-Match";
@@ -27,6 +28,8 @@ static NSString *CacheControlMaxAgePrefix = @"max-age=";
 
 static const NSInteger HTTPStatusCodeNotModified = 304;
 static const NSInteger HTTPStatusCodeBadRequest = 400;
+
+static NSString *CurrentPayloadVersion = @"1";
 
 @implementation BSGRemoteConfigServiceResponse
 
@@ -265,6 +268,8 @@ static const NSInteger HTTPStatusCodeBadRequest = 400;
                                                                       value:self.app.binaryArch];
     NSURLQueryItem *appIdQueryItem = [NSURLQueryItem queryItemWithName:AppIdQueryParam
                                                                  value:self.app.id];
+    NSURLQueryItem *payloadVersionQueryItem = [NSURLQueryItem queryItemWithName:PayloadVersionParam
+                                                                          value:CurrentPayloadVersion];
     
     
     urlComponents.queryItems = @[versionQueryItem,
@@ -272,7 +277,8 @@ static const NSInteger HTTPStatusCodeBadRequest = 400;
                                  osVersionQueryItem,
                                  releaseStageQueryItem,
                                  binaryArchQueryItem,
-                                 appIdQueryItem];
+                                 appIdQueryItem,
+                                 payloadVersionQueryItem];
     NSURL *finalUrl = urlComponents.URL;
     
     if (!finalUrl) {
