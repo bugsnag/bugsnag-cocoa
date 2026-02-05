@@ -12,6 +12,7 @@
 #import "BSGMemoryFeatureFlagStore.h"
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
+#import "BSGHttpKeys.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashReportFields.h"
@@ -278,6 +279,14 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _session = BSGSessionFromEventJson(json[BSGKeySession], _app, _device, _user);
         _isDeliveryStrategySet = NO;
         _attemptDeliveryOnCrash = NO;
+
+        _request = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
+            return [BugsnagRequest requestFromJson:dict];
+        }) ?: [BugsnagRequest new];
+
+        _response = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
+            return [BugsnagResponse responseFromJson:dict];
+        }) ?: [BugsnagResponse new];
     }
     return self;
 }

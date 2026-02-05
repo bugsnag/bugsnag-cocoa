@@ -22,6 +22,8 @@
 @class BugsnagThread;
 @class BugsnagError;
 @class BugsnagUser;
+@class BugsnagRequest;
+@class BugsnagResponse;
 
 /**
  * Represents the importance of a particular event.
@@ -130,6 +132,14 @@ BUGSNAG_EXTERN
  * the error that will be sent.
  */
 @property (strong, nullable, nonatomic) id originalError;
+
+// =============================================================================
+// MARK: - Network fields
+// =============================================================================
+
+@property (strong, nullable, nonatomic) BugsnagRequest *request;
+
+@property (strong, nullable, nonatomic) BugsnagResponse *response;
 
 // =============================================================================
 // MARK: - User
