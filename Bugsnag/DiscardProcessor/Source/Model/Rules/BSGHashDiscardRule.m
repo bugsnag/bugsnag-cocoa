@@ -49,7 +49,7 @@ static uint8_t const HashSeparator = ';';
         return nil;
     }
     
-    NSArray *matchesArray = json[JsonKeyMatches];
+    NSArray *matchesArray = hash[JsonKeyMatches];
     if (![matchesArray isKindOfClass:[NSArray class]]) {
         return nil;
     }

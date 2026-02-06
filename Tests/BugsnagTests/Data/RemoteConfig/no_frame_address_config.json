@@ -1,0 +1,18 @@
+{
+  "discardRules": [
+    {
+      "matchType": "HASH",
+      "hash": {
+        "paths": [
+          {
+            "path": "objectA",
+            "pathMode": "RELATIVE_ADDRESS"
+          }
+        ],
+        "matches": [
+          ""
+        ]
+      }
+    }
+  ]
+}

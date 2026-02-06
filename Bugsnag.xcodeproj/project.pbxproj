@@ -1021,6 +1021,10 @@
 		96828B902F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
 		96828B912F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
 		96828B922F0B66870020821F /* BSGHashDiscardRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */; };
+		96828BB32F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */; };
+		96828BB42F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */; };
+		96828BB52F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */; };
+		96828BB62F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */; };
 		968BFBCB2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
 		968BFBCC2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */; };
 		968BFBCD2D011BC300DCC24B /* BSGPersistentFeatureFlagStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */; };
@@ -1946,6 +1950,7 @@
 		96828B7E2F0B4F270020821F /* BSGFilterExtractor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGFilterExtractor.m; sourceTree = "<group>"; };
 		96828B882F0B66730020821F /* BSGHashDiscardRule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGHashDiscardRule.h; sourceTree = "<group>"; };
 		96828B8D2F0B66830020821F /* BSGHashDiscardRule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGHashDiscardRule.m; sourceTree = "<group>"; };
+		96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGHashDiscardIntegrationTests.m; sourceTree = "<group>"; };
 		968BFBC92D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGPersistentFeatureFlagStore.h; sourceTree = "<group>"; };
 		968BFBCA2D011BBB00DCC24B /* BSGPersistentFeatureFlagStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStore.m; sourceTree = "<group>"; };
 		968BFBD42D0125C700DCC24B /* BSGStoredFeatureFlag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGStoredFeatureFlag.m; sourceTree = "<group>"; };
@@ -2364,6 +2369,7 @@
 				008966C62486D43600DC48C2 /* BSGConnectivityTest.m */,
 				010F80C128645B4200D6569E /* BSGDefinesTests.m */,
 				01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */,
+				96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */,
 				01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */,
 				96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */,
 				CBCF77AA250142E0004AF22A /* BSGJSONSerializationTests.m */,
@@ -3997,6 +4003,7 @@
 				008967662486D43700DC48C2 /* BugsnagNotifierTest.m in Sources */,
 				004E35382487B2BC007FBAE4 /* BugsnagSwiftTests.swift in Sources */,
 				004E353A2487B3B3007FBAE4 /* BugsnagSwiftPublicAPITests.swift in Sources */,
+				96828BB42F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */,
 				008966F12486D43700DC48C2 /* BugsnagMetadataRedactionTest.m in Sources */,
 				008967752486D43700DC48C2 /* XCTestCase+KSCrash.m in Sources */,
 				CB9103642502320A00E9D1E2 /* BugsnagApiClientTest.m in Sources */,
@@ -4180,6 +4187,7 @@
 				008967492486D43700DC48C2 /* BugsnagUserTest.m in Sources */,
 				0089673A2486D43700DC48C2 /* BugsnagEventFromKSCrashReportTest.m in Sources */,
 				0089674C2486D43700DC48C2 /* BSGConnectivityTest.m in Sources */,
+				96828BB32F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */,
 				008966EF2486D43700DC48C2 /* BugsnagClientPayloadInfoTest.m in Sources */,
 				CBA2249C251E429C00B87416 /* TestSupport.m in Sources */,
 				E701FAB02490EFE8008D842F /* ConfigurationApiValidationTest.m in Sources */,
@@ -4418,6 +4426,7 @@
 				01847DAE26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m in Sources */,
 				01B74E9E27903326004B9765 /* BSG_KSFileTests.m in Sources */,
 				004E35372487AFF2007FBAE4 /* BugsnagHandledStateTest.m in Sources */,
+				96828BB52F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */,
 				01935AE3275E68E9007498B3 /* UIApplicationStub.m in Sources */,
 				CB3744A628475F2B00A3955E /* BSG_KSCrashStringConversionTest.m in Sources */,
 				01C17AE92542ED7F00C102C9 /* KSCrashReportWriterTests.m in Sources */,
@@ -4746,6 +4755,7 @@
 				CB28F0AF28294D4F003AB200 /* KSCrashState_Tests.m in Sources */,
 				CB28F0B528294DE1003AB200 /* BSGEventUploadKSCrashReportOperationTests.m in Sources */,
 				CB28F0A428294D4F003AB200 /* KSSysCtl_Tests.m in Sources */,
+				96828BB62F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */,
 				01A2958928B667C2005FCC8C /* BSGNetworkBreadcrumbTests.m in Sources */,
 				CB28F0C4282A488B003AB200 /* BugsnagApiClientTest.m in Sources */,
 				CB28F0D7282A4BA6003AB200 /* BugsnagEventTests.m in Sources */,
