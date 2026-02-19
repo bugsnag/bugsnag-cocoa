@@ -37,6 +37,8 @@ Feature: Check customer control over delivery per notify call
     And I configure Bugsnag for "CustomerControlledDeliveryScenario"
     And I should receive no errors
 
+  # Skipped pending PLAT-15677
+  @skip_macos_10_14
   Scenario: Store and send strategy should not send existing error files
     When I run "CustomerControlledDeliveryScenario"
     And I invoke "storeAndSendStrategy"
