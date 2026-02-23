@@ -17,7 +17,36 @@
 
 #import <Bugsnag/BugsnagClient.h>
 
+@interface BugsnagNetworkRequestPlugin ()
+
+@property (nonatomic) BOOL enableNetworkBreadcrumbs;
+@property (nonatomic, nullable) BugsnagNetworkRequestFailuresConfiguration* configuration;
+
+@end
+
 @implementation BugsnagNetworkRequestPlugin
+
+- (instancetype)init {
+    if (!(self = [super init])) {
+        return nil;
+    }
+    _enableNetworkBreadcrumbs = YES;
+    _configuration = nil;
+
+    return self;
+}
+
+- (instancetype)initWithConfiguration:(BugsnagNetworkRequestFailuresConfiguration *)configuration enableNetworkBreadcrumbs:(BOOL)enableNetworkBreadcrumbs {
+    if (!(self = [super init])) {
+        return nil;
+    }
+    _enableNetworkBreadcrumbs = enableNetworkBreadcrumbs;
+    _configuration = configuration;
+
+    return self;
+}
+
+
 
 + (void)load {
     if (@available(macOS 10.12, iOS 10.0, tvOS 10.0, watchOS 3.0, *)) {
@@ -27,10 +56,12 @@
 
 - (void)load:(BugsnagClient *)client {
     [BSGURLSessionTracingDelegate setClient:client];
+    [BSGURLSessionTracingDelegate setConfiguration:self.configuration breadcrumbsEnabled:self.enableNetworkBreadcrumbs];
 }
 
 - (void)unload {
     [BSGURLSessionTracingDelegate setClient:nil];
+    [BSGURLSessionTracingDelegate setConfiguration:nil breadcrumbsEnabled:NO];
 }
 
 @end
