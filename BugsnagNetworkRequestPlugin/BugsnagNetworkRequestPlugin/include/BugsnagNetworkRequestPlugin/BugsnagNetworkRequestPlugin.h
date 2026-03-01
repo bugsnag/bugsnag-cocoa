@@ -14,8 +14,6 @@
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0))
 @interface BugsnagNetworkRequestPlugin : NSObject<BugsnagPlugin>
 
-@property (nonatomic, readonly) BOOL enableNetworkBreadcrumbs;
-
 @property (nonatomic, nullable, readonly) BugsnagNetworkRequestFailuresConfiguration* configuration;
 
 @end

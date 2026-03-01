@@ -16,7 +16,9 @@
 BUGSNAG_EXTERN
 @interface BugsnagRequest : NSObject
 
-@property (copy, nullable, nonatomic) NSData *body;
++ (instancetype _Nonnull )initFromHttpRequest:(NSURLRequest * _Nullable)httpRequest httpVersion:(NSString * _Nullable)httpVersion maxBodyCapture:(NSUInteger)maxBodyCapture;
+
+@property (copy, nullable, nonatomic) NSString *body;
 
 @property (copy, nullable, nonatomic) NSDictionary<NSString *, NSString *> *headers;
 
@@ -26,8 +28,10 @@ BUGSNAG_EXTERN
 
 @property (copy, nullable, nonatomic) NSString *httpVersion;
 
-@property (copy, nullable, nonatomic) NSURL *url;
+@property (copy, nullable, nonatomic) NSString *url;
 
 @property (nonatomic) NSUInteger bodyLength;
+
+- (void)setNewUrl:(NSString * _Nullable)url;
 
 @end

@@ -6,6 +6,8 @@
 //
 
 #import "BSGURLSessionTracingDelegate.h"
+#import "BugsnagInstrumentedHTTPRequest.h"
+#import "BugsnagInstrumentedHTTPResponse.h"
 
 @implementation BSGURLSessionTracingDelegate
 
@@ -38,10 +40,6 @@ static BOOL g_breadcrumbsEnabled;
 
 - (void)URLSession:(__unused NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
-    if (g_breadcrumbsEnabled == YES) {
-        [g_client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
-    }
-
     if (g_config == nil || metrics == nil) {
         return;
     }
@@ -50,20 +48,24 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     options.capture.threads = NO;
     options.capture.stacktrace = NO;
 
-    for (NSURLSessionTaskTransactionMetrics* transaction in metrics.transactionMetrics) {
-        if (transaction.response != nil) {
-            NSHTTPURLResponse *response = (NSHTTPURLResponse *)transaction.response;
-            if ([g_config shouldCaptureHttpErrorCode:@(response.statusCode)]) {
-                NSError *error = [NSError errorWithDomain:@"NetworkFailureError" code:1 userInfo:@{}];
-                [g_client notifyError:error options:options block:^BOOL(BugsnagEvent * _Nonnull _) {
-                    //event.request = processRequest(transaction.request);
-                    //event.response = processResponse(transaction.response);
-                    return NO;
-                }];
-            }
-        }
+    BugsnagInstrumentedHTTPRequest *instrumentedRequest = [BugsnagInstrumentedHTTPRequest initWithTransactionMetrics:metrics config:g_config];
+    BugsnagInstrumentedHTTPResponse *instrumentedResponse = [BugsnagInstrumentedHTTPResponse initWithTransactionMetrics:metrics config:g_config];
+
+    // CALL ONRESPONSE CALLBACK
+    NSUInteger uStatusCode = (NSUInteger) [instrumentedResponse getStatusCode];
+    if ([g_config shouldCaptureHttpErrorCode:uStatusCode] == YES) {
+        NSError *error = [NSError errorWithDomain:@"NetworkFailureError" code:1 userInfo:@{}];
+        [g_client notifyError:error options:options block:^BOOL(BugsnagEvent * _Nonnull _) {
+            //processRequest
+            //processResponse
+            // CALL OnERROR CALLBACK
+            return NO;
+        }];
     }
 
+    if (g_breadcrumbsEnabled == YES && [instrumentedResponse isBreadcrumbReported] == YES) {
+        [g_client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
+    }
 }
 
 @end

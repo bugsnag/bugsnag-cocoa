@@ -12,6 +12,33 @@
 
 @implementation BugsnagRequest
 
++ (instancetype _Nonnull)initFromHttpRequest:(NSURLRequest * _Nullable)httpRequest httpVersion:(NSString * _Nullable)httpVersion maxBodyCapture:(NSUInteger)maxBodyCapture {
+    BugsnagRequest *request = [BugsnagRequest new];
+    request.headers = httpRequest.allHTTPHeaderFields;
+    request.httpMethod = httpRequest.HTTPMethod ?: @"";
+    request.httpVersion = httpVersion ?: @"";
+    [request setNewUrl:httpRequest.URL.absoluteString];
+
+    if (maxBodyCapture != 0) {
+        if (httpRequest.HTTPBody != nil) {
+            NSUInteger lengthToCopy = MIN(httpRequest.HTTPBody.length, maxBodyCapture);
+            NSRange range = NSMakeRange(0, lengthToCopy);
+            NSData *truncatedData = [httpRequest.HTTPBody subdataWithRange:range];
+            NSString *bodyStr;
+            [NSString stringEncodingForData:truncatedData encodingOptions:nil convertedString:&bodyStr usedLossyConversion:nil];
+            request.body = bodyStr;
+            if (bodyStr != nil) {
+                request.bodyLength = bodyStr.length;
+            }
+        }
+    } else {
+        request.body = nil;
+        request.bodyLength = 0;
+    }
+
+    return request;
+}
+
 + (instancetype)requestFromJson:(NSDictionary *)json {
     if (json == nil) {
         return nil;
@@ -21,9 +48,8 @@
     NSString *httpMethod = BSGDeserializeString(json[BSGHttpMethod]);
     NSString *httpVersion = BSGDeserializeString(json[BSGHttpVersion]);
 
-    NSString *bodyStr = BSGDeserializeString(json[BSGHttpBody]);
-    NSData *body = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
-    NSURL *url = [NSURL URLWithString:BSGDeserializeString(json[BSGHttpURL]) ?: @""];
+    NSString *body = BSGDeserializeString(json[BSGHttpBody]);
+    NSString *url = BSGDeserializeString(json[BSGHttpURL]);
 
     BugsnagRequest *request = [BugsnagRequest new];
     request.body = body;
@@ -35,6 +61,39 @@
     request.bodyLength = body != nil ? body.length : 0;
 
     return request;
+}
+
+- (NSDictionary *)toDictionary {
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    dict[BSGHttpBody] = self.body;
+    dict[BSGHttpBodyLength] = [NSString stringWithFormat:@"%tu", self.bodyLength];
+    dict[BSGHttpHeaders] = self.headers;
+    dict[BSGHttpParams] = self.params;
+    dict[BSGHttpMethod] = self.httpMethod;
+    dict[BSGHttpVersion] = self.httpVersion;
+    dict[BSGHttpURL] = self.url;
+    return dict;
+}
+
+- (void)setNewUrl:(NSString * _Nullable)url {
+    if (url == nil) {
+        self.url = @"";
+        self.params = @{};
+    } else {
+        NSRange queryRange = [url rangeOfString: @"?"];
+        if (queryRange.location != NSNotFound) {
+            self.url = [url substringToIndex:queryRange.location];
+            NSURLComponents *components = [NSURLComponents componentsWithString:url ?: @""];
+            NSMutableDictionary *params = [NSMutableDictionary new];
+            for (NSURLQueryItem *item in components.queryItems) {
+                params[item.name] = item.value;
+            }
+            self.params = params;
+
+        } else {
+            self.url = url;
+        }
+    }
 }
 
 @end

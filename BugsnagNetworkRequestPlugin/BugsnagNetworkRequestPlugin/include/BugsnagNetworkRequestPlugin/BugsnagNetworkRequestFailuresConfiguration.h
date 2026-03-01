@@ -15,14 +15,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface BugsnagNetworkRequestFailuresConfiguration : NSObject
 
-@property (nonatomic) NSNumber *maxRequestBodyCapture;
-@property (nonatomic) NSNumber *maxResponseBodyCapture;
+@property (nonatomic) NSUInteger maxRequestBodyCapture;
+@property (nonatomic) NSUInteger maxResponseBodyCapture;
+@property (nonatomic) BOOL enableNetworkBreadcrumbs;
 
-- (void)addHttpErrorCode:(NSNumber *)errorCode;
+- (void)addHttpErrorCode:(NSUInteger)errorCode;
 - (void)addHttpErrorCodes:(NSArray<NSNumber *> *)errorCodesArray;
-- (void)removeHttpErrorCode:(NSNumber *)errorCode;
+- (void)removeHttpErrorCode:(NSUInteger)errorCode;
 
-- (BOOL)shouldCaptureHttpErrorCode:(NSNumber *)errorCode;
+//- (void)addResponseCallback();
+
+- (BOOL)shouldCaptureHttpErrorCode:(NSUInteger)errorCode;
 
 @end
 

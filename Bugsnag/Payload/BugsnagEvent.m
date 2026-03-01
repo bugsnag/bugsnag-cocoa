@@ -710,6 +710,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     event[BSGKeyUsage] = self.usage;
 
+    event[BSGHttpRequest] = [self.request toDictionary];
+    event[BSGHttpResponse] = [self.response toDictionary];
+
     return event;
 }
 

@@ -12,6 +12,38 @@
 
 @implementation BugsnagResponse
 
++ (instancetype _Nonnull)initFromHttpResponse:(NSURLResponse * _Nullable)httpResponse maxBodyCapture:(NSUInteger)maxBodyCapture {
+    BugsnagResponse *response = [BugsnagResponse new];
+
+    if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] != YES) {
+        return response;
+    }
+
+    NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)httpResponse;
+    response.headers = castedResponse.allHeaderFields;
+    response.statusCode = castedResponse.statusCode;
+
+    if (maxBodyCapture != 0) {
+        if (httpResponse != nil) {
+//            NSUInteger lengthToCopy = MIN(httpResponse.HTTPBody.length, maxBodyCapture);
+//            NSRange range = NSMakeRange(0, lengthToCopy);
+//            NSData *truncatedData = [httpResponse.HTTPBody subdataWithRange:range];
+//            NSString *bodyStr;
+//            [NSString stringEncodingForData:truncatedData encodingOptions:nil convertedString:&bodyStr usedLossyConversion:nil];
+//            response.body = bodyStr;
+//            if (bodyStr != nil) {
+//                response.bodyLength = bodyStr.length;
+//            }
+        }
+    } else {
+        response.body = nil;
+        response.bodyLength = 0;
+    }
+
+    return response;
+}
+
+
 + (instancetype)responseFromJson:(NSDictionary *)json {
     if (json == nil) {
         return nil;
@@ -19,15 +51,23 @@
     NSDictionary *headers = BSGDeserializeDict(json[BSGHttpHeaders]);
     NSNumber *statusCode = BSGDeserializeNumber(json[BSGHttpStatusCode]);
 
-    NSString *bodyStr = BSGDeserializeString(json[BSGHttpBody]);
-    NSData *body = [bodyStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *body = BSGDeserializeString(json[BSGHttpBody]);
     BugsnagResponse *response = [BugsnagResponse new];
     response.body = body;
     response.headers = headers ?: @{};
-    response.statusCode = statusCode ?: @(0);
+    response.statusCode = statusCode != nil ? [statusCode integerValue] : 0;
     response.bodyLength = body != nil ? body.length : 0;
 
     return response;
+}
+
+- (NSDictionary *)toDictionary {
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    dict[BSGHttpBody] = self.body;
+    dict[BSGHttpBodyLength] = [NSString stringWithFormat:@"%tu", self.bodyLength];
+    dict[BSGHttpHeaders] = self.headers;
+    dict[BSGHttpStatusCode] = [NSString stringWithFormat:@"%ld", self.statusCode];
+    return dict;
 }
 
 @end

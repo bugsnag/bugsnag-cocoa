@@ -261,11 +261,15 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 + (instancetype)requestFromJson:(NSDictionary *)json;
 
+- (NSDictionary *)toDictionary;
+
 @end
 
 @interface BugsnagResponse ()
 
 + (instancetype)responseFromJson:(NSDictionary *)json;
+
+- (NSDictionary *)toDictionary;
 
 @end
 

@@ -16,9 +16,14 @@
 BUGSNAG_EXTERN
 @interface BugsnagResponse : NSObject
 
-@property (copy, nullable, nonatomic) NSData *body;
++ (instancetype _Nonnull)initFromHttpResponse:(NSURLResponse * _Nullable)httpResponse maxBodyCapture:(NSUInteger)maxBodyCapture;
+
+@property (copy, nullable, nonatomic) NSString *body;
+
 @property (copy, nullable, nonatomic) NSDictionary<NSString *, NSString *> *headers;
-@property (strong, nonnull, nonatomic) NSNumber *statusCode;
+
+@property (nonatomic) NSInteger statusCode;
+
 @property (nonatomic) NSUInteger bodyLength;
 
 @end
