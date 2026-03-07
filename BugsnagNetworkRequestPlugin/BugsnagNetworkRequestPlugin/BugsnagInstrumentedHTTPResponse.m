@@ -11,6 +11,7 @@
 @property (nonatomic, strong) NSURLResponse *originalResponse;
 @property (nonatomic, strong) BugsnagResponse *response;
 @property (nonatomic) BOOL isBreadcrumbReported;
+@property (nonatomic) BugsnagOnErrorBlock onErrorBlock;
 @end
 
 @implementation BugsnagInstrumentedHTTPResponse
@@ -53,6 +54,10 @@
     return self.response.statusCode;
 }
 
+- (void) setInstrumentedRequest:(BugsnagInstrumentedHTTPRequest * _Nonnull)request {
+    self.relatedRequest = request;
+}
+
 - (NSString * _Nullable) getReportedResponseBody {
     return self.response.body;
 }
@@ -73,6 +78,18 @@
 
 - (BOOL) isBreadcrumbReported {
     return self.isBreadcrumbReported;
+}
+
+- (void) setErrorCallback:(BugsnagOnErrorBlock _Nullable)onErrorCallback {
+    self.onErrorBlock = onErrorCallback;
+}
+
+- (BugsnagOnErrorBlock _Nullable) getErrorCallback {
+    return self.onErrorBlock;
+}
+
+- (BugsnagResponse * _Nonnull) getBugsnagResponse {
+    return self.response;
 }
 
 @end

@@ -6,7 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Bugsnag/BugsnagConfiguration.h>
 #import "BugsnagNetworkRequestFailuresConfiguration.h"
+#import "BugsnagInstrumentedHTTPRequest.h"
 
 /**
  * Represents an HTTP response that has been instrumented by BugSnag. This interface provides
@@ -18,6 +20,8 @@
 + (instancetype)initWithTransactionMetrics:(NSURLSessionTaskMetrics *)metrics config:(BugsnagNetworkRequestFailuresConfiguration *)config;
 
 - (instancetype)init:(NSURLResponse *)response config:(BugsnagNetworkRequestFailuresConfiguration *)config;
+
+@property (nonatomic, assign) BugsnagInstrumentedHTTPRequest *relatedRequest;
 
 /**
  * The original HTTP response object, if one was received. This may be nil if the
@@ -31,6 +35,12 @@
  * Reported http status code.
  */
 - (NSInteger) getStatusCode;
+
+/**
+ * Add instrumented request related to this response.
+ * Added here for the purpose of onResponse callback.
+ */
+- (void) setInstrumentedRequest:(BugsnagInstrumentedHTTPRequest * _Nonnull)request;
 
 /**
  * The response body that will be reported to BugSnag for this response. This may be different
@@ -63,5 +73,22 @@
  * @return YES if a breadcrumb will be reported
  */
 - (BOOL) isBreadcrumbReported;
+
+/**
+ * Set an onErrorCallback that can customise Bugsnag Event
+ * created as a consequence to this response.. Setting this to nil will remove any existing error callback.
+ *
+ * @param onErrorCallback the error callback to customise HTTP events
+ */
+- (void) setErrorCallback:(BugsnagOnErrorBlock _Nullable)onErrorCallback;
+
+/**
+ * Return the error callback if one has been set.
+ *
+ * @return the error callback for this response
+ */
+- (BugsnagOnErrorBlock _Nullable) getErrorCallback;
+
+- (BugsnagResponse * _Nonnull) getBugsnagResponse;
 
 @end

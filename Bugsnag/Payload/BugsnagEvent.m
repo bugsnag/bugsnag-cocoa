@@ -710,6 +710,31 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
     event[BSGKeyUsage] = self.usage;
 
+
+    // Redact http request headers and params
+    if (self.request != nil) {
+        NSMutableDictionary *redactedReqHeaders = [NSMutableDictionary dictionary];
+        for (NSString *key in self.request.headers) {
+            redactedReqHeaders[key] = [self redactedMetadataValue:metadata[key] forKey:key redactedKeys:redactedKeys];
+        }
+        self.request.headers = redactedReqHeaders;
+
+        NSMutableDictionary *redactedReqParams = [NSMutableDictionary dictionary];
+        for (NSString *key in self.request.params) {
+            redactedReqParams[key] = [self redactedMetadataValue:metadata[key] forKey:key redactedKeys:redactedKeys];
+        }
+        self.request.params = redactedReqParams;
+    }
+
+    // Redact http response headers
+    if (self.response != nil) {
+        NSMutableDictionary *redactedResHeaders = [NSMutableDictionary dictionary];
+        for (NSString *key in self.response.headers) {
+            redactedResHeaders[key] = [self redactedMetadataValue:metadata[key] forKey:key redactedKeys:redactedKeys];
+        }
+        self.response.headers = redactedResHeaders;
+    }
+
     event[BSGHttpRequest] = [self.request toDictionary];
     event[BSGHttpResponse] = [self.response toDictionary];
 

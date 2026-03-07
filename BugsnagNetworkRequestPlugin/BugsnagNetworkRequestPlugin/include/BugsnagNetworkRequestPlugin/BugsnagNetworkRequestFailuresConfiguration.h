@@ -9,6 +9,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class BugsnagInstrumentedHTTPResponse;
+
+typedef BOOL (^BugsnagHttpResponseCallback)(BugsnagInstrumentedHTTPResponse *_Nonnull instrumentedResp);
+
 /**
  * BugsnagNetworkRequestFailuresConfiguration allows configuring which HTTP response codes
  * should be treated as errors and sent to Bugsnag as handled exceptions.
@@ -23,7 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addHttpErrorCodes:(NSArray<NSNumber *> *)errorCodesArray;
 - (void)removeHttpErrorCode:(NSUInteger)errorCode;
 
-//- (void)addResponseCallback();
+- (void)addResponseCallback:(BugsnagHttpResponseCallback)callback;
+- (NSArray<BugsnagHttpResponseCallback> *)getResponseCallbacks;
 
 - (BOOL)shouldCaptureHttpErrorCode:(NSUInteger)errorCode;
 

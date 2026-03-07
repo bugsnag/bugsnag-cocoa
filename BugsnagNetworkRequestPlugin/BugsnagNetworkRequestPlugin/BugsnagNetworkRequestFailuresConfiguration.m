@@ -9,6 +9,7 @@
 
 @interface BugsnagNetworkRequestFailuresConfiguration ()
 @property (nonatomic, strong) NSMutableIndexSet *errorCodes;
+@property (nonatomic) NSMutableArray<BugsnagHttpResponseCallback> *responseCallbacks;
 @end
 
 @implementation BugsnagNetworkRequestFailuresConfiguration
@@ -18,6 +19,7 @@
         return nil;
     }
     _errorCodes = [NSMutableIndexSet new];
+    _responseCallbacks = [NSMutableArray new];
     _maxRequestBodyCapture = 0;
     _maxResponseBodyCapture = 0;
 
@@ -45,6 +47,13 @@
     [self.errorCodes removeIndex:errorCode];
 }
 
+- (void)addResponseCallback:(BugsnagHttpResponseCallback)callback {
+        [self.responseCallbacks addObject:callback];
+}
+
+- (NSArray<BugsnagHttpResponseCallback> *)getResponseCallbacks {
+    return self.responseCallbacks;
+}
 
 - (BOOL)shouldCaptureHttpErrorCode:(NSUInteger)errorCode {
     return [self.errorCodes containsIndex:errorCode];

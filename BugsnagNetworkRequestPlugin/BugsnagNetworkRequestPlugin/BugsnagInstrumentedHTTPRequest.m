@@ -40,7 +40,6 @@
 - (instancetype)init:(NSURLRequest *)request httpVersion:(NSString * _Nullable)httpVersion config:(BugsnagNetworkRequestFailuresConfiguration *)config {
     if ((self = [super init])) {
         _originalRequest = request;
-         // @TODO - where to put max body capture value?
         _request = [BugsnagRequest initFromHttpRequest:request httpVersion:httpVersion maxBodyCapture:config.maxRequestBodyCapture];
     }
     return self;
@@ -74,6 +73,10 @@
         self.request.bodyLength = requestBody.length;
         self.request.body = requestBody;
     }
+}
+
+- (BugsnagRequest * _Nonnull) getBugsnagRequest {
+    return self.request;
 }
 
 @end

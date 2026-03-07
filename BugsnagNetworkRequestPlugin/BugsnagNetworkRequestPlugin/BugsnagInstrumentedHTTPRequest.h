@@ -54,4 +54,6 @@
  */
 - (void)setReportedRequestBody:(_Nullable NSString *)requestBody;
 
+- (BugsnagRequest * _Nonnull) getBugsnagRequest;
+
 @end

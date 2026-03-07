@@ -50,15 +50,23 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 
     BugsnagInstrumentedHTTPRequest *instrumentedRequest = [BugsnagInstrumentedHTTPRequest initWithTransactionMetrics:metrics config:g_config];
     BugsnagInstrumentedHTTPResponse *instrumentedResponse = [BugsnagInstrumentedHTTPResponse initWithTransactionMetrics:metrics config:g_config];
+    [instrumentedResponse setInstrumentedRequest:instrumentedRequest];
 
     // CALL ONRESPONSE CALLBACK
+    NSArray<BugsnagHttpResponseCallback> *responseCallbacks = [g_config getResponseCallbacks];
+    for (BugsnagHttpResponseCallback callback in responseCallbacks) {
+        callback(instrumentedResponse);
+    }
+
     NSUInteger uStatusCode = (NSUInteger) [instrumentedResponse getStatusCode];
     if ([g_config shouldCaptureHttpErrorCode:uStatusCode] == YES) {
         NSError *error = [NSError errorWithDomain:@"NetworkFailureError" code:1 userInfo:@{}];
-        [g_client notifyError:error options:options block:^BOOL(BugsnagEvent * _Nonnull _) {
-            //processRequest
-            //processResponse
+        [g_client notifyError:error options:options block:^BOOL(BugsnagEvent * _Nonnull event) {
+            event.request = [instrumentedRequest getBugsnagRequest];
+            event.response = [instrumentedResponse getBugsnagResponse];
             // CALL OnERROR CALLBACK
+            BugsnagOnErrorBlock onErrorBlock = [instrumentedResponse getErrorCallback];
+            onErrorBlock(event);
             return NO;
         }];
     }

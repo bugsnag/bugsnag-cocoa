@@ -22,23 +22,10 @@
     NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)httpResponse;
     response.headers = castedResponse.allHeaderFields;
     response.statusCode = castedResponse.statusCode;
+    response.body = nil;
+    response.bodyLength = 0;
 
-    if (maxBodyCapture != 0) {
-        if (httpResponse != nil) {
-//            NSUInteger lengthToCopy = MIN(httpResponse.HTTPBody.length, maxBodyCapture);
-//            NSRange range = NSMakeRange(0, lengthToCopy);
-//            NSData *truncatedData = [httpResponse.HTTPBody subdataWithRange:range];
-//            NSString *bodyStr;
-//            [NSString stringEncodingForData:truncatedData encodingOptions:nil convertedString:&bodyStr usedLossyConversion:nil];
-//            response.body = bodyStr;
-//            if (bodyStr != nil) {
-//                response.bodyLength = bodyStr.length;
-//            }
-        }
-    } else {
-        response.body = nil;
-        response.bodyLength = 0;
-    }
+    // TODO BODY UNAVAILABLE
 
     return response;
 }
