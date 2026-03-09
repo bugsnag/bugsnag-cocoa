@@ -92,6 +92,7 @@
 		09F024FA2B9F3ACD007D9F73 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024F92B9F3ACD007D9F73 /* Fixture.swift */; };
 		09F024FC2B9F3B16007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */; };
 		09F025172BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */; };
+		1C09E55A2F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
 		1C70DEA52EF07EF300F52112 /* FatalErrorOptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */; };
 		1C70DEA72EF09AFD00F52112 /* CustomerControlledDeliveryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */; };
 		1C8CB8B52EBB994A007BF492 /* CaptureOptionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */; };
@@ -302,6 +303,7 @@
 		09F024F92B9F3ACD007D9F73 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedNotifyErrorScenario.swift; sourceTree = "<group>"; };
+		1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
 		1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatalErrorOptionScenario.swift; sourceTree = "<group>"; };
 		1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerControlledDeliveryScenario.swift; sourceTree = "<group>"; };
 		1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionsScenario.swift; sourceTree = "<group>"; };
@@ -504,6 +506,7 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */,
 				1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */,
 				1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */,
 				1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */,
@@ -946,6 +949,7 @@
 				01E356C026CD5B6A00BE3F64 /* ThermalStateBreadcrumbScenario.swift in Sources */,
 				E7B79CD2247FD66E0039FB88 /* ManualContextClientScenario.swift in Sources */,
 				E7B79CD6247FD7750039FB88 /* AutoContextNSErrorScenario.swift in Sources */,
+				1C09E55A2F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */,
 				A1117E592535B29800014FDA /* OOMEnabledErrorTypesScenario.swift in Sources */,
 				F4295397AD31C1C1E64144F5 /* NonExistentMethodScenario.m in Sources */,
 				E700EE53247D31EA008CFFB6 /* OnErrorOverwriteScenario.swift in Sources */,
