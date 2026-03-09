@@ -33,7 +33,13 @@ class AutoInstrumentNetworkSharedSessionInvalidateScenario: Scenario {
     }
     
     func query(string: String) {
+        let semaphore = DispatchSemaphore(value: 0)
+
         let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
-        URLSession.shared.dataTask(with: url).resume()
+        let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+            semaphore.signal()
+        }
+        task.resume()
+        semaphore.wait()
     }
 }
