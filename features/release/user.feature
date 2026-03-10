@@ -87,3 +87,20 @@ Feature: Reporting User Information
     And the event "user.id" is null
     And the event "user.email" is null
     And the event "user.name" is null
+
+  Scenario: Clearing the user via metadata API clears subsequent user fields
+    When I run "ClearUserMetadataScenario"
+    And I wait to receive 2 errors
+
+    Then the error is valid for the error reporting API
+    And the exception "message" equals "before-clear error 0."
+    And the event "user.id" equals "u1"
+    And the event "user.email" equals "u1@example.com"
+    And the event "user.name" equals "User 1"
+    And I discard the oldest error
+
+    Then the error is valid for the error reporting API
+    And the exception "message" equals "after-clear error 0."
+    And the error payload field "events.0.user.id" does not equal "u1"
+    And the event "user.email" is null
+    And the event "user.name" is null

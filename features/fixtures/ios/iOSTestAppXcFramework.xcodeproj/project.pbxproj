@@ -138,6 +138,7 @@
 		CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */; };
 		CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
 		CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
+		E16204832F60601500E39F2A /* ClearUserMetadataScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16204822F60601500E39F2A /* ClearUserMetadataScenario.swift */; };
 		E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */; };
 		E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */; };
 		E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */; };
@@ -364,6 +365,7 @@
 		CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
 		CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledTrueScenario.swift; sourceTree = "<group>"; };
+		E16204822F60601500E39F2A /* ClearUserMetadataScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearUserMetadataScenario.swift; sourceTree = "<group>"; };
 		E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFromClientScenario.swift; sourceTree = "<group>"; };
@@ -517,7 +519,6 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				1C8CB8B82EBE3CBE007BF492 /* CaptureOptionsScenario.swift */,
 				010BAAF62833CE570003FF36 /* AbortOverrideScenario.m */,
 				F429534164257A2BE23ED72D /* AbortScenario.m */,
 				F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */,
@@ -560,6 +561,8 @@
 				E7A324E9247E9DA5008B0052 /* BreadcrumbCallbackOverrideScenario.swift */,
 				E7A324EC247E9DB3008B0052 /* BreadcrumbCallbackRemovalScenario.m */,
 				F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */,
+				1C8CB8B82EBE3CBE007BF492 /* CaptureOptionsScenario.swift */,
+				E16204822F60601500E39F2A /* ClearUserMetadataScenario.swift */,
 				01DCB82A27985D2C0048640A /* ConcurrentCrashesScenario.mm */,
 				0184DBDF28C63F50006AF50B /* CouldNotCreateDirectoryScenario.swift */,
 				01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */,
@@ -971,6 +974,7 @@
 				E7A324D8247E70B2008B0052 /* SessionCallbackOverrideScenario.swift in Sources */,
 				8AEFC79C20F92E2200A78779 /* AutoSessionUnhandledScenario.m in Sources */,
 				010BAB332833D1E80003FF36 /* UnhandledErrorInvalidReleaseStageScenario.swift in Sources */,
+				E16204832F60601500E39F2A /* ClearUserMetadataScenario.swift in Sources */,
 				E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */,
 				E7B79CDA24800A5D0039FB88 /* MetadataMergeScenario.swift in Sources */,
 				96A25F342D66AFCC00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */,

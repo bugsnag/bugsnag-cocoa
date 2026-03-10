@@ -11,6 +11,8 @@
 #import "BugsnagMetadata.h"
 #import "BugsnagMetadata+Private.h"
 #import "BSGDefines.h"
+#import "BugsnagClient+Private.h"
+#import "BSGKeys.h"
 
 #import <mach/mach_init.h>
 #import <mach/thread_act.h>
@@ -364,6 +366,28 @@
     [metadata addMetadata:@{@"foo": @"baz", [NSNull null]: @""} toSection:@"foo"];
     XCTAssertFalse(didCallObserver, @"Observer should not be called if metadata has not changed");
     XCTAssertEqualObjects([metadata getMetadataFromSection:@"foo"], @{@"foo": @"baz"});
+}
+
+- (void)testClearMetadataUserAlsoClearsUser {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312" ];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+
+    [client setUser:@"u1" withEmail:@"u1@example.com" andName:@"User 1"];
+    XCTAssertNotNil(client.user);
+
+    // Ensure user is present in state metadata first
+    XCTAssertNotNil([client.state getMetadataFromSection:BSGKeyUser]);
+    XCTAssertNotNil(client.user.id);
+    XCTAssertNotNil(client.user.name);
+    XCTAssertNotNil(client.user.email);
+
+    // Now clear "user" via metadata API
+    [client clearMetadataFromSection:BSGKeyUser];
+    XCTAssertNotNil(client.user);
+    XCTAssertNil(client.user.id);
+    XCTAssertNil(client.user.name);
+    XCTAssertNil(client.user.email);
+    XCTAssertNil([client.state getMetadataFromSection:BSGKeyUser]);
 }
 
 #if BSG_HAVE_MACH_THREADS

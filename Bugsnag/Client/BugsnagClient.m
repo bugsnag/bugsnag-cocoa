@@ -1113,6 +1113,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName
 {
     [self.metadata clearMetadataFromSection:sectionName];
+    // The SDK exposes "user" both as a first-class property and (legacy) as a metadata section.
+    // Clearing the user metadata section should clear the user everywhere to avoid surprising behavior.
+    if ([sectionName isEqualToString:BSGKeyUser]) {
+        @synchronized (self.configuration) {
+            // configuration.user is declared nonnull internally, so reset to an empty user instance
+            // via the normal user-setting code path.
+            [self setUser:nil withEmail:nil andName:nil];
+        }
+    }
 }
 
 - (void)clearMetadataFromSection:(NSString *_Nonnull)sectionName

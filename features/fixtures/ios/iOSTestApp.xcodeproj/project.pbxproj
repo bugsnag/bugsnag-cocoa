@@ -139,6 +139,7 @@
 		CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */; };
 		CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
 		CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
+		E16204812F60434C00E39F2A /* ClearUserMetadataScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16204802F60434C00E39F2A /* ClearUserMetadataScenario.swift */; };
 		E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */; };
 		E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */; };
 		E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */; };
@@ -352,6 +353,7 @@
 		CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
 		CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledTrueScenario.swift; sourceTree = "<group>"; };
+		E16204802F60434C00E39F2A /* ClearUserMetadataScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearUserMetadataScenario.swift; sourceTree = "<group>"; };
 		E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFromClientScenario.swift; sourceTree = "<group>"; };
@@ -504,6 +506,7 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				E16204802F60434C00E39F2A /* ClearUserMetadataScenario.swift */,
 				1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */,
 				1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */,
 				1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */,
@@ -902,6 +905,7 @@
 				001E5502243B8FDA0009E31D /* AutoCaptureRunScenario.m in Sources */,
 				0104085F258CA0A100933C60 /* DispatchCrashScenario.swift in Sources */,
 				E700EE55247D3204008CFFB6 /* OnSendOverwriteScenario.swift in Sources */,
+				E16204812F60434C00E39F2A /* ClearUserMetadataScenario.swift in Sources */,
 				010BDFBD28883714007025F9 /* UserNilScenario.swift in Sources */,
 				CB0AE1F1287D89C90079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift in Sources */,
 				F429538D8941382EC2C857CE /* AsyncSafeThreadScenario.m in Sources */,
