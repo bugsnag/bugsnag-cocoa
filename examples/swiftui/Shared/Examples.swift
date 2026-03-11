@@ -122,6 +122,7 @@ func sendAnError() {
 
 private enum MetadataSection: String {
     case extras
+    case user
 }
 
 func addClientMetadata() {
@@ -139,6 +140,7 @@ func clearMetadata() {
     // This method clears all metadata in the "extras" tab that would be attached to the error reports.
     // It won't clear data that hasn't been added yet, like data attached through a callback.
     Bugsnag.clearMetadata(section: MetadataSection.extras.rawValue)
+    Bugsnag.clearMetadata(section: MetadataSection.user.rawValue)
 }
 
 func addCustomBreadcrumb() {

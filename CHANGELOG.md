@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Fixed and issue causing clearMetadata() to not clear the user data.
+  [#1923](https://github.com/bugsnag/bugsnag-cocoa/pull/1923)
+
 ## 6.35.0 (2026-01-26)
 
 ### Enhancements
