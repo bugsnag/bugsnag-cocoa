@@ -20,6 +20,15 @@
 		01DC33BD2733FDF0005B2BDD /* BugsnagNetworkRequestPlugin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A5926D7B109004F6B87 /* BugsnagNetworkRequestPlugin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		01DC33C02733FDF0005B2BDD /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; };
 		01DC33C12733FDF0005B2BDD /* Bugsnag.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CB487A7426D7B12F004F6B87 /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1C09E54F2F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */; };
+		1C09E5502F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */; };
+		1C09E5512F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */; };
+		1C09E5522F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */; };
+		1C09E5542F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
+		1C09E5552F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
+		1C09E5562F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
+		1C09E5572F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
+		1C09E5582F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
 		CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
 		CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
@@ -148,6 +157,8 @@
 		01DC33B22733FC9B005B2BDD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01DC33B42733FC9B005B2BDD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		01DC33B52733FC9B005B2BDD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSharedSessionProxy.h; sourceTree = "<group>"; };
+		1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagSharedSessionProxy.mm; sourceTree = "<group>"; };
 		CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB26E9BD283510D8005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB26E9C128351217005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -307,6 +318,8 @@
 		CB487A5B26D7B109004F6B87 /* BugsnagNetworkRequestPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */,
+				1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */,
 				CB487A5D26D7B109004F6B87 /* Info.plist */,
 				CB487C2D26DE3EFB004F6B87 /* include */,
 				CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */,
@@ -368,6 +381,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB3B7FA82832746000CAD67A /* BugsnagNetworkRequestPlugin.h in Headers */,
+				1C09E5522F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,6 +389,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5502F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
 				CB487F0F26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3026DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1226E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
@@ -386,6 +401,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5512F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
 				CB487F1026E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3126DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1326E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
@@ -397,6 +413,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E54F2F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
 				CB487F1126E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3226DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1426E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
@@ -739,6 +756,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5572F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */,
 				CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */,
@@ -750,6 +768,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5552F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB3B7FA4283270EF00CAD67A /* NSURLSession+Tracing.m in Sources */,
 				CB3B7FA3283270EC00CAD67A /* BSGURLSessionTracingProxy.m in Sources */,
 				CB3B7FA1283270E500CAD67A /* BugsnagNetworkRequestPlugin.m in Sources */,
@@ -770,6 +789,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5562F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB487F1526E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
 				CB487ABF26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB487F0C26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
@@ -790,6 +810,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5582F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB487F1626E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
 				CB487AC026D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB487F0D26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
@@ -810,6 +831,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C09E5542F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB487F1726E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
 				CB487AC126D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB487F0E26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
