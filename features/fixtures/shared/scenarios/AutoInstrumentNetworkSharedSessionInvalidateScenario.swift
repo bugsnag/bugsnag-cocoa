@@ -22,7 +22,9 @@ class AutoInstrumentNetworkSharedSessionInvalidateScenario: Scenario {
     
     override func run() {
         // Make a network request so that automatic network breadcrumbs are left
+        query(string: "/reflect/?status=444&password=T0p5ecr3t")
         URLSession.shared.finishTasksAndInvalidate()
+        query(string: "/reflect/?status=444&password=T0p5ecr3t")
         URLSession.shared.invalidateAndCancel()
         query(string: "/reflect/?status=444&password=T0p5ecr3t")
 
