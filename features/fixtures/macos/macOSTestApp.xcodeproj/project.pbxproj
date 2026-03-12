@@ -203,6 +203,7 @@
 		AA6ACD1E2773E39C006464C4 /* UserInfoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6ACD1D2773E39C006464C4 /* UserInfoScenario.swift */; };
 		CB0AE1F3287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AE1F2287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */; };
 		CBB7878E2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */; };
+		E1F167692F62C1FD002B14C0 /* ClearUserMetadataScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F167682F62C1FD002B14C0 /* ClearUserMetadataScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -429,6 +430,7 @@
 		CB0AE1F2287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackFeatureFlagsScenario.swift; sourceTree = "<group>"; };
 		CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBB7878D2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkUnhandledHandledScenario.h; sourceTree = "<group>"; };
+		E1F167682F62C1FD002B14C0 /* ClearUserMetadataScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearUserMetadataScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -447,9 +449,6 @@
 		01452234254AFCD600D436AA /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				1C70DEA82EF1BFDA00F52112 /* CustomerControlledDeliveryScenario.swift */,
-				1C70DEA92EF1BFDA00F52112 /* FatalErrorOptionScenario.swift */,
-				1C8CB8B62EBE3C94007BF492 /* CaptureOptionsScenario.swift */,
 				017D9CEC2833C81100B0AA87 /* AbortOverrideScenario.m */,
 				01F47C54254B1B2E00B184AD /* AbortScenario.m */,
 				01F47C5B254B1B2E00B184AD /* AccessNonObjectScenario.m */,
@@ -490,9 +489,12 @@
 				01F47C8C254B1B2F00B184AD /* BreadcrumbCallbackOverrideScenario.swift */,
 				01F47CAE254B1B3000B184AD /* BreadcrumbCallbackRemovalScenario.m */,
 				01F47C2B254B1B2D00B184AD /* BuiltinTrapScenario.m */,
+				1C8CB8B62EBE3C94007BF492 /* CaptureOptionsScenario.swift */,
+				E1F167682F62C1FD002B14C0 /* ClearUserMetadataScenario.swift */,
 				01DCB82C279868160048640A /* ConcurrentCrashesScenario.mm */,
 				0184DBDD28C6317C006AF50B /* CouldNotCreateDirectoryScenario.swift */,
 				01DE903926CEAD1200455213 /* CriticalThermalStateScenario.swift */,
+				1C70DEA82EF1BFDA00F52112 /* CustomerControlledDeliveryScenario.swift */,
 				01F47C85254B1B2F00B184AD /* CustomPluginNotifierDescriptionScenario.m */,
 				8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */,
 				017D9CFB2833C81100B0AA87 /* CxxExceptionOverrideScenario.mm */,
@@ -513,6 +515,7 @@
 				01F47C81254B1B2F00B184AD /* EnabledErrorTypesCxxScenario.mm */,
 				010BAB482833D34A0003FF36 /* EnabledReleaseStageAutoSessionScenario.swift */,
 				010BAB5C2833D34A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */,
+				1C70DEA92EF1BFDA00F52112 /* FatalErrorOptionScenario.swift */,
 				010BAB5D2833D34A0003FF36 /* HandledErrorInvalidReleaseStageScenario.swift */,
 				01F47C5D254B1B2E00B184AD /* HandledErrorOverrideScenario.swift */,
 				01F47C4E254B1B2D00B184AD /* HandledErrorScenario.swift */,
@@ -961,6 +964,7 @@
 				010BAB732833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift in Sources */,
 				01BB5D2628A1463C00A7F322 /* OversizedBreadcrumbsScenario.swift in Sources */,
 				01F47CC9254B1B3100B184AD /* BuiltinTrapScenario.m in Sources */,
+				E1F167692F62C1FD002B14C0 /* ClearUserMetadataScenario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
