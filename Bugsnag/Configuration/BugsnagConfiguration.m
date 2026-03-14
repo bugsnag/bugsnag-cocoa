@@ -61,7 +61,14 @@ static NSURLSession *getConfigDefaultURLSession(void) {
 @implementation BugsnagConfiguration
 
 + (instancetype _Nonnull)loadConfig {
-    NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+        id options = info[@"Bugsnag"];
+        if (![options isKindOfClass:[NSDictionary class]]) {
+            options = info[@"bugsnag"];
+        }
+        if (![options isKindOfClass:[NSDictionary class]]) {
+            options = nil;
+        }
     return BSGConfigurationWithOptions(options);
 }
 
