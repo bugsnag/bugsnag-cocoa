@@ -6,7 +6,7 @@
 //
 
 #import <Bugsnag/Bugsnag.h>
-#import <BugsnagNetworkRequestFailuresConfiguration.h>
+#import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestFailuresConfiguration.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

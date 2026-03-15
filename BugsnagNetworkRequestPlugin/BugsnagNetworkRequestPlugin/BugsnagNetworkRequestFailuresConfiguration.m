@@ -5,7 +5,8 @@
 //  Created by Daria Bialobrzeska on 11/01/2026.
 //
 
-#import "BugsnagNetworkRequestFailuresConfiguration.h"
+#import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestFailuresConfiguration.h>
+#import <BugsnagNetworkRequestPlugin/BugsnagInstrumentedHTTPResponse.h>
 
 @interface BugsnagNetworkRequestFailuresConfiguration ()
 @property (nonatomic, strong) NSMutableIndexSet *errorCodes;
@@ -21,13 +22,11 @@
     _errorCodes = [NSMutableIndexSet new];
     _responseCallbacks = [NSMutableArray new];
     _maxRequestBodyCapture = 0;
-    _maxResponseBodyCapture = 0;
 
     return self;
 }
 
 - (void)addHttpErrorCode:(NSUInteger)errorCode {
-    // TODO check for correct value
     [self.errorCodes addIndex:errorCode];
 }
 
@@ -38,7 +37,6 @@
     }
     for (id errorCode in errorCodesArray) {
         NSUInteger index = [errorCode unsignedIntegerValue];
-        // TODO validate the value
         [self.errorCodes addIndex:index];
     }
 }
@@ -48,11 +46,11 @@
 }
 
 - (void)addResponseCallback:(BugsnagHttpResponseCallback)callback {
-        [self.responseCallbacks addObject:callback];
+    [self.responseCallbacks addObject:callback];
 }
 
 - (NSArray<BugsnagHttpResponseCallback> *)getResponseCallbacks {
-    return self.responseCallbacks;
+    return _responseCallbacks;
 }
 
 - (BOOL)shouldCaptureHttpErrorCode:(NSUInteger)errorCode {

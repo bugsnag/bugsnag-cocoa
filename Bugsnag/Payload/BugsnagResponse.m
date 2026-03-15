@@ -12,7 +12,7 @@
 
 @implementation BugsnagResponse
 
-+ (instancetype _Nonnull)initFromHttpResponse:(NSURLResponse * _Nullable)httpResponse maxBodyCapture:(NSUInteger)maxBodyCapture {
++ (instancetype _Nonnull)initFromHttpResponse:(NSURLResponse * _Nullable)httpResponse {
     BugsnagResponse *response = [BugsnagResponse new];
 
     if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] != YES) {
@@ -22,10 +22,9 @@
     NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)httpResponse;
     response.headers = castedResponse.allHeaderFields;
     response.statusCode = castedResponse.statusCode;
+    // BODY UNAVAILABLE
     response.body = nil;
     response.bodyLength = 0;
-
-    // TODO BODY UNAVAILABLE
 
     return response;
 }

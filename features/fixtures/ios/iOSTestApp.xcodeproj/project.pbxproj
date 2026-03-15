@@ -93,6 +93,10 @@
 		09F024FC2B9F3B16007D9F73 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */; };
 		09F025172BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */; };
 		1C09E55A2F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
+		1C09E56F2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E56B2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift */; };
+		1C09E5702F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E56C2F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift */; };
+		1C09E5712F675E1400F468EF /* HttpErrorSendPostScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E56D2F675E1400F468EF /* HttpErrorSendPostScenario.swift */; };
+		1C09E5722F675E1400F468EF /* HttpErrorSendScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E56E2F675E1400F468EF /* HttpErrorSendScenario.swift */; };
 		1C70DEA52EF07EF300F52112 /* FatalErrorOptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */; };
 		1C70DEA72EF09AFD00F52112 /* CustomerControlledDeliveryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */; };
 		1C8CB8B52EBB994A007BF492 /* CaptureOptionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */; };
@@ -304,6 +308,10 @@
 		09F024FB2B9F3B16007D9F73 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09F025162BAD7B04007D9F73 /* DelayedNotifyErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayedNotifyErrorScenario.swift; sourceTree = "<group>"; };
 		1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
+		1C09E56B2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpErrorOnErrorCallbackScenario.swift; sourceTree = "<group>"; };
+		1C09E56C2F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpErrorOnResponseCallbackScenario.swift; sourceTree = "<group>"; };
+		1C09E56D2F675E1400F468EF /* HttpErrorSendPostScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpErrorSendPostScenario.swift; sourceTree = "<group>"; };
+		1C09E56E2F675E1400F468EF /* HttpErrorSendScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpErrorSendScenario.swift; sourceTree = "<group>"; };
 		1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatalErrorOptionScenario.swift; sourceTree = "<group>"; };
 		1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerControlledDeliveryScenario.swift; sourceTree = "<group>"; };
 		1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionsScenario.swift; sourceTree = "<group>"; };
@@ -506,6 +514,10 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1C09E56B2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift */,
+				1C09E56C2F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift */,
+				1C09E56D2F675E1400F468EF /* HttpErrorSendPostScenario.swift */,
+				1C09E56E2F675E1400F468EF /* HttpErrorSendScenario.swift */,
 				1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */,
 				1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */,
 				1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */,
@@ -846,6 +858,10 @@
 				010BAB232833CFF50003FF36 /* AppHangFatalOnlyScenario.swift in Sources */,
 				E700EE75247D7A0C008CFFB6 /* SIGFPEScenario.m in Sources */,
 				010BAB072833CE570003FF36 /* AbortOverrideScenario.m in Sources */,
+				1C09E56F2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift in Sources */,
+				1C09E5702F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift in Sources */,
+				1C09E5712F675E1400F468EF /* HttpErrorSendPostScenario.swift in Sources */,
+				1C09E5722F675E1400F468EF /* HttpErrorSendScenario.swift in Sources */,
 				CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */,
 				010BAB2B2833D0DF0003FF36 /* DiscardClassesUnhandledCrashScenario.swift in Sources */,
 				A1117E5B2536036400014FDA /* OOMSessionScenario.swift in Sources */,

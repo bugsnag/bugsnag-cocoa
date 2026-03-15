@@ -6,10 +6,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Bugsnag/BugsnagResponse.h>
 #import <Bugsnag/BugsnagConfiguration.h>
-#import "BugsnagNetworkRequestFailuresConfiguration.h"
-#import "BugsnagInstrumentedHTTPRequest.h"
 
+@class BugsnagNetworkRequestFailuresConfiguration;
+@class BugsnagInstrumentedHTTPRequest;
+
+NS_ASSUME_NONNULL_BEGIN
 /**
  * Represents an HTTP response that has been instrumented by BugSnag. This interface provides
  * access to the original request and response objects, as well as methods to modify the
@@ -17,11 +20,12 @@
  */
 @interface BugsnagInstrumentedHTTPResponse : NSObject
 
-+ (instancetype)initWithTransactionMetrics:(NSURLSessionTaskMetrics *)metrics config:(BugsnagNetworkRequestFailuresConfiguration *)config;
++ (instancetype)init:(NSURLResponse * _Nullable)response
+              config:(BugsnagNetworkRequestFailuresConfiguration *)config
+              enableNetworkBreadcrumbs:(BOOL)enableNetworkBreadcrumbs
+    API_AVAILABLE(macos(10.12));
 
-- (instancetype)init:(NSURLResponse *)response config:(BugsnagNetworkRequestFailuresConfiguration *)config;
-
-@property (nonatomic, assign) BugsnagInstrumentedHTTPRequest *relatedRequest;
+@property (nonatomic, nullable, assign) BugsnagInstrumentedHTTPRequest *relatedRequest;
 
 /**
  * The original HTTP response object, if one was received. This may be nil if the
@@ -34,13 +38,13 @@
 /**
  * Reported http status code.
  */
-- (NSInteger) getStatusCode;
+- (NSInteger)getStatusCode;
 
 /**
  * Add instrumented request related to this response.
  * Added here for the purpose of onResponse callback.
  */
-- (void) setInstrumentedRequest:(BugsnagInstrumentedHTTPRequest * _Nonnull)request;
+- (void)setInstrumentedRequest:(BugsnagInstrumentedHTTPRequest *)request;
 
 /**
  * The response body that will be reported to BugSnag for this response. This may be different
@@ -48,7 +52,7 @@
  *
  * @return the reported response body
  */
-- (NSString * _Nullable) getReportedResponseBody;
+- (NSString * _Nullable)getReportedResponseBody;
 
 /**
  * Set the response body that will be reported to BugSnag for this response. Setting this to nil
@@ -56,7 +60,7 @@
  *
  * @param responseBody the response body to report
  */
-- (void) setReportedResponseBody:(NSString * _Nullable)responseBody;
+- (void)setReportedResponseBody:(NSString * _Nullable)responseBody;
 
 /**
  * Override whether this request/response should be reported as a breadcrumb. This defaults
@@ -65,14 +69,14 @@
  *
  * @param isBreadcrumbReported NO if a breadcrumb should not be reported
  */
-- (void) setBreadcrumbReported:(BOOL)isBreadcrumbReported;
+- (void)setBreadcrumbReported:(BOOL)isBreadcrumbReported;
 
 /**
  * Check whether a breadcrumb will be reported for this response.
  *
  * @return YES if a breadcrumb will be reported
  */
-- (BOOL) isBreadcrumbReported;
+- (BOOL)isBreadcrumbReported;
 
 /**
  * Set an onErrorCallback that can customise Bugsnag Event
@@ -80,15 +84,16 @@
  *
  * @param onErrorCallback the error callback to customise HTTP events
  */
-- (void) setErrorCallback:(BugsnagOnErrorBlock _Nullable)onErrorCallback;
+- (void)setErrorCallback:(BugsnagOnErrorBlock _Nullable)onErrorCallback;
 
 /**
  * Return the error callback if one has been set.
  *
  * @return the error callback for this response
  */
-- (BugsnagOnErrorBlock _Nullable) getErrorCallback;
+- (BugsnagOnErrorBlock _Nullable)getErrorCallback;
 
-- (BugsnagResponse * _Nonnull) getBugsnagResponse;
+- (BugsnagResponse *)getBugsnagResponse;
 
 @end
+NS_ASSUME_NONNULL_END

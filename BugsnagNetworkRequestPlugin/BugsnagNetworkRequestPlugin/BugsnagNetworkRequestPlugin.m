@@ -36,14 +36,11 @@
     return self;
 }
 
-- (instancetype)initWithConfiguration:(BugsnagNetworkRequestFailuresConfiguration *)configuration enableNetworkBreadcrumbs:(BOOL)enableNetworkBreadcrumbs {
-    if (!(self = [super init])) {
-        return nil;
-    }
-    _enableNetworkBreadcrumbs = enableNetworkBreadcrumbs;
-    _configuration = configuration;
-
-    return self;
++ (instancetype)initWithConfiguration:(BugsnagNetworkRequestFailuresConfiguration *)configuration enableNetworkBreadcrumbs:(BOOL)enableNetworkBreadcrumbs {
+    BugsnagNetworkRequestPlugin *plugin = [BugsnagNetworkRequestPlugin new];
+    plugin.enableNetworkBreadcrumbs = enableNetworkBreadcrumbs;
+    plugin.configuration = configuration;
+    return plugin;
 }
 
 

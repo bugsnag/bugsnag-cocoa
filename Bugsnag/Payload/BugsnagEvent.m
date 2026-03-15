@@ -715,13 +715,13 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (self.request != nil) {
         NSMutableDictionary *redactedReqHeaders = [NSMutableDictionary dictionary];
         for (NSString *key in self.request.headers) {
-            redactedReqHeaders[key] = [self redactedMetadataValue:metadata[key] forKey:key redactedKeys:redactedKeys];
+            redactedReqHeaders[key] = [self redactedMetadataValue:self.request.headers[key] forKey:key redactedKeys:redactedKeys];
         }
         self.request.headers = redactedReqHeaders;
 
         NSMutableDictionary *redactedReqParams = [NSMutableDictionary dictionary];
         for (NSString *key in self.request.params) {
-            redactedReqParams[key] = [self redactedMetadataValue:metadata[key] forKey:key redactedKeys:redactedKeys];
+            redactedReqParams[key] = [self redactedMetadataValue:self.request.params[key] forKey:key redactedKeys:redactedKeys];
         }
         self.request.params = redactedReqParams;
     }
@@ -730,7 +730,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     if (self.response != nil) {
         NSMutableDictionary *redactedResHeaders = [NSMutableDictionary dictionary];
         for (NSString *key in self.response.headers) {
-            redactedResHeaders[key] = [self redactedMetadataValue:metadata[key] forKey:key redactedKeys:redactedKeys];
+            redactedResHeaders[key] = [self redactedMetadataValue:self.response.headers[key] forKey:key redactedKeys:redactedKeys];
         }
         self.response.headers = redactedResHeaders;
     }

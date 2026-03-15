@@ -6,8 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BugsnagNetworkRequestFailuresConfiguration.h"
+#import <Bugsnag/BugsnagRequest.h>
 
+@class BugsnagNetworkRequestFailuresConfiguration;
+
+NS_ASSUME_NONNULL_BEGIN
 /**
  * Represents an HTTP request that has been instrumented by BugSnag. This interface provides
  * access to the original request object, as well as methods to modify the information that is
@@ -15,20 +18,21 @@
  */
 @interface BugsnagInstrumentedHTTPRequest : NSObject
 
-+ (instancetype)initWithTransactionMetrics:(NSURLSessionTaskMetrics *)metrics config:(BugsnagNetworkRequestFailuresConfiguration *)config;
-
-- (instancetype)init:(NSURLRequest *)request httpVersion:(NSString * _Nullable)httpVersion config:(BugsnagNetworkRequestFailuresConfiguration *)config;
++ (instancetype)init:(NSURLRequest * _Nullable)request
+         httpVersion:(NSString * _Nullable)httpVersion
+              config:(BugsnagNetworkRequestFailuresConfiguration *)config
+API_AVAILABLE(macos(10.12));
 
 /**
  * The original HTTP request object.
  */
-- (NSURLRequest *)getRequest;
+- (NSURLRequest * _Nullable)getRequest;
 
 /**
  * The URL that will be reported to BugSnag for this request. This may be different from the
  * original request URL if it has been modified by a callback.
  */
-- (_Nullable NSString *)getReportedUrl;
+- (NSString * _Nullable)getReportedUrl;
 
 /**
  * Set the URL that will be reported to BugSnag for this request. Setting this to nil
@@ -36,7 +40,7 @@
  *
  * @param reportedUrl the URL to report
  */
-- (void)setReportedUrl:(_Nullable NSString *)reportedUrl;
+- (void)setReportedUrl:(NSString * _Nullable)reportedUrl;
 
 /**
  * The request body that will be reported to BugSnag for this request. This may be different
@@ -44,7 +48,7 @@
  *
  * @return the reported request body
  */
-- (_Nullable NSString *)getReportedRequestBody;
+- (NSString * _Nullable)getReportedRequestBody;
 
 /**
  * Set the request body that will be reported to BugSnag for this request. Setting this to nil
@@ -52,8 +56,10 @@
  *
  * @param requestBody the request body to report
  */
-- (void)setReportedRequestBody:(_Nullable NSString *)requestBody;
+- (void)setReportedRequestBody:(NSString * _Nullable)requestBody;
 
-- (BugsnagRequest * _Nonnull) getBugsnagRequest;
+- (BugsnagRequest *)getBugsnagRequest;
 
 @end
+
+NS_ASSUME_NONNULL_END

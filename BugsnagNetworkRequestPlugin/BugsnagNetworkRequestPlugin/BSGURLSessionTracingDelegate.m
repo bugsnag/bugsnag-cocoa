@@ -41,6 +41,9 @@ static BOOL g_breadcrumbsEnabled;
 - (void)URLSession:(__unused NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     if (g_config == nil || metrics == nil) {
+        if (g_breadcrumbsEnabled == YES) {
+            [g_client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
+        }
         return;
     }
 
@@ -48,8 +51,21 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     options.capture.threads = NO;
     options.capture.stacktrace = NO;
 
-    BugsnagInstrumentedHTTPRequest *instrumentedRequest = [BugsnagInstrumentedHTTPRequest initWithTransactionMetrics:metrics config:g_config];
-    BugsnagInstrumentedHTTPResponse *instrumentedResponse = [BugsnagInstrumentedHTTPResponse initWithTransactionMetrics:metrics config:g_config];
+    NSString *httpVersion = nil;
+    for (NSURLSessionTaskTransactionMetrics* transaction in metrics.transactionMetrics) {
+        if (transaction.networkProtocolName == nil) {
+            continue;
+        }
+        httpVersion = transaction.networkProtocolName;
+        break;
+    }
+
+    BugsnagInstrumentedHTTPRequest *instrumentedRequest = [BugsnagInstrumentedHTTPRequest init:task.originalRequest
+                                                                                   httpVersion:httpVersion
+                                                                                        config:g_config];
+    BugsnagInstrumentedHTTPResponse *instrumentedResponse = [BugsnagInstrumentedHTTPResponse init:task.response
+                                                                                           config:g_config
+                                                                         enableNetworkBreadcrumbs:g_breadcrumbsEnabled];
     [instrumentedResponse setInstrumentedRequest:instrumentedRequest];
 
     // CALL ONRESPONSE CALLBACK
@@ -58,21 +74,23 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         callback(instrumentedResponse);
     }
 
+    if (g_breadcrumbsEnabled == YES && [instrumentedResponse isBreadcrumbReported] == YES) {
+        [g_client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
+    }
+
     NSUInteger uStatusCode = (NSUInteger) [instrumentedResponse getStatusCode];
     if ([g_config shouldCaptureHttpErrorCode:uStatusCode] == YES) {
         NSError *error = [NSError errorWithDomain:@"NetworkFailureError" code:1 userInfo:@{}];
         [g_client notifyError:error options:options block:^BOOL(BugsnagEvent * _Nonnull event) {
             event.request = [instrumentedRequest getBugsnagRequest];
             event.response = [instrumentedResponse getBugsnagResponse];
-            // CALL OnERROR CALLBACK
+            // CALL ONERROR CALLBACK
             BugsnagOnErrorBlock onErrorBlock = [instrumentedResponse getErrorCallback];
-            onErrorBlock(event);
-            return NO;
+            if (onErrorBlock != nil) {
+                onErrorBlock(event);
+            }
+            return YES;
         }];
-    }
-
-    if (g_breadcrumbsEnabled == YES && [instrumentedResponse isBreadcrumbReported] == YES) {
-        [g_client leaveNetworkRequestBreadcrumbForTask:task metrics:metrics];
     }
 }
 

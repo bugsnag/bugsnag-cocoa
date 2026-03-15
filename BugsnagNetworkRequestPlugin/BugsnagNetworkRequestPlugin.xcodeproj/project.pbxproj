@@ -29,20 +29,22 @@
 		1C09E5562F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
 		1C09E5572F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
 		1C09E5582F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
+		1C09E5632F66115B00F468EF /* BugsnagInstrumentedHTTPRequest.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; };
+		1C09E5642F66115B00F468EF /* BugsnagInstrumentedHTTPResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; };
 		1C3163992F4CEF6700A3F1E2 /* BugsnagNetworkRequestFailuresConfiguration.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */; };
-		1C31639B2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; };
-		1C31639C2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; };
-		1C31639D2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; };
-		1C31639E2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; };
+		1C31639B2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C31639C2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C31639D2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C31639E2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3163A02F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
 		1C3163A12F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
 		1C3163A22F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
 		1C3163A32F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
 		1C3163A42F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
-		1C3163A62F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; };
-		1C3163A72F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; };
-		1C3163A82F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; };
-		1C3163A92F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; };
+		1C3163A62F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A72F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A82F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A92F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3163AB2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
 		1C3163AC2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
 		1C3163AD2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
@@ -169,6 +171,8 @@
 			dstPath = include/BugsnagNetworkRequestPlugin;
 			dstSubfolderSpec = 16;
 			files = (
+				1C09E5632F66115B00F468EF /* BugsnagInstrumentedHTTPRequest.h in CopyFiles */,
+				1C09E5642F66115B00F468EF /* BugsnagInstrumentedHTTPResponse.h in CopyFiles */,
 				01151ACF28EAC8C50086B706 /* BugsnagNetworkRequestPlugin.h in CopyFiles */,
 				1C3163992F4CEF6700A3F1E2 /* BugsnagNetworkRequestFailuresConfiguration.h in CopyFiles */,
 			);
@@ -188,7 +192,6 @@
 		01DC33B52733FC9B005B2BDD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSharedSessionProxy.h; sourceTree = "<group>"; };
 		1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagSharedSessionProxy.mm; sourceTree = "<group>"; };
-		1C8A43E32F12F4EE00C675F9 /* BugsnagNetworkRequestFailures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagNetworkRequestFailures.h; sourceTree = "<group>"; };
 		1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagInstrumentedHTTPRequest.h; sourceTree = "<group>"; };
 		1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagInstrumentedHTTPRequest.m; sourceTree = "<group>"; };
 		1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagInstrumentedHTTPResponse.h; sourceTree = "<group>"; };
@@ -354,20 +357,18 @@
 		CB487A5B26D7B109004F6B87 /* BugsnagNetworkRequestPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */,
-				1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */,
-				1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */,
-				1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */,
-				1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */,
-				1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */,
-				1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */,
-				CB487A5D26D7B109004F6B87 /* Info.plist */,
-				CB487C2D26DE3EFB004F6B87 /* include */,
-				CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */,
 				CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */,
 				CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */,
 				CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */,
 				CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */,
+				1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */,
+				1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */,
+				1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */,
+				CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */,
+				1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */,
+				1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */,
+				CB487C2D26DE3EFB004F6B87 /* include */,
+				CB487A5D26D7B109004F6B87 /* Info.plist */,
 				CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */,
 				CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */,
 			);
@@ -411,6 +412,8 @@
 			children = (
 				CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */,
 				1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */,
+				1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */,
+				1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */,
 			);
 			path = BugsnagNetworkRequestPlugin;
 			sourceTree = "<group>";
@@ -435,7 +438,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C09E5502F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
-				1C8A43F42F13D31100C675F9 /* BugsnagNetworkRequestFailures.m in Headers */,
 				1C3163A82F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
 				1C31639B2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
 				CB487F0F26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
@@ -451,7 +453,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C09E5512F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
-				1C8A43F62F13D31100C675F9 /* BugsnagNetworkRequestFailures.m in Headers */,
 				1C3163A92F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
 				1C31639C2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
 				CB487F1026E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
@@ -467,7 +468,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C09E54F2F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
-				1C8A43F52F13D31100C675F9 /* BugsnagNetworkRequestFailures.m in Headers */,
 				1C3163A62F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
 				1C31639E2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
 				CB487F1126E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
@@ -1235,6 +1235,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1328,6 +1329,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VALIDATE_PRODUCT = YES;
