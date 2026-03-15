@@ -27,6 +27,7 @@ static BOOL g_breadcrumbsEnabled;
 
 + (void)setClient:(BugsnagClient *)client {
     g_client = client;
+    g_breadcrumbsEnabled = YES;
 }
 
 + (void)setConfiguration:(nullable BugsnagNetworkRequestFailuresConfiguration *)config breadcrumbsEnabled:(BOOL)breadcrumbsEnabled {
