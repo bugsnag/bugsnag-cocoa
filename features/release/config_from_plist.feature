@@ -43,3 +43,10 @@ Feature: Loading Bugsnag configuration from Info.plist
     And the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
 
     And the error payload field "events.0.app.releaseStage" equals "beta2"
+
+  Scenario: Covering precedence of "Bugsnag" vs "bugsnag" plist keys, fallback behavior
+    When I run "LoadConfigFromFileScenario"
+    And I wait to receive an error
+
+    Then the error "Bugsnag-API-Key" header equals "0192837465afbecd0192837465afbecd"
+    And the event "app.releaseStage" equals "beta2"
