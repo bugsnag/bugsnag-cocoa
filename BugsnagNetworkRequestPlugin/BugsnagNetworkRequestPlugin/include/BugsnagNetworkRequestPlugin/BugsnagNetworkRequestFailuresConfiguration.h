@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addHttpErrorCode:(NSUInteger)errorCode;
 - (void)addHttpErrorCodes:(NSArray<NSNumber *> *)errorCodesArray;
+- (void)addHttpErrorCodes:(NSUInteger)low high:(NSUInteger)high;
 - (void)removeHttpErrorCode:(NSUInteger)errorCode;
 - (void)addResponseCallback:(BugsnagHttpResponseCallback)callback;
 - (NSArray<BugsnagHttpResponseCallback> *)getResponseCallbacks;

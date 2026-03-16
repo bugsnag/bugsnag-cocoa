@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Bugsnag/BugsnagRequest.h>
+#import <Bugsnag/BugsnagHttpRequest.h>
 
 @class BugsnagNetworkRequestFailuresConfiguration;
 
@@ -58,7 +58,7 @@ API_AVAILABLE(macos(10.12));
  */
 - (void)setReportedRequestBody:(NSString * _Nullable)requestBody;
 
-- (BugsnagRequest *)getBugsnagRequest;
+- (BugsnagHttpRequest *)getBugsnagRequest;
 
 @end
 

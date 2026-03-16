@@ -8,9 +8,8 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And I wait to receive 2 reflections
     Then I wait to receive 1 error
     And the error payload field "events" is an array with 1 elements
-    And the exception "errorClass" equals "NSError"
-    #And the exception "message" matches "The operation couldn’t be completed. (NetworkFailureError error 1.)"
-    #And the event "context" matches "NetworkFailureError (1)"
+    And the exception "errorClass" equals "HTTPError"
+    And the exception "message" matches "444: http://.*:[89]\d{3}/reflect"
 
     # Validate request fields
     And the event "request.httpMethod" equals "GET"
@@ -29,7 +28,7 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And the event "breadcrumbs.0.name" equals "NSURLSession request failed"
     And the event "breadcrumbs.0.type" equals "request"
     And the event "breadcrumbs.0.metaData.method" equals "GET"
-    And the event "breadcrumbs.0.metaData.url" matches "http://.*:[89]\d{3}/reflect/"
+    And the event "breadcrumbs.0.metaData.url" matches "http://.*:[89]\d{3}/reflect"
     And the event "breadcrumbs.0.metaData.urlParams.status" equals "444"
     And the event "breadcrumbs.0.metaData.urlParams.password" equals "[REDACTED]"
     And the event "breadcrumbs.0.metaData.status" equals 444
@@ -42,9 +41,8 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And I wait to receive 2 reflections
     Then I wait to receive 1 error
     And the error payload field "events" is an array with 1 elements
-    And the exception "errorClass" equals "NSError"
-    #And the exception "message" matches "The operation couldn’t be completed. (NetworkFailureError error 1.)"
-    #And the event "context" matches "NetworkFailureError (1)"
+    And the exception "errorClass" equals "HTTPError"
+    And the exception "message" matches "400: http://.*:[89]\d{3}/reflect"
 
     # Validate request fields
     And the event "request.httpMethod" equals "POST"
@@ -63,7 +61,8 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And I wait to receive 2 reflections
     Then I wait to receive 1 error
     And the error payload field "events" is an array with 1 elements
-    And the exception "errorClass" equals "NSError"
+    And the exception "errorClass" equals "HTTPError"
+    And the exception "message" matches "444: http://.*:[89]\d{3}/reflect"
 
     # Validate request fields
     And the event "request.httpMethod" equals "GET"
@@ -82,7 +81,8 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     Then I wait to receive 1 error
     And the error payload field "events" is an array with 1 elements
     And the event "context" matches "HttpErrorOnErrorCallbackScenario context"
-    And the exception "errorClass" equals "NSError"
+    And the exception "errorClass" equals "HTTPError"
+    And the exception "message" matches "500: http://.*:[89]\d{3}/reflect"
 
     # Validate request fields
     And the event "request.httpMethod" equals "GET"

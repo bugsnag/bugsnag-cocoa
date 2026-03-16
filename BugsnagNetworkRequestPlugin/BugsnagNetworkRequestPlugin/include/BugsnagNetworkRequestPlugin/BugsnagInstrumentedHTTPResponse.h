@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Bugsnag/BugsnagResponse.h>
+#import <Bugsnag/BugsnagHttpResponse.h>
 #import <Bugsnag/BugsnagConfiguration.h>
 
 @class BugsnagNetworkRequestFailuresConfiguration;
@@ -21,7 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface BugsnagInstrumentedHTTPResponse : NSObject
 
 + (instancetype)init:(NSURLResponse * _Nullable)response
-              config:(BugsnagNetworkRequestFailuresConfiguration *)config
               enableNetworkBreadcrumbs:(BOOL)enableNetworkBreadcrumbs
     API_AVAILABLE(macos(10.12));
 
@@ -93,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BugsnagOnErrorBlock _Nullable)getErrorCallback;
 
-- (BugsnagResponse *)getBugsnagResponse;
+- (BugsnagHttpResponse *)getBugsnagResponse;
 
 @end
 NS_ASSUME_NONNULL_END

@@ -1,5 +1,5 @@
 //
-//  BugsnagRequest.m
+//  BugsnagHttpRequest.m
 //  Bugsnag
 //
 //  Created by Daria Bialobrzeska on 27/01/2026.
@@ -10,10 +10,10 @@
 #import "BugsnagCollections.h"
 #import "BSGHttpKeys.h"
 
-@implementation BugsnagRequest
+@implementation BugsnagHttpRequest
 
-+ (instancetype _Nonnull)initFromHttpRequest:(NSURLRequest * _Nullable)httpRequest httpVersion:(NSString * _Nullable)httpVersion maxBodyCapture:(NSUInteger)maxBodyCapture {
-    BugsnagRequest *request = [BugsnagRequest new];
++ (instancetype _Nonnull)initWithHttpRequest:(NSURLRequest * _Nullable)httpRequest httpVersion:(NSString * _Nullable)httpVersion maxBodyCapture:(NSUInteger)maxBodyCapture {
+    BugsnagHttpRequest *request = [BugsnagHttpRequest new];
     request.headers = httpRequest.allHTTPHeaderFields;
     request.httpMethod = httpRequest.HTTPMethod ?: @"";
     request.httpVersion = httpVersion ?: @"";
@@ -51,7 +51,7 @@
     NSString *body = BSGDeserializeString(json[BSGHttpBody]);
     NSString *url = BSGDeserializeString(json[BSGHttpURL]);
 
-    BugsnagRequest *request = [BugsnagRequest new];
+    BugsnagHttpRequest *request = [BugsnagHttpRequest new];
     request.body = body;
     request.headers = headers ?: @{};
     request.params = params ?: @{};

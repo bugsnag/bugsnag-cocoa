@@ -1,5 +1,5 @@
 //
-//  BugsnagRequest.h
+//  BugsnagHttpRequest.h
 //  Bugsnag
 //
 //  Created by Daria Bialobrzeska on 27/01/2026.
@@ -14,9 +14,9 @@
  * Represents a network request made by the application.
  */
 BUGSNAG_EXTERN
-@interface BugsnagRequest : NSObject
+@interface BugsnagHttpRequest : NSObject
 
-+ (instancetype _Nonnull )initFromHttpRequest:(NSURLRequest * _Nullable)httpRequest httpVersion:(NSString * _Nullable)httpVersion maxBodyCapture:(NSUInteger)maxBodyCapture;
++ (instancetype _Nonnull )initWithHttpRequest:(NSURLRequest * _Nullable)httpRequest httpVersion:(NSString * _Nullable)httpVersion maxBodyCapture:(NSUInteger)maxBodyCapture;
 
 @property (copy, nullable, nonatomic) NSString *body;
 

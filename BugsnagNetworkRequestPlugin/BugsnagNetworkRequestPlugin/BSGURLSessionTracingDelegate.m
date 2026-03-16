@@ -5,6 +5,7 @@
 //  Created by Karl Stenerud on 07.09.21.
 //
 
+#import <Bugsnag/BugsnagError.h>
 #import "BSGURLSessionTracingDelegate.h"
 #import "BugsnagInstrumentedHTTPRequest.h"
 #import "BugsnagInstrumentedHTTPResponse.h"
@@ -65,7 +66,6 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
                                                                                    httpVersion:httpVersion
                                                                                         config:g_config];
     BugsnagInstrumentedHTTPResponse *instrumentedResponse = [BugsnagInstrumentedHTTPResponse init:task.response
-                                                                                           config:g_config
                                                                          enableNetworkBreadcrumbs:g_breadcrumbsEnabled];
     [instrumentedResponse setInstrumentedRequest:instrumentedRequest];
 
@@ -85,10 +85,19 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         [g_client notifyError:error options:options block:^BOOL(BugsnagEvent * _Nonnull event) {
             event.request = [instrumentedRequest getBugsnagRequest];
             event.response = [instrumentedResponse getBugsnagResponse];
+
+            // clear all other errors
+            BugsnagError *networkError = [BugsnagError new];
+            networkError.errorClass = @"HTTPError";
+            networkError.errorMessage = [NSString stringWithFormat:@"%ld: %@", event.response.statusCode, event.request.url];
+            networkError.type = BSGErrorTypeCocoa;
+            networkError.stacktrace = @[];
+            event.errors = @[networkError];
+
             // CALL ONERROR CALLBACK
             BugsnagOnErrorBlock onErrorBlock = [instrumentedResponse getErrorCallback];
             if (onErrorBlock != nil) {
-                onErrorBlock(event);
+                return onErrorBlock(event);
             }
             return YES;
         }];

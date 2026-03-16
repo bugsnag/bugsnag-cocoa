@@ -9,7 +9,7 @@
 
 @interface BugsnagInstrumentedHTTPRequest ()
 @property (nonatomic, strong) NSURLRequest *originalRequest;
-@property (nonatomic, strong) BugsnagRequest *request;
+@property (nonatomic, strong) BugsnagHttpRequest *request;
 @end
 
 @implementation BugsnagInstrumentedHTTPRequest
@@ -20,7 +20,7 @@
 API_AVAILABLE(macos(10.12)){
     BugsnagInstrumentedHTTPRequest *instrumentedRequest = [BugsnagInstrumentedHTTPRequest new];
     instrumentedRequest.originalRequest = request;
-    instrumentedRequest.request = [BugsnagRequest initFromHttpRequest:request httpVersion:httpVersion maxBodyCapture:config.maxRequestBodyCapture];
+    instrumentedRequest.request = [BugsnagHttpRequest initWithHttpRequest:request httpVersion:httpVersion maxBodyCapture:config.maxRequestBodyCapture];
     return instrumentedRequest;
 }
 
@@ -54,7 +54,7 @@ API_AVAILABLE(macos(10.12)){
     }
 }
 
-- (BugsnagRequest *) getBugsnagRequest {
+- (BugsnagHttpRequest *) getBugsnagRequest {
     return _request;
 }
 

@@ -1,5 +1,5 @@
 //
-//  BugsnagResponse.h
+//  BugsnagHttpResponse.h
 //  Bugsnag
 //
 //  Created by Daria Bialobrzeska on 27/01/2026.
@@ -14,9 +14,9 @@
  * Represents a network response received by the application.
  */
 BUGSNAG_EXTERN
-@interface BugsnagResponse : NSObject
+@interface BugsnagHttpResponse : NSObject
 
-+ (instancetype _Nonnull)initFromHttpResponse:(NSURLResponse * _Nullable)httpResponse;
++ (instancetype _Nonnull)initWithHttpResponse:(NSHTTPURLResponse * _Nullable)httpResponse;
 
 @property (copy, nullable, nonatomic) NSString *body;
 

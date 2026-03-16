@@ -281,12 +281,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _attemptDeliveryOnCrash = NO;
 
         _request = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
-            return [BugsnagRequest requestFromJson:dict];
-        }) ?: [BugsnagRequest new];
+            return [BugsnagHttpRequest requestFromJson:dict];
+        }) ?: [BugsnagHttpRequest new];
 
         _response = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
-            return [BugsnagResponse responseFromJson:dict];
-        }) ?: [BugsnagResponse new];
+            return [BugsnagHttpResponse responseFromJson:dict];
+        }) ?: [BugsnagHttpResponse new];
     }
     return self;
 }

@@ -1,5 +1,5 @@
 //
-//  BugsnagResponse.m
+//  BugsnagHttpResponse.m
 //  Bugsnag
 //
 //  Created by Daria Bialobrzeska on 27/01/2026.
@@ -10,18 +10,12 @@
 #import "BugsnagCollections.h"
 #import "BSGHttpKeys.h"
 
-@implementation BugsnagResponse
+@implementation BugsnagHttpResponse
 
-+ (instancetype _Nonnull)initFromHttpResponse:(NSURLResponse * _Nullable)httpResponse {
-    BugsnagResponse *response = [BugsnagResponse new];
-
-    if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] != YES) {
-        return response;
-    }
-
-    NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)httpResponse;
-    response.headers = castedResponse.allHeaderFields;
-    response.statusCode = castedResponse.statusCode;
++ (instancetype _Nonnull)initWithHttpResponse:(NSHTTPURLResponse * _Nullable)httpResponse {
+    BugsnagHttpResponse *response = [BugsnagHttpResponse new];
+    response.headers = httpResponse.allHeaderFields;
+    response.statusCode = httpResponse.statusCode;
     // BODY UNAVAILABLE
     response.body = nil;
     response.bodyLength = 0;
@@ -38,7 +32,7 @@
     NSNumber *statusCode = BSGDeserializeNumber(json[BSGHttpStatusCode]);
 
     NSString *body = BSGDeserializeString(json[BSGHttpBody]);
-    BugsnagResponse *response = [BugsnagResponse new];
+    BugsnagHttpResponse *response = [BugsnagHttpResponse new];
     response.body = body;
     response.headers = headers ?: @{};
     response.statusCode = statusCode != nil ? [statusCode integerValue] : 0;

@@ -11,7 +11,7 @@
 
 @interface BugsnagInstrumentedHTTPResponse ()
 @property (nonatomic, nullable, strong) NSURLResponse *originalResponse;
-@property (nonatomic, nonnull, strong) BugsnagResponse *response;
+@property (nonatomic, nonnull, strong) BugsnagHttpResponse *response;
 @property (nonatomic) BOOL isBreadcrumbReported;
 @property (nonatomic) BugsnagOnErrorBlock onErrorBlock;
 @end
@@ -19,12 +19,18 @@
 @implementation BugsnagInstrumentedHTTPResponse
 
 + (instancetype)init:(NSURLResponse * _Nullable)response
-              config:(BugsnagNetworkRequestFailuresConfiguration *)config
               enableNetworkBreadcrumbs:(BOOL)enableNetworkBreadcrumbs
 API_AVAILABLE(macos(10.12)) {
     BugsnagInstrumentedHTTPResponse *instrumentedResp = [BugsnagInstrumentedHTTPResponse new];
     instrumentedResp.originalResponse = response;
-    instrumentedResp.response = [BugsnagResponse initFromHttpResponse:response];
+
+    if ([response isKindOfClass:[NSHTTPURLResponse class]] != YES) {
+        instrumentedResp.response = [BugsnagHttpResponse new];
+    } else {
+        NSHTTPURLResponse *castedResponse = (NSHTTPURLResponse *)response;
+        instrumentedResp.response = [BugsnagHttpResponse initWithHttpResponse:castedResponse];
+    }
+
     instrumentedResp.isBreadcrumbReported = enableNetworkBreadcrumbs;
     instrumentedResp.onErrorBlock = nil;
     return instrumentedResp;
@@ -72,7 +78,7 @@ API_AVAILABLE(macos(10.12)) {
     return _onErrorBlock;
 }
 
-- (BugsnagResponse *) getBugsnagResponse {
+- (BugsnagHttpResponse *) getBugsnagResponse {
     return _response;
 }
 

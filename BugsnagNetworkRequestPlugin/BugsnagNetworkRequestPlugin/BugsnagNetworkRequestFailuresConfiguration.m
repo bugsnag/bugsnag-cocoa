@@ -41,6 +41,10 @@
     }
 }
 
+- (void)addHttpErrorCodes:(NSUInteger)low high:(NSUInteger)high {
+    [self.errorCodes addIndexesInRange:NSMakeRange(low, high - low + 1)];
+}
+
 - (void)removeHttpErrorCode:(NSUInteger)errorCode {
     [self.errorCodes removeIndex:errorCode];
 }

@@ -257,7 +257,7 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 #pragma mark -
 
-@interface BugsnagRequest ()
+@interface BugsnagHttpRequest ()
 
 + (instancetype)requestFromJson:(NSDictionary *)json;
 
@@ -265,7 +265,7 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 @end
 
-@interface BugsnagResponse ()
+@interface BugsnagHttpResponse ()
 
 + (instancetype)responseFromJson:(NSDictionary *)json;
 
