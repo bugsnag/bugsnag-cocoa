@@ -257,6 +257,24 @@ typedef void (^ BSGClientObserver)(BSGClientObserverEvent event, _Nullable id va
 
 #pragma mark -
 
+@interface BugsnagHttpRequest ()
+
++ (instancetype)requestFromJson:(NSDictionary *)json;
+
+- (NSDictionary *)toDictionary;
+
+@end
+
+@interface BugsnagHttpResponse ()
+
++ (instancetype)responseFromJson:(NSDictionary *)json;
+
+- (NSDictionary *)toDictionary;
+
+@end
+
+#pragma mark -
+
 BUGSNAG_EXTERN NSString * BSGGetDefaultDeviceId(void);
 
 BUGSNAG_EXTERN NSDictionary * BSGGetSystemInfo(void);

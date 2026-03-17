@@ -6,6 +6,7 @@
 //
 
 #import <Bugsnag/Bugsnag.h>
+#import <BugsnagNetworkRequestPlugin/BugsnagNetworkRequestFailuresConfiguration.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (BSGURLSessionTracingDelegate * _Nonnull)sharedDelegate;
 
 + (void)setClient:(nullable BugsnagClient *)client;
+
++ (void)setConfiguration:(nullable BugsnagNetworkRequestFailuresConfiguration *)config breadcrumbsEnabled:(BOOL)breadcrumbsEnabled;
 
 @property(nonatomic, assign, readonly) BOOL canTrace;
 

@@ -12,6 +12,7 @@
 #import "BSGMemoryFeatureFlagStore.h"
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
+#import "BSGHttpKeys.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashReportFields.h"
@@ -278,6 +279,14 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _session = BSGSessionFromEventJson(json[BSGKeySession], _app, _device, _user);
         _isDeliveryStrategySet = NO;
         _attemptDeliveryOnCrash = NO;
+
+        _request = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
+            return [BugsnagHttpRequest requestFromJson:dict];
+        }) ?: [BugsnagHttpRequest new];
+
+        _response = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
+            return [BugsnagHttpResponse responseFromJson:dict];
+        }) ?: [BugsnagHttpResponse new];
     }
     return self;
 }
@@ -700,6 +709,34 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     event[BSGKeySession] = self.session ? BSGSessionToEventJson((BugsnagSession *_Nonnull)self.session) : nil;
 
     event[BSGKeyUsage] = self.usage;
+
+
+    // Redact http request headers and params
+    if (self.request != nil) {
+        NSMutableDictionary *redactedReqHeaders = [NSMutableDictionary dictionary];
+        for (NSString *key in self.request.headers) {
+            redactedReqHeaders[key] = [self redactedMetadataValue:self.request.headers[key] forKey:key redactedKeys:redactedKeys];
+        }
+        self.request.headers = redactedReqHeaders;
+
+        NSMutableDictionary *redactedReqParams = [NSMutableDictionary dictionary];
+        for (NSString *key in self.request.params) {
+            redactedReqParams[key] = [self redactedMetadataValue:self.request.params[key] forKey:key redactedKeys:redactedKeys];
+        }
+        self.request.params = redactedReqParams;
+    }
+
+    // Redact http response headers
+    if (self.response != nil) {
+        NSMutableDictionary *redactedResHeaders = [NSMutableDictionary dictionary];
+        for (NSString *key in self.response.headers) {
+            redactedResHeaders[key] = [self redactedMetadataValue:self.response.headers[key] forKey:key redactedKeys:redactedKeys];
+        }
+        self.response.headers = redactedResHeaders;
+    }
+
+    event[BSGHttpRequest] = [self.request toDictionary];
+    event[BSGHttpResponse] = [self.response toDictionary];
 
     return event;
 }

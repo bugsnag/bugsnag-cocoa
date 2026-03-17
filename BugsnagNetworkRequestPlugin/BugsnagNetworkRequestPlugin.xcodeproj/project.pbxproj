@@ -29,6 +29,36 @@
 		1C09E5562F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
 		1C09E5572F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
 		1C09E5582F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */; };
+		1C09E5632F66115B00F468EF /* BugsnagInstrumentedHTTPRequest.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; };
+		1C09E5642F66115B00F468EF /* BugsnagInstrumentedHTTPResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; };
+		1C3163992F4CEF6700A3F1E2 /* BugsnagNetworkRequestFailuresConfiguration.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */; };
+		1C31639B2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C31639C2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C31639D2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C31639E2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A02F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
+		1C3163A12F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
+		1C3163A22F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
+		1C3163A32F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
+		1C3163A42F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */; };
+		1C3163A62F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A72F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A82F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163A92F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C3163AB2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
+		1C3163AC2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
+		1C3163AD2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
+		1C3163AE2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
+		1C3163AF2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */; };
+		1C8A43E92F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */; };
+		1C8A43EA2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */; };
+		1C8A43EB2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */; };
+		1C8A43EC2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */; };
+		1C8A43ED2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */; };
+		1C8A43EF2F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C8A43F02F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C8A43F12F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C8A43F22F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */; };
 		CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */; };
 		CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */ = {isa = PBXBuildFile; fileRef = CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */; };
@@ -141,7 +171,10 @@
 			dstPath = include/BugsnagNetworkRequestPlugin;
 			dstSubfolderSpec = 16;
 			files = (
+				1C09E5632F66115B00F468EF /* BugsnagInstrumentedHTTPRequest.h in CopyFiles */,
+				1C09E5642F66115B00F468EF /* BugsnagInstrumentedHTTPResponse.h in CopyFiles */,
 				01151ACF28EAC8C50086B706 /* BugsnagNetworkRequestPlugin.h in CopyFiles */,
+				1C3163992F4CEF6700A3F1E2 /* BugsnagNetworkRequestFailuresConfiguration.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,6 +192,12 @@
 		01DC33B52733FC9B005B2BDD /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSharedSessionProxy.h; sourceTree = "<group>"; };
 		1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagSharedSessionProxy.mm; sourceTree = "<group>"; };
+		1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagInstrumentedHTTPRequest.h; sourceTree = "<group>"; };
+		1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagInstrumentedHTTPRequest.m; sourceTree = "<group>"; };
+		1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagInstrumentedHTTPResponse.h; sourceTree = "<group>"; };
+		1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagInstrumentedHTTPResponse.m; sourceTree = "<group>"; };
+		1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNetworkRequestFailuresConfiguration.m; sourceTree = "<group>"; };
+		1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagNetworkRequestFailuresConfiguration.h; sourceTree = "<group>"; };
 		CB2430D726F1DA8A00CB5EC4 /* libBugsnagNetworkRequestPluginStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNetworkRequestPluginStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB26E9BD283510D8005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB26E9C128351217005A1865 /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -318,15 +357,18 @@
 		CB487A5B26D7B109004F6B87 /* BugsnagNetworkRequestPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */,
-				1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */,
-				CB487A5D26D7B109004F6B87 /* Info.plist */,
-				CB487C2D26DE3EFB004F6B87 /* include */,
-				CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */,
 				CB487F0326E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.h */,
 				CB487F0226E8D0B0004F6B87 /* BSGURLSessionTracingDelegate.m */,
 				CB487F0426E8D0B0004F6B87 /* BSGURLSessionTracingProxy.h */,
 				CB487F0026E8D0B0004F6B87 /* BSGURLSessionTracingProxy.m */,
+				1C31639F2F50FCF200A3F1E2 /* BugsnagInstrumentedHTTPRequest.m */,
+				1C3163AA2F511C0000A3F1E2 /* BugsnagInstrumentedHTTPResponse.m */,
+				1C8A43E82F13D2E300C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m */,
+				CB487ABE26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m */,
+				1C09E54E2F5CF42500F468EF /* BugsnagSharedSessionProxy.h */,
+				1C09E5532F5CF45200F468EF /* BugsnagSharedSessionProxy.mm */,
+				CB487C2D26DE3EFB004F6B87 /* include */,
+				CB487A5D26D7B109004F6B87 /* Info.plist */,
 				CB487F0126E8D0B0004F6B87 /* NSURLSession+Tracing.h */,
 				CB487F0526E8D0B1004F6B87 /* NSURLSession+Tracing.m */,
 			);
@@ -369,6 +411,9 @@
 			isa = PBXGroup;
 			children = (
 				CB487C2F26DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h */,
+				1C8A43EE2F13D30500C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h */,
+				1C31639A2F50FAD200A3F1E2 /* BugsnagInstrumentedHTTPRequest.h */,
+				1C3163A52F511BF900A3F1E2 /* BugsnagInstrumentedHTTPResponse.h */,
 			);
 			path = BugsnagNetworkRequestPlugin;
 			sourceTree = "<group>";
@@ -380,8 +425,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C31639D2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
+				1C3163A72F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
 				CB3B7FA82832746000CAD67A /* BugsnagNetworkRequestPlugin.h in Headers */,
 				1C09E5522F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
+				1C8A43F02F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,10 +438,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C09E5502F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
+				1C3163A82F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
+				1C31639B2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
 				CB487F0F26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3026DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1226E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
 				CB487F0926E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
+				1C8A43F22F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,10 +453,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C09E5512F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
+				1C3163A92F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
+				1C31639C2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
 				CB487F1026E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3126DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1326E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
 				CB487F0A26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
+				1C8A43EF2F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,10 +468,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C09E54F2F5CF42800F468EF /* BugsnagSharedSessionProxy.h in Headers */,
+				1C3163A62F511BFD00A3F1E2 /* BugsnagInstrumentedHTTPResponse.h in Headers */,
+				1C31639E2F50FADD00A3F1E2 /* BugsnagInstrumentedHTTPRequest.h in Headers */,
 				CB487F1126E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.h in Headers */,
 				CB487C3226DE3EFB004F6B87 /* BugsnagNetworkRequestPlugin.h in Headers */,
 				CB487F1426E8D0B1004F6B87 /* BSGURLSessionTracingProxy.h in Headers */,
 				CB487F0B26E8D0B1004F6B87 /* NSURLSession+Tracing.h in Headers */,
+				1C8A43F12F13D30700C675F9 /* BugsnagNetworkRequestFailuresConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -758,9 +815,12 @@
 			files = (
 				1C09E5572F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB2430E026F1DABE00CB5EC4 /* BSGURLSessionTracingDelegate.m in Sources */,
+				1C3163AC2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */,
 				CB2430E226F1DABE00CB5EC4 /* NSURLSession+Tracing.m in Sources */,
+				1C3163A22F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */,
 				CB2430E326F1DAC500CB5EC4 /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB2430E126F1DABE00CB5EC4 /* BSGURLSessionTracingProxy.m in Sources */,
+				1C8A43EC2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -770,9 +830,12 @@
 			files = (
 				1C09E5552F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB3B7FA4283270EF00CAD67A /* NSURLSession+Tracing.m in Sources */,
+				1C3163AB2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */,
 				CB3B7FA3283270EC00CAD67A /* BSGURLSessionTracingProxy.m in Sources */,
+				1C3163A02F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */,
 				CB3B7FA1283270E500CAD67A /* BugsnagNetworkRequestPlugin.m in Sources */,
 				CB3B7FA2283270E900CAD67A /* BSGURLSessionTracingDelegate.m in Sources */,
+				1C8A43EA2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -791,9 +854,12 @@
 			files = (
 				1C09E5562F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB487F1526E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
+				1C3163AF2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */,
 				CB487ABF26D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
+				1C3163A32F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */,
 				CB487F0C26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB487F0626E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
+				1C8A43EB2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -812,9 +878,12 @@
 			files = (
 				1C09E5582F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB487F1626E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
+				1C3163AD2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */,
 				CB487AC026D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
+				1C3163A42F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */,
 				CB487F0D26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB487F0726E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
+				1C8A43ED2F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -833,9 +902,12 @@
 			files = (
 				1C09E5542F5CF45300F468EF /* BugsnagSharedSessionProxy.mm in Sources */,
 				CB487F1726E8D0B1004F6B87 /* NSURLSession+Tracing.m in Sources */,
+				1C3163AE2F511C0100A3F1E2 /* BugsnagInstrumentedHTTPResponse.m in Sources */,
 				CB487AC126D7B295004F6B87 /* BugsnagNetworkRequestPlugin.m in Sources */,
+				1C3163A12F50FCF400A3F1E2 /* BugsnagInstrumentedHTTPRequest.m in Sources */,
 				CB487F0E26E8D0B1004F6B87 /* BSGURLSessionTracingDelegate.m in Sources */,
 				CB487F0826E8D0B1004F6B87 /* BSGURLSessionTracingProxy.m in Sources */,
+				1C8A43E92F13D2EF00C675F9 /* BugsnagNetworkRequestFailuresConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1163,6 +1235,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1256,6 +1329,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = BugsnagNetworkRequestPlugin;
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				VALIDATE_PRODUCT = YES;
