@@ -89,7 +89,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
             // clear all other errors
             BugsnagError *networkError = [BugsnagError new];
             networkError.errorClass = @"HTTPError";
-            networkError.errorMessage = [NSString stringWithFormat:@"%ld: %@", event.response.statusCode, event.request.url];
+            networkError.errorMessage = [NSString stringWithFormat:@"%ld: %@", (long)event.response.statusCode, event.request.url];
             networkError.type = BSGErrorTypeCocoa;
             networkError.stacktrace = @[];
             event.errors = @[networkError];
