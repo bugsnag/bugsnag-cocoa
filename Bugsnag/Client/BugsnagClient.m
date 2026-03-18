@@ -75,6 +75,7 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "BSGPluginRegistry.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -327,6 +328,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             bsg_log_err(@"Plugin %@ threw exception in -load: %@", plugin, exception);
         }
     }
+
+    [BSGPluginRegistry loadPluginsWithConfiguration:self.configuration];
 
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:self];
     [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_runContext->isForeground];

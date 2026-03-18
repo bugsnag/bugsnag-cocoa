@@ -27,6 +27,7 @@
 #define BSG_HAVE_SYSCALL                      (TARGET_OS_IOS || TARGET_OS_TV                   )
 #define BSG_HAVE_UIDEVICE                     __has_include(<UIKit/UIDevice.h>)
 #define BSG_HAVE_WINDOW                       (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_TV                    || TARGET_OS_VISION)
+#define BSG_HAVE_METRICKIT                    (TARGET_OS_OSX || TARGET_OS_IOS || TARGET_OS_VISION)
 
 // Capabilities dependent upon previously defined capabilities
 #define BSG_HAVE_APP_HANG_DETECTION           (BSG_HAVE_MACH_THREADS)

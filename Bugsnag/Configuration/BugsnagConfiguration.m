@@ -35,6 +35,7 @@
 #import "BugsnagErrorTypes.h"
 #import "BugsnagLogger.h"
 #import "BugsnagMetadata+Private.h"
+#import "BugsnagMetricKitTypes.h"
 #import "BugsnagUser+Private.h"
 
 const NSUInteger BugsnagAppHangThresholdFatalOnly = INT_MAX;
@@ -89,6 +90,9 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     [copy setContext:self.context];
     [copy setEnabledBreadcrumbTypes:self.enabledBreadcrumbTypes];
     [copy setEnabledErrorTypes:self.enabledErrorTypes];
+#if BSG_HAVE_METRICKIT
+    [copy setEnabledMetricKitDiagnostics:self.enabledMetricKitDiagnostics];
+#endif
     [copy setEnabledReleaseStages:self.enabledReleaseStages];
     copy.discardClasses = self.discardClasses;
     [copy setRedactedKeys:self.redactedKeys];
@@ -195,6 +199,11 @@ static NSURLSession *getConfigDefaultURLSession(void) {
 #endif
     // Default to recording all error types
     _enabledErrorTypes = [BugsnagErrorTypes new];
+    
+#if BSG_HAVE_METRICKIT
+    // Default to MetricKit disabled (opt-in)
+    _enabledMetricKitDiagnostics = [BugsnagMetricKitTypes new];
+#endif
 
     // Enabling OOM detection only happens in release builds, to avoid triggering
     // the heuristic when killing/restarting an app in Xcode or similar.

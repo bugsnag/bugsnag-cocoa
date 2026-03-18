@@ -1,0 +1,31 @@
+{
+  "name": "BugsnagMetricKitPlugin",
+  "version": "6.35.0",
+  "summary": "MetricKit integration for Bugsnag.",
+  "homepage": "https://bugsnag.com",
+  "license": "MIT",
+  "authors": {
+    "Bugsnag": "notifiers@bugsnag.com"
+  },
+  "readme": "https://raw.githubusercontent.com/bugsnag/bugsnag-cocoa/v6.35.0/BugsnagMetricKitPlugin/README.md",
+  "source": {
+    "git": "https://github.com/bugsnag/bugsnag-cocoa.git",
+    "tag": "v6.35.0"
+  },
+  "dependencies": {
+    "Bugsnag": "~> 6.13"
+  },
+  "platforms": {
+    "ios": "13.0",
+    "osx": "12.0"
+  },
+  "source_files": [
+    "BugsnagMetricKitPlugin/BugsnagMetricKitPlugin/{**/,}*.{m,h}"
+  ],
+  "requires_arc": true,
+  "prefix_header_file": false,
+  "public_header_files": [
+    "BugsnagMetricKitPlugin/BugsnagMetricKitPlugin/include/BugsnagMetricKitPlugin/*.h"
+  ],
+  "weak_frameworks": "MetricKit"
+}
