@@ -61,8 +61,27 @@ static NSURLSession *getConfigDefaultURLSession(void) {
 @implementation BugsnagConfiguration
 
 + (instancetype _Nonnull)loadConfig {
-    NSDictionary *options = [[NSBundle mainBundle] infoDictionary][@"bugsnag"];
-    return BSGConfigurationWithOptions(options);
+    return [self bsg_loadConfigWithBundle:[NSBundle mainBundle]];
+}
+
++ (instancetype)bsg_loadConfigWithBundle:(NSBundle *)bundle {
+    NSDictionary *info = [bundle infoDictionary];
+
+    // Current behavior: capitalized key.
+    id capitalized = info[@"Bugsnag"];
+    if ([capitalized isKindOfClass:[NSDictionary class]]) {
+        return BSGConfigurationWithOptions((NSDictionary *)capitalized);
+    }
+
+    // Backwards compatibility: older SDK versions used a lowercase key.
+    id lowercase = info[@"bugsnag"];
+    if ([lowercase isKindOfClass:[NSDictionary class]]) {
+        return BSGConfigurationWithOptions((NSDictionary *)lowercase);
+    }
+
+    // If neither key exists (or has the wrong type), behave like an empty config.
+    // Passing nil keeps apiKey unset.
+    return BSGConfigurationWithOptions(nil);
 }
 
 // -----------------------------------------------------------------------------
