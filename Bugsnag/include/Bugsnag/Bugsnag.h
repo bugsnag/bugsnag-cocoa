@@ -44,6 +44,7 @@
 #import <Bugsnag/BSGPlugin.h>
 #import <Bugsnag/BugsnagSession.h>
 #import <Bugsnag/BugsnagStackframe.h>
+#import <Bugsnag/BugsnagSymbolicator.h>
 #import <Bugsnag/BugsnagThread.h>
 #import <Bugsnag/BugsnagCaptureOptions.h>
 #import <Bugsnag/BugsnagHttpRequest.h>

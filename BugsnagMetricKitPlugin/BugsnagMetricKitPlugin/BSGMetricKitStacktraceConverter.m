@@ -12,6 +12,7 @@
 
 #import <Bugsnag/Bugsnag.h>
 #import <Bugsnag/BugsnagStackframe.h>
+#import <Bugsnag/BugsnagSymbolicator.h>
 #import <MetricKit/MetricKit.h>
 
 @implementation BSGMetricKitStacktraceConverter
@@ -31,6 +32,9 @@
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
             if (json && !error) {
                 [self extractFramesFromJSON:json intoArray:frames];
+                
+                // Symbolicate the frames to add method names and other details
+                [BugsnagSymbolicator symbolicateStackframes:frames];
             }
         }
     }
