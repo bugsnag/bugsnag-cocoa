@@ -1,0 +1,59 @@
+{
+  "notifier": {
+    "name": "Bugsnag JavaScript",
+    "version": "4.0.0"
+  },
+  "groupingDiscriminator": "my-discriminator",
+  "groupingHash": "my",
+  "context": "/",
+  "exceptions": [
+    {
+      "errorClass": "TypeError",
+      "message": "Cannot read property 'length' of undefined",
+      "type": "browserjs",
+      "stacktrace": [
+        {
+          "file": "[Undefined]",
+          "lineNumber": 85,
+          "columnNumber": 27,
+          "method": "hasAMethod"
+        },
+        {
+          "file": "http://sub.simba.com:5000/app.js",
+          "lineNumber": 19,
+          "columnNumber": 27,
+          "method": ""
+        }
+      ]
+    },
+    {
+      "errorClass": "TypeError2",
+      "message": "Cannot read property 'length' of undefined",
+      "type": "cocoa",
+      "stacktrace": [
+        {
+          "file": "[Undefined]",
+          "lineNumber": 85,
+          "columnNumber": 27,
+          "method": "hasAMethod",
+          "machoUUID": "A1B2C3D4-E5F6-7890-1234-567890ABCDEF",
+          "frameAddress": "0x00000001000abcd0",
+          "machoLoadAddress": "0x0000000100000000"
+        },
+        {
+          "file": "http://sub.simba.com:5000/app.js",
+          "lineNumber": 19,
+          "columnNumber": 27,
+          "method": ""
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "script": "this-is-the-script"
+  },
+  "app": {
+    "version": "1.0.10",
+    "bundleVersion": "101"
+  }
+}
