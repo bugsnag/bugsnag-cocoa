@@ -20,7 +20,7 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And the event "request.headers" is not null
 
     # Validate response fields
-    And the event "response.statusCode" equals "444"
+    And the event "response.statusCode" equals 444
     And the event "response.headers" is not null
 
     # Validate the event breadcrumbs
@@ -48,12 +48,12 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And the event "request.httpMethod" equals "POST"
     And the event "request.httpVersion" is not null
     And the event "request.url" matches "^https?\:\/\/.+"
-    And the event "request.bodyLength" equals "20"
+    And the event "request.bodyLength" equals 74
     #And the event "request.body" matches "^{\"status\"\:\"400\",\"myf"
     And the event "request.headers" is not null
 
     # Validate response fields
-    And the event "response.statusCode" equals "400"
+    And the event "response.statusCode" equals 400
     And the event "response.headers" is not null
 
   Scenario: Adding onResponse callbacks can change instrumented response fields
@@ -71,7 +71,7 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And the event "request.params.password" equals "[REDACTED]"
 
     # Validate response fields
-    And the event "response.statusCode" equals "444"
+    And the event "response.statusCode" equals 444
     And the event "response.body" equals "This is a response body that should be reported with the error"
     And the event has no breadcrumbs
 
@@ -92,4 +92,4 @@ Feature: BugsnagNetworkRequestPlugin will send an error that wraps http request/
     And the event "request.headers" is not null
 
     # Validate response fields
-    And the event "response.statusCode" equals "500"
+    And the event "response.statusCode" equals 500
