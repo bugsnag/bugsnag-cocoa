@@ -5,15 +5,15 @@ Changelog
 
 ### Enhancements
 
-* Added HTTP request errors reporting.
+* Added plugin for notifying on HTTP request errors.
   [#1924](https://github.com/bugsnag/bugsnag-cocoa/pull/1924)
 
-### Bug Fixes
-
-* Issue fixed Bugsnag Info plist naming conversion.
+* Support Pascal case plist configuration values.
   [#1925](https://github.com/bugsnag/bugsnag-cocoa/pull/1925)
+
+### Bug Fixes
   
-* Fixed a crash after shared NSURLSession invalidate
+* Fixed a crash after shared NSURLSession is invalidated.
   [#1922](https://github.com/bugsnag/bugsnag-cocoa/pull/1922)
 
 ## 6.35.0 (2026-01-26)
