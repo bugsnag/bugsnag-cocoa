@@ -28,7 +28,7 @@
             [NSString stringEncodingForData:truncatedData encodingOptions:nil convertedString:&bodyStr usedLossyConversion:nil];
             request.body = bodyStr;
             if (bodyStr != nil) {
-                request.bodyLength = bodyStr.length;
+                request.bodyLength = httpRequest.HTTPBody.length;
             }
         }
     } else {
@@ -66,7 +66,9 @@
 - (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     dict[BSGHttpBody] = self.body;
-    dict[BSGHttpBodyLength] = [NSString stringWithFormat:@"%tu", self.bodyLength];
+    if (self.bodyLength != 0) {
+        dict[BSGHttpBodyLength] = @(self.bodyLength);
+    }
     dict[BSGHttpHeaders] = self.headers;
     dict[BSGHttpParams] = self.params;
     dict[BSGHttpMethod] = self.httpMethod;

@@ -44,9 +44,11 @@
 - (NSDictionary *)toDictionary {
     NSMutableDictionary *dict = [NSMutableDictionary new];
     dict[BSGHttpBody] = self.body;
-    dict[BSGHttpBodyLength] = [NSString stringWithFormat:@"%tu", self.bodyLength];
+    if (self.bodyLength != 0) {
+        dict[BSGHttpBodyLength] = @(self.bodyLength);
+    }
     dict[BSGHttpHeaders] = self.headers;
-    dict[BSGHttpStatusCode] = [NSString stringWithFormat:@"%ld", self.statusCode];
+    dict[BSGHttpStatusCode] = @(self.statusCode);
     return dict;
 }
 
