@@ -1,12 +1,20 @@
 Changelog
 =========
 
-## TBD
+## 6.36.0 (2026-03-24)
+
+### Enhancements
+
+* Added HTTP request errors reporting.
+  [#1924](https://github.com/bugsnag/bugsnag-cocoa/pull/1924)
 
 ### Bug Fixes
 
 * Issue fixed Bugsnag Info plist naming conversion.
   [#1925](https://github.com/bugsnag/bugsnag-cocoa/pull/1925)
+  
+* Fixed a crash after shared NSURLSession invalidate
+  [#1922](https://github.com/bugsnag/bugsnag-cocoa/pull/1922)
 
 ## 6.35.0 (2026-01-26)
 
