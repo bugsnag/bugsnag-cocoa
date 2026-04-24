@@ -12,6 +12,7 @@ let package = Package(
     products: [
         .library(name: "Bugsnag", targets: ["Bugsnag"]),
         .library(name: "BugsnagNetworkRequestPlugin", targets: ["BugsnagNetworkRequestPlugin"]),
+        .library(name: "BugsnagMetricKitPlugin", targets: ["BugsnagMetricKitPlugin"]),
     ],
     dependencies: [],
     targets: [
@@ -59,6 +60,18 @@ let package = Package(
                 .define("NDEBUG", .when(configuration: .release)),
                 .headerSearchPath("."),
                 .headerSearchPath("include/BugsnagNetworkRequestPlugin"),
+            ]
+        ),
+        .target(
+            name: "BugsnagMetricKitPlugin",
+            dependencies: ["Bugsnag"],
+            path: "BugsnagMetricKitPlugin/BugsnagMetricKitPlugin",
+            publicHeadersPath: "include",
+            cSettings: [
+                .define("NS_BLOCK_ASSERTIONS", .when(configuration: .release)),
+                .define("NDEBUG", .when(configuration: .release)),
+                .headerSearchPath("."),
+                .headerSearchPath("include/BugsnagMetricKitPlugin"),
             ]
         ),
     ],

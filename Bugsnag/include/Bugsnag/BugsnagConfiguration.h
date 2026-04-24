@@ -38,6 +38,7 @@
 @class BugsnagUser;
 @class BugsnagEndpointConfiguration;
 @class BugsnagErrorTypes;
+@class BugsnagMetricKitTypes;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -309,7 +310,7 @@ BUGSNAG_EXTERN
  * memory corruption that caused the crashing error in the first place.
  *
  * If it fails prior to termination, delivery will be reattempted at next launch
- * (the default behavior). 
+ * (the default behavior).
  *
  * Use of this feature is discouraged because it:
  * - may cause the app to hang while delivery occurs and impact the hang rate
@@ -360,7 +361,7 @@ BUGSNAG_EXTERN
 
 /**
  * The maximum length of breadcrumb messages and metadata string values.
- * 
+ *
  * Values longer than this will be truncated prior to sending, after running any OnSendError blocks.
  *
  * The default value is 10000.
@@ -378,6 +379,14 @@ BUGSNAG_EXTERN
  * all properties are true.
  */
 @property (strong, nonatomic) BugsnagErrorTypes *enabledErrorTypes;
+
+/**
+ * A class defining which MetricKit diagnostics should be reported. By default,
+ * MetricKit is disabled (opt-in). When enabled, all diagnostic types are reported.
+ *
+ * Note: MetricKit is not available when using BugsnagStatic. Use the framework targets instead.
+ */
+@property (strong, nonatomic) BugsnagMetricKitTypes *enabledMetricKitDiagnostics;
 
 /**
  * Set the endpoints to send data to. By default we'll send error reports to

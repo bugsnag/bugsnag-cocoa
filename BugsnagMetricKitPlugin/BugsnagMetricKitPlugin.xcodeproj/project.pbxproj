@@ -1,0 +1,531 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1FA1BFA4C1F8443380F203D0642B5767 /* BSGMetricKitStacktraceConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 801F28D04D044D0EAB236029BC770C78 /* BSGMetricKitStacktraceConverter.m */; };
+		2B05460D91EC4C65837ACB1CB1C7253100 /* MetricKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B05460D91EC4C65837ACB1CB1C72531 /* MetricKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		391F90E8E4704D299EA4357C72B7531A /* BSGDiagnosticsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 679D0480C876409E806A2AD6E1634CF0 /* BSGDiagnosticsHandler.h */; };
+		5BBE891D3D3C4FA0BC188963D1EA955E /* BSGMetricKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DB6FD299855D45CA9CA565F8D7E46451 /* BSGMetricKit.m */; };
+		7E505A60846144C5910C8A9747C4D7CB /* BSGMetricsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D3BEE06D1E54CBCBA98FCBCA1B2EAB4 /* BSGMetricsHandler.m */; };
+		965B94162F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 965B94132F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96ECDA512F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ECDA4F2F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h */; };
+		96ECDA522F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 96ECDA502F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m */; };
+		A95770C54C5746C19A427002DE8F2477 /* BSGMetricsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = EE7C177E93054B6BBDF42D3167477B6D /* BSGMetricsHandler.h */; };
+		B0675CC35C7C4F759F43D164C4B436CC /* BSGMetricKitStacktraceConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 3056DF912C51424FB551C2640A392895 /* BSGMetricKitStacktraceConverter.h */; };
+		C85E8D61CABB4625A414CF1BD3D5ADD9 /* BSGDiagnosticsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E8AC37A87CD46A684C91A329477B0F6 /* BSGDiagnosticsHandler.m */; };
+		D9CC8C141E0C409CBD992B6D6C8C246D /* BSGMetricKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B32C4426A654CE3B6039DFEF4B8C6E4 /* BSGMetricKit.h */; };
+		EA0EBE7F086B4D249FE75C8735CCE446 /* BugsnagMetricKitPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = BB851FCEF4E248629C285E3622D43AC4 /* BugsnagMetricKitPlugin.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AB727F3F29FF4BA497F8FD784ACAFDEC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E45A8210A3D64B7982DC73FB5B51F738 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E0ADDC1218BD42DE8162E70954E85C3A;
+			remoteInfo = "BugsnagMetricKitPlugin-iOS";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0B32C4426A654CE3B6039DFEF4B8C6E4 /* BSGMetricKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGMetricKit.h; sourceTree = "<group>"; };
+		2B05460D91EC4C65837ACB1CB1C72531 /* MetricKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetricKit.framework; path = System/Library/Frameworks/MetricKit.framework; sourceTree = SDKROOT; };
+		3056DF912C51424FB551C2640A392895 /* BSGMetricKitStacktraceConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGMetricKitStacktraceConverter.h; sourceTree = "<group>"; };
+		39D7C6D57E604758BA7D2113805549E2 /* BugsnagMetricKitPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagMetricKitPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		679D0480C876409E806A2AD6E1634CF0 /* BSGDiagnosticsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGDiagnosticsHandler.h; sourceTree = "<group>"; };
+		801F28D04D044D0EAB236029BC770C78 /* BSGMetricKitStacktraceConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGMetricKitStacktraceConverter.m; sourceTree = "<group>"; };
+		965B94132F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetricKitPlugin.h; sourceTree = "<group>"; };
+		96ECDA4F2F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagFromBugsnagMetricKitPlugin.h; sourceTree = "<group>"; };
+		96ECDA502F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagFromBugsnagMetricKitPlugin.m; sourceTree = "<group>"; };
+		9D3BEE06D1E54CBCBA98FCBCA1B2EAB4 /* BSGMetricsHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGMetricsHandler.m; sourceTree = "<group>"; };
+		9E8AC37A87CD46A684C91A329477B0F6 /* BSGDiagnosticsHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGDiagnosticsHandler.m; sourceTree = "<group>"; };
+		ABEB2D2D732E468EAACE38B206866DCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB851FCEF4E248629C285E3622D43AC4 /* BugsnagMetricKitPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BugsnagMetricKitPlugin.m; sourceTree = "<group>"; };
+		C794D497694547FFBC5C818407AAE8A8 /* Bugsnag.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bugsnag.framework; path = "../build/Build/Products/Debug-iphonesimulator/Bugsnag.framework"; sourceTree = "<group>"; };
+		DB6FD299855D45CA9CA565F8D7E46451 /* BSGMetricKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGMetricKit.m; sourceTree = "<group>"; };
+		EE7C177E93054B6BBDF42D3167477B6D /* BSGMetricsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGMetricsHandler.h; sourceTree = "<group>"; };
+		FF09D0743F6C4F73A14E37B7B703D7D3 /* BugsnagMetricKitPlugin_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagMetricKitPlugin_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		459F9291636947A1A1765B57681DCCD7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		539FB0C8D59A41449976FFCC8586DC49 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B05460D91EC4C65837ACB1CB1C7253100 /* MetricKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		02C32F0A9A874FB6B366BCCEC6265984 /* Metrics */ = {
+			isa = PBXGroup;
+			children = (
+				EE7C177E93054B6BBDF42D3167477B6D /* BSGMetricsHandler.h */,
+				9D3BEE06D1E54CBCBA98FCBCA1B2EAB4 /* BSGMetricsHandler.m */,
+			);
+			path = Metrics;
+			sourceTree = "<group>";
+		};
+		23983348BBA84FCBA19B3808E841E030 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FF09D0743F6C4F73A14E37B7B703D7D3 /* BugsnagMetricKitPlugin_iOS.framework */,
+				39D7C6D57E604758BA7D2113805549E2 /* BugsnagMetricKitPluginTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2E67051625F644D2BDD84E1477FA235E = {
+			isa = PBXGroup;
+			children = (
+				CBD72E749E8444B7B66A6D89CE2841EA /* BugsnagMetricKitPlugin */,
+				23983348BBA84FCBA19B3808E841E030 /* Products */,
+				BC4F2F88636540A2B4D2F0DD64D84CD7 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		965B94142F6AD2E900EAC583 /* BugsnagMetricKitPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				965B94132F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h */,
+			);
+			path = BugsnagMetricKitPlugin;
+			sourceTree = "<group>";
+		};
+		965B94152F6AD2E900EAC583 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				965B94142F6AD2E900EAC583 /* BugsnagMetricKitPlugin */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		BC4F2F88636540A2B4D2F0DD64D84CD7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C794D497694547FFBC5C818407AAE8A8 /* Bugsnag.framework */,
+				2B05460D91EC4C65837ACB1CB1C72531 /* MetricKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CB052CB66C21489FADB4C8D78D580DA8 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				679D0480C876409E806A2AD6E1634CF0 /* BSGDiagnosticsHandler.h */,
+				9E8AC37A87CD46A684C91A329477B0F6 /* BSGDiagnosticsHandler.m */,
+			);
+			path = Diagnostics;
+			sourceTree = "<group>";
+		};
+		CBD72E749E8444B7B66A6D89CE2841EA /* BugsnagMetricKitPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				0B32C4426A654CE3B6039DFEF4B8C6E4 /* BSGMetricKit.h */,
+				DB6FD299855D45CA9CA565F8D7E46451 /* BSGMetricKit.m */,
+				3056DF912C51424FB551C2640A392895 /* BSGMetricKitStacktraceConverter.h */,
+				801F28D04D044D0EAB236029BC770C78 /* BSGMetricKitStacktraceConverter.m */,
+				96ECDA4F2F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h */,
+				96ECDA502F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m */,
+				BB851FCEF4E248629C285E3622D43AC4 /* BugsnagMetricKitPlugin.m */,
+				CB052CB66C21489FADB4C8D78D580DA8 /* Diagnostics */,
+				965B94152F6AD2E900EAC583 /* include */,
+				ABEB2D2D732E468EAACE38B206866DCD /* Info.plist */,
+				02C32F0A9A874FB6B366BCCEC6265984 /* Metrics */,
+			);
+			path = BugsnagMetricKitPlugin;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2E84680EFFFC4A14AFF1754C78A1F0F9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96ECDA512F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h in Headers */,
+				D9CC8C141E0C409CBD992B6D6C8C246D /* BSGMetricKit.h in Headers */,
+				B0675CC35C7C4F759F43D164C4B436CC /* BSGMetricKitStacktraceConverter.h in Headers */,
+				391F90E8E4704D299EA4357C72B7531A /* BSGDiagnosticsHandler.h in Headers */,
+				965B94162F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h in Headers */,
+				A95770C54C5746C19A427002DE8F2477 /* BSGMetricsHandler.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		E0ADDC1218BD42DE8162E70954E85C3A /* BugsnagMetricKitPlugin-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A0D51A64B768403FABDE3D0DF4CD360B /* Build configuration list for PBXNativeTarget "BugsnagMetricKitPlugin-iOS" */;
+			buildPhases = (
+				2E84680EFFFC4A14AFF1754C78A1F0F9 /* Headers */,
+				79204AD5EDD64228BEBBD77571C7D312 /* Sources */,
+				539FB0C8D59A41449976FFCC8586DC49 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BugsnagMetricKitPlugin-iOS";
+			productName = BugsnagMetricKitPlugin;
+			productReference = FF09D0743F6C4F73A14E37B7B703D7D3 /* BugsnagMetricKitPlugin_iOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F47A1D7D2CD24A3B9405E4677CF84D50 /* BugsnagMetricKitPluginTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FC128405BFE44FEDB9C1194C91E4FD17 /* Build configuration list for PBXNativeTarget "BugsnagMetricKitPluginTests" */;
+			buildPhases = (
+				1CC48551F41F4AB3A97A974A9DDCB144 /* Sources */,
+				459F9291636947A1A1765B57681DCCD7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				557F1BC526254DC4AB19849445A53DB0 /* PBXTargetDependency */,
+			);
+			name = BugsnagMetricKitPluginTests;
+			productName = BugsnagMetricKitPluginTests;
+			productReference = 39D7C6D57E604758BA7D2113805549E2 /* BugsnagMetricKitPluginTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E45A8210A3D64B7982DC73FB5B51F738 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					E0ADDC1218BD42DE8162E70954E85C3A = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					F47A1D7D2CD24A3B9405E4677CF84D50 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = E0ADDC1218BD42DE8162E70954E85C3A;
+					};
+				};
+			};
+			buildConfigurationList = F5A2035A089B437B929F7DCA95A5FF7D /* Build configuration list for PBXProject "BugsnagMetricKitPlugin" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2E67051625F644D2BDD84E1477FA235E;
+			productRefGroup = 23983348BBA84FCBA19B3808E841E030 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E0ADDC1218BD42DE8162E70954E85C3A /* BugsnagMetricKitPlugin-iOS */,
+				F47A1D7D2CD24A3B9405E4677CF84D50 /* BugsnagMetricKitPluginTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1CC48551F41F4AB3A97A974A9DDCB144 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79204AD5EDD64228BEBBD77571C7D312 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA0EBE7F086B4D249FE75C8735CCE446 /* BugsnagMetricKitPlugin.m in Sources */,
+				5BBE891D3D3C4FA0BC188963D1EA955E /* BSGMetricKit.m in Sources */,
+				1FA1BFA4C1F8443380F203D0642B5767 /* BSGMetricKitStacktraceConverter.m in Sources */,
+				96ECDA522F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m in Sources */,
+				C85E8D61CABB4625A414CF1BD3D5ADD9 /* BSGDiagnosticsHandler.m in Sources */,
+				7E505A60846144C5910C8A9747C4D7CB /* BSGMetricsHandler.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		557F1BC526254DC4AB19849445A53DB0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E0ADDC1218BD42DE8162E70954E85C3A /* BugsnagMetricKitPlugin-iOS */;
+			targetProxy = AB727F3F29FF4BA497F8FD784ACAFDEC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C67B09CAB6774D7F88073E747435EB88 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C67B09CAB6774D7F88073E747435EB8801 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../build/Build/Products/Release-iphonesimulator",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BugsnagMetricKitPlugin/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					MetricKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagMetricKitPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C67B09CAB6774D7F88073E747435EB8802 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BugsnagMetricKitPluginTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagMetricKitPluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C82E4945A6CD4C49815887AFA1890EF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C82E4945A6CD4C49815887AFA1890EF801 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../build/Build/Products/Debug-iphonesimulator",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BugsnagMetricKitPlugin/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					MetricKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagMetricKitPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C82E4945A6CD4C49815887AFA1890EF802 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BugsnagMetricKitPluginTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagMetricKitPluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A0D51A64B768403FABDE3D0DF4CD360B /* Build configuration list for PBXNativeTarget "BugsnagMetricKitPlugin-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C82E4945A6CD4C49815887AFA1890EF801 /* Debug */,
+				C67B09CAB6774D7F88073E747435EB8801 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F5A2035A089B437B929F7DCA95A5FF7D /* Build configuration list for PBXProject "BugsnagMetricKitPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C82E4945A6CD4C49815887AFA1890EF8 /* Debug */,
+				C67B09CAB6774D7F88073E747435EB88 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FC128405BFE44FEDB9C1194C91E4FD17 /* Build configuration list for PBXNativeTarget "BugsnagMetricKitPluginTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C82E4945A6CD4C49815887AFA1890EF802 /* Debug */,
+				C67B09CAB6774D7F88073E747435EB8802 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E45A8210A3D64B7982DC73FB5B51F738 /* Project object */;
+}

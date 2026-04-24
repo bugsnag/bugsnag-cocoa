@@ -72,6 +72,8 @@
 #import "BugsnagUser+Private.h"
 #import "BSGPersistentDeviceID.h"
 #import "BugsnagCocoaPerformanceFromBugsnagCocoa.h"
+#import "BugsnagCrossTalkAPI.h"
+#import "BSGPluginRegistry.h"
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
@@ -262,6 +264,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
     // Map our bridged API early on.
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
+    
+    [BugsnagCrossTalkAPI initializeWithClient:self];
 
     BSGCrashSentryInstall(self.configuration, BSSerializeDataCrashHandler);
 
@@ -327,6 +331,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
             bsg_log_err(@"Plugin %@ threw exception in -load: %@", plugin, exception);
         }
     }
+
+    [BSGPluginRegistry loadPluginsWithConfiguration:self.configuration];
 
     self.sessionTracker = [[BugsnagSessionTracker alloc] initWithConfig:self.configuration client:self];
     [self.sessionTracker startWithNotificationCenter:center isInForeground:bsg_runContext->isForeground];
@@ -992,6 +998,76 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     [self addAutoBreadcrumbForEvent:event];
+}
+
+/**
+ * Create and notify a plain event without automatic enrichment.
+ *
+ * This is designed for external diagnostic systems (like MetricKit) that provide
+ * their own timestamp and don't need breadcrumbs, feature flags, etc.
+ */
+- (void)notifyPlainEventWithErrorClass:(NSString *)errorClass
+                          errorMessage:(NSString *)errorMessage
+                            stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
+                             timestamp:(NSDate * _Nullable)timestamp
+                                 block:(BugsnagOnErrorBlock _Nullable)block {
+    
+    // Minimal config checks
+    if (!self.configuration.shouldSendReports) {
+        bsg_log_info("Discarding plain event because shouldSendReports is NO");
+        return;
+    }
+    
+    if ([self.configuration shouldDiscardErrorClass:errorClass]) {
+        bsg_log_info(@"Discarding plain event because errorClass \"%@\" matched configuration.discardClasses", errorClass);
+        return;
+    }
+    
+    // Get system info for app/device generation
+    NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
+    
+    // Create minimal metadata (no automatic enrichment)
+    BugsnagMetadata *metadata = [[BugsnagMetadata alloc] init];
+    
+    // Create error
+    BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
+                                                      errorMessage:errorMessage
+                                                         errorType:BSGErrorTypeCocoa
+                                                        stacktrace:stacktrace];
+    
+    // Create handled state (plain events are considered handled)
+    BugsnagHandledState *handledState = [BugsnagHandledState handledStateWithSeverityReason:HandledError];
+    
+    // Generate app and device with current state
+    BugsnagAppWithState *app = [self generateAppWithState:systemInfo];
+    BugsnagDeviceWithState *device = [self generateDeviceWithState:systemInfo];
+    
+    // Set custom timestamp if provided
+    if (timestamp) {
+        device.time = timestamp;
+    }
+    
+    // Create event with minimal context (no breadcrumbs, no feature flags, no threads)
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithApp:app
+                                                     device:device
+                                               handledState:handledState
+                                                       user:[self.user withId]
+                                                   metadata:metadata
+                                                breadcrumbs:@[] // No breadcrumbs for plain events
+                                                     errors:@[error]
+                                                    threads:@[] // No threads for plain events
+                                                    session:nil // Will be set in notifyInternal if needed
+                                     attemptDeliveryOnCrash:self.configuration.attemptDeliveryOnCrash];
+    
+    event.apiKey = self.configuration.apiKey;
+    event.context = self.context;
+    event.groupingDiscriminator = self.groupingDiscriminator_;
+    event.correlation = [self getCurrentCorrelation];
+    
+    // No feature flags for plain events
+    
+    // Call notifyInternal to handle the rest (onError callbacks, session tracking, delivery)
+    [self notifyInternal:event block:block];
 }
 
 // MARK: - Breadcrumbs
