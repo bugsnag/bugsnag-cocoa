@@ -10,15 +10,13 @@
 
 #if __has_include(<MetricKit/MetricKit.h>)
 
-@class BugsnagConfiguration;
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGMetricKit: NSObject
 
 + (instancetype)sharedInstance;
 
-- (void)configure:(BugsnagConfiguration *)configuration;
+- (void)configure:(id)configuration;
 
 - (void)installMetricKit;
 

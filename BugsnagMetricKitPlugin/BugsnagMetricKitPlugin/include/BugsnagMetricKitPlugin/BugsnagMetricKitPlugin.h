@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Bugsnag/BSGPlugin.h>
 
 @class BugsnagConfiguration;
 
@@ -19,8 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * The plugin is automatically discovered and loaded by Bugsnag when linked.
  * No additional setup is required beyond linking the plugin framework.
+ *
+ * Note: This plugin implements the BSGPlugin protocol methods (install and configure:)
+ * but doesn't formally declare conformance to avoid build-time dependencies on Bugsnag.
  */
-@interface BugsnagMetricKitPlugin : NSObject <BSGPlugin>
+@interface BugsnagMetricKitPlugin : NSObject
 
 /**
  * Installs the MetricKit plugin and registers for MetricKit callbacks.

@@ -98,6 +98,25 @@ NS_ASSUME_NONNULL_BEGIN
                        options:(BugsnagErrorOptions *_Nullable)options
                          block:(_Nullable BugsnagOnErrorBlock)block;
 
+/**
+ * Create and notify a plain event without automatic enrichment.
+ *
+ * This method creates a minimal event without breadcrumbs, feature flags, threads, or other
+ * automatic context enrichment. It's designed for external diagnostic systems (like MetricKit)
+ * that provide their own timestamp and metadata.
+ *
+ * @param errorClass The error class name
+ * @param errorMessage The error message
+ * @param stacktrace Array of BugsnagStackframe objects
+ * @param timestamp Event timestamp (or nil for current time)
+ * @param block Optional callback to customize the event before sending
+ */
+- (void)notifyPlainEventWithErrorClass:(NSString *)errorClass
+                          errorMessage:(NSString *)errorMessage
+                            stacktrace:(NSArray<BugsnagStackframe *> *)stacktrace
+                             timestamp:(NSDate * _Nullable)timestamp
+                                 block:(BugsnagOnErrorBlock _Nullable)block;
+
 @end
 
 NS_ASSUME_NONNULL_END

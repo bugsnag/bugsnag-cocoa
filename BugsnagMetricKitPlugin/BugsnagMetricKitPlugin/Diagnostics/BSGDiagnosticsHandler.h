@@ -12,13 +12,11 @@
 
 #import <MetricKit/MetricKit.h>
 
-@class BugsnagConfiguration;
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGDiagnosticsHandler: NSObject
 
-- (void)configure:(BugsnagConfiguration *)configuration;
+- (void)configure:(id)configuration;
 
 - (void)handleDiagnosticsPayload:(MXDiagnosticPayload *)payload API_AVAILABLE(ios(14.0), macosx(12.0));
 

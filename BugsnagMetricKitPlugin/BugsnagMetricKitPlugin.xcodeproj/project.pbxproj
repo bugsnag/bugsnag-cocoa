@@ -13,9 +13,10 @@
 		5BBE891D3D3C4FA0BC188963D1EA955E /* BSGMetricKit.m in Sources */ = {isa = PBXBuildFile; fileRef = DB6FD299855D45CA9CA565F8D7E46451 /* BSGMetricKit.m */; };
 		7E505A60846144C5910C8A9747C4D7CB /* BSGMetricsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D3BEE06D1E54CBCBA98FCBCA1B2EAB4 /* BSGMetricsHandler.m */; };
 		965B94162F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 965B94132F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96ECDA512F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ECDA4F2F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h */; };
+		96ECDA522F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 96ECDA502F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m */; };
 		A95770C54C5746C19A427002DE8F2477 /* BSGMetricsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = EE7C177E93054B6BBDF42D3167477B6D /* BSGMetricsHandler.h */; };
 		B0675CC35C7C4F759F43D164C4B436CC /* BSGMetricKitStacktraceConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 3056DF912C51424FB551C2640A392895 /* BSGMetricKitStacktraceConverter.h */; };
-		C794D497694547FFBC5C818407AAE8A800 /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C794D497694547FFBC5C818407AAE8A8 /* Bugsnag.framework */; };
 		C85E8D61CABB4625A414CF1BD3D5ADD9 /* BSGDiagnosticsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E8AC37A87CD46A684C91A329477B0F6 /* BSGDiagnosticsHandler.m */; };
 		D9CC8C141E0C409CBD992B6D6C8C246D /* BSGMetricKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B32C4426A654CE3B6039DFEF4B8C6E4 /* BSGMetricKit.h */; };
 		EA0EBE7F086B4D249FE75C8735CCE446 /* BugsnagMetricKitPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = BB851FCEF4E248629C285E3622D43AC4 /* BugsnagMetricKitPlugin.m */; };
@@ -39,6 +40,8 @@
 		679D0480C876409E806A2AD6E1634CF0 /* BSGDiagnosticsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGDiagnosticsHandler.h; sourceTree = "<group>"; };
 		801F28D04D044D0EAB236029BC770C78 /* BSGMetricKitStacktraceConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGMetricKitStacktraceConverter.m; sourceTree = "<group>"; };
 		965B94132F6AD2E900EAC583 /* BugsnagMetricKitPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetricKitPlugin.h; sourceTree = "<group>"; };
+		96ECDA4F2F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagFromBugsnagMetricKitPlugin.h; sourceTree = "<group>"; };
+		96ECDA502F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagFromBugsnagMetricKitPlugin.m; sourceTree = "<group>"; };
 		9D3BEE06D1E54CBCBA98FCBCA1B2EAB4 /* BSGMetricsHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGMetricsHandler.m; sourceTree = "<group>"; };
 		9E8AC37A87CD46A684C91A329477B0F6 /* BSGDiagnosticsHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGDiagnosticsHandler.m; sourceTree = "<group>"; };
 		ABEB2D2D732E468EAACE38B206866DCD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,7 +64,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C794D497694547FFBC5C818407AAE8A800 /* Bugsnag.framework in Frameworks */,
 				2B05460D91EC4C65837ACB1CB1C7253100 /* MetricKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,15 +135,17 @@
 		CBD72E749E8444B7B66A6D89CE2841EA /* BugsnagMetricKitPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				965B94152F6AD2E900EAC583 /* include */,
-				BB851FCEF4E248629C285E3622D43AC4 /* BugsnagMetricKitPlugin.m */,
 				0B32C4426A654CE3B6039DFEF4B8C6E4 /* BSGMetricKit.h */,
 				DB6FD299855D45CA9CA565F8D7E46451 /* BSGMetricKit.m */,
 				3056DF912C51424FB551C2640A392895 /* BSGMetricKitStacktraceConverter.h */,
 				801F28D04D044D0EAB236029BC770C78 /* BSGMetricKitStacktraceConverter.m */,
+				96ECDA4F2F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h */,
+				96ECDA502F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m */,
+				BB851FCEF4E248629C285E3622D43AC4 /* BugsnagMetricKitPlugin.m */,
 				CB052CB66C21489FADB4C8D78D580DA8 /* Diagnostics */,
-				02C32F0A9A874FB6B366BCCEC6265984 /* Metrics */,
+				965B94152F6AD2E900EAC583 /* include */,
 				ABEB2D2D732E468EAACE38B206866DCD /* Info.plist */,
+				02C32F0A9A874FB6B366BCCEC6265984 /* Metrics */,
 			);
 			path = BugsnagMetricKitPlugin;
 			sourceTree = "<group>";
@@ -153,6 +157,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96ECDA512F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.h in Headers */,
 				D9CC8C141E0C409CBD992B6D6C8C246D /* BSGMetricKit.h in Headers */,
 				B0675CC35C7C4F759F43D164C4B436CC /* BSGMetricKitStacktraceConverter.h in Headers */,
 				391F90E8E4704D299EA4357C72B7531A /* BSGDiagnosticsHandler.h in Headers */,
@@ -249,6 +254,7 @@
 				EA0EBE7F086B4D249FE75C8735CCE446 /* BugsnagMetricKitPlugin.m in Sources */,
 				5BBE891D3D3C4FA0BC188963D1EA955E /* BSGMetricKit.m in Sources */,
 				1FA1BFA4C1F8443380F203D0642B5767 /* BSGMetricKitStacktraceConverter.m in Sources */,
+				96ECDA522F7E8F4D00E2BF17 /* BugsnagFromBugsnagMetricKitPlugin.m in Sources */,
 				C85E8D61CABB4625A414CF1BD3D5ADD9 /* BSGDiagnosticsHandler.m in Sources */,
 				7E505A60846144C5910C8A9747C4D7CB /* BSGMetricsHandler.m in Sources */,
 			);

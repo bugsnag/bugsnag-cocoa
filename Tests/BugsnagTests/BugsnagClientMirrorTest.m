@@ -143,6 +143,7 @@
             @"threadsCapture:callstack: @32@0:8@16@24",
             @"stacktraceCapture:callstack: @32@0:8@16@24",
             @"userCapture: @24@0:8@16",
+            @"notifyPlainEventWithErrorClass:errorMessage:stacktrace:timestamp:block: v56@0:8@16@24@32@40@?48",
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

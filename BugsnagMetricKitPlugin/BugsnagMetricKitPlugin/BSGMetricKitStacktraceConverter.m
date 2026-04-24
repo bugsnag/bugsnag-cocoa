@@ -10,9 +10,7 @@
 
 #if __has_include(<MetricKit/MetricKit.h>)
 
-#import <Bugsnag/Bugsnag.h>
-#import <Bugsnag/BugsnagStackframe.h>
-#import <Bugsnag/BugsnagSymbolicator.h>
+#import "BugsnagFromBugsnagMetricKitPlugin.h"
 #import <MetricKit/MetricKit.h>
 
 @implementation BSGMetricKitStacktraceConverter
@@ -33,8 +31,6 @@
             if (json && !error) {
                 [self extractFramesFromJSON:json intoArray:frames];
                 
-                // Symbolicate the frames to add method names and other details
-                [BugsnagSymbolicator symbolicateStackframes:frames];
             }
         }
     }
@@ -83,34 +79,46 @@
         return nil;
     }
     
-    BugsnagStackframe *frame = [[BugsnagStackframe alloc] init];
+    // Dynamically load BugsnagStackframe class at runtime
+    Class BugsnagStackframeClass = NSClassFromString(@"BugsnagStackframe");
+    if (!BugsnagStackframeClass) {
+        return nil;
+    }
+    
+    id frame = [[BugsnagStackframeClass alloc] init];
     
     // Extract address
     NSNumber *address = frameDict[@"address"];
     if ([address isKindOfClass:[NSNumber class]]) {
-        frame.frameAddress = address;
+        [frame setValue:address forKey:@"frameAddress"];
     }
     
     // Extract binary name
     NSString *binaryName = frameDict[@"binaryName"];
     if ([binaryName isKindOfClass:[NSString class]]) {
-        frame.machoFile = binaryName;
+        [frame setValue:binaryName forKey:@"machoFile"];
     }
     
     // Extract binary UUID
     NSString *binaryUUID = frameDict[@"binaryUUID"];
     if ([binaryUUID isKindOfClass:[NSString class]]) {
-        frame.machoUuid = binaryUUID;
+        [frame setValue:binaryUUID forKey:@"machoUuid"];
     }
     
     // Extract offset into binary text segment
     NSNumber *offsetIntoBinaryTextSegment = frameDict[@"offsetIntoBinaryTextSegment"];
     if ([offsetIntoBinaryTextSegment isKindOfClass:[NSNumber class]] && address) {
-        frame.symbolAddress = @([address unsignedLongLongValue] - [offsetIntoBinaryTextSegment unsignedLongLongValue]);
+        NSNumber *symbolAddress = @([address unsignedLongLongValue] - [offsetIntoBinaryTextSegment unsignedLongLongValue]);
+        [frame setValue:symbolAddress forKey:@"symbolAddress"];
     }
     
-    // For MetricKit frames, we mark them as cocoa type
-    frame.type = BugsnagStackframeTypeCocoa;
+    if ([binaryName isKindOfClass:[NSString class]] && [offsetIntoBinaryTextSegment isKindOfClass:[NSNumber class]]) {
+        NSString *method = [NSString stringWithFormat:@"%@ + %llu", binaryName, [offsetIntoBinaryTextSegment unsignedLongLongValue]];
+        [frame setValue:method forKey:@"method"];
+    }
+    
+    // Mark MetricKit frames as cocoa type
+    [frame setValue:@"cocoa" forKey:@"type"];
     
     return frame;
 }

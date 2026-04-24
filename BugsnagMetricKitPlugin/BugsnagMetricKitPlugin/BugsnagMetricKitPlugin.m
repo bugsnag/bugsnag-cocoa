@@ -8,7 +8,6 @@
 
 #import "BugsnagMetricKitPlugin.h"
 #import "BSGMetricKit.h"
-#import <Bugsnag/BugsnagConfiguration.h>
 
 #if __has_include(<MetricKit/MetricKit.h>)
 #import <MetricKit/MetricKit.h>

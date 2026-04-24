@@ -12,8 +12,9 @@
 
 #import "Metrics/BSGMetricsHandler.h"
 #import "Diagnostics/BSGDiagnosticsHandler.h"
-#import <Bugsnag/BugsnagConfiguration.h>
 #import <MetricKit/MetricKit.h>
+
+@class BugsnagConfiguration;
 
 @interface BSGMetricKit () <MXMetricManagerSubscriber>
 @property (nonatomic, strong) BSGMetricsHandler *metricsHandler;
@@ -41,7 +42,7 @@
     return self;
 }
 
-- (void)configure:(BugsnagConfiguration *)configuration {
+- (void)configure:(id)configuration {
     [self.diagnosticsHandler configure:configuration];
 }
 
