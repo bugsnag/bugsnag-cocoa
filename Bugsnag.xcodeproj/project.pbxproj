@@ -4334,8 +4334,8 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
@@ -4362,8 +4362,8 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
@@ -4432,7 +4432,7 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -4459,7 +4459,7 @@
 			baseConfigurationReference = 017824BD262D65A000D18AFA /* Bugsnag.xcconfig */;
 			buildSettings = {
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
