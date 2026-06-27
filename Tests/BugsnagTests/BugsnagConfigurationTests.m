@@ -962,6 +962,11 @@ static NSString *const HUB_APIKEY_32CHAR =
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
     BugsnagOnSendErrorBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
 
+#if BSG_HAVE_APP_HANG_DETECTION
+    BugsnagAppHangCallback appHangCallback = ^(BugsnagEvent * _Nonnull event) {};
+    config.appHangCallback = appHangCallback;
+#endif
+
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
 
@@ -999,6 +1004,10 @@ static NSString *const HUB_APIKEY_32CHAR =
     XCTAssertEqual(config.onCrashHandler, clone.onCrashHandler);
     [clone setOnCrashHandler:(void *)^(const BSG_KSCrashReportWriter *_Nonnull writer){}];
     XCTAssertNotEqual(config.onCrashHandler, clone.onCrashHandler);
+
+#if BSG_HAVE_APP_HANG_DETECTION
+    XCTAssertEqual(config.appHangCallback, clone.appHangCallback);
+#endif
 
     // Array (of blocks)
     XCTAssertEqual(config.onSendBlocks, clone.onSendBlocks);

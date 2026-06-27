@@ -97,6 +97,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
 #if BSG_HAVE_APP_HANG_DETECTION
+    [copy setAppHangCallback:self.appHangCallback];
     [copy setAppHangThresholdMillis:self.appHangThresholdMillis];
     [copy setReportBackgroundAppHangs:self.reportBackgroundAppHangs];
 #endif

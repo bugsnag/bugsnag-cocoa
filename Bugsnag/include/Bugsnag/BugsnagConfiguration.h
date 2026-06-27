@@ -90,6 +90,8 @@ typedef NS_OPTIONS(NSUInteger, BSGTelemetryOptions) {
  */
 BUGSNAG_EXTERN const NSUInteger BugsnagAppHangThresholdFatalOnly API_UNAVAILABLE(watchos);
 
+typedef void (^BugsnagAppHangCallback)(BugsnagEvent *_Nonnull event);
+
 /**
  *  A configuration block for modifying an error report
  *
@@ -264,6 +266,27 @@ BUGSNAG_EXTERN
  * By default this is false.
  */
 @property (nonatomic) BOOL reportBackgroundAppHangs API_UNAVAILABLE(watchos);
+
+/**
+ * An optional callback invoked when an app hang is detected, before the event is persisted.
+ *
+ * This can be used to attach time-sensitive in-memory diagnostics that may no longer be available
+ * when OnSendError callbacks run after the hang ends or on the next app launch.
+ *
+ * The callback is invoked synchronously on Bugsnag's app hang detector thread while the main
+ * thread is unresponsive. It must return quickly. Do not perform I/O, dispatch synchronously to
+ * the main thread, or wait for a lock or actor that may depend on the main thread. Delaying the
+ * callback also delays persistence of the app hang event. Mutate the event only during the
+ * callback, and do not retain it for asynchronous mutation.
+ *
+ * The callback may be invoked for a hang that later recovers. When appHangThresholdMillis is set to
+ * BugsnagAppHangThresholdFatalOnly, the provisional event is deleted on recovery, so modifications
+ * made by this callback are delivered only if the app is terminated while hung.
+ *
+ * If the app is terminated while hung, the modified event remains on disk. Bugsnag loads it on the
+ * next launch, marks it as unhandled, and delivers it without invoking this callback again.
+ */
+@property (copy, nullable, nonatomic) BugsnagAppHangCallback appHangCallback API_UNAVAILABLE(watchos);
 
 /**
  * Determines whether app sessions should be tracked automatically. By default this value is true.

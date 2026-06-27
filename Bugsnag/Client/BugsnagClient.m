@@ -1232,6 +1232,15 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     @synchronized (self.featureFlagStore) {
         self.appHangEvent.featureFlagStore = [self.featureFlagStore copyMemoryStore];
     }
+
+    BugsnagAppHangCallback callback = self.configuration.appHangCallback;
+    if (callback) {
+        @try {
+            callback((BugsnagEvent * _Nonnull)self.appHangEvent);
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Ignoring exception thrown by app hang callback: %@", exception);
+        }
+    }
     
     [self.appHangEvent symbolicateIfNeeded];
     
