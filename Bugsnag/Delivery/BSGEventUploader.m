@@ -19,6 +19,7 @@
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
 #import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
 
 
 static NSString * const CrashReportPrefix = @"CrashReport-";
@@ -279,6 +280,11 @@ static NSString * const RecrashReportPrefix = @"RecrashReport-";
 
 - (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload {
     return [self.discardProcessor shouldDiscardEvent:eventPayload];
+}
+
+- (BOOL)hasValidRemoteConfig {
+    BSGRemoteConfigHandler *handler = self.remoteConfigHandler;
+    return handler && [handler hasValidConfig];
 }
 
 @end

@@ -192,9 +192,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
         _threads = threads;
         _session = [session copy];
-        _usage = @{
-            @"remoteConfig": @"true"
-        };
+        _usage = @{};
     }
     return self;
 }
@@ -238,9 +236,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             return [BugsnagThread threadFromJson:dict];
         }) ?: @[];
 
-        _usage = BSGDictMerge(@{
-            @"remoteConfig": @"true"
-        }, BSGDeserializeDict(json[BSGKeyUsage]) ?: @{});
+        _usage = BSGDeserializeDict(json[BSGKeyUsage]) ?: @{};
 
         _user = BSGDeserializeObject(json[BSGKeyUser], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [[BugsnagUser alloc] initWithDictionary:dict];
@@ -814,6 +810,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (void)setUnhandled:(BOOL)unhandled {
     self.handledState.unhandled = unhandled;
+}
+
+- (void)setRemoteConfigFlag:(BOOL)hasValidConfig {
+    NSMutableDictionary *usage = [self.usage mutableCopy] ?: [NSMutableDictionary new];
+    usage[@"remoteConfig"] = @(hasValidConfig);
+    self.usage = usage;
 }
 
 // MARK: - <BugsnagFeatureFlagStore>

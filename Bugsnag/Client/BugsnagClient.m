@@ -976,7 +976,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.sessionTracker incrementEventCountUnhandled:event.handledState.unhandled];
     event.session = self.sessionTracker.runningSession;
 
-    event.usage = BSGTelemetryCreateUsage(self.configuration);
+    NSMutableDictionary *usage = [BSGTelemetryCreateUsage(self.configuration) mutableCopy] ?: [NSMutableDictionary new];
+    
+    BOOL hasValidConfig = self.remoteConfigHandler && [self.remoteConfigHandler hasValidConfig];
+    
+    usage[@"remoteConfig"] = @(hasValidConfig); // true if config active, false otherwise
+    
+    event.usage = [NSDictionary dictionaryWithDictionary:usage];
 
     if (event.handledState.originalUnhandledValue) {
         // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the
@@ -1107,6 +1113,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     BSGEventDiscardRulesetSource *rulesetSource = [BSGEventDiscardRulesetSource sourceWithRemoteConfigHandler:self.remoteConfigHandler
                                                                                            discardRuleFactory:discardRuleFactory];
     self.discardProcessor.source = rulesetSource;
+    self.eventUploader.remoteConfigHandler = self.remoteConfigHandler;
     [self.remoteConfigHandler initialize];
 }
 
