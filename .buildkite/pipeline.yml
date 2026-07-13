@@ -477,7 +477,7 @@ steps:
   #
   # Debug configration e2e tests
   #
-  - label: ":bitbar: {{matrix}} debug configuration tests"
+  - label: ":browserstack: {{matrix}} debug configuration tests"
     matrix:
       - "IOS_26"
       - "IOS_13"
@@ -493,30 +493,29 @@ steps:
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
-      docker-compose#v4.7.0:
-        pull: "cocoa-maze-runner-bitbar"
-        run: "cocoa-maze-runner-bitbar"
-        service-ports: true
+      docker-compose#v5.8.0:
+        pull: "cocoa-maze-runner"
+        run: "cocoa-maze-runner"
         command:
-          - "--app=@/app/build/ipa_url_bb_debug.txt"
-          - "--farm=bb"
+          - "--app=@build/ipa_url_bs_release.txt"
+          - "--farm=bs"
           - "--device={{matrix}}"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--appium-version=1.21.0"
           - "--fail-fast"
-          - "--repeater-api-key="
-          - "--hub-repeater-api-key="
-          - "features/debug"
+          - "features/debug"    
+      
       test-collector#v1.11.0:
         files: "reports/TEST-*.xml"
         format: "junit"
         branch: "^master|next$$"
-    concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency: 5
+    concurrency_group: "browserstack-app"
     concurrency_method: "eager"
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
+          limit: 2
+        - exit_status: 104 # App hang related error
           limit: 2
         - exit_status: 103  # Appium session failed
           limit: 2
