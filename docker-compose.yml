@@ -20,6 +20,7 @@ x-common-environment: &common-environment
   MAZE_REPEATER_API_KEY:
   MAZE_HUB_REPEATER_API_KEY:
   MAZE_SCENARIO_BUGSNAG_API_KEY:
+  MAZE_RECEIVE_REQUESTS_WAIT:
   MAZE_NO_FAIL_FAST:
 
 services:

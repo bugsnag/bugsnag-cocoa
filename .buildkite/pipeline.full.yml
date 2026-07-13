@@ -44,6 +44,8 @@ steps:
     timeout_in_minutes: 20
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
@@ -117,6 +119,8 @@ steps:
     timeout_in_minutes: 60
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
@@ -162,6 +166,8 @@ steps:
     timeout_in_minutes: 60
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
@@ -212,6 +218,8 @@ steps:
     timeout_in_minutes: 30
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"

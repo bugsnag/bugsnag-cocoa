@@ -302,6 +302,8 @@ steps:
   # Full set of e2e tests on one iOS version
   #
   - group: "iOS 26 e2e tests"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     steps:
       - label: ":bitbar: iOS 26 e2e tests batch 1"
         depends_on: "cocoa_fixture"
@@ -385,6 +387,8 @@ steps:
     timeout_in_minutes: 30
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
@@ -433,6 +437,8 @@ steps:
     timeout_in_minutes: 30
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
@@ -477,6 +483,8 @@ steps:
     timeout_in_minutes: 30
     agents:
       queue: "opensource"
+    env:
+      MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
         download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"

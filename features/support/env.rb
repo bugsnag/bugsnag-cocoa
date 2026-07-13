@@ -14,6 +14,9 @@ BeforeAll do
   # Setup a 3 minute timeout for receiving requests is STRESS_TEST env var is set
   Maze.config.receive_requests_wait = 180 unless ENV['STRESS_TEST'].nil?
 
+  wait_override = ENV['MAZE_RECEIVE_REQUESTS_WAIT']
+  Maze.config.receive_requests_wait = wait_override.to_i if wait_override && !wait_override.empty?
+
   if Maze.config.os == 'ios' && Maze.config.farm == :local
     # Recent Appium versions don't always uninstall the old version of the app ¯\_(ツ)_/¯
     system('ideviceinstaller --uninstall com.bugsnag.fixtures.cocoa')
