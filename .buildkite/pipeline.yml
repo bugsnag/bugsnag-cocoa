@@ -489,7 +489,7 @@ steps:
       MAZE_RECEIVE_REQUESTS_WAIT: "60"
     plugins:
       artifacts#v1.9.4:
-        download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
+        download: "features/fixtures/ios/output/ipa_url_bs_debug.txt"
         upload:
           - "maze_output/failed/**/*"
           - "maze_output/maze_output.zip"
@@ -497,7 +497,7 @@ steps:
         pull: "cocoa-maze-runner"
         run: "cocoa-maze-runner"
         command:
-          - "--app=@build/ipa_url_bs_release.txt"
+          - "--app=@/app/build/ipa_url_bs_debug.txt"
           - "--farm=bs"
           - "--device={{matrix}}"
           - "--appium-version=1.21.0"
