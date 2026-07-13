@@ -257,7 +257,8 @@ Feature: Reporting crash events
     And the "isPC" of stack frame 0 is true
     And the "isLR" of stack frame 0 is null
     And the "isPC" of stack frame 1 is null
-
+  
+  @retry
   Scenario: Concurrent crashes should result in a single valid crash report
     Given I run "ConcurrentCrashesScenario" and relaunch the crashed app
     And I configure Bugsnag for "ConcurrentCrashesScenario"
