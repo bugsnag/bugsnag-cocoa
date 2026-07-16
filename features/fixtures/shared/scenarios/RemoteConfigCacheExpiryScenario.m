@@ -20,7 +20,8 @@
 
 - (void)configure {
     [super configure];
-    self.config.endpoints.configuration = self.fixtureConfig.configurationURL.absoluteString;
+    NSURL *configURL = [self.fixtureConfig.mazeRunnerURL URLByAppendingPathComponent:@"error-config"];
+    self.config.endpoints.configuration = configURL.absoluteString;
 }
 
 - (void)run {
