@@ -16,12 +16,12 @@
 @implementation BSGUtilsTests
 
 - (void)testPreventInliningConcurrentAccess {
+    NSString *tag = @"BSGPreventInlining";
     dispatch_apply(10000,
                    dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0),
                    ^(size_t index) {
-        @autoreleasepool {
-            BSGPreventInlining([NSString stringWithFormat:@"tag-%zu", index]);
-        }
+        (void)index;
+        BSGPreventInlining(tag);
     });
 }
 
