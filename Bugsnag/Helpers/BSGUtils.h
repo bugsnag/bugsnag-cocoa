@@ -45,7 +45,27 @@ static inline NSString * _Nullable BSGStringFromClass(Class _Nullable cls) {
  */
 void bsg_safe_strncpy(char *dst, const char *src, size_t length);
 
-NSString * _Nullable BSGPreventInlining(NSString * _Nullable someValue);
+/**
+ * Prevent compiler optimisations from combining public notify API methods.
+ * The implementation is intentionally free of shared mutable state because
+ * these APIs may be called concurrently.
+ */
+#if __has_attribute(not_tail_called)
+#define BSG_NOT_TAIL_CALLED __attribute__((not_tail_called))
+#else
+#define BSG_NOT_TAIL_CALLED
+#endif
+
+void BSGPreventInlining(NSString * _Nullable tag)
+    __attribute__((noinline)) BSG_NOT_TAIL_CALLED;
+
+#if __has_attribute(disable_tail_calls)
+#define BSG_KEEP_FUNCTION_IN_STACKTRACE __attribute__((disable_tail_calls))
+#else
+#define BSG_KEEP_FUNCTION_IN_STACKTRACE
+#endif
+
+#define BSG_THWART_TAIL_CALL_OPTIMISATION __asm__ __volatile__("");
 
 NS_ASSUME_NONNULL_END
 
