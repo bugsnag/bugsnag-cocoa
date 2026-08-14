@@ -139,3 +139,53 @@ Feature: Remote config discard rules are applied
     And the event "severity" equals "warning"
     And the event "unhandled" is false
     And I discard the oldest error
+
+  Scenario: Expired config is invalidated and replaced by new config
+    When I prepare an error config with:
+     | type     | name          | value                                     |
+     | property | body          | @features/support/config/rules_all.json   |
+     | property | status        | 200                                       |
+     | header   | Cache-Control | max-age=1                                 |
+     | header   | ETag          | "42"                                      |
+    And I run "RemoteConfigCacheExpiryScenario"
+    And I wait for 1 error config to be requested
+    And I wait for 3 seconds
+    And I prepare an error config with:
+     | type     | name          | value                                     |
+     | property | body          | @features/support/config/no_rules.json    |
+     | property | status        | 200                                       |
+     | header   | Cache-Control | max-age=604800                            |
+     | header   | ETag          | "43"                                      |
+    And I wait for 1 error config to be requested
+    And I wait to receive an error
+    And the received errors match:
+        | exceptions.0.errorClass | exceptions.0.message |
+        | RemoteConfigExpiryError | Err 0                |
+    Then the error is valid for the error reporting API
+    And the event "unhandled" is false
+
+  Scenario: Server error does not block delivery; nil endpoint disables config and deletes stored
+    When I prepare an error config with:
+     | type     | name          | value                                     |
+     | property | body          | @features/support/config/no_rules.json    |
+     | property | status        | 200                                       |
+     | header   | Cache-Control | max-age=604800                            |
+     | header   | ETag          | "42"                                      |
+    And I run "RemoteConfigBasicScenario"
+    And I wait for 1 error config to be requested
+    And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name   | value |
+     | property | status | 500   |
+    And I relaunch the app after a crash
+    And I configure Bugsnag for "RemoteConfigOptOutScenario"
+    And I wait to receive 2 errors
+    And the received errors match:
+        | exceptions.0.errorClass | exceptions.0.message |
+        | RemoteConfigError       | Err 0                |
+        | NSGenericException      | Uncaught exception!  |
+    Then the error is valid for the error reporting API
+    And the event "unhandled" is false
+    And I discard the oldest error
+    Then the error is valid for the error reporting API
+    And the event "unhandled" is true

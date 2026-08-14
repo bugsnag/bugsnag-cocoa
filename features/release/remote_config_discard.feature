@@ -167,3 +167,54 @@ Feature: Remote config discard rules are applied
     Then the error is valid for the error reporting API
     And the event "severity" equals "error"
     And the event "unhandled" is true
+
+  Scenario: Remote config with HASH rule to discard specific error
+    When I prepare an error config with:
+     | type     | name                  | value                 	                            |
+     | property | body                  | @features/support/config/rules_specific_error.json    |
+     | property | status                | 200                                                   |
+     | header   | Cache-Control         | max-age=604800                                        |
+     | header   | ETag                  | "42"                                                  |
+    And I run "RemoteConfigBasicScenario" 
+    And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name                  | value                 	                 |
+     | property | status                | 304                                        |
+     | header   | Cache-Control         | max-age=604800                             |
+     | header   | ETag                  | "42"                                       |
+    And I relaunch the app after a crash
+    And I configure Bugsnag for "RemoteConfigBasicScenario"
+    And I wait to receive an error
+    And the received errors match:
+        | exceptions.0.errorClass | exceptions.0.message |
+        | NSGenericException      | Uncaught exception!  |
+    Then the error is valid for the error reporting API
+    And the event "severity" equals "error"
+    And the event "unhandled" is true
+
+  Scenario: Remote config with HASH rule discards matching events and delivers non-matching
+    When I prepare an error config with:
+     | type     | name          | value                                          |
+     | property | body          | @features/support/config/rules_hash.json       |
+     | property | status        | 200                                            |
+     | header   | Cache-Control | max-age=604800                                 |
+     | header   | ETag          | "42"                                           |
+    And I run "RemoteConfigHashScenario"
+    And on macOS, I wait for 10 seconds
+    And I prepare an error config with:
+     | type     | name          | value          |
+     | property | status        | 304            |
+     | header   | Cache-Control | max-age=604800 |
+     | header   | ETag          | "42"           |
+    And I relaunch the app after a crash
+    And I configure Bugsnag for "RemoteConfigHashScenario"
+    And I wait to receive 2 errors
+    And the received errors match:
+        | exceptions.0.errorClass | exceptions.0.message |
+        | NonMatchingError        | Does not match hash  |
+        | NSGenericException      | Uncaught exception!  |
+    Then the error is valid for the error reporting API
+    And the event "unhandled" is false
+    And I discard the oldest error
+    Then the error is valid for the error reporting API
+    And the event "unhandled" is true

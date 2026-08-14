@@ -61,6 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)truncateStrings:(NSUInteger)maxLength;
 
+- (void)setRemoteConfigFlag:(BOOL)hasValidConfig;
+
 - (void)notifyUnhandledOverridden;
 
 @end

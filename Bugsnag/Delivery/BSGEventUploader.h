@@ -15,11 +15,14 @@
 @class BugsnagEvent;
 @class BugsnagNotifier;
 @class BSGEventDiscardProcessor;
+@class BSGRemoteConfigHandler;
 
 NS_ASSUME_NONNULL_BEGIN
 
 
 @interface BSGEventUploader : NSObject
+
+@property (nonatomic, weak, nullable) BSGRemoteConfigHandler *remoteConfigHandler;
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration
                              notifier:(BugsnagNotifier *)notifier
