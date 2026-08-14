@@ -18,6 +18,7 @@
         return nil;
     }
     self.capture = [[BugsnagCaptureOptions alloc] init];
+    self.fatal = FALSE;
     return self;
 }
 

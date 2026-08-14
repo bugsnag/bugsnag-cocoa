@@ -3,7 +3,17 @@ Changelog
 
 ## TBD
 
+### Bug Fixes
+
+* Issue fixed Bugsnag Info plist naming conversion.
+  [#1925](https://github.com/bugsnag/bugsnag-cocoa/pull/1925)
+
+## 6.35.0 (2026-01-26)
+
 ### Enhancements
+
+* Added customer controlled delivery strategy per notify call.
+  [#1899](https://github.com/bugsnag/bugsnag-cocoa/pull/1899)
 
 * Add error options to allow control over captured fields of handled events.
   [#1879](https://github.com/bugsnag/bugsnag-cocoa/pull/1879)

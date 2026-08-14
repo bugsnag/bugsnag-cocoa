@@ -693,52 +693,60 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 // Note: Each BSGPreventInlining call site within a module MUST pass a different
 //       string to prevent outlining!
 
-- (void)notifyError:(NSError *)error {
+- (void)notifyError:(NSError *)error BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"Prevent");
     [self notifyErrorOrException:error stackStripDepth:2 options:nil block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options{
+- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"Prevent");
     [self notifyErrorOrException:error stackStripDepth:2 options:options block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
+- (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"inlining");
     [self notifyErrorOrException:error stackStripDepth:2 options:nil block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block {
+- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"inlining");
     [self notifyErrorOrException:error stackStripDepth:2 options:options block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception {
+- (void)notify:(NSException *)exception BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"and");
     [self notifyErrorOrException:exception stackStripDepth:2 options:nil block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options{
+- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"and");
     [self notifyErrorOrException:exception stackStripDepth:2 options:options block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
+- (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"outlining");
     [self notifyErrorOrException:exception stackStripDepth:2 options:nil block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block {
+- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"outlining");
     [self notifyErrorOrException:exception stackStripDepth:2 options:options block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
 // MARK: - Notify (Internal)
@@ -901,6 +909,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     stacktrace = [self stacktraceCapture:capture callstack:callStack];
     user = [self userCapture:capture];
 
+    // Overwrite handled state if error manually marked as fatal
+    if (options.fatal) {
+        handledState = [BugsnagHandledState handledStateWithSeverityReason:UnhandledException];
+    }
+
     BugsnagError *error = [[BugsnagError alloc] initWithErrorClass:errorClass
                                                       errorMessage:errorMessage
                                                          errorType:BSGErrorTypeCocoa
@@ -914,7 +927,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                                                 breadcrumbs:breadcrumbs
                                                      errors:@[error]
                                                     threads:threads
-                                                    session:nil /* the session's event counts have not yet been incremented! */];
+                                                    session:nil /* the session's event counts have not yet been incremented! */
+                                     attemptDeliveryOnCrash:self.configuration.attemptDeliveryOnCrash];
     event.apiKey = self.configuration.apiKey;
     event.context = context;
     event.groupingDiscriminator = self.groupingDiscriminator_;
@@ -928,6 +942,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     [self notifyInternal:event block:block];
+
+    if (options.fatal) {
+        self.configuration.autoDetectErrors = NO;
+        bsg_kscrash_setHandlingCrashTypes(BSG_KSCrashTypeNone);
+    }
 }
 
 /**
@@ -984,17 +1003,20 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     
     event.usage = [NSDictionary dictionaryWithDictionary:usage];
 
-    if (event.handledState.originalUnhandledValue) {
-        // Unhandled Javscript exceptions from React Native result in the app being terminated shortly after the
-        // call to notifyInternal, so the event needs to be persisted to disk for sending in the next session.
-        // The fatal "RCTFatalException" / "Unhandled JS Exception" is explicitly ignored by
-        // BugsnagReactNativePlugin's OnSendErrorBlock.
-        [self.eventUploader storeEvent:event];
-        // Replicate previous delivery mechanism's behaviour of waiting 1 second before delivering the event.
-        // This should prevent potential duplicate uploads of unhandled errors where the app subsequently terminates.
-        [self.eventUploader uploadStoredEventsAfterDelay:1];
-    } else {
-        [self.eventUploader uploadEvent:event completionHandler:nil];
+    BugsnagDeliveryStrategy deliveryStrategy = [event deliveryStrategy];
+    switch (deliveryStrategy) {
+        case StoreOnly:
+            [self.eventUploader storeEvent:event];
+            break;
+        case StoreAndSend:
+            [self.eventUploader storeEventAndSend:event];
+            break;
+        case StoreAndFlush:
+            [self.eventUploader storeEventAndFlush:event];
+            break;
+        case SendImmediately:
+        default:
+            [self.eventUploader uploadEvent:event completionHandler:nil];
     }
 
     [self addAutoBreadcrumbForEvent:event];

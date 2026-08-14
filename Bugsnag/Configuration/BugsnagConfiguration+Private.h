@@ -46,6 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BOOL)isValidApiKey:(NSString *)apiKey;
 
++ (instancetype)bsg_loadConfigWithBundle:(NSBundle *)bundle;
+
 - (BOOL)shouldDiscardErrorClass:(NSString *)errorClass;
 
 - (BOOL)shouldRecordBreadcrumbType:(BSGBreadcrumbType)breadcrumbType;

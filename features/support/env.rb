@@ -90,6 +90,10 @@ Before('@skip_ios_26') do |_scenario|
   skip_between('ios', 26, 26.99)
 end
 
+Before('@skip_macos_10_14') do |_scenario|
+  skip_between('macos', 10.14, 10.149)
+end
+
 Before('@skip_macos_26') do |_scenario|
   skip_between('macos', 26, 26.99)
 end

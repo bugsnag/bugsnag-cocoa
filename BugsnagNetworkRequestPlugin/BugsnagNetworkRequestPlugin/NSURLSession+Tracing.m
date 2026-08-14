@@ -8,6 +8,7 @@
 #import "NSURLSession+Tracing.h"
 #import "BSGURLSessionTracingDelegate.h"
 #import "BSGURLSessionTracingProxy.h"
+#import "BugsnagSharedSessionProxy.h"
 #import <objc/runtime.h>
 
 
@@ -43,8 +44,10 @@ static void replace_NSURLSession_sessionWithConfigurationDelegateQueue(void) {
 }
 
 static void replace_NSURLSession_sharedSession(void) {
+    typedef NSURLSession *(*IMPPrototype)(id, SEL);
     set_class_imp(NSURLSession.class, @selector(sharedSession), ^(__unused id self) {
         static NSURLSession *session;
+        static BugsnagSharedSessionProxy *sessionProxy;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             // The shared session uses the shared NSURLCache, NSHTTPCookieStorage,
@@ -52,11 +55,12 @@ static void replace_NSURLSession_sharedSession(void) {
             // protocol list (configured with registerClass: and unregisterClass:),
             // and is based on a default configuration.
             // https://developer.apple.com/documentation/foundation/nsurlsession/1409000-sharedsession
-            session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                                    delegate:nil delegateQueue:nil];
+
+            session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:nil];
+            sessionProxy = [[BugsnagSharedSessionProxy alloc] initWithSession:session];
         });
 
-        return session;
+        return (NSURLSession *)sessionProxy;
     });
 }
 

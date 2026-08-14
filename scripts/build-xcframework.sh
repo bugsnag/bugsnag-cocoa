@@ -40,6 +40,19 @@ XCFW_DIR="${PROJECT_DIR}/build/xcframeworks"
 INTERMEDIATES_DIR="${XCFW_DIR}/intermediates"
 PRODUCTS_DIR="${XCFW_DIR}/products"
 
+#
+# This prevents released XCFramework debug metadata from exposing developer
+# machine paths such as:
+#   /Users/<developer>/.../bugsnag-cocoa/...
+#
+# It does not change SDK runtime behavior. It only affects debug/source-path
+# metadata used by Xcode/LLDB symbolication.
+DEBUG_PREFIX_MAP_FLAGS=(
+    "OTHER_CFLAGS=\$(inherited) -fdebug-prefix-map='${PROJECT_DIR}=bugsnag-cocoa' -fdebug-prefix-map='\$(DERIVED_FILE_DIR)=bugsnag-cocoa/DerivedSources' -fdebug-prefix-map='${HOME}/Library/Developer/Xcode/DerivedData=DerivedData'"
+    "OTHER_CPLUSPLUSFLAGS=\$(inherited) -fdebug-prefix-map='${PROJECT_DIR}=bugsnag-cocoa' -fdebug-prefix-map='\$(DERIVED_FILE_DIR)=bugsnag-cocoa/DerivedSources' -fdebug-prefix-map='${HOME}/Library/Developer/Xcode/DerivedData=DerivedData'"
+    "OTHER_SWIFT_FLAGS=\$(inherited) -debug-prefix-map '${PROJECT_DIR}=bugsnag-cocoa' -debug-prefix-map '\$(DERIVED_FILE_DIR)=bugsnag-cocoa/DerivedSources' -debug-prefix-map '${HOME}/Library/Developer/Xcode/DerivedData=DerivedData'"
+)
+
 ##
 # Build a framework.
 #
@@ -71,7 +84,8 @@ build_framework() {
                        SKIP_INSTALL=NO \
                        BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
                        -destination "${destination}" \
-                       -archivePath "${archive_path}" 1>&2
+                       -archivePath "${archive_path}" \
+                       "${DEBUG_PREFIX_MAP_FLAGS[@]}" 1>&2
     echo "-archive ${archive_path}.xcarchive -framework ${framework_basename}.framework"
 
     if [ "${platform}" != "macOS" ]; then
@@ -84,7 +98,8 @@ build_framework() {
                            SKIP_INSTALL=NO \
                            BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
                            -destination "${destination}" \
-                           -archivePath "${archive_path}" 1>&2
+                           -archivePath "${archive_path}" \
+                       "${DEBUG_PREFIX_MAP_FLAGS[@]}" 1>&2
         echo "-archive ${archive_path}.xcarchive -framework ${framework_basename}.framework"
     fi
 }

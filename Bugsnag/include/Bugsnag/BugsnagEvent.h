@@ -22,6 +22,8 @@
 @class BugsnagThread;
 @class BugsnagError;
 @class BugsnagUser;
+@class BugsnagHttpRequest;
+@class BugsnagHttpResponse;
 
 /**
  * Represents the importance of a particular event.
@@ -30,6 +32,13 @@ typedef NS_ENUM(NSUInteger, BSGSeverity) {
     BSGSeverityError,
     BSGSeverityWarning,
     BSGSeverityInfo,
+};
+
+typedef NS_ENUM(NSUInteger, BugsnagDeliveryStrategy) {
+    StoreOnly,
+    StoreAndFlush,
+    StoreAndSend,
+    SendImmediately,
 };
 
 /**
@@ -108,6 +117,13 @@ BUGSNAG_EXTERN
 @property (readwrite, copy, nonnull, nonatomic) NSArray<BugsnagThread *> *threads;
 
 /**
+ *  Delivery strategy for the event, which determines how the event
+ *  should be delivered to the Bugsnag API. This allows customization of delivery
+ *  behavior on a per-event basis.
+ */
+@property (readwrite, nonatomic) BugsnagDeliveryStrategy deliveryStrategy;
+
+/**
  * The original object that caused the error in your application. This value will only be populated for
  * non-fatal errors which did not terminate the process, and will contain an NSError or NSException.
  *
@@ -116,6 +132,14 @@ BUGSNAG_EXTERN
  * the error that will be sent.
  */
 @property (strong, nullable, nonatomic) id originalError;
+
+// =============================================================================
+// MARK: - Network fields
+// =============================================================================
+
+@property (strong, nullable, nonatomic) BugsnagHttpRequest *request;
+
+@property (strong, nullable, nonatomic) BugsnagHttpResponse *response;
 
 // =============================================================================
 // MARK: - User

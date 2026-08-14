@@ -11,8 +11,8 @@ end
 
 def upload_dsyms(api_key, dest)
   puts "Uploading dsyms to #{dest}"
-  run_command "bugsnag-cli upload dsym --api-key=#{api_key} --overwrite features/fixtures/ios/archive/iosTestApp_Release.xcarchive"
-  run_command "bugsnag-cli upload dsym --api-key=#{api_key} --overwrite features/fixtures/macos/archive/macOSTestApp_Release.xcarchive"
+  run_command "bugsnag-cli upload dsym --api-key=#{api_key} features/fixtures/ios/archive/iosTestApp_Release.xcarchive"
+  run_command "bugsnag-cli upload dsym --api-key=#{api_key} features/fixtures/macos/archive/macOSTestApp_Release.xcarchive"
 end
 
 run_command 'bundle install'
