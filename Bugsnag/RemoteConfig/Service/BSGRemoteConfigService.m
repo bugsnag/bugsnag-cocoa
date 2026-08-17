@@ -31,6 +31,17 @@ static const NSInteger HTTPStatusCodeBadRequest = 400;
 
 static NSString *CurrentPayloadVersion = @"1";
 
+static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSString *name) {
+    for (id key in headers) {
+        if ([key isKindOfClass:[NSString class]] &&
+            [((NSString *)key) caseInsensitiveCompare:name] == NSOrderedSame) {
+            id value = headers[key];
+            return [value isKindOfClass:[NSString class]] ? value : nil;
+        }
+    }
+    return nil;
+}
+
 @implementation BSGRemoteConfigServiceResponse
 
 + (instancetype)responseWithConfig:(BSGRemoteConfiguration *)config {
@@ -151,8 +162,11 @@ static NSString *CurrentPayloadVersion = @"1";
         NSDate *expiryDate = nil;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-            etag = httpResponse.allHeaderFields[ETagHeader];
-            NSString *cacheControl = httpResponse.allHeaderFields[CacheControlHeader];
+            etag = BSGHeaderValue(httpResponse.allHeaderFields, ETagHeader);
+            if (!etag) {
+                etag = request.allHTTPHeaderFields[IfNoneMatchHeader];
+            }
+            NSString *cacheControl = BSGHeaderValue(httpResponse.allHeaderFields, CacheControlHeader);
             
             expiryDate = [strongSelf expiryDateFromCacheControl:cacheControl];
             if (httpResponse.statusCode == HTTPStatusCodeNotModified) {

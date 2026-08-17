@@ -108,13 +108,19 @@
 }
 
 - (void)updateRemoteConfig {
+    NSString *currentTag = self.remoteConfig.configurationTag;
+    if (currentTag == nil) {
+        // If in-memory config was cleared after expiry, reuse the persisted tag for revalidation.
+        currentTag = [self.store loadConfiguration].configurationTag;
+    }
+
     @synchronized (self) {
         if (self.isLoadingRemoteConfig) {
             return;
         }
         self.isLoadingRemoteConfig = YES;
     }
-    [self.service loadRemoteConfigWithCurrentTag:self.remoteConfig.configurationTag
+    [self.service loadRemoteConfigWithCurrentTag:currentTag
                                       completion:^(BSGRemoteConfigServiceResponse *response) {
         @synchronized (self) {
             switch (response.type) {
@@ -124,10 +130,12 @@
                 case BSGRemoteConfigServiceResponseTypeError:
                     bsg_log_err(@"Unable to load remote config: %@", response.error);
                     break;
-                case BSGRemoteConfigServiceResponseTypeNotModified:
+                case BSGRemoteConfigServiceResponseTypeNotModified: {
+                    NSString *configurationTag = response.configurationTag ?: currentTag;
                     self.remoteConfig = [self.store updateExpiryDate:response.expiryDate
-                                                    configurationTag:response.configurationTag];
+                                                    configurationTag:configurationTag];
                     break;
+                }
             }
             self.didLoadRemoteConfig = YES;
             self.isLoadingRemoteConfig = NO;

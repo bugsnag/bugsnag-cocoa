@@ -91,13 +91,14 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/rules_all.json    |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=4                                  |
+     | header   | ETag                  | "34707c7a958213a2e070b257a3ae983651866e89" |
     And I run "RemoteConfigExpiryScenario"
     And I wait for 2 seconds
     And I prepare an error config with:
      | type     | name                  | value                 	             |
      | property | status                | 304                                        |
      | header   | Cache-Control         | max-age=100                                |
-     | header   | ETag                  | 34707c7a958213a2e070b257a3ae983651866e89   |
+     | header   | ETag                  | "34707c7a958213a2e070b257a3ae983651866e89" |
     And I wait to receive an error
     And the received errors match:
         | exceptions.0.errorClass       | exceptions.0.message   |
@@ -114,13 +115,14 @@ Feature: Remote config discard rules are applied
      | property | body                  | @features/support/config/no_rules.json     |
      | property | status                | 200                                        |
      | header   | Cache-Control         | max-age=4                                  |
+     | header   | ETag                  | "85cf62136c5d93a0b33bb69bdfe5f734b4530263" |
     And I run "RemoteConfigExpiryScenario"
     And I wait for 2 seconds
     And I prepare an error config with:
      | type     | name                  | value                 	             |
      | property | status                | 304                                        |
      | header   | Cache-Control         | max-age=100                                |
-     | header   | ETag                  | 85cf62136c5d93a0b33bb69bdfe5f734b4530263   |
+     | header   | ETag                  | "85cf62136c5d93a0b33bb69bdfe5f734b4530263" |
     And I wait to receive 3 errors
     And the received errors match:
         | exceptions.0.errorClass       | exceptions.0.message   |

@@ -15,6 +15,20 @@
 @property (nonatomic, strong) BugsnagConfiguration *configuration;
 @end
 
+static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
+    if (![etag isKindOfClass:[NSString class]]) {
+        return nil;
+    }
+    NSString *normalized = [etag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([normalized hasPrefix:@"W/"]) {
+        normalized = [normalized substringFromIndex:2];
+    }
+    if (normalized.length >= 2 && [normalized hasPrefix:@"\""] && [normalized hasSuffix:@"\""]) {
+        normalized = [normalized substringWithRange:NSMakeRange(1, normalized.length - 2)];
+    }
+    return normalized;
+}
+
 @implementation BSGRemoteConfigStore
 
 + (instancetype)storeWithLocations:(BSGFileLocations *)fileLocations
@@ -48,7 +62,12 @@
 - (BSGRemoteConfiguration *)updateExpiryDate:(NSDate *)expiryDate
                             configurationTag:(NSString *)configurationTag {
     BSGRemoteConfiguration *configuration = [self loadConfiguration];
-    if ([configuration.configurationTag isEqualToString:configurationTag]) {
+    NSString *storedTag = BSGNormalizeETag(configuration.configurationTag);
+    NSString *incomingTag = BSGNormalizeETag(configurationTag);
+    if (storedTag != nil && incomingTag != nil && ![storedTag isEqualToString:incomingTag]) {
+        return nil;
+    }
+    if (configuration != nil) {
         configuration.expiryDate = expiryDate;
         [self saveConfiguration:configuration];
         return configuration;
