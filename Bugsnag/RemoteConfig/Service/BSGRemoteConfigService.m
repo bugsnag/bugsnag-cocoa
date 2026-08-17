@@ -142,13 +142,13 @@ static NSString *CurrentPayloadVersion = @"1";
                                          NSURLResponse * _Nullable response,
                                          NSError * _Nullable error) {
         __strong typeof(self) strongSelf = weakSelf;
-        if (!strongSelf || !data) {
+        if (!strongSelf) {
             completion([BSGRemoteConfigServiceResponse responseWithError:error]);
             return;
         }
         
-        NSString *etag;
-        NSDate *expiryDate;
+        NSString *etag = nil;
+        NSDate *expiryDate = nil;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
             etag = httpResponse.allHeaderFields[ETagHeader];
@@ -170,7 +170,7 @@ static NSString *CurrentPayloadVersion = @"1";
             }
         }
         
-        NSData *content = data;
+        NSData *content = data ?: [NSData data];
         NSError *jsonError = nil;
         NSDictionary *configJson = BSGJSONDictionaryFromData(content, 0, &jsonError);
         if (!configJson) {

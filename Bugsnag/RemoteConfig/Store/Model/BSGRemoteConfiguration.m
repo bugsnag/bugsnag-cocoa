@@ -90,7 +90,7 @@ static NSString const *MatchTypeKey = @"matchType";
     NSMutableArray *discardRulesJson = [NSMutableArray array];
     for (BSGRemoteConfigurationDiscardRule *rule in self.discardRules) {
         NSDictionary *ruleJson = [rule json];
-        if (rule) {
+        if (ruleJson) {
             [discardRulesJson addObject:ruleJson];
         }
     }

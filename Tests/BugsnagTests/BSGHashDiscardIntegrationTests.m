@@ -53,18 +53,23 @@
     NSString *path = [bundle pathForResource:resourceName
                                       ofType:@"json"
                                  inDirectory:@"Data/RemoteConfig"];
-    
-    NSAssert(path != nil, @"Resource not found: %@", resourceName);
+    if (path == nil) {
+        XCTFail(@"Resource not found: %@", resourceName);
+        return nil;
+    }
     
     NSError *error = nil;
     NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-    
-    NSAssert(data != nil, @"Failed to read resource %@: %@", resourceName, error);
+    if (data == nil) {
+        XCTFail(@"Failed to read resource %@: %@", resourceName, error);
+        return nil;
+    }
     
     id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    
-    NSAssert(json != nil && [json isKindOfClass:[NSDictionary class]],
-             @"Failed to parse JSON from %@: %@", resourceName, error);
+    if (json == nil || ![json isKindOfClass:[NSDictionary class]]) {
+        XCTFail(@"Failed to parse JSON from %@: %@", resourceName, error);
+        return nil;
+    }
     
     return (NSDictionary *)json;
 }
