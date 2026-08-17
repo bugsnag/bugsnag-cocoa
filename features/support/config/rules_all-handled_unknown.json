@@ -1,10 +1,10 @@
 {
     "discardRules": [
       {
-        "matchType": "ALL_HANDLED",
+        "matchType": "ALL_HANDLED"
       },
       {
-        "matchType": "TEST_UNKNOWN_RULE",
-      },
-    ],
+        "matchType": "TEST_UNKNOWN_RULE"
+      }
+    ]
 }

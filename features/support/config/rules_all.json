@@ -1,7 +1,7 @@
 {
     "discardRules": [
       {
-        "matchType": "ALL",
-      },
-    ],
+        "matchType": "ALL"
+      }
+    ]
 }
