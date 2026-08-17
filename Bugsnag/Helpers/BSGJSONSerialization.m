@@ -7,6 +7,7 @@
 //
 
 #import "BSGJSONSerialization.h"
+#import "BSGFilesystem.h"
 
 static NSError* wrapException(NSException* exception) {
     return [NSError errorWithDomain:@"BSGJSONSerializationErrorDomain" code:1 userInfo:@{
@@ -63,7 +64,9 @@ NSDictionary *_Nullable BSGJSONDictionaryFromData(NSData *data, NSJSONReadingOpt
 
 BOOL BSGJSONWriteToFileAtomically(NSDictionary *JSONObject, NSString *file, NSError **errorPtr) {
     NSData *data = BSGJSONDataFromDictionary(JSONObject, errorPtr);
-    return [data writeToFile:file options:NSDataWritingAtomic error:errorPtr];
+    // Bugsnag JSON persistence goes through BSGFilesystem so backup metadata is
+    // reapplied after atomic replacement.
+    return [BSGFilesystem writeData:data toFile:file options:NSDataWritingAtomic error:errorPtr];
 }
 
 NSDictionary *_Nullable BSGJSONDictionaryFromFile(NSString *file, NSJSONReadingOptions options, NSError **errorPtr) {

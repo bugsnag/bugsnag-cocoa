@@ -33,6 +33,7 @@ BugsnagConfiguration * BSGConfigurationWithOptions(NSDictionary *options) {
     LoadBoolean     (config, dict, BSG_KEYPATH(config, attemptDeliveryOnCrash));
     LoadBoolean     (config, dict, BSG_KEYPATH(config, autoDetectErrors));
     LoadBoolean     (config, dict, BSG_KEYPATH(config, autoTrackSessions));
+    LoadBoolean     (config, dict, BSG_KEYPATH(config, fileBackupSupport));
     LoadBoolean     (config, dict, BSG_KEYPATH(config, persistUser));
     LoadBoolean     (config, dict, BSG_KEYPATH(config, sendLaunchCrashesSynchronously));
     LoadEndpoints   (config, dict);

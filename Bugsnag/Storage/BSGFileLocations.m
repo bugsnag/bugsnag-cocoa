@@ -8,13 +8,14 @@
 
 #import "BSGFileLocations.h"
 
+#import "BSGFilesystem.h"
 #import "BSGInternalErrorReporter.h"
 #import "BugsnagLogger.h"
 
 static BOOL ensureDirExists(NSString *path) {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSError *error = nil;
-    if(![fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error]) {
+    // Centralized directory creation also applies the configured Apple backup policy.
+    NSError *error = [BSGFilesystem ensurePathExists:path];
+    if(error) {
         bsg_log_err(@"Could not create directory %@: %@", path, error);
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
