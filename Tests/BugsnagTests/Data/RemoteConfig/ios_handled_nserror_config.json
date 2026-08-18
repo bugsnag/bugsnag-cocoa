@@ -1,0 +1,27 @@
+{
+  "discardRules": [
+    {
+      "matchType": "HASH",
+      "hash": {
+        "paths": [
+          {
+            "path": "groupingDiscriminator"
+          },
+          {
+            "path": "exceptions.-1.errorClass"
+          },
+          {
+            "path": "exceptions.-1.stacktrace.*.machoUUID"
+          },
+          {
+            "path": "exceptions.-1.stacktrace.*",
+            "pathMode": "RELATIVE_ADDRESS"
+          }
+        ],
+        "matches": [
+          "113eec4ab0de7cf9a16f4cfcd5ce2c5f446865ca"
+        ]
+      }
+    }
+  ]
+}

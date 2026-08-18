@@ -1,0 +1,17 @@
+{
+  "discardRules": [
+    {
+      "matchType": "HASH",
+      "hash": {
+        "paths": [
+          {
+            "path": "exceptions.0.errorClass"
+          }
+        ],
+        "matches": [
+          "9af8f14bd15271db0f113f7c146e7fa9294b1caa"
+        ]
+      }
+    }
+  ]
+}

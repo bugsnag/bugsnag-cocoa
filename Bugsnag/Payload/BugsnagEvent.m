@@ -80,7 +80,7 @@ NSString *BSGParseGroupingDiscriminator(NSDictionary *report) {
     return nil;
 }
 
-/** 
+/**
  * Find the breadcrumb cache for the event within the report object.
  *
  * By default, crumbs are present in the `user.state.crash` object, which is
@@ -200,6 +200,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
         _featureFlagStore = [[BSGMemoryFeatureFlagStore alloc] init];
         _threads = threads;
         _session = [session copy];
+        _usage = @{};
         _isDeliveryStrategySet = NO;
         _deliveryStrategy = SendImmediately;
         _attemptDeliveryOnCrash = NO;
@@ -270,7 +271,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             return [BugsnagThread threadFromJson:dict];
         }) ?: @[];
 
-        _usage = BSGDeserializeDict(json[BSGKeyUsage]);
+        _usage = BSGDeserializeDict(json[BSGKeyUsage]) ?: @{};
 
         _user = BSGDeserializeObject(json[BSGKeyUser], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [[BugsnagUser alloc] initWithDictionary:dict];
@@ -282,11 +283,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
         _request = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagHttpRequest requestFromJson:dict];
-        }) ?: [BugsnagHttpRequest new];
+        });
 
-        _response = BSGDeserializeObject(json[BSGHttpRequest], ^id _Nullable(NSDictionary * _Nonnull dict) {
+        _response = BSGDeserializeObject(json[BSGHttpResponse], ^id _Nullable(NSDictionary * _Nonnull dict) {
             return [BugsnagHttpResponse responseFromJson:dict];
-        }) ?: [BugsnagHttpResponse new];
+        });
     }
     return self;
 }
@@ -724,6 +725,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             redactedReqParams[key] = [self redactedMetadataValue:self.request.params[key] forKey:key redactedKeys:redactedKeys];
         }
         self.request.params = redactedReqParams;
+        
+        event[BSGHttpRequest] = [self.request toDictionary];
     }
 
     // Redact http response headers
@@ -733,10 +736,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
             redactedResHeaders[key] = [self redactedMetadataValue:self.response.headers[key] forKey:key redactedKeys:redactedKeys];
         }
         self.response.headers = redactedResHeaders;
+        
+        event[BSGHttpResponse] = [self.response toDictionary];
     }
-
-    event[BSGHttpRequest] = [self.request toDictionary];
-    event[BSGHttpResponse] = [self.response toDictionary];
 
     return event;
 }
@@ -882,6 +884,12 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
 
 - (void)setUnhandled:(BOOL)unhandled {
     self.handledState.unhandled = unhandled;
+}
+
+- (void)setRemoteConfigFlag:(BOOL)hasValidConfig {
+    NSMutableDictionary *usage = [self.usage mutableCopy] ?: [NSMutableDictionary new];
+    usage[@"remoteConfig"] = @(hasValidConfig);
+    self.usage = usage;
 }
 
 // MARK: - <BugsnagFeatureFlagStore>

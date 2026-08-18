@@ -18,11 +18,19 @@
 #import "BugsnagEvent+Private.h"
 #import "BugsnagInternals.h"
 #import "BugsnagLogger.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
 
 
 static NSString * const CrashReportPrefix = @"CrashReport-";
 static NSString * const RecrashReportPrefix = @"RecrashReport-";
 static NSTimeInterval CrashTimeDeliveryTimeout = 1;
+
+@interface BSGEventUploader ()
+
+@property (nonatomic, strong) BSGEventDiscardProcessor *discardProcessor;
+
+@end
 
 @interface BSGEventUploader () <BSGEventUploadOperationDelegate>
 
@@ -45,7 +53,9 @@ static NSTimeInterval CrashTimeDeliveryTimeout = 1;
 @synthesize configuration = _configuration;
 @synthesize notifier = _notifier;
 
-- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration notifier:(BugsnagNotifier *)notifier {
+- (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration
+                             notifier:(BugsnagNotifier *)notifier
+                     discardProcessor:(BSGEventDiscardProcessor *)discardProcessor {
     if ((self = [super init])) {
         _configuration = configuration;
         _eventsDirectory = [BSGFileLocations current].events;
@@ -57,6 +67,7 @@ static NSTimeInterval CrashTimeDeliveryTimeout = 1;
         _uploadQueue = [[NSOperationQueue alloc] init];
         _uploadQueue.maxConcurrentOperationCount = 1;
         _uploadQueue.name = @"com.bugsnag.event-uploader";
+        _discardProcessor = discardProcessor;
     }
     return self;
 }
@@ -317,6 +328,15 @@ static NSTimeInterval CrashTimeDeliveryTimeout = 1;
     });
 
     return file;
+}
+
+- (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload {
+    return [self.discardProcessor shouldDiscardEvent:eventPayload];
+}
+
+- (BOOL)hasValidRemoteConfig {
+    BSGRemoteConfigHandler *handler = self.remoteConfigHandler;
+    return handler && [handler hasValidConfig];
 }
 
 @end

@@ -390,6 +390,18 @@ BUGSNAG_EXTERN
  */
 @property (copy, nonatomic) BugsnagEndpointConfiguration *endpoints;
 
+/**
+ * The interval between automatic remote config updates.
+ * Defaults to 24 hours.
+ */
+@property (nonatomic) NSTimeInterval remoteConfigUpdateInterval;
+
+/**
+ * The tolerance for remote config update timer.
+ * Defaults to 2 hours.
+ */
+@property (nonatomic) NSTimeInterval remoteConfigUpdateTolerance;
+
 // =============================================================================
 // MARK: - User
 // =============================================================================

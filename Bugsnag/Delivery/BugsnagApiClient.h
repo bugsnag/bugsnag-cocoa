@@ -14,6 +14,8 @@ static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameIntegrity          = @"B
 static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNamePayloadVersion     = @"Bugsnag-Payload-Version";
 static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameSentAt             = @"Bugsnag-Sent-At";
 static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameStacktraceTypes    = @"Bugsnag-Stacktrace-Types";
+static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameNotifierName       = @"Bugsnag-Notifier-Name";
+static BugsnagHTTPHeaderName const BugsnagHTTPHeaderNameNotifierVersion    = @"Bugsnag-Notifier-Version";
 
 typedef NS_ENUM(NSInteger, BSGDeliveryStatus) {
     /// The payload was delivered successfully and can be deleted.

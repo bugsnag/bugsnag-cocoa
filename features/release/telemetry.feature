@@ -46,4 +46,7 @@ Feature: Telemetry
   Scenario: Usage telemetry is not send if disabled
     When I run "TelemetryUsageDisabledScenario"
     And I wait to receive an error
-    Then the event "usage" is null
+    Then the event "usage" is not null
+    Then the event "usage.remoteConfig" is not null
+    And the event "usage.config" is null
+    And the event "usage.callbacks" is null

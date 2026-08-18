@@ -143,6 +143,11 @@
             @"threadsCapture:callstack: @32@0:8@16@24",
             @"stacktraceCapture:callstack: @32@0:8@16@24",
             @"userCapture: @24@0:8@16",
+            @"remoteConfigHandler @16@0:8",
+            @"setRemoteConfigHandler: v24@0:8@16",
+            @"setupRemoteConfigHandlerWithSystemInfo: v24@0:8@16",
+            @"discardProcessor @16@0:8",
+            @"setDiscardProcessor: v24@0:8@16"
     ]];
 
     // the following methods are implemented on Bugsnag but do not need to

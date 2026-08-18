@@ -1,0 +1,20 @@
+{
+  "discardRules": [
+    {
+      "matchType": "HASH",
+      "hash": {
+        "paths": [
+          {
+            "path": "groupingDiscriminator"
+          },
+          {
+            "path": "exceptions.*.errorClass"
+          }
+        ],
+        "matches": [
+          "8819012a33f64fb17189a9329421f77da634b965"
+        ]
+      }
+    }
+  ]
+}
