@@ -75,6 +75,10 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "BugsnagDevice+Private.h"
+#import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../DiscardProcessor/Factory/BSGEventDiscardRuleFactory.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -183,6 +187,10 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (copy, nullable, atomic) NSString *groupingDiscriminator_;
 
+@property (nonatomic, strong) BSGRemoteConfigHandler *remoteConfigHandler;
+
+@property (nonatomic, strong) BSGEventDiscardProcessor *discardProcessor;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -235,8 +243,11 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
 
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
-
-        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
+        
+        _discardProcessor = [BSGEventDiscardProcessor new];
+        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration
+                                                                notifier:_notifier
+                                                        discardProcessor:_discardProcessor];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
 
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
@@ -271,6 +282,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
+    
+    [self setupRemoteConfigHandlerWithSystemInfo:systemInfo];
 
     [self computeDidCrashLastLaunch];
 
@@ -350,7 +363,8 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     }
 
     [self.eventUploader uploadStoredEvents];
-
+    [self.remoteConfigHandler start];
+    
 #if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
@@ -981,7 +995,13 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     [self.sessionTracker incrementEventCountUnhandled:event.handledState.unhandled];
     event.session = self.sessionTracker.runningSession;
 
-    event.usage = BSGTelemetryCreateUsage(self.configuration);
+    NSMutableDictionary *usage = [BSGTelemetryCreateUsage(self.configuration) mutableCopy] ?: [NSMutableDictionary new];
+    
+    BOOL hasValidConfig = self.remoteConfigHandler && [self.remoteConfigHandler hasValidConfig];
+    
+    usage[@"remoteConfig"] = @(hasValidConfig); // true if config active, false otherwise
+    
+    event.usage = [NSDictionary dictionaryWithDictionary:usage];
 
     BugsnagDeliveryStrategy deliveryStrategy = [event deliveryStrategy];
     switch (deliveryStrategy) {
@@ -1090,6 +1110,33 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
     if (self.observer) {
         self.observer(BSGClientObserverClearFeatureFlag, nil);
     }
+}
+
+// MARK: - RemoteConfigStore
+
+- (void)setupRemoteConfigHandlerWithSystemInfo:(NSDictionary *)systemInfo {
+    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
+    NSString *codeBundleId = self.codeBundleId;
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
+                                             config:self.configuration
+                                       codeBundleId:codeBundleId];
+    BSGRemoteConfigService *remoteConfigService = [BSGRemoteConfigService serviceWithSession:[NSURLSession sharedSession]
+                                                                               configuration:self.configuration
+                                                                                    notifier:self.notifier
+                                                                                      device:device
+                                                                                         app:app];
+    BSGRemoteConfigStore *remoteConfigStore = [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current]
+                                                                         configuration:self.configuration];
+    self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
+                                                                    store:remoteConfigStore
+                                                            configuration:self.configuration];
+    
+    BSGEventDiscardRuleFactory *discardRuleFactory = [BSGEventDiscardRuleFactory new];
+    BSGEventDiscardRulesetSource *rulesetSource = [BSGEventDiscardRulesetSource sourceWithRemoteConfigHandler:self.remoteConfigHandler
+                                                                                           discardRuleFactory:discardRuleFactory];
+    self.discardProcessor.source = rulesetSource;
+    self.eventUploader.remoteConfigHandler = self.remoteConfigHandler;
+    [self.remoteConfigHandler initialize];
 }
 
 // MARK: - <BugsnagMetadataStore>

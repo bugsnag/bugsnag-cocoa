@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property NSURL *reflectURL;
 @property NSURL *notifyURL;
 @property NSURL *sessionsURL;
+@property NSURL *configurationURL;
 
 //init(apiKey: String, mazeRunnerBaseAddress: URL) {
 

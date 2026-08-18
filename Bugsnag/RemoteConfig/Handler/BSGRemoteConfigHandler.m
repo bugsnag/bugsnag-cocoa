@@ -1,0 +1,194 @@
+//
+//  BSGRemoteConfigHandler.m
+//  Bugsnag
+//
+//  Created by Robert Bartoszewski on 12/09/2025.
+//  Copyright © 2025 Bugsnag Inc. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "BSGRemoteConfigHandler.h"
+#import "BugsnagLogger.h"
+#import "BugsnagConfiguration+Private.h"
+
+@interface BSGRemoteConfigHandler ()
+
+@property (nonatomic, strong) BSGRemoteConfigService *service;
+@property (nonatomic, strong) BSGRemoteConfigStore *store;
+@property (nonatomic, strong) BugsnagConfiguration *configuration;
+@property (nonatomic, strong) BSGRemoteConfiguration *remoteConfig;
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic, strong) NSDate *lastConfigUpdateTime;
+@property (nonatomic) BOOL didReadLocalConfig;
+@property (nonatomic) BOOL isLoadingRemoteConfig;
+@property (nonatomic) BOOL didLoadRemoteConfig;
+@property (nonatomic) BOOL didClearLocalStore;
+
+@end
+
+@implementation BSGRemoteConfigHandler
+
++ (instancetype)handlerWithService:(BSGRemoteConfigService *)service
+                             store:(BSGRemoteConfigStore *)store
+                     configuration:(BugsnagConfiguration *)configuration {
+    return [[self alloc] initWithService:service store:store configuration:configuration];
+}
+
+- (instancetype)initWithService:(BSGRemoteConfigService *)service
+                          store:(BSGRemoteConfigStore *)store
+                  configuration:(BugsnagConfiguration *)configuration {
+    self = [super init];
+    if (self) {
+        _service = service;
+        _store = store;
+        _configuration = configuration;
+    }
+    return self;
+}
+
+- (void)initialize {
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        @synchronized (strongSelf) {
+            if ([strongSelf isRemoteConfigEnabled]) {
+                [strongSelf loadLocalConfigIfNeeded];
+                [strongSelf clearConfigIfNotValid];
+            } else {
+                if (!strongSelf.didClearLocalStore) {
+                    [strongSelf clearLocalStore];
+                }
+            }
+        }
+    });
+}
+
+- (BSGRemoteConfiguration *)currentConfiguration {
+    @synchronized (self) {
+        if (![self isRemoteConfigEnabled]) {
+            return nil;
+        }
+        [self loadLocalConfigIfNeeded];
+        [self clearConfigIfNotValid];
+        [self updateRemoteConfigIfNeeded];
+        return self.remoteConfig;
+    }
+}
+
+- (void)start {
+    @synchronized (self) {
+        if ([self isRemoteConfigEnabled]) {
+            [self updateRemoteConfig];
+            [self startPeriodicUpdateTimer];
+        }
+    }
+}
+
+- (void)dealloc {
+    [self.timer invalidate];
+}
+
+- (void)setRemoteConfig:(BSGRemoteConfiguration *)remoteConfig {
+    _remoteConfig = remoteConfig;
+    self.lastConfigUpdateTime = [NSDate date];
+}
+
+- (BOOL)hasValidConfig {
+    return self.remoteConfig.expiryDate &&
+        [self.remoteConfig.expiryDate timeIntervalSinceNow] > 0;
+}
+
+#pragma mark - Helpers
+
+- (BOOL)isRemoteConfigEnabled {
+    return self.configuration.configurationURL != nil;
+}
+
+- (void)updateRemoteConfig {
+    NSString *currentTag = self.remoteConfig.configurationTag;
+    if (currentTag == nil) {
+        // If in-memory config was cleared after expiry, reuse the persisted tag for revalidation.
+        currentTag = [self.store loadConfiguration].configurationTag;
+    }
+
+    @synchronized (self) {
+        if (self.isLoadingRemoteConfig) {
+            return;
+        }
+        self.isLoadingRemoteConfig = YES;
+    }
+    [self.service loadRemoteConfigWithCurrentTag:currentTag
+                                      completion:^(BSGRemoteConfigServiceResponse *response) {
+        @synchronized (self) {
+            switch (response.type) {
+                case BSGRemoteConfigServiceResponseTypeSuccess:
+                    self.remoteConfig = [self.store saveConfiguration:response.configuration];
+                    break;
+                case BSGRemoteConfigServiceResponseTypeError:
+                    bsg_log_err(@"Unable to load remote config: %@", response.error);
+                    break;
+                case BSGRemoteConfigServiceResponseTypeNotModified: {
+                    NSString *configurationTag = response.configurationTag ?: currentTag;
+                    self.remoteConfig = [self.store updateExpiryDate:response.expiryDate
+                                                    configurationTag:configurationTag];
+                    break;
+                }
+            }
+            self.didLoadRemoteConfig = YES;
+            self.isLoadingRemoteConfig = NO;
+        }
+    }];
+}
+
+- (void)loadLocalConfigIfNeeded {
+    if (self.remoteConfig || self.didReadLocalConfig) {
+        return;
+    }
+    self.remoteConfig = [self.store loadConfiguration];
+    if (self.remoteConfig == nil) {
+        [self clearLocalStore];
+    }
+
+    self.didReadLocalConfig = YES;
+}
+
+- (void)clearConfigIfNotValid {
+    if (![self hasValidConfig]) {
+        self.remoteConfig = nil;
+    }
+}
+
+- (void)startPeriodicUpdateTimer {
+    CGFloat randomMultiplier = (CGFloat)arc4random() / (CGFloat)UINT32_MAX;
+    NSTimeInterval updateInterval = self.configuration.remoteConfigUpdateInterval -
+                                     (self.configuration.remoteConfigUpdateTolerance * randomMultiplier);
+    
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:updateInterval
+                                                  target:self
+                                                selector:@selector(updateRemoteConfig)
+                                                userInfo:nil
+                                                 repeats:YES];
+    
+    if (@available(iOS 10.0, macOS 10.12, tvOS 10.0, watchOS 3.0, *)) {
+        self.timer.tolerance = self.configuration.remoteConfigUpdateTolerance;
+    }
+}
+
+- (void)clearLocalStore {
+    [self.store clear];
+    self.remoteConfig = nil;
+    self.didClearLocalStore = YES;
+}
+
+- (void)updateRemoteConfigIfNeeded {
+    if (self.remoteConfig == nil &&
+        self.didLoadRemoteConfig &&
+        !self.isLoadingRemoteConfig) {
+        [self updateRemoteConfig];
+    }
+}
+
+@end

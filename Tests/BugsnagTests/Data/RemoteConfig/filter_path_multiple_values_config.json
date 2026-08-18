@@ -1,0 +1,34 @@
+{
+  "discardRules": [
+    {
+      "matchType": "HASH",
+      "hash": {
+        "paths": [
+          {
+            "path": "exceptions.-1",
+            "pathMode": "FILTER",
+            "filter": {
+              "conditions": [
+                {
+                  "filterPath": {
+                    "path": "stacktrace.*"
+                  },
+                  "matchType": "EQUALS",
+                  "value": "some_value"
+                }
+              ],
+              "subPaths": [
+                {
+                  "path": "$"
+                }
+              ]
+            }
+          }
+        ],
+        "matches": [
+          ""
+        ]
+      }
+    }
+  ]
+}

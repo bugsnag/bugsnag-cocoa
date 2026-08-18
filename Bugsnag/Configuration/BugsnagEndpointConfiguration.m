@@ -12,22 +12,30 @@ static NSString *const BSGBugsnagNotifyURL   = @"https://notify.bugsnag.com";
 static NSString *const BSGBugsnagSessionURL  = @"https://sessions.bugsnag.com";
 static NSString *const BSGHubNotifyURL   = @"https://notify.bugsnag.smartbear.com";
 static NSString *const BSGHubSessionURL  = @"https://sessions.bugsnag.smartbear.com";
+static NSString *const BSGBugsnagConfigurationURL  = @"https://config.bugsnag.com/error-config";
 static NSString *const BSGHubPrefix      = @"00000";
 
 @implementation BugsnagEndpointConfiguration
 
 - (instancetype)init {
-    if ((self = [super init])) {
-        _notify = BSGBugsnagNotifyURL;
-        _sessions = BSGBugsnagSessionURL;
-    }
-    return self;
+    return [self initWithNotify:BSGBugsnagNotifyURL
+                       sessions:BSGBugsnagSessionURL
+                  configuration:BSGBugsnagConfigurationURL];
 }
 
 - (instancetype)initWithNotify:(NSString *)notify sessions:(NSString *)sessions {
+    return [self initWithNotify:notify
+                       sessions:sessions
+                  configuration:nil];
+}
+
+- (instancetype)initWithNotify:(NSString *)notify
+                      sessions:(NSString *)sessions
+                 configuration:(NSString * __nullable)configuration {
     if ((self = [super init])) {
         _notify = notify;
         _sessions = sessions;
+        _configuration = configuration;
     }
     return self;
 }
