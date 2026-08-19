@@ -30,6 +30,15 @@
     return [NSTemporaryDirectory() stringByAppendingPathComponent:[NSUUID UUID].UUIDString];
 }
 
+- (NSString *)newApplicationSupportPath {
+    NSURL *applicationSupport = [NSFileManager.defaultManager URLForDirectory:NSApplicationSupportDirectory
+                                                                       inDomain:NSUserDomainMask
+                                                              appropriateForURL:nil
+                                                                         create:YES
+                                                                          error:nil];
+    return [applicationSupport.path stringByAppendingPathComponent:[NSUUID UUID].UUIDString];
+}
+
 - (void)testBadJSONKey {
     id badDict = @{@123: @"string"};
     NSData* badJSONData = [@"{123=\"test\"}" dataUsingEncoding:NSUTF8StringEncoding];
@@ -122,7 +131,16 @@
 }
 
 - (void)testApplyFileBackupSupportToPathAndContentsUpdatesNestedItems {
-    NSString *root = [self newTemporaryPath];
+#if TARGET_OS_OSX
+    // fileBackupSupport controls iOS Finder/iTunes backup inclusion. macOS
+    // temporary/Application Support storage retains inherited exclusions, so
+    // this transition cannot be asserted through NSURL's resource key there.
+    return;
+#endif  TARGET_OS_OSX
+
+    // Use the same Application Support location as SDK storage to test both
+    // backup-policy transitions.
+    NSString *root = [self newApplicationSupportPath];
     NSString *nestedDir = [root stringByAppendingPathComponent:@"nested"];
     NSString *nestedFile = [nestedDir stringByAppendingPathComponent:@"child.json"];
 
