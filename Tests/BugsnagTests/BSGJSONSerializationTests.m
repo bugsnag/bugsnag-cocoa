@@ -103,9 +103,7 @@
         [BSGFilesystem setFileBackupSupport:NO];
         XCTAssertNil([BSGFilesystem ensurePathExists:directory]);
 
-#if TARGET_OS_TV
-        XCTAssertNil([self excludedFromBackupAtPath:directory]);
-#else
+#if !TARGET_OS_TV
         XCTAssertEqualObjects([self excludedFromBackupAtPath:directory], @YES);
 #endif
     } @finally {
@@ -119,9 +117,7 @@
         [BSGFilesystem setFileBackupSupport:YES];
         XCTAssertNil([BSGFilesystem ensurePathExists:directory]);
 
-#if TARGET_OS_TV
-        XCTAssertNil([self excludedFromBackupAtPath:directory]);
-#else
+#if !TARGET_OS_TV
         XCTAssertEqualObjects([self excludedFromBackupAtPath:directory], @NO);
 #endif
     } @finally {
@@ -136,7 +132,7 @@
     // temporary/Application Support storage retains inherited exclusions, so
     // this transition cannot be asserted through NSURL's resource key there.
     return;
-#endif  TARGET_OS_OSX
+#endif
 
     // Use the same Application Support location as SDK storage to test both
     // backup-policy transitions.
@@ -155,11 +151,7 @@
         [BSGFilesystem setFileBackupSupport:YES];
         [BSGFilesystem applyFileBackupSupportToPathAndContents:root];
 
-#if TARGET_OS_TV
-        XCTAssertNil([self excludedFromBackupAtPath:root]);
-        XCTAssertNil([self excludedFromBackupAtPath:nestedDir]);
-        XCTAssertNil([self excludedFromBackupAtPath:nestedFile]);
-#else
+#if !TARGET_OS_TV
         XCTAssertEqualObjects([self excludedFromBackupAtPath:root], @NO);
         XCTAssertEqualObjects([self excludedFromBackupAtPath:nestedDir], @NO);
         XCTAssertEqualObjects([self excludedFromBackupAtPath:nestedFile], @NO);
@@ -189,9 +181,7 @@
         XCTAssertTrue([BSGFilesystem writeData:second toFile:file options:NSDataWritingAtomic error:&error]);
         XCTAssertNil(error);
 
-#if TARGET_OS_TV
-        XCTAssertNil([self excludedFromBackupAtPath:file]);
-#else
+#if !TARGET_OS_TV
         XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
 #endif
     } @finally {
@@ -214,9 +204,7 @@
         [BSGFilesystem setFileBackupSupport:YES];
         XCTAssertTrue(BSGJSONWriteToFileAtomically(@{@"foo": @"baz"}, file, nil));
 
-#if TARGET_OS_TV
-        XCTAssertNil([self excludedFromBackupAtPath:file]);
-#else
+#if !TARGET_OS_TV
         XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
 #endif
     } @finally {
