@@ -31,6 +31,11 @@ BUGSNAG_EXTERN
 @property (copy, nonatomic) NSString *sessions;
 
 /**
+ * Configures the endpoint from which remote configuration is downloaded
+ */
+@property (copy, nullable, nonatomic) NSString *configuration;
+
+/**
  * Returns YES if the endpoints have been customized, i.e., they are not the default Bugsnag or Secondary URL endpoints.
  */
 @property (nonatomic, readonly) BOOL isCustom;
@@ -39,6 +44,10 @@ BUGSNAG_EXTERN
 
 - (instancetype)initWithNotify:(NSString *)notify
                       sessions:(NSString *)sessions;
+
+- (instancetype)initWithNotify:(NSString *)notify
+                      sessions:(NSString *)sessions
+                 configuration:(NSString * __nullable)configuration;
 
 @end
 

@@ -59,6 +59,8 @@ static const NSUInteger MaxPersistedSize = 1000000;
 @property (readonly, nonatomic) BugsnagNotifier *notifier;
 
 - (NSString *)storeEventPayload:(NSDictionary *)eventPayload;
+- (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload;
+- (BOOL)hasValidRemoteConfig;
 
 @end
 

@@ -21,6 +21,8 @@
         _notifyURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"notify"];
         _sessionsURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"sessions"];
         _reflectURL = [mazeRunnerBaseAddress URLByAppendingPathComponent:@"reflect"];
+        // configurationURL should be nil by default and only set explicitly in RemoteConfig scenarios
+        _configurationURL = nil;
     }
     return self;
 }

@@ -106,60 +106,68 @@ static BugsnagClient *bsg_g_bugsnag_client = NULL;
 // Note: Each BSGPreventInlining call site within a module MUST pass a different
 //       string to prevent outlining!
 
-+ (void)notify:(NSException *)exception {
++ (void)notify:(NSException *)exception BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"Prevent");
         [self.client notifyErrorOrException:exception stackStripDepth:2 options:nil block:nil];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notify:(NSException *)exception options:(BugsnagErrorOptions *)options{
++ (void)notify:(NSException *)exception options:(BugsnagErrorOptions *)options BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"Prevent");
         [self.client notifyErrorOrException:exception stackStripDepth:2 options:options block:nil];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
++ (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"inlining");
         [self.client notifyErrorOrException:exception stackStripDepth:2 options:nil block:block];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notify:(NSException *)exception options:(BugsnagErrorOptions *)options block:(BugsnagOnErrorBlock)block {
++ (void)notify:(NSException *)exception options:(BugsnagErrorOptions *)options block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"inlining");
         [self.client notifyErrorOrException:exception stackStripDepth:2 options:options block:block];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notifyError:(NSError *)error {
++ (void)notifyError:(NSError *)error BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"and");
         [self.client notifyErrorOrException:error stackStripDepth:2 options:nil block:nil];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *)options{
++ (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *)options BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"and");
         [self.client notifyErrorOrException:error stackStripDepth:2 options:options block:nil];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
++ (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"outlining");
         [self.client notifyErrorOrException:error stackStripDepth:2 options:nil block:block];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-+ (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *)options block:(BugsnagOnErrorBlock)block {
++ (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *)options block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     if ([self bugsnagReadyForInternalCalls]) {
         BSGPreventInlining(@"outlining");
         [self.client notifyErrorOrException:error stackStripDepth:2 options:options block:block];
     }
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
 + (BOOL)bugsnagReadyForInternalCalls {

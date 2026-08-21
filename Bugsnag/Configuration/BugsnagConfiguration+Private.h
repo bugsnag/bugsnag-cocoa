@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nullable, nonatomic) NSURL *sessionURL;
 
+@property (readonly, nullable, nonatomic) NSURL *configurationURL;
+
 @property (readwrite, retain, nonnull, nonatomic) BugsnagUser *user;
 
 #pragma mark Methods

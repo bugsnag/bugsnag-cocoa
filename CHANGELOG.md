@@ -1,12 +1,38 @@
 Changelog
 =========
 
-## TBD
+## 6.37.0 (2026-08-18)
+
+### Enhancements
+
+* Added Remote SDK Configuration support
+  [#1940](https://github.com/bugsnag/bugsnag-cocoa/pull/1940)
 
 ### Bug Fixes
+  
+* Fixed a thread-safety issue in BSGPreventInlining that could cause rare crashes.
+  [#1937](https://github.com/bugsnag/bugsnag-cocoa/pull/1937)
+  
+* Fixed a crash after shared NSURLSession is invalidated.
+  [#1933](https://github.com/bugsnag/bugsnag-cocoa/pull/1933)
+  
+* Removed custom code signing settings that contained a redundant signing style and an incorrect development team ID.
+  [#1929](https://github.com/bugsnag/bugsnag-cocoa/pull/1929)
 
-* Issue fixed Bugsnag Info plist naming conversion.
+## 6.36.0 (2026-03-26)
+
+### Enhancements
+
+* Added plugin for notifying on HTTP request errors.
+  [#1924](https://github.com/bugsnag/bugsnag-cocoa/pull/1924)
+
+* Support Pascal case plist configuration values.
   [#1925](https://github.com/bugsnag/bugsnag-cocoa/pull/1925)
+
+### Bug Fixes
+  
+* Fixed a crash after shared NSURLSession is invalidated.
+  [#1922](https://github.com/bugsnag/bugsnag-cocoa/pull/1922)
 
 ## 6.35.0 (2026-01-26)
 

@@ -1,0 +1,1092 @@
+{
+  "metaData": {
+    "app": {
+      "memoryUsage": 21830720,
+      "memoryLimit": 21830720,
+      "name": "swift-ios",
+      "freeMemory": 0
+    },
+    "device": {
+      "timezone": "CEST",
+      "thermalState": "nominal",
+      "wordSize": 64,
+      "simulator": true,
+      "charging": false,
+      "batteryLevel": -1
+    },
+    "nserror": {
+      "code": 4,
+      "reason": "The file doesn’t exist.",
+      "domain": "NSCocoaErrorDomain",
+      "userInfo": {
+        "NSUserStringVariant": [
+          "Remove"
+        ],
+        "NSFilePath": "\/\/invalid\/file",
+        "NSURL": "file:\/\/\/\/invalid\/file",
+        "NSUnderlyingError": "Error Domain=NSPOSIXErrorDomain Code=2 \"No such file or directory\""
+      }
+    }
+  },
+  "exceptions": [
+    {
+      "message": "“file” couldn’t be removed.",
+      "errorClass": "NSError",
+      "stacktrace": [
+        {
+          "method": "$s9swift_ios14ViewControllerC11sendAnErroryyFTf4d_n",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043abb24",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043abc9c"
+        },
+        {
+          "method": "$s9swift_ios14ViewControllerC05tableC0_14didSelectRowAtySo07UITableC0C_10Foundation9IndexPathVtF",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043aa928",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043aa9b8"
+        },
+        {
+          "method": "$s9swift_ios14ViewControllerC05tableC0_14didSelectRowAtySo07UITableC0C_10Foundation9IndexPathVtFTo",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043aaa0c",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043aaa84"
+        },
+        {
+          "method": "-[UITableView _selectRowAtIndexPath:animated:scrollPosition:notifyDelegate:isCellMultiSelect:deselectPrevious:performCustomSelectionAction:]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185e0feec",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185e10398"
+        },
+        {
+          "method": "-[UITableView _userSelectRowAtPendingSelectionIndexPath:animatedSelection:]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185e105bc",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185e106b8"
+        },
+        {
+          "method": "-[UITableView _userSelectRowAtPendingSelectionIndexPath:]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185e106dc",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185e1079c"
+        },
+        {
+          "method": "-[_UIAfterCACommitBlock run]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x1860e798c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x1860e79cc"
+        },
+        {
+          "method": "-[_UIAfterCACommitQueue flush]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x1860e7d3c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x1860e7de0"
+        },
+        {
+          "method": "_runAfterCACommitDeferredBlocks",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bdb910",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bdba10"
+        },
+        {
+          "method": "_cleanUpAfterCAFlushAndRunDeferredBlocks",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bcd4a0",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bcd4ec"
+        },
+        {
+          "method": "_UIApplicationFlushCATransaction",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bcd570",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bcd5b4"
+        },
+        {
+          "method": "__setupUpdateSequence_block_invoke_2",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185afdfc0",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185afe124"
+        },
+        {
+          "method": "_UIUpdateSequenceRun",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185133eb8",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185133f04"
+        },
+        {
+          "method": "schedulerStepScheduledMainSection",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185afd8ec",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185afd9b8"
+        },
+        {
+          "method": "runloopSourceCallback",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185afcd84",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185afcdd4"
+        },
+        {
+          "method": "__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x1804284a0",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x1804284b8"
+        },
+        {
+          "method": "__CFRunLoopDoSource0",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180428358",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180428400"
+        },
+        {
+          "method": "__CFRunLoopDoSources0",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180427aac",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180427b88"
+        },
+        {
+          "method": "__CFRunLoopRun",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180422278",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180422584"
+        },
+        {
+          "method": "CFRunLoopRunSpecific",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180421c24",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180421e3c"
+        },
+        {
+          "method": "GSEventRunModal",
+          "machoVMAddress": "0x190f60000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/GraphicsServices.framework\/GraphicsServices",
+          "symbolAddress": "0x190f62c5c",
+          "machoUUID": "EEB999F0-53C2-31CE-B203-3C78FB303DAB",
+          "machoLoadAddress": "0x190f60000",
+          "frameAddress": "0x190f62d00"
+        },
+        {
+          "method": "-[UIApplication _run]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bce97c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bcec98"
+        },
+        {
+          "method": "UIApplicationMain",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bd2fe8",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bd3064"
+        },
+        {
+          "method": "main",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043ac65c",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043ac69c"
+        },
+        {
+          "frameAddress": "0x1046e93d8"
+        },
+        {
+          "method": "start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/dyld",
+          "symbolAddress": "0x1045bd3dc",
+          "machoUUID": "9CF0401A-A938-389E-A77D-9E9608076CCF",
+          "machoLoadAddress": "0x1045b8000",
+          "frameAddress": "0x1045beb98"
+        }
+      ],
+      "type": "cocoa"
+    }
+  ],
+  "usage": {
+    "system": {
+      "stringCharsTruncated": 0,
+      "stringsTruncated": 0
+    },
+    "callbacks": {},
+    "config": {}
+  },
+  "context": "NSCocoaErrorDomain (4)",
+  "unhandled": false,
+  "session": {
+    "id": "E9878335-5F9D-4449-9294-5935F019258E",
+    "startedAt": "2025-10-02T14:43:25.759Z",
+    "events": {
+      "handled": 1,
+      "unhandled": 0
+    }
+  },
+  "breadcrumbs": [
+    {
+      "timestamp": "2025-10-02T14:43:25.761Z",
+      "name": "Bugsnag loaded",
+      "type": "state",
+      "metaData": {}
+    },
+    {
+      "timestamp": "2025-10-02T14:43:25.785Z",
+      "name": "Scene Will Connect",
+      "type": "state",
+      "metaData": {
+        "configuration": "Default Configuration",
+        "role": "UIWindowSceneSessionRoleApplication",
+        "delegateClass": "swift_ios.SceneDelegate"
+      }
+    },
+    {
+      "timestamp": "2025-10-02T14:43:25.798Z",
+      "name": "Window Became Visible",
+      "type": "state",
+      "metaData": {
+        "description": "<UIWindow: 0x104a0da40; frame = (0 0; 393 852); gestureRecognizers = <NSArray: 0x600000c03d80>; layer = <UIWindowLayer: 0x600000c03b70>>",
+        "viewController": "<UINavigationController: 0x10682aa00>"
+      }
+    },
+    {
+      "timestamp": "2025-10-02T14:43:25.799Z",
+      "name": "Scene Will Enter Foreground",
+      "type": "state",
+      "metaData": {
+        "configuration": "Default Configuration",
+        "role": "UIWindowSceneSessionRoleApplication",
+        "delegateClass": "swift_ios.SceneDelegate"
+      }
+    },
+    {
+      "timestamp": "2025-10-02T14:43:25.800Z",
+      "name": "App Will Enter Foreground",
+      "type": "state",
+      "metaData": {}
+    },
+    {
+      "timestamp": "2025-10-02T14:43:25.887Z",
+      "name": "Scene Activated",
+      "type": "state",
+      "metaData": {
+        "configuration": "Default Configuration",
+        "role": "UIWindowSceneSessionRoleApplication",
+        "delegateClass": "swift_ios.SceneDelegate"
+      }
+    }
+  ],
+  "featureFlags": [],
+  "app": {
+    "bundleVersion": "1",
+    "durationInForeground": 78354,
+    "dsymUUIDs": [
+      "810817F7-EBD5-3C65-A0CB-8DA078739F91"
+    ],
+    "id": "com.bugsnag.examples.swiftui-ios",
+    "inForeground": true,
+    "isLaunching": false,
+    "duration": 78354,
+    "version": "1.1",
+    "type": "iOS",
+    "binaryArch": "arm64",
+    "releaseStage": "production"
+  },
+  "threads": [
+    {
+      "errorReportingThread": true,
+      "id": "0",
+      "state": "TH_STATE_RUNNING",
+      "stacktrace": [
+        {
+          "method": "$s9swift_ios14ViewControllerC11sendAnErroryyFTf4d_n",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043abb24",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043abc9c"
+        },
+        {
+          "method": "$s9swift_ios14ViewControllerC05tableC0_14didSelectRowAtySo07UITableC0C_10Foundation9IndexPathVtF",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043aa928",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043aa9b8"
+        },
+        {
+          "method": "$s9swift_ios14ViewControllerC05tableC0_14didSelectRowAtySo07UITableC0C_10Foundation9IndexPathVtFTo",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043aaa0c",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043aaa84"
+        },
+        {
+          "method": "-[UITableView _selectRowAtIndexPath:animated:scrollPosition:notifyDelegate:isCellMultiSelect:deselectPrevious:performCustomSelectionAction:]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185e0feec",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185e10398"
+        },
+        {
+          "method": "-[UITableView _userSelectRowAtPendingSelectionIndexPath:animatedSelection:]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185e105bc",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185e106b8"
+        },
+        {
+          "method": "-[UITableView _userSelectRowAtPendingSelectionIndexPath:]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185e106dc",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185e1079c"
+        },
+        {
+          "method": "-[_UIAfterCACommitBlock run]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x1860e798c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x1860e79cc"
+        },
+        {
+          "method": "-[_UIAfterCACommitQueue flush]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x1860e7d3c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x1860e7de0"
+        },
+        {
+          "method": "_runAfterCACommitDeferredBlocks",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bdb910",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bdba10"
+        },
+        {
+          "method": "_cleanUpAfterCAFlushAndRunDeferredBlocks",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bcd4a0",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bcd4ec"
+        },
+        {
+          "method": "_UIApplicationFlushCATransaction",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bcd570",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bcd5b4"
+        },
+        {
+          "method": "__setupUpdateSequence_block_invoke_2",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185afdfc0",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185afe124"
+        },
+        {
+          "method": "_UIUpdateSequenceRun",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185133eb8",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185133f04"
+        },
+        {
+          "method": "schedulerStepScheduledMainSection",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185afd8ec",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185afd9b8"
+        },
+        {
+          "method": "runloopSourceCallback",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185afcd84",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185afcdd4"
+        },
+        {
+          "method": "__CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x1804284a0",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x1804284b8"
+        },
+        {
+          "method": "__CFRunLoopDoSource0",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180428358",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180428400"
+        },
+        {
+          "method": "__CFRunLoopDoSources0",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180427aac",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180427b88"
+        },
+        {
+          "method": "__CFRunLoopRun",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180422278",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180422584"
+        },
+        {
+          "method": "CFRunLoopRunSpecific",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180421c24",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180421e3c"
+        },
+        {
+          "method": "GSEventRunModal",
+          "machoVMAddress": "0x190f60000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/GraphicsServices.framework\/GraphicsServices",
+          "symbolAddress": "0x190f62c5c",
+          "machoUUID": "EEB999F0-53C2-31CE-B203-3C78FB303DAB",
+          "machoLoadAddress": "0x190f60000",
+          "frameAddress": "0x190f62d00"
+        },
+        {
+          "method": "-[UIApplication _run]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bce97c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bcec98"
+        },
+        {
+          "method": "UIApplicationMain",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185bd2fe8",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185bd3064"
+        },
+        {
+          "method": "main",
+          "machoVMAddress": "0x100000000",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/swift-ios",
+          "symbolAddress": "0x1043ac65c",
+          "machoUUID": "810817F7-EBD5-3C65-A0CB-8DA078739F91",
+          "machoLoadAddress": "0x1043a8000",
+          "frameAddress": "0x1043ac69c"
+        },
+        {
+          "frameAddress": "0x1046e93d8"
+        },
+        {
+          "method": "start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/dyld",
+          "symbolAddress": "0x1045bd3dc",
+          "machoUUID": "9CF0401A-A938-389E-A77D-9E9608076CCF",
+          "machoLoadAddress": "0x1045b8000",
+          "frameAddress": "0x1045beb98"
+        }
+      ],
+      "name": "com.apple.main-thread",
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "1",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "__workq_kernreturn",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104492678",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104492680"
+        },
+        {
+          "method": "_pthread_wqthread",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104412aac",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x104412c18"
+        }
+      ],
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "2",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "__workq_kernreturn",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104492678",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104492680"
+        },
+        {
+          "method": "_pthread_wqthread",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104412aac",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x104412c18"
+        }
+      ],
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "3",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "mach_msg2_trap",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490b68",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490b70"
+        },
+        {
+          "method": "mach_msg2_internal",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x1044a1f64",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x1044a1fac"
+        },
+        {
+          "method": "mach_msg_overwrite",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104498a48",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104498c28"
+        },
+        {
+          "method": "mach_msg",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490ec4",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490ed8"
+        },
+        {
+          "method": "__CFRunLoopServiceMachPort",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180427c78",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180427d14"
+        },
+        {
+          "method": "__CFRunLoopRun",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180422278",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x1804226f4"
+        },
+        {
+          "method": "CFRunLoopRunSpecific",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180421c24",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180421e3c"
+        },
+        {
+          "method": "-[NSRunLoop(NSRunLoop) runMode:beforeDate:]",
+          "machoVMAddress": "0x18082c000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/Foundation.framework\/Foundation",
+          "symbolAddress": "0x180f22d0c",
+          "machoUUID": "6EC60314-780A-318F-8BDB-5D173B13970E",
+          "machoLoadAddress": "0x18082c000",
+          "frameAddress": "0x180f22ddc"
+        },
+        {
+          "method": "-[NSRunLoop(NSRunLoop) runUntilDate:]",
+          "machoVMAddress": "0x18082c000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/Foundation.framework\/Foundation",
+          "symbolAddress": "0x180f22fc0",
+          "machoUUID": "6EC60314-780A-318F-8BDB-5D173B13970E",
+          "machoLoadAddress": "0x18082c000",
+          "frameAddress": "0x180f22ffc"
+        },
+        {
+          "method": "-[UIEventFetcher threadMain]",
+          "machoVMAddress": "0x184d72000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/PrivateFrameworks\/UIKitCore.framework\/UIKitCore",
+          "symbolAddress": "0x185c7c58c",
+          "machoUUID": "D4C23B9A-C567-3E42-86EF-697AEC976159",
+          "machoLoadAddress": "0x184d72000",
+          "frameAddress": "0x185c7c724"
+        },
+        {
+          "method": "__NSThread__start__",
+          "machoVMAddress": "0x18082c000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/Foundation.framework\/Foundation",
+          "symbolAddress": "0x180f498cc",
+          "machoUUID": "6EC60314-780A-318F-8BDB-5D173B13970E",
+          "machoLoadAddress": "0x18082c000",
+          "frameAddress": "0x180f49b98"
+        },
+        {
+          "method": "_pthread_start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104416588",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x1044165f0"
+        }
+      ],
+      "name": "com.apple.uikit.eventfetch-thread",
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "4",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "__workq_kernreturn",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104492678",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104492680"
+        },
+        {
+          "method": "_pthread_wqthread",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104412aac",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x104412c18"
+        }
+      ],
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "5",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "mach_msg2_trap",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490b68",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490b70"
+        },
+        {
+          "method": "mach_msg2_internal",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x1044a1f64",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x1044a1fac"
+        },
+        {
+          "method": "thread_suspend",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x1044be31c",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x1044be384"
+        },
+        {
+          "method": "ksmachexc_i_handleExceptions",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/Frameworks\/Bugsnag.framework\/Bugsnag",
+          "symbolAddress": "0x1047a4708",
+          "machoUUID": "35AF9394-9EC2-3AE2-8EF6-87C328EB5E6A",
+          "machoLoadAddress": "0x1047a0000",
+          "frameAddress": "0x1047a476c"
+        },
+        {
+          "method": "_pthread_start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104416588",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x1044165f0"
+        }
+      ],
+      "name": "KSCrash Exception Handler (Secondary)",
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "6",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "mach_msg2_trap",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490b68",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490b70"
+        },
+        {
+          "method": "mach_msg2_internal",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x1044a1f64",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x1044a1fac"
+        },
+        {
+          "method": "mach_msg_overwrite",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104498a48",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104498c28"
+        },
+        {
+          "method": "mach_msg",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490ec4",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490ed8"
+        },
+        {
+          "method": "ksmachexc_i_handleExceptions",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/Frameworks\/Bugsnag.framework\/Bugsnag",
+          "symbolAddress": "0x1047a4708",
+          "machoUUID": "35AF9394-9EC2-3AE2-8EF6-87C328EB5E6A",
+          "machoLoadAddress": "0x1047a0000",
+          "frameAddress": "0x1047a47a0"
+        },
+        {
+          "method": "_pthread_start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104416588",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x1044165f0"
+        }
+      ],
+      "name": "KSCrash Exception Handler (Primary)",
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "7",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "semaphore_timedwait_trap",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490afc",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490b04"
+        },
+        {
+          "method": "_dispatch_sema4_timedwait",
+          "machoVMAddress": "0x18017b000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/usr\/lib\/system\/libdispatch.dylib",
+          "symbolAddress": "0x1801b11ac",
+          "machoUUID": "7BEE27FD-F519-330D-AEBE-D6ACE467DF22",
+          "machoLoadAddress": "0x18017b000",
+          "frameAddress": "0x1801b11e8"
+        },
+        {
+          "method": "_dispatch_semaphore_wait_slow",
+          "machoVMAddress": "0x18017b000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/usr\/lib\/system\/libdispatch.dylib",
+          "symbolAddress": "0x18017e740",
+          "machoUUID": "7BEE27FD-F519-330D-AEBE-D6ACE467DF22",
+          "machoLoadAddress": "0x18017b000",
+          "frameAddress": "0x18017e788"
+        },
+        {
+          "method": "-[BSGAppHangDetector detectAppHangs]",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/Frameworks\/Bugsnag.framework\/Bugsnag",
+          "symbolAddress": "0x1047a97c4",
+          "machoUUID": "35AF9394-9EC2-3AE2-8EF6-87C328EB5E6A",
+          "machoLoadAddress": "0x1047a0000",
+          "frameAddress": "0x1047a9878"
+        },
+        {
+          "method": "DetectAppHangs",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/Users\/robert.bartoszewski\/Library\/Developer\/CoreSimulator\/Devices\/0E4C5C52-D7DC-450F-846F-FA9EB9D6B78E\/data\/Containers\/Bundle\/Application\/E6072C8E-5EE8-42C4-993E-003337604802\/swift-ios.app\/Frameworks\/Bugsnag.framework\/Bugsnag",
+          "symbolAddress": "0x1047a97ac",
+          "machoUUID": "35AF9394-9EC2-3AE2-8EF6-87C328EB5E6A",
+          "machoLoadAddress": "0x1047a0000",
+          "frameAddress": "0x1047a97b8"
+        },
+        {
+          "method": "_pthread_start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104416588",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x1044165f0"
+        }
+      ],
+      "name": "com.bugsnag.app-hang-detector",
+      "type": "cocoa"
+    },
+    {
+      "errorReportingThread": false,
+      "id": "8",
+      "state": "TH_STATE_WAITING",
+      "stacktrace": [
+        {
+          "method": "mach_msg2_trap",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490b68",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490b70"
+        },
+        {
+          "method": "mach_msg2_internal",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x1044a1f64",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x1044a1fac"
+        },
+        {
+          "method": "mach_msg_overwrite",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104498a48",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104498c28"
+        },
+        {
+          "method": "mach_msg",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_kernel.dylib",
+          "symbolAddress": "0x104490ec4",
+          "machoUUID": "4068B2EE-A54F-397E-882D-C5E3A40B789A",
+          "machoLoadAddress": "0x104490000",
+          "frameAddress": "0x104490ed8"
+        },
+        {
+          "method": "__CFRunLoopServiceMachPort",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180427c78",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180427d14"
+        },
+        {
+          "method": "__CFRunLoopRun",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180422278",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x1804226f4"
+        },
+        {
+          "method": "CFRunLoopRunSpecific",
+          "machoVMAddress": "0x180395000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CoreFoundation.framework\/CoreFoundation",
+          "symbolAddress": "0x180421c24",
+          "machoUUID": "3D4AA1D5-03AA-3365-B767-944509B9BBFD",
+          "machoLoadAddress": "0x180395000",
+          "frameAddress": "0x180421e3c"
+        },
+        {
+          "method": "+[__CFN_CoreSchedulingSetRunnable _run:]",
+          "machoVMAddress": "0x184899000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/CFNetwork.framework\/CFNetwork",
+          "symbolAddress": "0x184aa0e28",
+          "machoUUID": "4642E7E4-B83D-3225-A892-A22FDCA4C077",
+          "machoLoadAddress": "0x184899000",
+          "frameAddress": "0x184aa0f98"
+        },
+        {
+          "method": "__NSThread__start__",
+          "machoVMAddress": "0x18082c000",
+          "machoFile": "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_22E238\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 18.4.simruntime\/Contents\/Resources\/RuntimeRoot\/System\/Library\/Frameworks\/Foundation.framework\/Foundation",
+          "symbolAddress": "0x180f498cc",
+          "machoUUID": "6EC60314-780A-318F-8BDB-5D173B13970E",
+          "machoLoadAddress": "0x18082c000",
+          "frameAddress": "0x180f49b98"
+        },
+        {
+          "method": "_pthread_start",
+          "machoVMAddress": "0x0",
+          "machoFile": "\/usr\/lib\/system\/libsystem_pthread.dylib",
+          "symbolAddress": "0x104416588",
+          "machoUUID": "E9238785-E581-3E65-BEDB-179C698D3554",
+          "machoLoadAddress": "0x104410000",
+          "frameAddress": "0x1044165f0"
+        }
+      ],
+      "name": "com.apple.NSURLConnectionLoader",
+      "type": "cocoa"
+    }
+  ],
+  "severityReason": {
+    "type": "userCallbackSetSeverity"
+  },
+  "severity": "info",
+  "device": {
+    "id": "b526ce4b303e9cd32455b35456e5ec0a1a11338b",
+    "osName": "iOS",
+    "jailbroken": false,
+    "osVersion": "18.4",
+    "time": "2025-10-02T14:44:44.092Z",
+    "locale": "en_PL",
+    "runtimeVersions": {
+      "osBuild": "24F74",
+      "clangVersion": "17.0.0 (clang-1700.0.13.3)"
+    },
+    "freeMemory": 2340126720,
+    "manufacturer": "Apple",
+    "modelNumber": "simulator",
+    "model": "iPhone17,3",
+    "totalMemory": 68719476736
+  },
+  "user": {
+    "id": "b526ce4b303e9cd32455b35456e5ec0a1a11338b"
+  }
+}

@@ -62,6 +62,9 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     
     BugsnagConfiguration *configuration = delegate.configuration;
     
+    BOOL hasValidConfig = [delegate hasValidRemoteConfig];
+    [event setRemoteConfigFlag:hasValidConfig];
+    
     if (!configuration.shouldSendReports || ![event shouldBeSent]) {
         bsg_log_info(@"Discarding event %@ because releaseStage not in enabledReleaseStages", self.name);
         [self deleteEvent];
@@ -158,7 +161,14 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
             return;
         }
     }
-    
+
+    if ([delegate shouldDiscardEvent:eventPayload]) {
+        bsg_log_info(@"Discarding event %@ because [delegate shouldDiscardEvent:] returned YES", self.name);
+        [self deleteEvent];
+        completionHandler();
+        return;
+    }
+
     BSGPostJSONData(configuration.sessionOrDefault, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {
         switch (status) {
             case BSGDeliveryStatusDelivered:

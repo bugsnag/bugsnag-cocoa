@@ -1,0 +1,20 @@
+{
+  "discardRules": [
+    {
+      "matchType": "HASH",
+      "hash": {
+        "paths": [
+          {
+            "path": "groupingDiscriminator"
+          },
+          {
+            "path": "groupingHash"
+          }
+        ],
+        "matches": [
+          "4d37d54989f97e3b5ce86a2488047c8bcb856ded"
+        ]
+      }
+    }
+  ]
+}

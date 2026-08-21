@@ -76,6 +76,10 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BSGAtomicFeatureFlagStore.h"
 #import "BSGCompositeFeatureFlagStore.h"
+#import "BugsnagDevice+Private.h"
+#import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
+#import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
+#import "../DiscardProcessor/Factory/BSGEventDiscardRuleFactory.h"
 
 static struct {
     // Contains the user-specified metadata, including the user tab from config.
@@ -184,6 +188,10 @@ static void BSSerializeDataCrashHandler(const BSG_KSCrashReportWriter *writer, b
 
 @property (copy, nullable, atomic) NSString *groupingDiscriminator_;
 
+@property (nonatomic, strong) BSGRemoteConfigHandler *remoteConfigHandler;
+
+@property (nonatomic, strong) BSGEventDiscardProcessor *discardProcessor;
+
 @end
 
 @interface BugsnagClient (/* not objc_direct */)
@@ -242,7 +250,10 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);
         self.stateEventBlocks = [NSMutableArray new];
         self.extraRuntimeInfo = [NSMutableDictionary new];
-        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration notifier:_notifier];
+        _discardProcessor = [BSGEventDiscardProcessor new];
+        _eventUploader = [[BSGEventUploader alloc] initWithConfiguration:_configuration
+                                                                notifier:_notifier
+                                                        discardProcessor:_discardProcessor];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
         id<BSGFeatureFlagStore> persistentFeatureFlagsStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:fileLocations.featureFlags];
@@ -273,6 +284,8 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
+    
+    [self setupRemoteConfigHandlerWithSystemInfo:systemInfo];
 
     [self computeDidCrashLastLaunch];
 
@@ -354,7 +367,8 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
     }
 
     [self.eventUploader uploadStoredEvents];
-
+    [self.remoteConfigHandler start];
+    
 #if BSG_HAVE_APP_HANG_DETECTION
     // App hang detector deliberately started after sendLaunchCrashSynchronously (which by design may itself trigger an app hang)
     // Note: BSGAppHangDetector itself checks configuration.enabledErrorTypes.appHangs
@@ -683,52 +697,60 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
 // Note: Each BSGPreventInlining call site within a module MUST pass a different
 //       string to prevent outlining!
 
-- (void)notifyError:(NSError *)error {
+- (void)notifyError:(NSError *)error BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"Prevent");
     [self notifyErrorOrException:error stackStripDepth:2 options:nil block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options{
+- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"Prevent");
     [self notifyErrorOrException:error stackStripDepth:2 options:options block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block {
+- (void)notifyError:(NSError *)error block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"inlining");
     [self notifyErrorOrException:error stackStripDepth:2 options:nil block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block {
+- (void)notifyError:(NSError *)error options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, error);
     BSGPreventInlining(@"inlining");
     [self notifyErrorOrException:error stackStripDepth:2 options:options block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception {
+- (void)notify:(NSException *)exception BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"and");
     [self notifyErrorOrException:exception stackStripDepth:2 options:nil block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options{
+- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"and");
     [self notifyErrorOrException:exception stackStripDepth:2 options:options block:nil];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block {
+- (void)notify:(NSException *)exception block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"outlining");
     [self notifyErrorOrException:exception stackStripDepth:2 options:nil block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
-- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block {
+- (void)notify:(NSException *)exception options:(BugsnagErrorOptions *_Nullable)options block:(BugsnagOnErrorBlock)block BSG_KEEP_FUNCTION_IN_STACKTRACE {
     bsg_log_debug(@"%s %@", __PRETTY_FUNCTION__, exception);
     BSGPreventInlining(@"outlining");
     [self notifyErrorOrException:exception stackStripDepth:2 options:options block:block];
+    BSG_THWART_TAIL_CALL_OPTIMISATION
 }
 
 // MARK: - Notify (Internal)
@@ -977,7 +999,13 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
     [self.sessionTracker incrementEventCountUnhandled:event.handledState.unhandled];
     event.session = self.sessionTracker.runningSession;
 
-    event.usage = BSGTelemetryCreateUsage(self.configuration);
+    NSMutableDictionary *usage = [BSGTelemetryCreateUsage(self.configuration) mutableCopy] ?: [NSMutableDictionary new];
+    
+    BOOL hasValidConfig = self.remoteConfigHandler && [self.remoteConfigHandler hasValidConfig];
+    
+    usage[@"remoteConfig"] = @(hasValidConfig); // true if config active, false otherwise
+    
+    event.usage = [NSDictionary dictionaryWithDictionary:usage];
 
     BugsnagDeliveryStrategy deliveryStrategy = [event deliveryStrategy];
     switch (deliveryStrategy) {
@@ -1086,6 +1114,33 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
     if (self.observer) {
         self.observer(BSGClientObserverClearFeatureFlag, nil);
     }
+}
+
+// MARK: - RemoteConfigStore
+
+- (void)setupRemoteConfigHandlerWithSystemInfo:(NSDictionary *)systemInfo {
+    BugsnagDevice *device = [BugsnagDevice deviceWithKSCrashReport:@{@"system": systemInfo}];
+    NSString *codeBundleId = self.codeBundleId;
+    BugsnagApp *app = [BugsnagApp appWithDictionary:@{@"system": systemInfo}
+                                             config:self.configuration
+                                       codeBundleId:codeBundleId];
+    BSGRemoteConfigService *remoteConfigService = [BSGRemoteConfigService serviceWithSession:[NSURLSession sharedSession]
+                                                                               configuration:self.configuration
+                                                                                    notifier:self.notifier
+                                                                                      device:device
+                                                                                         app:app];
+    BSGRemoteConfigStore *remoteConfigStore = [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current]
+                                                                         configuration:self.configuration];
+    self.remoteConfigHandler = [BSGRemoteConfigHandler handlerWithService:remoteConfigService
+                                                                    store:remoteConfigStore
+                                                            configuration:self.configuration];
+    
+    BSGEventDiscardRuleFactory *discardRuleFactory = [BSGEventDiscardRuleFactory new];
+    BSGEventDiscardRulesetSource *rulesetSource = [BSGEventDiscardRulesetSource sourceWithRemoteConfigHandler:self.remoteConfigHandler
+                                                                                           discardRuleFactory:discardRuleFactory];
+    self.discardProcessor.source = rulesetSource;
+    self.eventUploader.remoteConfigHandler = self.remoteConfigHandler;
+    [self.remoteConfigHandler initialize];
 }
 
 // MARK: - <BugsnagMetadataStore>
