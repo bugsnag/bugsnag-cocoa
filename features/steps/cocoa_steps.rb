@@ -210,3 +210,60 @@ Then('the event has a critical thermal state breadcrumb') do
   end
   raise("No thermal breadcrumb present in: #{breadcrumbs}") unless found
 end
+
+def backup_expected_excluded_value(setting)
+  # config.fileBackupSupport=true means excludeFromBackup=0, false/default means 1.
+  setting == 'true' ? 0 : 1
+end
+
+def backup_value_as_int(value)
+  case value
+  when TrueClass
+    1
+  when FalseClass
+    0
+  else
+    value.to_i
+  end
+end
+
+Then('the backup metadata snapshot is consistent for setting {string}') do |setting|
+  body = Maze::Server.errors.current[:body]
+  summary = Maze::Helper.read_key_path(body, 'events.0.metaData.backupSummary')
+  paths = Maze::Helper.read_key_path(body, 'events.0.metaData.backupPaths')
+
+  Maze.check.not_nil(summary, 'Expected backupSummary metadata to be present')
+  Maze.check.not_nil(paths, 'Expected backupPaths metadata to be present')
+
+  expected_excluded = backup_expected_excluded_value(setting)
+  Maze.check.equal(expected_excluded,
+                   backup_value_as_int(summary['expectedExcludedFromBackup']),
+                   'Unexpected expectedExcludedFromBackup value')
+  Maze.check.equal(0,
+                   backup_value_as_int(summary['invalidPathCount']),
+                   'Expected all checked SDK-managed paths to match backup expectation')
+  Maze.check.equal(0,
+                   backup_value_as_int(summary['missingRequiredPathCount']),
+                   'Expected all required SDK-managed paths to exist')
+  Maze.check.equal(1,
+                   backup_value_as_int(summary['jsonIntegrityOk']),
+                   'Expected state/config JSON files to remain readable')
+
+  paths.each do |name, details|
+    required = backup_value_as_int(details['required']) == 1
+    next unless required
+
+    Maze.check.equal(1,
+                     backup_value_as_int(details['exists']),
+                     "Expected required path '#{name}' to exist")
+    Maze.check.equal(1,
+                     backup_value_as_int(details['matchesExpectation']),
+                     "Expected required path '#{name}' to match backup metadata expectation")
+  end
+
+  if backup_value_as_int(summary['unrelatedPathChecked']) == 1
+    Maze.check.equal(1,
+                     backup_value_as_int(summary['unrelatedPathUnchanged']),
+                     'Expected unrelated non-SDK file metadata to remain unchanged')
+  end
+end

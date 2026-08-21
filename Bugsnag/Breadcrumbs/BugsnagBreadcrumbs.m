@@ -9,6 +9,7 @@
 #import "BugsnagBreadcrumbs.h"
 
 #import "BSGFileLocations.h"
+#import "BSGFilesystem.h"
 #import "BSGJSONSerialization.h"
 #import "BSGUtils.h"
 #import "BSG_KSCrashReportWriter.h"
@@ -161,7 +162,8 @@ static atomic_bool g_writing_crash_report;
             if (!isStale) {
                 NSString *file = [self pathForFileNumber:fileNumber];
                 // NSDataWritingAtomic not required because we no longer read the files without checking for validity
-                if (![data writeToFile:file options:0 error:&error]) {
+                // Use BSGFilesystem so new breadcrumb files follow the backup policy.
+                if (![BSGFilesystem writeData:data toFile:file options:0 error:&error]) {
                     bsg_log_err(@"Unable to write breadcrumb: %@", error);
                 }
             }
@@ -211,9 +213,9 @@ static atomic_bool g_writing_crash_report;
     dispatch_async(BSGGetFileSystemQueue(), ^{
         NSError *error = nil;
         NSString *directory = self.breadcrumbsPath;
-        NSFileManager *fileManager = [NSFileManager new];
-        if (![fileManager removeItemAtPath:directory error:&error] ||
-            ![fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error]) {
+        // Rebuilt breadcrumb storage must reapply the configured backup policy.
+        error = [BSGFilesystem rebuildPath:directory];
+        if (error) {
             bsg_log_debug(@"%s: %@", __FUNCTION__, error);
         }
     });
