@@ -129,8 +129,8 @@ static NSString *const BSGFileBackupSupportReconciliationKey =
                   excludeFromBackup ? @"YES" : @"NO",
                   url.path,
                   currentValue);
-#endif  BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
-    return nil;
+#endif  // BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
+        return nil;
 #endif
 }
 
