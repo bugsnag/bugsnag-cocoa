@@ -222,6 +222,13 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
     [BSGFilesystem applyFileBackupSupportToPathAndContents:rootDirectory];
 }
 
+static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fileLocations) {
+    // KSCrash writes outside BSGFilesystem because its crash handlers must be
+    // async-signal-safe. Its small storage area is reconciled at next launch.
+    [BSGFilesystem applyFileBackupSupportToPathAndContents:fileLocations.kscrashReports];
+    [BSGFilesystem applyFileBackupSupportToPath:fileLocations.systemState];
+}
+
 @implementation BugsnagClient
 
 - (instancetype)initWithConfiguration:(BugsnagConfiguration *)configuration {
@@ -245,6 +252,14 @@ static void BSGApplyFileBackupSupportToExistingFiles(BSGFileLocations *fileLocat
         _notifier = _configuration.notifier ?: [[BugsnagNotifier alloc] init];
 
         BSGFileLocations *fileLocations = [BSGFileLocations current];
+        // A full storage scan is needed only after an SDK upgrade or when the
+        // configured policy changes. Do not add I/O to every app launch.
+        if ([BSGFilesystem needsFileBackupSupportReconciliation]) {
+            BSGApplyFileBackupSupportToExistingFiles(fileLocations);
+            [BSGFilesystem markFileBackupSupportReconciled];
+        } else {
+            BSGApplyFileBackupSupportToCrashGeneratedFiles(fileLocations);
+        }
         BSGApplyFileBackupSupportToExistingFiles(fileLocations);
         NSString *crashPath = fileLocations.flagHandledCrash;
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);

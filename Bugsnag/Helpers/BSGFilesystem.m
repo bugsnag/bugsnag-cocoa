@@ -104,52 +104,68 @@ static NSString *const BSGFileBackupSupportReconciliationKey =
                                             forKey:BSGFileBackupSupportReconciliationKey];
 }
 
++ (nullable NSError *)applyFileBackupSupportToURL:(NSURL *)url {
+#if TARGET_OS_TV
+    bsg_log_debug(@"[File backup support] tvOS uses Caches storage; leaving backup metadata unchanged for %@", url.path);
+    return nil;
+#else
+    // Apple uses an inverse key: excludedFromBackup=YES means no backup support.
+    BOOL excludeFromBackup = !self.fileBackupSupport;
+    NSNumber *currentValue = nil;
+    [url getResourceValue:&currentValue forKey:NSURLIsExcludedFromBackupKey error:nil];
+    if (currentValue != nil && currentValue.boolValue == excludeFromBackup) {
+        return nil;
+    }
+
+    NSError *error = nil;
+    if (![url setResourceValue:@(excludeFromBackup) forKey:NSURLIsExcludedFromBackupKey error:&error]) {
+        // Backup metadata should not block Bugsnag's local persistence/retry flow.
+        bsg_log_warn(@"Could not set backup support for %@: %@", url.path, error);
+        return error;
+    }
+#if BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
+    [url getResourceValue:&currentValue forKey:NSURLIsExcludedFromBackupKey error:nil];
+    bsg_log_debug(@"[File backup support] Applied NSURLIsExcludedFromBackupKey=%@ to %@ (actual=%@)",
+                  excludeFromBackup ? @"YES" : @"NO",
+                  url.path,
+                  currentValue);
+#endif  BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
+    return nil;
+#endif
+}
+
 + (nullable NSError *)applyFileBackupSupportToPath:(NSString *)path {
     if (![NSFileManager.defaultManager fileExistsAtPath:path]) {
         bsg_log_debug(@"[File backup support] Skipping missing SDK path: %@", path);
         return nil;
     }
 
-#if TARGET_OS_TV
-    bsg_log_debug(@"[File backup support] tvOS uses Caches storage; leaving backup metadata unchanged for %@", path);
-    return nil;
-#else
-    NSURL *url = [NSURL fileURLWithPath:path];
-    NSError *error = nil;
-    // Apple uses an inverse key: excludedFromBackup=YES means no backup support.
-    BOOL excludeFromBackup = !self.fileBackupSupport;
-    if (![url setResourceValue:@(excludeFromBackup) forKey:NSURLIsExcludedFromBackupKey error:&error]) {
-        // Backup metadata should not block Bugsnag's local persistence/retry flow.
-        bsg_log_warn(@"Could not set backup support for %@: %@", path, error);
-        return error;
-    }
-#if BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
-    NSNumber *currentValue = nil;
-    [url getResourceValue:&currentValue forKey:NSURLIsExcludedFromBackupKey error:nil];
-    bsg_log_debug(@"[File backup support] Applied NSURLIsExcludedFromBackupKey=%@ to %@ (actual=%@)",
-                  excludeFromBackup ? @"YES" : @"NO",
-                  path,
-                  currentValue);
-#endif
-    return nil;
-#endif
+    return [self applyFileBackupSupportToURL:[NSURL fileURLWithPath:path]];
 }
 
 + (void)applyFileBackupSupportToPathAndContents:(NSString *)path {
     bsg_log_debug(@"[File backup support] Reconciling existing SDK path and contents: %@", path);
     [self applyFileBackupSupportToPath:path];
 
+#if TARGET_OS_TV
+    return;
+#else
     BOOL isDirectory = NO;
     if (![NSFileManager.defaultManager fileExistsAtPath:path isDirectory:&isDirectory] || !isDirectory) {
         return;
     }
 
-    NSDirectoryEnumerator<NSString *> *enumerator =
-    [NSFileManager.defaultManager enumeratorAtPath:path];
-    for (NSString *relativePath in enumerator) {
-        // Existing child files need the same policy after SDK upgrades or config changes.
-        [self applyFileBackupSupportToPath:[path stringByAppendingPathComponent:relativePath]];
+    NSURL *rootURL = [NSURL fileURLWithPath:path];
+    NSDirectoryEnumerator<NSURL *> *enumerator =
+        [NSFileManager.defaultManager enumeratorAtURL:rootURL
+                           includingPropertiesForKeys:@[NSURLIsExcludedFromBackupKey]
+                                              options:0
+                                         errorHandler:nil];
+    for (NSURL *url in enumerator) {
+        // The prefetched resource value avoids writes when policy is already correct.
+        [self applyFileBackupSupportToURL:url];
     }
+#endif
 }
 
 + (BOOL)writeData:(NSData *)data toFile:(NSString *)path options:(NSDataWritingOptions)options error:(NSError * __autoreleasing *)error {

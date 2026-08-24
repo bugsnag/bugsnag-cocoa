@@ -258,7 +258,7 @@ import Foundation
         guard !path.isEmpty else { return }
         var isDirectory = ObjCBool(false)
         if !FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory) { return }
-        var url = URL(fileURLWithPath: path)   // ← change 'let' to 'var'
+        var url = URL(fileURLWithPath: path)
         var mutableValues = URLResourceValues()
         mutableValues.isExcludedFromBackup = excluded
         try? url.setResourceValues(mutableValues)
