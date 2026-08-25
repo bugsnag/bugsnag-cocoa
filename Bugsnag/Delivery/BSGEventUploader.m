@@ -20,7 +20,7 @@
 #import "BugsnagLogger.h"
 #import "../DiscardProcessor/Processor/BSGEventDiscardProcessor.h"
 #import "../RemoteConfig/Handler/BSGRemoteConfigHandler.h"
-
+#import "BSGFilesystem.h"
 
 static NSString * const CrashReportPrefix = @"CrashReport-";
 static NSString * const RecrashReportPrefix = @"RecrashReport-";
@@ -320,7 +320,8 @@ static NSTimeInterval CrashTimeDeliveryTimeout = 1;
     dispatch_sync(BSGGetFileSystemQueue(), ^{
         file = [[self.eventsDirectory stringByAppendingPathComponent:[NSUUID UUID].UUIDString] stringByAppendingPathExtension:@"json"];
         NSError *error = nil;
-        if (!BSGJSONWriteToFileAtomically(eventPayload, file, &error)) {
+        NSData *data = BSGJSONDataFromDictionary(eventPayload, NULL);
+        if (![BSGFilesystem writeData:data toFile:file options:NSDataWritingAtomic error:&error]) {
             bsg_log_err(@"Error encountered while saving event payload for retry: %@", error);
             return;
         }

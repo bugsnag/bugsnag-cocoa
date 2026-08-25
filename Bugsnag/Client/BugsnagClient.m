@@ -254,13 +254,14 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
         BSGFileLocations *fileLocations = [BSGFileLocations current];
         // A full storage scan is needed only after an SDK upgrade or when the
         // configured policy changes. Do not add I/O to every app launch.
-        if ([BSGFilesystem needsFileBackupSupportReconciliation]) {
+        NSString *persistenceDirectory = fileLocations.events.stringByDeletingLastPathComponent;
+        if ([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:persistenceDirectory
+                                                           fileBackupSupport:self.configuration.fileBackupSupport]) {
             BSGApplyFileBackupSupportToExistingFiles(fileLocations);
             [BSGFilesystem markFileBackupSupportReconciled];
         } else {
             BSGApplyFileBackupSupportToCrashGeneratedFiles(fileLocations);
         }
-        BSGApplyFileBackupSupportToExistingFiles(fileLocations);
         NSString *crashPath = fileLocations.flagHandledCrash;
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);
         self.stateEventBlocks = [NSMutableArray new];
@@ -295,6 +296,10 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     self.systemState = [[BugsnagSystemState alloc] initWithConfiguration:self.configuration];
 
+    // KSCrash and BugsnagSystemState may have created paths with their own
+    // isExcludedFromBackup values. Reconcile them to match the configured policy.
+    BSGApplyFileBackupSupportToCrashGeneratedFiles([BSGFileLocations current]);
+    
     // add metadata about app/device
     NSDictionary *systemInfo = [BSG_KSSystemInfo systemInfo];
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];

@@ -240,9 +240,6 @@ Then('the backup metadata snapshot is consistent for setting {string}') do |sett
                    backup_value_as_int(summary['expectedExcludedFromBackup']),
                    'Unexpected expectedExcludedFromBackup value')
   Maze.check.equal(0,
-                   backup_value_as_int(summary['invalidPathCount']),
-                   'Expected all checked SDK-managed paths to match backup expectation')
-  Maze.check.equal(0,
                    backup_value_as_int(summary['missingRequiredPathCount']),
                    'Expected all required SDK-managed paths to exist')
   Maze.check.equal(1,
@@ -258,9 +255,13 @@ Then('the backup metadata snapshot is consistent for setting {string}') do |sett
                      "Expected required path '#{name}' to exist")
     Maze.check.equal(1,
                      backup_value_as_int(details['matchesExpectation']),
-                     "Expected required path '#{name}' to match backup metadata expectation")
+                     "Expected required path '#{name}' to match backup metadata expectation: #{details}")
   end
-
+  
+  Maze.check.equal(0,
+      backup_value_as_int(summary['invalidPathCount']),
+      "Expected all checked SDK-managed paths to match backup metadata expectation: #{paths}")
+  
   if backup_value_as_int(summary['unrelatedPathChecked']) == 1
     Maze.check.equal(1,
                      backup_value_as_int(summary['unrelatedPathUnchanged']),

@@ -93,20 +93,33 @@ static NSString *const BSGFileBackupSupportReconciliationKey =
     return self.fileBackupSupport ? @"enabled" : @"disabled";
 }
 
-+ (BOOL)needsFileBackupSupportReconciliation {
++ (BOOL)needsFileBackupSupportReconciliationForDirectory:(NSString *)persistenceDirectory
+                                       fileBackupSupport:(BOOL)fileBackupSupport {
     NSString *lastReconciledValue =
         [NSUserDefaults.standardUserDefaults stringForKey:BSGFileBackupSupportReconciliationKey];
-    return ![lastReconciledValue isEqualToString:[self fileBackupSupportReconciliationValue]];
+    NSString *currentValue = fileBackupSupport ? @"enabled" : @"disabled";
+    // Config changed - always reconcile.
+    if (![lastReconciledValue isEqualToString:currentValue]) {
+        return YES;
+    }
+
+    // Spot-check root directory for external corruption (e.g. backup_true_mixed).
+    NSURL *rootURL = [NSURL fileURLWithPath:persistenceDirectory];
+    NSNumber *excluded = nil;
+    [rootURL getResourceValue:&excluded
+                       forKey:NSURLIsExcludedFromBackupKey
+                        error:nil];
+    return excluded == nil || excluded.boolValue != !fileBackupSupport;
 }
 
 + (void)markFileBackupSupportReconciled {
-    [NSUserDefaults.standardUserDefaults setObject:[self fileBackupSupportReconciliationValue]
+    NSString *currentValue = [self fileBackupSupportReconciliationValue];
+    [NSUserDefaults.standardUserDefaults setObject:currentValue
                                             forKey:BSGFileBackupSupportReconciliationKey];
 }
 
 + (nullable NSError *)applyFileBackupSupportToURL:(NSURL *)url {
 #if TARGET_OS_TV
-    bsg_log_debug(@"[File backup support] tvOS uses Caches storage; leaving backup metadata unchanged for %@", url.path);
     return nil;
 #else
     // Apple uses an inverse key: excludedFromBackup=YES means no backup support.
@@ -129,8 +142,8 @@ static NSString *const BSGFileBackupSupportReconciliationKey =
                   excludeFromBackup ? @"YES" : @"NO",
                   url.path,
                   currentValue);
-#endif  // BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
-        return nil;
+#endif
+    return nil;
 #endif
 }
 

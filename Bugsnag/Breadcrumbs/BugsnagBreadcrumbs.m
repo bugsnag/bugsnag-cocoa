@@ -163,7 +163,7 @@ static atomic_bool g_writing_crash_report;
                 NSString *file = [self pathForFileNumber:fileNumber];
                 // NSDataWritingAtomic not required because we no longer read the files without checking for validity
                 // Breadcrumb files inherit their parent directory's backup policy.
-                if (![data writeToFile:file options:0 error:&error]) {
+                if (![BSGFilesystem writeData:data toFile:file options:0 error:&error]) {
                     bsg_log_err(@"Unable to write breadcrumb: %@", error);
                 }
             }

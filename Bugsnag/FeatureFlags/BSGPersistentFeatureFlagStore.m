@@ -76,7 +76,7 @@
         NSData *data = [NSJSONSerialization dataWithJSONObject:[flag toJson] options:kNilOptions error:&error];
         if (error == nil) {
             // Feature-flag files inherit their parent directory's backup policy.
-            [data writeToFile:path options:0 error:&error];
+            [BSGFilesystem writeData:data toFile:path options:0 error:&error];
             if (error != nil) {
                 bsg_log_err(@"Unable to save feature flag: %@", error);
             }

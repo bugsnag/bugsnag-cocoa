@@ -21,6 +21,7 @@
 #import "BugsnagSession+Private.h"
 #import "BugsnagSession.h"
 #import "BugsnagUser+Private.h"
+#import "BSGFilesystem.h"
 
 /// Persisted sessions older than this should be deleted without sending.
 static const NSTimeInterval MaxPersistedAge = 60 * 24 * 60 * 60;
@@ -71,7 +72,8 @@ static NSArray * SortedFiles(NSFileManager *fileManager, NSMutableDictionary<NSS
                       stringByAppendingPathExtension:@"json"];
     
     NSError *error;
-    if (BSGJSONWriteToFileAtomically(json, file, &error)) {
+    NSData *data = BSGJSONDataFromDictionary(json, NULL);
+    if ([BSGFilesystem writeData:data toFile:file options:NSDataWritingAtomic error:&error]) {
         bsg_log_debug(@"Stored session %@", session.id);
         [self pruneFiles];
     } else {

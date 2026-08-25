@@ -36,7 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
  * Returns YES when existing SDK files must be reconciled with the current
  * backup setting. The result is persisted after reconciliation completes.
  */
-+ (BOOL)needsFileBackupSupportReconciliation;
++ (BOOL)needsFileBackupSupportReconciliationForDirectory:(NSString *)persistenceDirectory
+                                       fileBackupSupport:(BOOL)fileBackupSupport;
 
 /** Marks existing SDK files as reconciled with the current backup setting. */
 + (void)markFileBackupSupportReconciled;
