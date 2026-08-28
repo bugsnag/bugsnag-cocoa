@@ -8,7 +8,10 @@
 
 #import "BSGTestCase.h"
 
+#import "BSGAppHangDetector.h"
+#import "BSGFileLocations.h"
 #import "BSGInternalErrorReporter.h"
+#import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
 #import "BSGRunContext.h"
 #import "Bugsnag+Private.h"
@@ -325,5 +328,60 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     }
     return dict;
 }
+
+#if BSG_HAVE_APP_HANG_DETECTION
+- (void)testAppHangCallbackRunsSynchronouslyBeforePersistence {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    __block NSThread *callbackThread;
+    configuration.appHangCallback = ^(BugsnagEvent *event) {
+        callbackThread = NSThread.currentThread;
+        [event addMetadata:@"rendering" withKey:@"phase" toSection:@"diagnostics"];
+    };
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+
+    id<BSGAppHangDetectorDelegate> delegate = client;
+    XCTAssertNil(BSGJSONDictionaryFromFile(BSGFileLocations.current.appHangEvent, 0, nil));
+
+    __block NSThread *invokingThread;
+    __block BOOL callbackCompletedBeforeReturn;
+    XCTestExpectation *expectation = [self expectationWithDescription:@"app hang callback"];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        invokingThread = NSThread.currentThread;
+        [delegate appHangDetectedAtDate:[NSDate date]
+                            withThreads:@[]
+                             systemInfo:@{}];
+        callbackCompletedBeforeReturn = callbackThread == NSThread.currentThread;
+        [expectation fulfill];
+    });
+    [self waitForExpectations:@[expectation] timeout:10];
+
+    XCTAssertEqual(callbackThread, invokingThread);
+    XCTAssertFalse(callbackThread.isMainThread);
+    XCTAssertTrue(callbackCompletedBeforeReturn);
+    XCTAssertEqualObjects([client.appHangEvent getMetadataFromSection:@"diagnostics" withKey:@"phase"],
+                          @"rendering");
+    NSDictionary *persistedEvent = BSGJSONDictionaryFromFile(BSGFileLocations.current.appHangEvent, 0, nil);
+    XCTAssertEqualObjects([persistedEvent valueForKeyPath:@"metaData.diagnostics.phase"], @"rendering");
+    [delegate appHangEnded];
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:BSGFileLocations.current.appHangEvent]);
+}
+
+- (void)testAppHangCallbackExceptionDoesNotPreventPersistence {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.appHangCallback = ^(__unused BugsnagEvent *event) {
+        @throw [NSException exceptionWithName:@"TestException" reason:nil userInfo:nil];
+    };
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+
+    id<BSGAppHangDetectorDelegate> delegate = client;
+    XCTAssertNil(BSGJSONDictionaryFromFile(BSGFileLocations.current.appHangEvent, 0, nil));
+    XCTAssertNoThrow([delegate appHangDetectedAtDate:[NSDate date]
+                                         withThreads:@[]
+                                          systemInfo:@{}]);
+
+    XCTAssertNotNil(BSGJSONDictionaryFromFile(BSGFileLocations.current.appHangEvent, 0, nil));
+    [delegate appHangEnded];
+}
+#endif
 
 @end
