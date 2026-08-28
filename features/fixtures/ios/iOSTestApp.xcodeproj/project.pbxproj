@@ -149,6 +149,9 @@
 		CBB787912578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */; };
 		CBE1C9242574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */; };
 		CBE1C9252574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */; };
+		E17F94D53028EBD600E06CE8 /* AppHangCallbackFatalOnlyRecoveryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17F94D23028EBD600E06CE8 /* AppHangCallbackFatalOnlyRecoveryScenario.swift */; };
+		E17F94D63028EBD600E06CE8 /* AppHangCallbackFatalOnlyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17F94D33028EBD600E06CE8 /* AppHangCallbackFatalOnlyScenario.swift */; };
+		E17F94D73028EBD600E06CE8 /* AppHangCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E17F94D43028EBD600E06CE8 /* AppHangCallbackScenario.swift */; };
 		E700EE48247D1158008CFFB6 /* UserEventOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */; };
 		E700EE4A247D1164008CFFB6 /* UserSessionOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */; };
 		E700EE4E247D1317008CFFB6 /* UserFromClientScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */; };
@@ -372,6 +375,9 @@
 		CBB787902578FC0C0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBE1C9222574F532004B8B5B /* OnErrorOverwriteUnhandledFalseScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledFalseScenario.swift; sourceTree = "<group>"; };
 		CBE1C9232574F532004B8B5B /* OnErrorOverwriteUnhandledTrueScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnErrorOverwriteUnhandledTrueScenario.swift; sourceTree = "<group>"; };
+		E17F94D23028EBD600E06CE8 /* AppHangCallbackFatalOnlyRecoveryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHangCallbackFatalOnlyRecoveryScenario.swift; sourceTree = "<group>"; };
+		E17F94D33028EBD600E06CE8 /* AppHangCallbackFatalOnlyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHangCallbackFatalOnlyScenario.swift; sourceTree = "<group>"; };
+		E17F94D43028EBD600E06CE8 /* AppHangCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHangCallbackScenario.swift; sourceTree = "<group>"; };
 		E700EE47247D1158008CFFB6 /* UserEventOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserEventOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE49247D1164008CFFB6 /* UserSessionOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionOverrideScenario.swift; sourceTree = "<group>"; };
 		E700EE4D247D1317008CFFB6 /* UserFromClientScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFromClientScenario.swift; sourceTree = "<group>"; };
@@ -524,14 +530,6 @@
 		F42953DE2BB41023C0B07F41 /* scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				1C09E56B2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift */,
-				1C09E56C2F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift */,
-				1C09E56D2F675E1400F468EF /* HttpErrorSendPostScenario.swift */,
-				1C09E56E2F675E1400F468EF /* HttpErrorSendScenario.swift */,
-				1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */,
-				1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */,
-				1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */,
-				1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */,
 				010BAAF62833CE570003FF36 /* AbortOverrideScenario.m */,
 				F429534164257A2BE23ED72D /* AbortScenario.m */,
 				F4295A20DE438C2B28167714 /* AccessNonObjectScenario.m */,
@@ -543,6 +541,9 @@
 				010BAB1A2833CF810003FF36 /* AppAndDeviceAttributesUnhandledExceptionAfterLaunchScenario.swift */,
 				010BAB182833CF660003FF36 /* AppAndDeviceAttributesUnhandledExceptionDuringLaunchScenario.swift */,
 				01E0DB0A25E8EBD100A740ED /* AppDurationScenario.swift */,
+				E17F94D23028EBD600E06CE8 /* AppHangCallbackFatalOnlyRecoveryScenario.swift */,
+				E17F94D33028EBD600E06CE8 /* AppHangCallbackFatalOnlyScenario.swift */,
+				E17F94D43028EBD600E06CE8 /* AppHangCallbackScenario.swift */,
 				010BAB262833D0160003FF36 /* AppHangDefaultConfigScenario.swift */,
 				010BAB1C2833CFB00003FF36 /* AppHangDidBecomeActiveScenario.swift */,
 				010BAB1E2833CFD40003FF36 /* AppHangDidEnterBackgroundScenario.swift */,
@@ -560,6 +561,7 @@
 				E75040A32478052D005D33BD /* AutoDetectFalseAbortScenario.swift */,
 				E750409F2478019D005D33BD /* AutoDetectFalseHandledScenario.swift */,
 				E75040A1247801A8005D33BD /* AutoDetectFalseNSExceptionScenario.swift */,
+				1C09E5592F5D01E200F468EF /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */,
 				8A98400220FD11BF0023ECD1 /* AutoSessionCustomVersionScenario.m */,
 				8AEFC79820F9132C00A78779 /* AutoSessionHandledEventsScenario.m */,
 				8AEEBBCF20FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m */,
@@ -574,9 +576,11 @@
 				E7A324E9247E9DA5008B0052 /* BreadcrumbCallbackOverrideScenario.swift */,
 				E7A324EC247E9DB3008B0052 /* BreadcrumbCallbackRemovalScenario.m */,
 				F42956D34274D4ED16B4D491 /* BuiltinTrapScenario.m */,
+				1C8CB8B42EBB9948007BF492 /* CaptureOptionsScenario.swift */,
 				01DCB82A27985D2C0048640A /* ConcurrentCrashesScenario.mm */,
 				0184DBDF28C63F50006AF50B /* CouldNotCreateDirectoryScenario.swift */,
 				01DE903726CE99B800455213 /* CriticalThermalStateScenario.swift */,
+				1C70DEA62EF09AF400F52112 /* CustomerControlledDeliveryScenario.swift */,
 				8A72A0372396574F00328051 /* CustomPluginNotifierDescriptionScenario.m */,
 				8A096DFB27C7E77600DB6ECC /* CxxBareThrowScenario.mm */,
 				010BAAFA2833CE570003FF36 /* CxxExceptionOverrideScenario.mm */,
@@ -598,6 +602,7 @@
 				00432CC2240912A000826D05 /* EnabledErrorTypesCxxScenario.mm */,
 				E75040B324782597005D33BD /* EnabledReleaseStageAutoSessionScenario.swift */,
 				010BAB3E2833D29A0003FF36 /* EnabledReleaseStageManualSessionScenario.swift */,
+				1C70DEA42EF07EEC00F52112 /* FatalErrorOptionScenario.swift */,
 				010BAB342833D1F70003FF36 /* HandledErrorInvalidReleaseStageScenario.swift */,
 				F4295FA8EBBA645EECF7B483 /* HandledErrorOverrideScenario.swift */,
 				F4295A364B3851D3811BC648 /* HandledErrorScenario.swift */,
@@ -606,6 +611,10 @@
 				8AB1081823301FE600672818 /* HandledErrorValidReleaseStageScenario.swift */,
 				F429526319377A8848136413 /* HandledExceptionScenario.swift */,
 				8AF8FCAD22BD23BA00A967CA /* HandledInternalNotifyScenario.swift */,
+				1C09E56B2F675E1400F468EF /* HttpErrorOnErrorCallbackScenario.swift */,
+				1C09E56C2F675E1400F468EF /* HttpErrorOnResponseCallbackScenario.swift */,
+				1C09E56D2F675E1400F468EF /* HttpErrorSendPostScenario.swift */,
+				1C09E56E2F675E1400F468EF /* HttpErrorSendScenario.swift */,
 				967F6F1129B2236A0054EED8 /* InternalWorkingsScenario.swift */,
 				01847DD526453D4E00ADA4C7 /* InvalidCrashReportScenario.m */,
 				01B6BB7425D5748800FC4DE6 /* LastRunInfoScenario.swift */,
@@ -852,6 +861,9 @@
 				8AEEBBD020FC9E1D00C60763 /* AutoSessionMixedEventsScenario.m in Sources */,
 				010BAB052833CE570003FF36 /* DisableAllExceptManualExceptionsAndCrashScenario.m in Sources */,
 				E753F24624927409001FB671 /* NotifyCallbackCrashScenario.swift in Sources */,
+				E17F94D53028EBD600E06CE8 /* AppHangCallbackFatalOnlyRecoveryScenario.swift in Sources */,
+				E17F94D63028EBD600E06CE8 /* AppHangCallbackFatalOnlyScenario.swift in Sources */,
+				E17F94D73028EBD600E06CE8 /* AppHangCallbackScenario.swift in Sources */,
 				8A096DFC27C7E77600DB6ECC /* CxxBareThrowScenario.mm in Sources */,
 				AA6ACD1C2773E0B3006464C4 /* UserFromConfigScenario.swift in Sources */,
 				8AF8FCAC22BD1E5400A967CA /* UnhandledInternalNotifyScenario.swift in Sources */,
