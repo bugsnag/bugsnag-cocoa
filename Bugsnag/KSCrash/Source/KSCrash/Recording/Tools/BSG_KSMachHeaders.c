@@ -313,6 +313,29 @@ static bool cached_image_for_header(const struct mach_header *header,
     return index >= 0;
 }
 
+static bool cached_image_named(const char *imageName,
+                               BSG_Mach_Header_Info *image) {
+    BSG_Mach_Image_Cache *cache = atomic_exchange(&g_cache, NULL);
+    if (cache == NULL) {
+        return false;
+    }
+
+    bool found = false;
+    for (uint32_t i = 0; i < cache->count; i++) {
+        const char *cachedName = cache->entries[i].image.name;
+        if (cachedName != NULL && strcmp(cachedName, imageName) == 0) {
+            if (image != NULL) {
+                *image = cache->entries[i].image;
+            }
+            found = true;
+            break;
+        }
+    }
+
+    atomic_store(&g_cache, cache);
+    return found;
+}
+
 bool bsg_mach_headers_get_main_image(BSG_Mach_Header_Info *image) {
     if (image == NULL) {
         return false;
@@ -384,6 +407,12 @@ bool bsg_mach_headers_image_named(const char *imageName, bool exactMatch,
                                   BSG_Mach_Header_Info *image) {
     if (imageName == NULL) {
         return false;
+    }
+    // Getters may return a canonical name that differs from dyld's live path
+    // for the same image (for example /tmp versus /private/tmp). Honor names
+    // already returned by this module before consulting the live image list.
+    if (exactMatch && cached_image_named(imageName, image)) {
+        return true;
     }
     uint32_t count = 0;
     const BSG_Dyld_Image_Info *images = bsg_mach_headers_get_images(&count);
