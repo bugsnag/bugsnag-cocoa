@@ -14,6 +14,7 @@
 
 #import <mach/mach_init.h>
 #import <mach/thread_act.h>
+#import <stdatomic.h>
 
 // MARK: - Expose tested-class internals
 
@@ -393,23 +394,29 @@
     XCTAssertEqualObjects(JSONObjectFromBuffer(buffer),
                           (@{@"custom": @{@"message1": @"Hello", @"message2": @"Hello"}}),
                           @"Metadata should update the storage buffer when mutated");
+
+#if defined(__has_feature) && __has_feature(thread_sanitizer)
+    NSLog(@"Skipping concurrency checks because ThreadSanitizer does not model Mach thread suspension as synchronization");
+    free(buffer);
+    return;
+#endif
     
     // Test concurrency
     
-    __block BOOL isFinished = NO;
+    __block atomic_bool isFinished = NO;
     
     const int threadCount = 6;
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     queue.name = @"com.bugsnag.testMetadataStorageBuffer";
     queue.maxConcurrentOperationCount = threadCount;
     
-    thread_t threads[threadCount] = {0};
+    _Atomic(thread_t) threads[threadCount] = {0};
     NSData *data = [NSData dataWithBytes:buffer length:strlen(buffer)];
     for (NSInteger i = 0; i < threadCount; i++) {
-        thread_t *threadPtr = threads + i;
+        _Atomic(thread_t) *threadPtr = threads + i;
         [queue addOperationWithBlock:^{
-            *threadPtr = mach_thread_self();
-            while (!isFinished) {
+            atomic_store(threadPtr, mach_thread_self());
+            while (!atomic_load(&isFinished)) {
                 // Since we're bypassing -addMetadata: we need to replicate its
                 // @synchronized behaviour.
                 @synchronized (metadata) {
@@ -421,7 +428,7 @@
     
     // Wait for threads to start
     for (int i = 0; i < threadCount; i++) {
-        while (!threads[i]) {}
+        while (!atomic_load(&threads[i])) {}
     }
     
     size_t size = 1024 * 1024;
@@ -432,19 +439,19 @@
         // we read it. This replicates the environment when called from the crash handler.
         // No Objective-C code can be used while threads are suspended.
         for (int i = 0; i < threadCount; i++) {
-            thread_suspend(threads[i]);
+            thread_suspend(atomic_load(&threads[i]));
         }
         
         strlcpy(scratch, buffer, size);
         
         for (int i = 0; i < threadCount; i++) {
-            thread_resume(threads[i]);
+            thread_resume(atomic_load(&threads[i]));
         }
         
         XCTAssertNotNil(JSONObjectFromBuffer(scratch));
     }
     
-    isFinished = YES;
+    atomic_store(&isFinished, YES);
     [queue waitUntilAllOperationsAreFinished];
     free(buffer);
     free(scratch);
