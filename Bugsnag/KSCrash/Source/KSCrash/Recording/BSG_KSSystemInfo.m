@@ -55,7 +55,7 @@ static inline bool is_jailbroken(void) {
         get_jailbreak_status(&is_jb);
 
         // Also keep using the old detection method.
-        if(bsg_mach_headers_image_named("MobileSubstrate", false) != NULL) {
+        if (bsg_mach_headers_image_named("MobileSubstrate", false, NULL)) {
             is_jb = true;
         }
         initialized_jb = true;
@@ -148,9 +148,9 @@ static NSDictionary * bsg_systemversion(void) {
  * @return The UUID.
  */
 + (NSString *)appUUID {
-    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
-    if (image && image->uuid) {
-        return [[[NSUUID alloc] initWithUUIDBytes:image->uuid] UUIDString];
+    BSG_Mach_Header_Info image;
+    if (bsg_mach_headers_get_main_image(&image) && image.uuid) {
+        return [[[NSUUID alloc] initWithUUIDBytes:image.uuid] UUIDString];
     }
     return nil;
 }

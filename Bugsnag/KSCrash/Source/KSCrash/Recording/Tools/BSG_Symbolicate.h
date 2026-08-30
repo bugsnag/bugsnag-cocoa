@@ -10,12 +10,15 @@
 
 #include <stdint.h>
 
+struct mach_header;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 struct bsg_symbolicate_result {
-    struct bsg_mach_image *image;
+    const struct mach_header *image_header;
+    const char *image_name;
     uintptr_t function_address;
     const char *function_name;
 };

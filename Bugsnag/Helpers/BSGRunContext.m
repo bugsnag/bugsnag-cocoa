@@ -67,9 +67,9 @@ static void InitRunContext(void) {
     // Make sure the images list is populated.
     bsg_mach_headers_initialize();
 
-    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
-    if (image && image->uuid) {
-        uuid_copy(bsg_runContext->machoUUID, image->uuid);
+    BSG_Mach_Header_Info image;
+    if (bsg_mach_headers_get_main_image(&image) && image.uuid) {
+        uuid_copy(bsg_runContext->machoUUID, image.uuid);
     }
 
     NSString *bundleVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
