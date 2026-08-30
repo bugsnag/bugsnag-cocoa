@@ -24,8 +24,16 @@
 #import "BugsnagClient+Private.h"
 #import "BugsnagConfiguration+Private.h"
 #import "BugsnagEvent+Private.h"
+#import "BugsnagMetadata+Private.h"
 #import "BugsnagTestConstants.h"
 #import "BugsnagNotifier.h"
+
+@interface BugsnagClient (BugsnagCaptureOptionsTests)
+
+- (BugsnagMetadata *)metadataCapture:(BugsnagCaptureOptions *)capture
+                            metadata:(BugsnagMetadata *)metadata;
+
+@end
 
 @interface BugsnagCaptureOptionsTests : BSGTestCase
 @end
@@ -291,6 +299,63 @@
 
         return NO;
     }];
+}
+
+- (void)testMetadataCaptureIsThreadSafe {
+    BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+
+    for (NSUInteger index = 0; index < 300; index++) {
+        [client addMetadata:@"value"
+                   withKey:@"key"
+                 toSection:[NSString stringWithFormat:@"prefilled%lu", (unsigned long)index]];
+    }
+
+    const NSUInteger captureWorkerCount = 4;
+    const NSUInteger writingWorkerCount = 4;
+    const NSUInteger workerCount = captureWorkerCount + writingWorkerCount;
+    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_semaphore_t start = dispatch_semaphore_create(0);
+    NSMutableArray<NSException *> *exceptions = [NSMutableArray array];
+
+    for (NSUInteger worker = 0; worker < captureWorkerCount; worker++) {
+        dispatch_group_async(group, queue, ^{
+            dispatch_semaphore_wait(start, DISPATCH_TIME_FOREVER);
+            for (NSUInteger iteration = 0; iteration < 500; iteration++) {
+                @autoreleasepool {
+                    @try {
+                        [client metadataCapture:nil metadata:[BugsnagMetadata new]];
+                    } @catch (NSException *exception) {
+                        @synchronized (exceptions) {
+                            [exceptions addObject:exception];
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    for (NSUInteger worker = 0; worker < writingWorkerCount; worker++) {
+        dispatch_group_async(group, queue, ^{
+            dispatch_semaphore_wait(start, DISPATCH_TIME_FOREVER);
+            for (NSUInteger iteration = 0; iteration < 2000; iteration++) {
+                @autoreleasepool {
+                    NSString *section = [NSString stringWithFormat:@"racing%lu-%lu",
+                        (unsigned long)worker, (unsigned long)iteration];
+                    [client addMetadata:@"value" withKey:@"key" toSection:section];
+                    [client clearMetadataFromSection:section];
+                }
+            }
+        });
+    }
+
+    for (NSUInteger worker = 0; worker < workerCount; worker++) {
+        dispatch_semaphore_signal(start);
+    }
+
+    XCTAssertEqual(dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC)), 0);
+    XCTAssertEqual(exceptions.count, 0);
 }
 
 

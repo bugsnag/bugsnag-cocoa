@@ -191,7 +191,7 @@
 
 - (void)serialize {
     NSError *error = nil;
-    NSData *data = BSGJSONDataFromDictionary([self dictionary], &error);
+    NSData *data = BSGJSONDataFromDictionary([self toDictionary], &error);
     if (!data) {
         bsg_log_err(@"%s: %@", __FUNCTION__, error);
         return;

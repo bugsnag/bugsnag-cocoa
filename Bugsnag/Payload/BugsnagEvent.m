@@ -865,7 +865,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     BugsnagMetadata *metadata = self.metadata; 
     if (metadata) {
         self.metadata = [[BugsnagMetadata alloc] initWithDictionary:
-                         BSGTruncateStrings(&context, metadata.dictionary)];
+                         BSGTruncateStrings(&context, [metadata toDictionary])];
     }
     
     NSDictionary *usage = self.usage;
