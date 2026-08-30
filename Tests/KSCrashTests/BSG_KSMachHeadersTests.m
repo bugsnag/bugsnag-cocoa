@@ -3,7 +3,6 @@
 //  Tests
 //
 //  Created by Robin Macharg on 04/05/2020.
-//  Current tests created by Alex Cohen on 30/08/2026.
 //  Copyright © 2020 Bugsnag. All rights reserved.
 //
 
