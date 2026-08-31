@@ -27,6 +27,7 @@
 #include "BSGDefines.h"
 #include "BSG_KSCrashC.h"
 #include "BSG_KSCrashSentry_CPPException.h"
+#include "BSG_KSCrashSentry_CPPException_Private.h"
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSCrashStringConversion.h"
 #include "BSG_KSMach.h"
@@ -42,7 +43,6 @@
 #include <execinfo.h>
 #include <typeinfo>
 
-#define STACKTRACE_BUFFER_LENGTH 30
 #define DESCRIPTION_BUFFER_LENGTH 1000
 
 // Compiler hints for "if" statements
@@ -66,17 +66,14 @@ void bsg_recordException(NSException *exception);
 static std::atomic<bool> bsg_g_installed{false};
 static_assert(ATOMIC_BOOL_LOCK_FREE == 2, "Crash handling requires lock-free atomics");
 
-/** True if this thread should capture throws, except while inspecting an exception. */
-static thread_local bool bsg_g_captureNextStackTrace = true;
-
 static std::terminate_handler bsg_g_originalTerminateHandler;
 
-/** Backtrace of the most recent exception on this thread. */
-static thread_local uintptr_t bsg_g_stackTrace[STACKTRACE_BUFFER_LENGTH];
+/** Exception capture state for the current thread. */
+static thread_local BSG_KSCPPExceptionThreadState bsg_g_threadState;
 
-/** Number of backtrace entries in this thread's most recent exception. */
-static thread_local int bsg_g_stackTraceCount = 0;
-
+BSG_KSCPPExceptionThreadState &bsg_kscrashsentry_cppExceptionThreadState(void) {
+    return bsg_g_threadState;
+}
 /** Context to fill with crash information. */
 static BSG_KSCrash_SentryContext *bsg_g_context;
 
@@ -92,10 +89,13 @@ void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
 
 void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
                  void (*dest)(void *)) {
-    if (bsg_g_installed.load(std::memory_order_relaxed) && bsg_g_captureNextStackTrace) {
-        bsg_g_stackTraceCount =
-            backtrace((void **)bsg_g_stackTrace,
-                      sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
+    if (bsg_g_installed.load(std::memory_order_relaxed)) {
+        BSG_KSCPPExceptionThreadState &state = bsg_g_threadState;
+        if (!state.isInspectingException) {
+            state.stackTraceCount =
+                backtrace((void **)state.stackTrace,
+                          sizeof(state.stackTrace) / sizeof(*state.stackTrace));
+        }
     }
 
     static cxa_throw_type orig_cxa_throw = NULL;
@@ -124,6 +124,7 @@ static const char *getExceptionTypeName(std::type_info *tinfo) {
 static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Trapped c++ exception");
 
+    BSG_KSCPPExceptionThreadState &state = bsg_g_threadState;
     char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
     const char *name = NULL;
     const char *crashReason = NULL;
@@ -146,7 +147,7 @@ static void CPPExceptionTerminate(void) {
     }
 
     BSG_KSLOG_DEBUG("Discovering what kind of exception was thrown.");
-    bsg_g_captureNextStackTrace = false;
+    state.isInspectingException = true;
     try {
         throw;
     } catch (NSException *exception) {
@@ -204,14 +205,14 @@ static void CPPExceptionTerminate(void) {
     }
 
 after_rethrow:
-    bsg_g_captureNextStackTrace = true;
+    state.isInspectingException = false;
 
     // A bare terminate must not reuse a previously caught exception's trace.
     // Also provide a fallback when the current exception's throw was not captured.
-    if (tinfo == NULL || bsg_g_stackTraceCount <= 0) {
-        bsg_g_stackTraceCount =
-            backtrace((void **)bsg_g_stackTrace,
-                      sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
+    if (tinfo == NULL || state.stackTraceCount <= 0) {
+        state.stackTraceCount =
+            backtrace((void **)state.stackTrace,
+                      sizeof(state.stackTrace) / sizeof(*state.stackTrace));
         framesToSkip = 1; // CPPExceptionTerminate only, not the throw wrappers.
     }
 
@@ -231,11 +232,9 @@ after_rethrow:
         bsg_g_context->crashType = BSG_KSCrashTypeCPPException;
         bsg_g_context->requiresAsyncSafety = true;
         bsg_g_context->registersAreValid = false;
-        const int stackTraceLength = bsg_g_stackTraceCount > framesToSkip
-            ? bsg_g_stackTraceCount - framesToSkip : 0;
-        bsg_g_context->stackTrace = stackTraceLength > 0
-            ? bsg_g_stackTrace + framesToSkip : NULL;
-        bsg_g_context->stackTraceLength = stackTraceLength;
+        BSG_KSCPPExceptionStackTraceView stackTraceView = bsg_kscrashsentry_cppExceptionStackTraceView(state, framesToSkip);
+        bsg_g_context->stackTrace = stackTraceView.stackTrace;
+        bsg_g_context->stackTraceLength = stackTraceView.stackTraceLength;
         bsg_g_context->CPPException.name = name;
         bsg_g_context->crashReason = crashReason;
 

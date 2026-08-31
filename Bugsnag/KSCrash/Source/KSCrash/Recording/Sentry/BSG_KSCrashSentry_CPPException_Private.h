@@ -16,9 +16,9 @@
 static constexpr int BSG_KSCPPExceptionStackTraceCapacity = 30;
 
 struct BSG_KSCPPExceptionThreadState {
-    bool captureNextStackTrace = true;
     uintptr_t stackTrace[BSG_KSCPPExceptionStackTraceCapacity] = {};
     int stackTraceCount = 0;
+    bool isInspectingException = false;
 };
 
 struct BSG_KSCPPExceptionStackTraceView {
@@ -26,10 +26,7 @@ struct BSG_KSCPPExceptionStackTraceView {
     int stackTraceLength;
 };
 
-inline BSG_KSCPPExceptionThreadState &bsg_kscrashsentry_cppExceptionThreadState(void) {
-    static thread_local BSG_KSCPPExceptionThreadState state;
-    return state;
-}
+BSG_KSCPPExceptionThreadState &bsg_kscrashsentry_cppExceptionThreadState(void);
 
 inline BSG_KSCPPExceptionStackTraceView bsg_kscrashsentry_cppExceptionStackTraceView(
     BSG_KSCPPExceptionThreadState &state, int framesToSkip) {
@@ -44,6 +41,6 @@ inline BSG_KSCPPExceptionStackTraceView bsg_kscrashsentry_cppExceptionStackTrace
     };
 }
 
-#endif  __cplusplus
+#endif  // __cplusplus
 
 #endif // BSG_KSCrashSentry_CPPException_Private_h

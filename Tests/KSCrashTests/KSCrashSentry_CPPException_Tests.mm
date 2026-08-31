@@ -25,7 +25,7 @@
 
 - (void)testExceptionStateIsIsolatedByThread {
     BSG_KSCPPExceptionThreadState &mainState = bsg_kscrashsentry_cppExceptionThreadState();
-    mainState.captureNextStackTrace = false;
+    mainState.isInspectingException = true;
     mainState.stackTrace[0] = 0xa;
     mainState.stackTraceCount = 1;
 
@@ -33,17 +33,17 @@
     std::thread worker([&] {
         BSG_KSCPPExceptionThreadState &workerState =
             bsg_kscrashsentry_cppExceptionThreadState();
-        workerSawDefaults.store(workerState.captureNextStackTrace &&
+        workerSawDefaults.store(!workerState.isInspectingException &&
                                 workerState.stackTrace[0] == 0 &&
                                 workerState.stackTraceCount == 0);
-        workerState.captureNextStackTrace = false;
+        workerState.isInspectingException = true;
         workerState.stackTrace[0] = 0xb;
         workerState.stackTraceCount = 2;
     });
     worker.join();
 
     XCTAssertTrue(workerSawDefaults.load());
-    XCTAssertFalse(mainState.captureNextStackTrace);
+    XCTAssertTrue(mainState.isInspectingException);
     XCTAssertEqual(mainState.stackTrace[0], (uintptr_t)0xa);
     XCTAssertEqual(mainState.stackTraceCount, 1);
 }
