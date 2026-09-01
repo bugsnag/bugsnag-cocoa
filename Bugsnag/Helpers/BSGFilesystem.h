@@ -39,8 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL)needsFileBackupSupportReconciliationForDirectory:(NSString *)persistenceDirectory
                                        fileBackupSupport:(BOOL)fileBackupSupport;
 
-/** Marks existing SDK files as reconciled with the current backup setting. */
-+ (void)markFileBackupSupportReconciled;
+/** Marks existing SDK files in the directory as reconciled with the backup setting. */
++ (void)markFileBackupSupportReconciledForDirectory:(NSString *)persistenceDirectory
+                                  fileBackupSupport:(BOOL)fileBackupSupport;
 
 /**
  * Applies the current backup support setting to the given path, if it exists.

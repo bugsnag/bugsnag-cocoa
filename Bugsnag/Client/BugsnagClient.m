@@ -258,9 +258,8 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
         if ([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:persistenceDirectory
                                                            fileBackupSupport:self.configuration.fileBackupSupport]) {
             BSGApplyFileBackupSupportToExistingFiles(fileLocations);
-            [BSGFilesystem markFileBackupSupportReconciled];
-        } else {
-            BSGApplyFileBackupSupportToCrashGeneratedFiles(fileLocations);
+            [BSGFilesystem markFileBackupSupportReconciledForDirectory:persistenceDirectory
+                                                     fileBackupSupport:self.configuration.fileBackupSupport];
         }
         NSString *crashPath = fileLocations.flagHandledCrash;
         crashSentinelPath = strdup(crashPath.fileSystemRepresentation);

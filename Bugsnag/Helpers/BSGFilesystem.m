@@ -16,8 +16,8 @@
 // NO keeps SDK diagnostic files local-only by excluding them from Apple backups.
 // YES allows those files to be included in iCloud and Finder/iTunes backups.
 static BOOL g_fileBackupSupport = NO;
-static NSString *const BSGFileBackupSupportReconciliationKey =
-    @"com.bugsnag.file-backup-support.reconciled-value";
+static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
+    @".bugsnag-file-backup-support";
 
 + (NSString *)backupSupportDescription {
     return self.fileBackupSupport ? @"enabled (included in backups)" : @"disabled (excluded from backups)";
@@ -89,15 +89,29 @@ static NSString *const BSGFileBackupSupportReconciliationKey =
                   [self backupExclusionDescription]);
 }
 
-+ (NSString *)fileBackupSupportReconciliationValue {
-    return self.fileBackupSupport ? @"enabled" : @"disabled";
++ (NSString *)fileBackupSupportReconciliationMarkerPathForDirectory:(NSString *)persistenceDirectory {
+    return [persistenceDirectory stringByAppendingPathComponent:BSGFileBackupSupportReconciliationMarkerFilename];
+}
+
++ (NSString *)fileBackupSupportReconciliationValue:(BOOL)fileBackupSupport {
+    return fileBackupSupport ? @"enabled" : @"disabled";
 }
 
 + (BOOL)needsFileBackupSupportReconciliationForDirectory:(NSString *)persistenceDirectory
                                        fileBackupSupport:(BOOL)fileBackupSupport {
+    NSString *reconciliationMarkerPath = [self fileBackupSupportReconciliationMarkerPathForDirectory:persistenceDirectory];
+
+    NSError *readError = nil;
     NSString *lastReconciledValue =
-        [NSUserDefaults.standardUserDefaults stringForKey:BSGFileBackupSupportReconciliationKey];
-    NSString *currentValue = fileBackupSupport ? @"enabled" : @"disabled";
+        [NSString stringWithContentsOfFile:reconciliationMarkerPath
+                                  encoding:NSUTF8StringEncoding
+                                     error:&readError];
+    if (readError && readError.code != NSFileNoSuchFileError) {
+        bsg_log_debug(@"Failed to read file backup support reconciliation marker at %@: %@",
+                   reconciliationMarkerPath, readError);
+    }
+
+    NSString *currentValue = [self fileBackupSupportReconciliationValue:fileBackupSupport];
     // Config changed - always reconcile.
     if (![lastReconciledValue isEqualToString:currentValue]) {
         return YES;
@@ -106,16 +120,32 @@ static NSString *const BSGFileBackupSupportReconciliationKey =
     // Spot-check root directory for external corruption (e.g. backup_true_mixed).
     NSURL *rootURL = [NSURL fileURLWithPath:persistenceDirectory];
     NSNumber *excluded = nil;
+    NSError *resourceError = nil;
     [rootURL getResourceValue:&excluded
                        forKey:NSURLIsExcludedFromBackupKey
-                        error:nil];
+                        error:&resourceError];
+    if (resourceError) {
+        bsg_log_debug(@"Failed to read NSURLIsExcludedFromBackupKey for %@: %@",
+                   persistenceDirectory, resourceError);
+    }
     return excluded == nil || excluded.boolValue != !fileBackupSupport;
 }
 
-+ (void)markFileBackupSupportReconciled {
-    NSString *currentValue = [self fileBackupSupportReconciliationValue];
-    [NSUserDefaults.standardUserDefaults setObject:currentValue
-                                            forKey:BSGFileBackupSupportReconciliationKey];
++ (void)markFileBackupSupportReconciledForDirectory:(NSString *)persistenceDirectory
+                                  fileBackupSupport:(BOOL)fileBackupSupport {
+    NSString *reconciliationMarkerPath = [self fileBackupSupportReconciliationMarkerPathForDirectory:persistenceDirectory];
+    NSString *currentValue = [self fileBackupSupportReconciliationValue:fileBackupSupport];
+    NSData *data = [currentValue dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSError *writeError = nil;
+    [self writeData:data
+             toFile:reconciliationMarkerPath
+            options:NSDataWritingAtomic
+              error:&writeError];
+    if (writeError) {
+        bsg_log_debug(@"Failed to write file backup support reconciliation marker at %@: %@",
+                    reconciliationMarkerPath, writeError);
+    }
 }
 
 + (nullable NSError *)applyFileBackupSupportToURL:(NSURL *)url {

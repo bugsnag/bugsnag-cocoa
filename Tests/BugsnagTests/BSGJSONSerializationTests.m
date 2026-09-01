@@ -162,6 +162,49 @@
     }
 }
 
+- (void)testFileBackupSupportReconciliationIsRequiredOnlyWhenNeeded {
+    XCTSkipIf(TARGET_OS_TV, @"tvOS stores SDK data in Caches and does not apply backup metadata.");
+    XCTSkipIf(TARGET_OS_OSX, @"fileBackupSupport controls iOS backup metadata; macOS resource values are not equivalent.");
+
+    NSString *root = [self newApplicationSupportPath];
+    NSString *otherRoot = [self newApplicationSupportPath];
+
+    @try {
+        [BSGFilesystem setFileBackupSupport:NO];
+        XCTAssertNil([BSGFilesystem ensurePathExists:root]);
+        XCTAssertNil([BSGFilesystem ensurePathExists:otherRoot]);
+
+        XCTAssertTrue([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
+                                                                     fileBackupSupport:NO]);
+
+        [BSGFilesystem markFileBackupSupportReconciledForDirectory:root
+                                                 fileBackupSupport:NO];
+        XCTAssertFalse([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
+                                                                      fileBackupSupport:NO]);
+        XCTAssertTrue([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:otherRoot
+                                                                     fileBackupSupport:NO]);
+        XCTAssertTrue([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
+                                                                     fileBackupSupport:YES]);
+
+        [BSGFilesystem setFileBackupSupport:YES];
+        XCTAssertNil([BSGFilesystem applyFileBackupSupportToPath:root]);
+        [BSGFilesystem markFileBackupSupportReconciledForDirectory:root
+                                                 fileBackupSupport:YES];
+        XCTAssertFalse([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
+                                                                      fileBackupSupport:YES]);
+
+        [BSGFilesystem setFileBackupSupport:NO];
+        XCTAssertNil([BSGFilesystem applyFileBackupSupportToPath:root]);
+        XCTAssertTrue([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
+                                                                     fileBackupSupport:YES]);
+    } @finally {
+        [[NSFileManager defaultManager] removeItemAtPath:root error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:otherRoot error:nil];
+        [BSGFilesystem setFileBackupSupport:NO];
+    }
+}
+
+
 - (void)testWriteDataAppliesBackupSupportAfterAtomicReplacement {
     NSString *file = [self newTemporaryPath];
 
