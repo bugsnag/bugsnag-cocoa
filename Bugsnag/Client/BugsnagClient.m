@@ -777,7 +777,7 @@ __attribute__((annotate("oclint:suppress[too many methods]")))
                metadata:(BugsnagMetadata *)metadata {
     if (capture == nil || capture.metadata == nil) {
         // Copy all of the current metadata from self
-        for (NSString* sectionKey in self.metadata.dictionary) {
+        for (NSString* sectionKey in[self.metadata toDictionary]) {
             if (sectionKey == nil) {
                 continue;
             }
