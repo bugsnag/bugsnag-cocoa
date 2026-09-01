@@ -304,11 +304,14 @@
 - (void)testMetadataCaptureIsThreadSafe {
     BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:config];
+    NSMutableArray<NSString *> *prefilledSections = [NSMutableArray arrayWithCapacity:300];
     
     for (NSUInteger index = 0; index < 300; index++) {
+        NSString *section = [NSString stringWithFormat:@"prefilled%lu", (unsigned long)index];
+        [prefilledSections addObject:section];
         [client addMetadata:@"value"
                    withKey:@"key"
-                 toSection:[NSString stringWithFormat:@"prefilled%lu", (unsigned long)index]];
+                 toSection:section];
     }
     
     const NSUInteger captureWorkerCount = 4;
@@ -318,6 +321,7 @@
     dispatch_group_t group = dispatch_group_create();
     dispatch_semaphore_t start = dispatch_semaphore_create(0);
     NSMutableArray<NSException *> *exceptions = [NSMutableArray array];
+    NSMutableArray<NSString *> *missingPrefilledSections = [NSMutableArray array];
     
     for (NSUInteger worker = 0; worker < captureWorkerCount; worker++) {
         dispatch_group_async(group, queue, ^{
@@ -325,7 +329,17 @@
             for (NSUInteger iteration = 0; iteration < 500; iteration++) {
                 @autoreleasepool {
                     @try {
-                        [client metadataCapture:nil metadata:[BugsnagMetadata new]];
+                        BugsnagMetadata*captured = [client metadataCapture:nil metadata:[BugsnagMetadata new]];
+                        NSDictionary*capturedDictionary = [captured toDictionary];
+                        for (NSString*sectionName in prefilledSections) {
+                            NSDictionary*section = capturedDictionary[sectionName];
+                            if (![section[@"key"] isEqual:@"value"]) {
+                                @synchronized(missingPrefilledSections) {
+                                    [missingPrefilledSections addObject:sectionName];
+                                }
+                                break;
+                            }
+                        }
                     } @catch (NSException *exception) {
                         @synchronized(exceptions) {
                             [exceptions addObject:exception];
@@ -356,6 +370,7 @@
     
     XCTAssertEqual(dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC)), 0);
     XCTAssertEqual(exceptions.count, 0);
+    XCTAssertEqual(missingPrefilledSections.count, 0);
 }
 
 - (void)testMetadataCombinationOfCaptureFlags {
