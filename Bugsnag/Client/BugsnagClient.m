@@ -800,7 +800,7 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
                metadata:(BugsnagMetadata *)metadata {
     if (capture == nil || capture.metadata == nil) {
         // Copy all of the current metadata from self
-        for (NSString* sectionKey in self.metadata.dictionary) {
+        for (NSString* sectionKey in[self.metadata toDictionary]) {
             if (sectionKey == nil) {
                 continue;
             }
@@ -1309,6 +1309,15 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     @synchronized (self.featureFlagStore) {
         self.appHangEvent.featureFlagStore = [self.featureFlagStore copyMemoryStore];
+    }
+
+    BugsnagAppHangCallback callback = self.configuration.appHangCallback;
+    if (callback) {
+        @try {
+            callback((BugsnagEvent * _Nonnull)self.appHangEvent);
+        } @catch (NSException *exception) {
+            bsg_log_err(@"Ignoring exception thrown by app hang callback: %@", exception);
+        }
     }
     
     [self.appHangEvent symbolicateIfNeeded];

@@ -193,3 +193,32 @@ Feature: App hangs
     And the event "app.inForeground" is false
     And the event "usage.config.appHangThresholdMillis" equals 1000
     And the event "usage.config.reportBackgroundAppHangs" is true
+    
+# --- App Hang Callback Scenarios ---
+Scenario: App hang callback metadata should be included in a recovered app hang
+    When I set the app to "2.1" mode
+    And I run "AppHangCallbackScenario"
+    And I wait to receive an error
+
+    Then the event "severityReason.type" equals "appHang"
+    And the event "unhandled" is false
+    And the event "metaData.appHangCallback.callbackState" equals "captured-at-detection"
+
+Scenario: App hang callback metadata should persist after fatal app hang relaunch
+    When I run "AppHangCallbackFatalOnlyScenario"
+    And I wait for 10 seconds
+    And I kill and relaunch the app
+    And I set the HTTP status code to 200
+    And I configure Bugsnag for "AppHangCallbackFatalOnlyScenario"
+    And I wait to receive an error
+
+    Then the event "severity" equals "error"
+    And the event "severityReason.type" equals "appHang"
+    And the event "unhandled" is true
+    And the exception "message" equals "The app was terminated while unresponsive"
+    And the event "metaData.appHangCallback.callbackState" equals "captured-at-detection"
+
+Scenario: Recovered fatal-only app hangs with callback metadata should not be delivered
+    When I run "AppHangCallbackFatalOnlyRecoveryScenario"
+    And I wait for 5 seconds
+    Then I should receive no errors

@@ -43,6 +43,9 @@ class BugsnagSwiftPublicAPITests: BSGTestCase {
     let err = NSError(domain: "dom", code: 123, userInfo: nil)
     let sessionBlock: BugsnagOnSessionBlock = { (session) -> Bool in return false }
     let onSendErrorBlock: BugsnagOnSendErrorBlock = { (event) -> Bool in return false }
+#if !os(watchOS)
+    let appHangCallback: BugsnagAppHangCallback = { _ in }
+#endif
     let onBreadcrumbBlock: BugsnagOnBreadcrumbBlock = { (breadcrumb) -> Bool in return false }
     
     func testBugsnagClass() throws {
@@ -139,6 +142,9 @@ class BugsnagSwiftPublicAPITests: BSGTestCase {
         }
         config.removeOnSession(onSession)
         config.addOnSendError(block:onSendErrorBlock)
+#if !os(watchOS)
+        config.appHangCallback = appHangCallback
+#endif
         config.addOnSendError { (event: BugsnagEvent) -> Bool in
             return true
         }
