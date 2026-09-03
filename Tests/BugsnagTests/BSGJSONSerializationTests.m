@@ -163,15 +163,11 @@
 }
 
 - (void)testFileBackupSupportReconciliationIsRequiredOnlyWhenNeeded {
-    // XCTSkipIf was introduced in Xcode 11 (macOS 10.15+).
-    // On older runners (10.13/10.14) the symbol doesn't exist — return early instead.
-    if (@available(macOS 10.15, *)) {
-        XCTSkipIf(TARGET_OS_TV, @"tvOS stores SDK data in Caches and does not apply backup metadata.");
-        XCTSkipIf(TARGET_OS_OSX, @"fileBackupSupport controls iOS backup metadata; macOS resource values are not equivalent.");
-    } else {
-        return;
-    }
-    
+#if TARGET_OS_TV || TARGET_OS_OSX
+    // tvOS stores SDK data in Caches; macOS resource values are not equivalent.
+    // XCTSkipIf is unavailable on macOS 10.13/10.14 — skip via compile-time guard.
+    return;
+#else
     NSString *root = [self newApplicationSupportPath];
     NSString *otherRoot = [self newApplicationSupportPath];
 
@@ -182,7 +178,6 @@
 
         XCTAssertTrue([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
                                                                      fileBackupSupport:NO]);
-
         [BSGFilesystem markFileBackupSupportReconciledForDirectory:root
                                                  fileBackupSupport:NO];
         XCTAssertFalse([BSGFilesystem needsFileBackupSupportReconciliationForDirectory:root
@@ -208,6 +203,7 @@
         [[NSFileManager defaultManager] removeItemAtPath:otherRoot error:nil];
         [BSGFilesystem setFileBackupSupport:NO];
     }
+#endif
 }
 
 
