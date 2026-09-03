@@ -8,7 +8,28 @@
 
 #import "BSGFilesystem.h"
 
+#import "BugsnagLogger.h"
+
 @implementation BSGFilesystem
+
+// Mirrors BugsnagConfiguration.fileBackupSupport:
+// NO keeps SDK diagnostic files local-only by excluding them from Apple backups.
+// YES allows those files to be included in iCloud and Finder/iTunes backups.
+static BOOL g_fileBackupSupport = NO;
+static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
+    @".bugsnag-file-backup-support";
+
++ (NSString *)backupSupportDescription {
+    return self.fileBackupSupport ? @"enabled (included in backups)" : @"disabled (excluded from backups)";
+}
+
++ (NSString *)backupExclusionDescription {
+#if TARGET_OS_TV
+    return @"unchanged on tvOS";
+#else
+    return self.fileBackupSupport ? @"NO" : @"YES";
+#endif
+}
 
 + (nullable NSError *)ensurePathExists:(NSString *)path {
     NSError *error = nil;
@@ -27,6 +48,11 @@
     if (!exists) {
         [fm createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
     }
+    
+    if (error == nil) {
+        // New/rebuilt SDK directories must follow the current backup policy.
+        [self applyFileBackupSupportToPath:path];
+    }
     return error;
 }
 
@@ -40,6 +66,125 @@
         }
     }
     return [self ensurePathExists:path];
+}
+
++ (BOOL)fileBackupSupport {
+    @synchronized (self) {
+        return g_fileBackupSupport;
+    }
+}
+
++ (void)setFileBackupSupport:(BOOL)fileBackupSupport {
+    @synchronized (self) {
+        g_fileBackupSupport = fileBackupSupport;
+    }
+}
+
++ (NSString *)fileBackupSupportReconciliationMarkerPathForDirectory:(NSString *)persistenceDirectory {
+    return [persistenceDirectory stringByAppendingPathComponent:BSGFileBackupSupportReconciliationMarkerFilename];
+}
+
++ (NSString *)fileBackupSupportReconciliationValue:(BOOL)fileBackupSupport {
+    return fileBackupSupport ? @"enabled" : @"disabled";
+}
+
++ (BOOL)needsFileBackupSupportReconciliationForDirectory:(NSString *)persistenceDirectory
+                                       fileBackupSupport:(BOOL)fileBackupSupport {
+    NSString *reconciliationMarkerPath = [self fileBackupSupportReconciliationMarkerPathForDirectory:persistenceDirectory];
+
+    NSString *lastReconciledValue =
+        [NSString stringWithContentsOfFile:reconciliationMarkerPath
+                                  encoding:NSUTF8StringEncoding
+                                     error:nil];
+
+    NSString *currentValue = [self fileBackupSupportReconciliationValue:fileBackupSupport];
+    // Config changed - always reconcile.
+    if (![lastReconciledValue isEqualToString:currentValue]) {
+        return YES;
+    }
+
+    // Spot-check root directory for external corruption (e.g. backup_true_mixed).
+    NSURL *rootURL = [NSURL fileURLWithPath:persistenceDirectory];
+    NSNumber *excluded = nil;
+    [rootURL getResourceValue:&excluded
+                       forKey:NSURLIsExcludedFromBackupKey
+                        error:nil];
+    return excluded == nil || excluded.boolValue != !fileBackupSupport;
+}
+
++ (void)markFileBackupSupportReconciledForDirectory:(NSString *)persistenceDirectory
+                                  fileBackupSupport:(BOOL)fileBackupSupport {
+    NSString *reconciliationMarkerPath = [self fileBackupSupportReconciliationMarkerPathForDirectory:persistenceDirectory];
+    NSString *currentValue = [self fileBackupSupportReconciliationValue:fileBackupSupport];
+    NSData *data = [currentValue dataUsingEncoding:NSUTF8StringEncoding];
+
+    [self writeData:data
+             toFile:reconciliationMarkerPath
+            options:NSDataWritingAtomic
+              error:nil];
+}
+
++ (nullable NSError *)applyFileBackupSupportToURL:(NSURL *)url {
+#if TARGET_OS_TV
+    return nil;
+#else
+    // Apple uses an inverse key: excludedFromBackup=YES means no backup support.
+    BOOL excludeFromBackup = !self.fileBackupSupport;
+    NSNumber *currentValue = nil;
+    [url getResourceValue:&currentValue forKey:NSURLIsExcludedFromBackupKey error:nil];
+    if (currentValue != nil && currentValue.boolValue == excludeFromBackup) {
+        return nil;
+    }
+
+    NSError *error = nil;
+    if (![url setResourceValue:@(excludeFromBackup) forKey:NSURLIsExcludedFromBackupKey error:&error]) {
+        // Backup metadata should not block Bugsnag's local persistence/retry flow.
+        bsg_log_warn(@"Could not set backup support for %@: %@", url.path, error);
+        return error;
+    }
+    return nil;
+#endif
+}
+
++ (nullable NSError *)applyFileBackupSupportToPath:(NSString *)path {
+    if (![NSFileManager.defaultManager fileExistsAtPath:path]) {
+        return nil;
+    }
+
+    return [self applyFileBackupSupportToURL:[NSURL fileURLWithPath:path]];
+}
+
++ (void)applyFileBackupSupportToPathAndContents:(NSString *)path {
+    [self applyFileBackupSupportToPath:path];
+
+#if TARGET_OS_TV
+    return;
+#else
+    BOOL isDirectory = NO;
+    if (![NSFileManager.defaultManager fileExistsAtPath:path isDirectory:&isDirectory] || !isDirectory) {
+        return;
+    }
+
+    NSURL *rootURL = [NSURL fileURLWithPath:path];
+    NSDirectoryEnumerator<NSURL *> *enumerator =
+        [NSFileManager.defaultManager enumeratorAtURL:rootURL
+                           includingPropertiesForKeys:@[NSURLIsExcludedFromBackupKey]
+                                              options:0
+                                         errorHandler:nil];
+    for (NSURL *url in enumerator) {
+        // The prefetched resource value avoids writes when policy is already correct.
+        [self applyFileBackupSupportToURL:url];
+    }
+#endif
+}
+
++ (BOOL)writeData:(NSData *)data toFile:(NSString *)path options:(NSDataWritingOptions)options error:(NSError * __autoreleasing *)error {
+    BOOL success = [data writeToFile:path options:options error:error];
+    if (success) {
+        // File replacement can drop resource values, so reapply after each write.
+        [self applyFileBackupSupportToPath:path];
+    }
+    return success;
 }
 
 @end

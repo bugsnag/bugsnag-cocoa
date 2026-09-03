@@ -397,6 +397,14 @@ BUGSNAG_EXTERN
 @property (nonatomic) BOOL persistUser;
 
 /**
+ * Whether Bugsnag-managed diagnostic files should be included in iCloud and
+ * encrypted Finder/iTunes backups.
+ *
+ * Defaults to False.
+ */
+@property (nonatomic) BOOL fileBackupSupport;
+
+/**
  * A class defining the types of error that are reported. By default,
  * all properties are true.
  */

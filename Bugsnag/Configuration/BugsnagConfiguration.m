@@ -125,6 +125,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     [copy setEndpoints:self.endpoints];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];
+    [copy setFileBackupSupport:self.fileBackupSupport];
     [copy setPlugins:[self.plugins mutableCopyWithZone:zone]];
     [copy setReleaseStage:self.releaseStage];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
