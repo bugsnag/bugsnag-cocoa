@@ -163,9 +163,15 @@
 }
 
 - (void)testFileBackupSupportReconciliationIsRequiredOnlyWhenNeeded {
-    XCTSkipIf(TARGET_OS_TV, @"tvOS stores SDK data in Caches and does not apply backup metadata.");
-    XCTSkipIf(TARGET_OS_OSX, @"fileBackupSupport controls iOS backup metadata; macOS resource values are not equivalent.");
-
+    // XCTSkipIf was introduced in Xcode 11 (macOS 10.15+).
+    // On older runners (10.13/10.14) the symbol doesn't exist — return early instead.
+    if (@available(macOS 10.15, *)) {
+        XCTSkipIf(TARGET_OS_TV, @"tvOS stores SDK data in Caches and does not apply backup metadata.");
+        XCTSkipIf(TARGET_OS_OSX, @"fileBackupSupport controls iOS backup metadata; macOS resource values are not equivalent.");
+    } else {
+        return;
+    }
+    
     NSString *root = [self newApplicationSupportPath];
     NSString *otherRoot = [self newApplicationSupportPath];
 
