@@ -38,7 +38,6 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
     BOOL exists = [fm fileExistsAtPath:path isDirectory:&isDir];
 
     if (exists && !isDir) {
-        bsg_log_debug(@"[File backup support] Replacing non-directory at SDK path: %@", path);
         [fm removeItemAtPath:path error:&error];
         if (error != nil) {
             return error;
@@ -48,12 +47,8 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
 
     if (!exists) {
         [fm createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
-        if (error == nil) {
-            bsg_log_debug(@"[File backup support] Created SDK directory: %@", path);
-        }
-    } else {
-        bsg_log_debug(@"[File backup support] SDK directory already exists: %@", path);
     }
+    
     if (error == nil) {
         // New/rebuilt SDK directories must follow the current backup policy.
         [self applyFileBackupSupportToPath:path];
@@ -65,7 +60,6 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
     NSError *error = nil;
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm fileExistsAtPath:path]) {
-        bsg_log_debug(@"[File backup support] Rebuilding SDK directory, deleting existing path first: %@", path);
         [fm removeItemAtPath:path error:&error];
         if (error != nil) {
             return error;
@@ -84,9 +78,6 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
     @synchronized (self) {
         g_fileBackupSupport = fileBackupSupport;
     }
-    bsg_log_debug(@"[File backup support] BugsnagConfiguration.fileBackupSupport is %@; NSURLIsExcludedFromBackupKey should be %@ for Bugsnag files",
-                  [self backupSupportDescription],
-                  [self backupExclusionDescription]);
 }
 
 + (NSString *)fileBackupSupportReconciliationMarkerPathForDirectory:(NSString *)persistenceDirectory {
@@ -101,15 +92,10 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
                                        fileBackupSupport:(BOOL)fileBackupSupport {
     NSString *reconciliationMarkerPath = [self fileBackupSupportReconciliationMarkerPathForDirectory:persistenceDirectory];
 
-    NSError *readError = nil;
     NSString *lastReconciledValue =
         [NSString stringWithContentsOfFile:reconciliationMarkerPath
                                   encoding:NSUTF8StringEncoding
-                                     error:&readError];
-    if (readError && readError.code != NSFileNoSuchFileError) {
-        bsg_log_debug(@"Failed to read file backup support reconciliation marker at %@: %@",
-                   reconciliationMarkerPath, readError);
-    }
+                                     error:nil];
 
     NSString *currentValue = [self fileBackupSupportReconciliationValue:fileBackupSupport];
     // Config changed - always reconcile.
@@ -120,14 +106,9 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
     // Spot-check root directory for external corruption (e.g. backup_true_mixed).
     NSURL *rootURL = [NSURL fileURLWithPath:persistenceDirectory];
     NSNumber *excluded = nil;
-    NSError *resourceError = nil;
     [rootURL getResourceValue:&excluded
                        forKey:NSURLIsExcludedFromBackupKey
-                        error:&resourceError];
-    if (resourceError) {
-        bsg_log_debug(@"Failed to read NSURLIsExcludedFromBackupKey for %@: %@",
-                   persistenceDirectory, resourceError);
-    }
+                        error:nil];
     return excluded == nil || excluded.boolValue != !fileBackupSupport;
 }
 
@@ -137,15 +118,10 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
     NSString *currentValue = [self fileBackupSupportReconciliationValue:fileBackupSupport];
     NSData *data = [currentValue dataUsingEncoding:NSUTF8StringEncoding];
 
-    NSError *writeError = nil;
     [self writeData:data
              toFile:reconciliationMarkerPath
             options:NSDataWritingAtomic
-              error:&writeError];
-    if (writeError) {
-        bsg_log_debug(@"Failed to write file backup support reconciliation marker at %@: %@",
-                    reconciliationMarkerPath, writeError);
-    }
+              error:nil];
 }
 
 + (nullable NSError *)applyFileBackupSupportToURL:(NSURL *)url {
@@ -166,20 +142,12 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
         bsg_log_warn(@"Could not set backup support for %@: %@", url.path, error);
         return error;
     }
-#if BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
-    [url getResourceValue:&currentValue forKey:NSURLIsExcludedFromBackupKey error:nil];
-    bsg_log_debug(@"[File backup support] Applied NSURLIsExcludedFromBackupKey=%@ to %@ (actual=%@)",
-                  excludeFromBackup ? @"YES" : @"NO",
-                  url.path,
-                  currentValue);
-#endif
     return nil;
 #endif
 }
 
 + (nullable NSError *)applyFileBackupSupportToPath:(NSString *)path {
     if (![NSFileManager.defaultManager fileExistsAtPath:path]) {
-        bsg_log_debug(@"[File backup support] Skipping missing SDK path: %@", path);
         return nil;
     }
 
@@ -187,7 +155,6 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
 }
 
 + (void)applyFileBackupSupportToPathAndContents:(NSString *)path {
-    bsg_log_debug(@"[File backup support] Reconciling existing SDK path and contents: %@", path);
     [self applyFileBackupSupportToPath:path];
 
 #if TARGET_OS_TV
@@ -215,7 +182,6 @@ static NSString *const BSGFileBackupSupportReconciliationMarkerFilename =
     BOOL success = [data writeToFile:path options:options error:error];
     if (success) {
         // File replacement can drop resource values, so reapply after each write.
-        bsg_log_debug(@"[File backup support] Wrote SDK file; reapplying backup policy: %@", path);
         [self applyFileBackupSupportToPath:path];
     }
     return success;
