@@ -647,6 +647,7 @@
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
     XCTAssertEqual(config.maxStringValueLength, 10000);
+    XCTAssertFalse(config.fileBackupSupport);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqual(1, [config.redactedKeys count]);
     XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
@@ -953,6 +954,7 @@ static NSString *const HUB_APIKEY_32CHAR =
                                                           url:@"https://example.com"
                                                  dependencies:@[[[BugsnagNotifier alloc] init]]]];
     [config setPersistUser:YES];
+    [config setFileBackupSupport:YES];
 #if !TARGET_OS_WATCH
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
 #endif
@@ -1024,6 +1026,7 @@ static NSString *const HUB_APIKEY_32CHAR =
     XCTAssertNoThrow([clone.plugins removeObject:[NSNull null]]);
     
     XCTAssertEqual(clone.maxStringValueLength, 100);
+    XCTAssertTrue(clone.fileBackupSupport);
 }
 
 - (void)testMetadataMutability {

@@ -26,6 +26,7 @@
 
 #import "BugsnagMetadata+Private.h"
 
+#import "BSGFilesystem.h"
 #import "BSGJSONSerialization.h"
 #import "BSGSerialization.h"
 #import "BSGUtils.h"
@@ -235,10 +236,11 @@
         }
         
         NSError *error = nil;
-        if (![pendingWrite writeToFile:(NSString *_Nonnull)file options:NSDataWritingAtomic error:&error]) {
+        // Metadata/state files are atomically replaced, so reapply backup support after writing.
+        if (![BSGFilesystem writeData:pendingWrite toFile:(NSString *_Nonnull)file options:NSDataWritingAtomic error:&error]) {
             bsg_log_err(@"%s: %@", __FUNCTION__, error);
         }
-        
+
         @synchronized (self) {
             if (self.pendingWrite == pendingWrite) {
                 self.pendingWrite = nil;

@@ -57,6 +57,7 @@
     XCTAssertEqual(config.maxPersistedEvents, 32);
     XCTAssertEqual(config.maxPersistedSessions, 128);
     XCTAssertEqual(config.maxBreadcrumbs, 100);
+    XCTAssertFalse(config.fileBackupSupport);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqualObjects(@[@"password"], [config.redactedKeys allObjects]);
     XCTAssertEqual(BSGEnabledBreadcrumbTypeAll, config.enabledBreadcrumbTypes);
@@ -100,6 +101,7 @@
                     @"maxPersistedEvents": @29,
                     @"maxPersistedSessions": @19,
                     @"maxBreadcrumbs": @27,
+                    @"fileBackupSupport": @YES,
                     @"persistUser": @NO,
                     @"redactedKeys": @[@"foo"],
                     @"sendThreads": @"never",
@@ -115,6 +117,7 @@
     XCTAssertEqual(29, config.maxPersistedEvents);
     XCTAssertEqual(19, config.maxPersistedSessions);
     XCTAssertEqual(27, config.maxBreadcrumbs);
+    XCTAssertTrue(config.fileBackupSupport);
     XCTAssertFalse(config.persistUser);
     XCTAssertEqualObjects(config.redactedKeys, [NSSet setWithObject:@"foo"]);
     XCTAssertEqualObjects(@"beta1", config.releaseStage);
@@ -155,6 +158,10 @@
 
 - (void)testAttemptDeliveryOnCrash {
     TEST_BOOL(attemptDeliveryOnCrash);
+}
+
+- (void)testFileBackupSupport {
+    TEST_BOOL(fileBackupSupport);
 }
 
 - (void)testDiscardClasses {
