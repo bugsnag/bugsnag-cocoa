@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Added appHangCallback support to attach custom diagnostic context before an app hang is persisted.
+  [#1953](https://github.com/bugsnag/bugsnag-cocoa/pull/1953)
+  
+* Added fileBackupSupport configuration to control whether SDK-managed storage paths are included in or excluded from device backups.
+  [#1943](https://github.com/bugsnag/bugsnag-cocoa/pull/1943)
+
+### Bug Fixes
+  
+* Fixed incorrect C++ exception stack traces on iOS by using thread_local state and an atomic install flag to prevent races across concurrent throws.
+  [#1955](https://github.com/bugsnag/bugsnag-cocoa/pull/1955)
+  
+* Fixed an NSGenericException crash caused by a race between error capture and concurrent global metadata updates.
+  [#1952](https://github.com/bugsnag/bugsnag-cocoa/pull/1952)  
+
 ## 6.37.0 (2026-08-18)
 
 ### Enhancements
