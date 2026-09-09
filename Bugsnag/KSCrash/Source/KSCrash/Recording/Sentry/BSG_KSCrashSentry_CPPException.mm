@@ -27,6 +27,7 @@
 #include "BSGDefines.h"
 #include "BSG_KSCrashC.h"
 #include "BSG_KSCrashSentry_CPPException.h"
+#include "BSG_KSCrashSentry_CPPException_Private.h"
 #include "BSG_KSCrashSentry_Private.h"
 #include "BSG_KSCrashStringConversion.h"
 #include "BSG_KSMach.h"
@@ -35,13 +36,13 @@
 //#define BSG_KSLogger_LocalLevel TRACE
 #include "BSG_KSLogger.h"
 
+#include <atomic>
 #include <cxxabi.h>
 #include <dlfcn.h>
 #include <exception>
 #include <execinfo.h>
 #include <typeinfo>
 
-#define STACKTRACE_BUFFER_LENGTH 30
 #define DESCRIPTION_BUFFER_LENGTH 1000
 
 // Compiler hints for "if" statements
@@ -61,20 +62,18 @@ void bsg_recordException(NSException *exception);
 #pragma mark - Globals -
 // ============================================================================
 
-/** True if this handler has been installed. */
-static volatile sig_atomic_t bsg_g_installed = 0;
-
-/** True if the handler should capture the next stack trace. */
-static bool bsg_g_captureNextStackTrace = false;
+/** Process-wide capture gate, also read by throwing threads. */
+static std::atomic<bool> bsg_g_installed{false};
+static_assert(ATOMIC_BOOL_LOCK_FREE == 2, "Crash handling requires lock-free atomics");
 
 static std::terminate_handler bsg_g_originalTerminateHandler;
 
-/** Buffer for the backtrace of the most recent exception. */
-static uintptr_t bsg_g_stackTrace[STACKTRACE_BUFFER_LENGTH];
+/** Exception capture state for the current thread. */
+static thread_local BSG_KSCPPExceptionThreadState bsg_g_threadState;
 
-/** Number of backtrace entries in the most recent exception. */
-static int bsg_g_stackTraceCount = 0;
-
+BSG_KSCPPExceptionThreadState &bsg_kscrashsentry_cppExceptionThreadState(void) {
+    return bsg_g_threadState;
+}
 /** Context to fill with crash information. */
 static BSG_KSCrash_SentryContext *bsg_g_context;
 
@@ -86,14 +85,17 @@ typedef void (*cxa_throw_type)(void *, std::type_info *, void (*)(void *));
 
 extern "C" {
 void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
-                 void (*dest)(void *)) __attribute__((weak));
+                 void (*dest)(void *)) __attribute__((weak, noinline));
 
 void BSG__cxa_throw_override(void *thrown_exception, std::type_info *tinfo,
                  void (*dest)(void *)) {
-    if (bsg_g_captureNextStackTrace) {
-        bsg_g_stackTraceCount =
-            backtrace((void **)bsg_g_stackTrace,
-                      sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
+    if (bsg_g_installed.load(std::memory_order_relaxed)) {
+        BSG_KSCPPExceptionThreadState &state = bsg_g_threadState;
+        if (!state.isInspectingException) {
+            state.stackTraceCount =
+                backtrace((void **)state.stackTrace,
+                          sizeof(state.stackTrace) / sizeof(*state.stackTrace));
+        }
     }
 
     static cxa_throw_type orig_cxa_throw = NULL;
@@ -122,21 +124,18 @@ static const char *getExceptionTypeName(std::type_info *tinfo) {
 static void CPPExceptionTerminate(void) {
     BSG_KSLOG_DEBUG("Trapped c++ exception");
 
+    BSG_KSCPPExceptionThreadState &state = bsg_g_threadState;
     char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
     const char *name = NULL;
     const char *crashReason = NULL;
+    // BSG__cxa_throw_override and __cxa_throw_decorator.
+    int framesToSkip = 2;
 
     BSG_KSLOG_DEBUG("Get exception type name.");
     std::type_info *tinfo = __cxxabiv1::__cxa_current_exception_type();
     if (tinfo == NULL) {
         name = "std::terminate";
         crashReason = "throw may have been called without an exception";
-        if (!bsg_g_stackTraceCount) {
-            BSG_KSLOG_DEBUG("No exception backtrace");
-            bsg_g_stackTraceCount =
-            backtrace((void **)bsg_g_stackTrace,
-                      sizeof(bsg_g_stackTrace) / sizeof(*bsg_g_stackTrace));
-        }
         goto after_rethrow; // Using goto to avoid indenting code below
     }
 
@@ -148,7 +147,7 @@ static void CPPExceptionTerminate(void) {
     }
 
     BSG_KSLOG_DEBUG("Discovering what kind of exception was thrown.");
-    bsg_g_captureNextStackTrace = false;
+    state.isInspectingException = true;
     try {
         throw;
     } catch (NSException *exception) {
@@ -206,7 +205,16 @@ static void CPPExceptionTerminate(void) {
     }
 
 after_rethrow:
-    bsg_g_captureNextStackTrace = (bsg_g_installed != 0);
+    state.isInspectingException = false;
+
+    // A bare terminate must not reuse a previously caught exception's trace.
+    // Also provide a fallback when the current exception's throw was not captured.
+    if (tinfo == NULL || state.stackTraceCount <= 0) {
+        state.stackTraceCount =
+            backtrace((void **)state.stackTrace,
+                      sizeof(state.stackTrace) / sizeof(*state.stackTrace));
+        framesToSkip = 1; // CPPExceptionTerminate only, not the throw wrappers.
+    }
 
     if (bsg_kscrashsentry_beginHandlingCrash(bsg_ksmachthread_self())) {
 
@@ -224,9 +232,9 @@ after_rethrow:
         bsg_g_context->crashType = BSG_KSCrashTypeCPPException;
         bsg_g_context->requiresAsyncSafety = true;
         bsg_g_context->registersAreValid = false;
-        bsg_g_context->stackTrace =
-            bsg_g_stackTrace + 1; // Don't record __cxa_throw stack entry
-        bsg_g_context->stackTraceLength = bsg_g_stackTraceCount - 1;
+        BSG_KSCPPExceptionStackTraceView stackTraceView = bsg_kscrashsentry_cppExceptionStackTraceView(state, framesToSkip);
+        bsg_g_context->stackTrace = stackTraceView.stackTrace;
+        bsg_g_context->stackTraceLength = stackTraceView.stackTraceLength;
         bsg_g_context->CPPException.name = name;
         bsg_g_context->crashReason = crashReason;
 
@@ -254,26 +262,24 @@ extern "C" bool bsg_kscrashsentry_installCPPExceptionHandler(
     BSG_KSCrash_SentryContext *context) {
     BSG_KSLOG_DEBUG("Installing C++ exception handler.");
 
-    if (bsg_g_installed) {
+    if (bsg_g_installed.load(std::memory_order_relaxed)) {
         return true;
     }
-    bsg_g_installed = 1;
+    bsg_g_installed.store(true, std::memory_order_relaxed);
 
     bsg_g_context = context;
 
     bsg_g_originalTerminateHandler = std::set_terminate(CPPExceptionTerminate);
-    bsg_g_captureNextStackTrace = true;
     bsg_ksct_swap(BSG__cxa_throw_override);
     return true;
 }
 
 extern "C" void bsg_kscrashsentry_uninstallCPPExceptionHandler(void) {
     BSG_KSLOG_DEBUG("Uninstalling C++ exception handler.");
-    if (!bsg_g_installed) {
+    if (!bsg_g_installed.load(std::memory_order_relaxed)) {
         return;
     }
 
-    bsg_g_captureNextStackTrace = false;
     std::set_terminate(bsg_g_originalTerminateHandler);
-    bsg_g_installed = 0;
+    bsg_g_installed.store(false, std::memory_order_relaxed);
 }

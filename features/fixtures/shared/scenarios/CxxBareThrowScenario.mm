@@ -25,3 +25,23 @@
 }
 
 @end
+
+@interface CxxBareThrowAfterCatchScenario : CxxBareThrowScenario
+@end
+
+@implementation CxxBareThrowAfterCatchScenario
+
+- (void)run {
+    // A caught exception must not supply the trace for a later bare throw.
+    try {
+        [self throwCaughtException];
+    } catch (const std::exception &) {
+    }
+    [super run];
+}
+
+- (void)throwCaughtException __attribute__((noreturn)) {
+    throw std::runtime_error("Previously caught exception");
+}
+
+@end

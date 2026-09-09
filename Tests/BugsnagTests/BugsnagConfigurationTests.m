@@ -647,6 +647,7 @@
     XCTAssertEqualObjects(@"https://notify.bugsnag.com", config.endpoints.notify);
     XCTAssertEqualObjects(@"https://sessions.bugsnag.com", config.endpoints.sessions);
     XCTAssertEqual(config.maxStringValueLength, 10000);
+    XCTAssertFalse(config.fileBackupSupport);
     XCTAssertTrue(config.persistUser);
     XCTAssertEqual(1, [config.redactedKeys count]);
     XCTAssertEqualObjects(@"password", [config.redactedKeys allObjects][0]);
@@ -953,6 +954,7 @@ static NSString *const HUB_APIKEY_32CHAR =
                                                           url:@"https://example.com"
                                                  dependencies:@[[[BugsnagNotifier alloc] init]]]];
     [config setPersistUser:YES];
+    [config setFileBackupSupport:YES];
 #if !TARGET_OS_WATCH
     [config setSendThreads:BSGThreadSendPolicyUnhandledOnly];
 #endif
@@ -961,6 +963,11 @@ static NSString *const HUB_APIKEY_32CHAR =
 
     BugsnagOnSendErrorBlock onSendBlock1 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
     BugsnagOnSendErrorBlock onSendBlock2 = ^BOOL(BugsnagEvent * _Nonnull event) { return true; };
+
+#if BSG_HAVE_APP_HANG_DETECTION
+    BugsnagAppHangCallback appHangCallback = ^(BugsnagEvent * _Nonnull event) {};
+    config.appHangCallback = appHangCallback;
+#endif
 
     NSArray *sendBlocks = @[ onSendBlock1, onSendBlock2 ];
     [config setOnSendBlocks:[sendBlocks mutableCopy]]; // Mutable arg required
@@ -1000,6 +1007,10 @@ static NSString *const HUB_APIKEY_32CHAR =
     [clone setOnCrashHandler:(void *)^(const BSG_KSCrashReportWriter *_Nonnull writer){}];
     XCTAssertNotEqual(config.onCrashHandler, clone.onCrashHandler);
 
+#if BSG_HAVE_APP_HANG_DETECTION
+    XCTAssertEqual(config.appHangCallback, clone.appHangCallback);
+#endif
+
     // Array (of blocks)
     XCTAssertEqual(config.onSendBlocks, clone.onSendBlocks);
     XCTAssertEqual(config.onSendBlocks[0], clone.onSendBlocks[0]);
@@ -1015,6 +1026,7 @@ static NSString *const HUB_APIKEY_32CHAR =
     XCTAssertNoThrow([clone.plugins removeObject:[NSNull null]]);
     
     XCTAssertEqual(clone.maxStringValueLength, 100);
+    XCTAssertTrue(clone.fileBackupSupport);
 }
 
 - (void)testMetadataMutability {

@@ -97,6 +97,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     BugsnagConfiguration *copy = [[BugsnagConfiguration alloc] initWithApiKey:[self.apiKey copy]];
     // Omit apiKey - it's set explicitly in the line above
 #if BSG_HAVE_APP_HANG_DETECTION
+    [copy setAppHangCallback:self.appHangCallback];
     [copy setAppHangThresholdMillis:self.appHangThresholdMillis];
     [copy setReportBackgroundAppHangs:self.reportBackgroundAppHangs];
 #endif
@@ -124,6 +125,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     [copy setEndpoints:self.endpoints];
     [copy setOnCrashHandler:self.onCrashHandler];
     [copy setPersistUser:self.persistUser];
+    [copy setFileBackupSupport:self.fileBackupSupport];
     [copy setPlugins:[self.plugins mutableCopyWithZone:zone]];
     [copy setReleaseStage:self.releaseStage];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying

@@ -28,12 +28,131 @@
 #import "Logging.h"
 
 #import <stdexcept>
+#import <thread>
 
 /**
  * Throw an uncaught C++ exception. This is a difficult case for crash reporters to handle,
  * as it involves the destruction of the data necessary to generate a correct backtrace.
  */
 @interface CxxExceptionScenario : Scenario
+- (void)crash __attribute__((noreturn));
+@end
+
+// Keep an exception active while a different thread throws and catches another
+// one. This deterministically exposes a process-global "last exception" trace.
+@interface CxxConcurrentExceptionScenario : CxxExceptionScenario
+- (void)crashWithConcurrentException;
+@end
+
+@implementation CxxConcurrentExceptionScenario
+
+- (void)run {
+    [self crashWithConcurrentException];
+}
+
+- (void)crashWithConcurrentException {
+    try {
+        [self crash];
+    } catch (const std::exception &) {
+        std::thread otherThread([] {
+            try {
+                throw std::logic_error("Caught exception on another thread");
+            } catch (const std::exception &) {
+            }
+        });
+        otherThread.join();
+        std::terminate();
+    }
+}
+
+- (void)crash __attribute__((noreturn)) {
+    throw std::runtime_error("Original exception on the crashing thread");
+}
+
+@end
+
+// Installation happens on the main thread, but capture must also be enabled on
+// threads created afterwards.
+@interface CxxConcurrentExceptionBackgroundScenario : CxxConcurrentExceptionScenario
+@end
+
+@implementation CxxConcurrentExceptionBackgroundScenario
+
+- (void)run {
+    std::thread crashingThread([self] {
+        [self crashWithConcurrentException];
+    });
+    crashingThread.join();
+}
+
+@end
+
+@interface CxxPreexistingThreadExceptionScenario : CxxConcurrentExceptionScenario
+@end
+
+@implementation CxxPreexistingThreadExceptionScenario {
+    dispatch_semaphore_t _proceed;
+}
+
+- (void)startBugsnag {
+    if (self.launchCount == 1) {
+        dispatch_semaphore_t started = dispatch_semaphore_create(0);
+        _proceed = dispatch_semaphore_create(0);
+        dispatch_semaphore_t proceed = _proceed;
+        std::thread([self, started, proceed] {
+            dispatch_semaphore_signal(started);
+            dispatch_semaphore_wait(proceed, DISPATCH_TIME_FOREVER);
+            [self crashWithConcurrentException];
+        }).detach();
+        dispatch_semaphore_wait(started, DISPATCH_TIME_FOREVER);
+    }
+    [super startBugsnag];
+}
+
+- (void)run {
+    dispatch_semaphore_signal(_proceed);
+}
+
+@end
+
+@interface CxxRethrowExceptionScenario : CxxConcurrentExceptionScenario
+@end
+
+@implementation CxxRethrowExceptionScenario
+
+- (void)run {
+    try {
+        [self crash];
+    } catch (...) {
+        throw;
+    }
+}
+
+@end
+
+class CxxTestException : public std::runtime_error {
+public:
+    CxxTestException() : std::runtime_error("Original exception message") {}
+
+    const char *what() const noexcept override {
+        // Inspecting an exception must not replace its trace with this throw.
+        try {
+            throw std::logic_error("Caught while inspecting the exception");
+        } catch (...) {
+        }
+        return std::runtime_error::what();
+    }
+};
+
+@interface CxxInspectingExceptionScenario : CxxExceptionScenario
+@end
+
+@implementation CxxInspectingExceptionScenario
+
+- (void)crash __attribute__((noreturn)) {
+    throw CxxTestException();
+}
+
 @end
 
 @implementation CxxExceptionScenario

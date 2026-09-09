@@ -17,7 +17,7 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.sha }}
     - name: Install dependencies
-      run: brew install oclint && gem install xcpretty
+      run: brew install oclint/formulae/oclint && gem install xcpretty
     - name: Build framework
       run: make compile_commands.json
     - name: OCLint

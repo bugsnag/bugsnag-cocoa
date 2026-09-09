@@ -8,6 +8,7 @@
 #import "BSGRunContext.h"
 
 #import "BSGAppKit.h"
+#import "BSGFilesystem.h"
 #import "BSGHardware.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
@@ -552,6 +553,9 @@ static int OpenFile(NSString *_Nonnull path) {
         bsg_log_warn(@"Could not open %@", path);
         return -1;
     }
+    // This file is created with low-level APIs for memory mapping, so apply
+    // Bugsnag's Apple backup policy here instead of relying on JSON helpers.
+    [BSGFilesystem applyFileBackupSupportToPath:path];
     
     // NSFileProtectionComplete invalidates mappings 10 seconds after device is
     // locked, so must be disabled to prevent segfaults when accessing 
