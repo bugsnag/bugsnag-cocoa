@@ -1143,6 +1143,7 @@
 				);
 				INFOPLIST_FILE = macOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.macOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -1168,6 +1169,7 @@
 				);
 				INFOPLIST_FILE = macOSTestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.macOSTestApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
