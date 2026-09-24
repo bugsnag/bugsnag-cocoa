@@ -49,26 +49,29 @@ __attribute__((annotate("oclint:suppress[deep nested block]")))
 #endif
 void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_result *result) {
     bzero(result, sizeof(*result));
-    
-    struct bsg_mach_image *image = bsg_mach_headers_image_at_address(instruction_addr);
-    if (!image || !image->header) {
+
+    BSG_Mach_Header_Info image;
+    if (!bsg_mach_headers_image_at_address(instruction_addr, &image) ||
+        !image.header) {
         return;
     }
-    
-    const struct load_command *load_cmd = (const void *)bsg_mach_headers_first_cmd_after_header(image->header);
+
+    const struct load_command *load_cmd =
+        (const void *)bsg_mach_headers_first_cmd_after_header(image.header);
     if (!load_cmd) {
         return;
     }
-    
-    result->image = image;
-    
-    const uintptr_t slide = (uintptr_t)image->slide;
-    
+
+    result->image_header = image.header;
+    result->image_name = image.name;
+
+    const uintptr_t slide = (uintptr_t)image.slide;
+
     const segment_command_t *linkedit = NULL;
     const struct linkedit_data_command *function_starts = NULL;
     const struct symtab_command *symtab = NULL;
-    
-    for (uint32_t lc_idx = 0; lc_idx < image->header->ncmds; ++lc_idx) {
+
+    for (uint32_t lc_idx = 0; lc_idx < image.header->ncmds; ++lc_idx) {
         switch (load_cmd->cmd) {
             case LC_SEGMENT_BSG: {
                 const segment_command_t *seg_cmd = (const void *)load_cmd;
@@ -90,8 +93,10 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
                             uintptr_t start = section->addr + slide;
                             uintptr_t end = start + section->size;
                             if (instruction_addr < start || instruction_addr >= end) {
-                                BSG_KSLOG_ERROR("Address %p is outside the " SECT_TEXT " section of image %s",
-                                                (void *)instruction_addr, image->name);
+                                BSG_KSLOG_ERROR(
+                                    "Address %p is outside the " SECT_TEXT
+                                    " section of image %s",
+                                    (void *)instruction_addr, image.name);
                                 return;
                             }
                             break;
@@ -117,9 +122,9 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
         }
         load_cmd = (const void *)(uintptr_t)load_cmd + load_cmd->cmdsize;
     }
-    
+
     if (!linkedit) {
-        BSG_KSLOG_INFO(SEG_LINKEDIT " not found for %s", image->name);
+        BSG_KSLOG_INFO(SEG_LINKEDIT " not found for %s", image.name);
         return;
     }
     
@@ -141,7 +146,7 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
     if (function_starts) {
         // Function starts are stored as a series of LEB128 encoded deltas
         // Starting with delta from start of __TEXT
-        uintptr_t addr = (uintptr_t)image->imageVmAddr + slide;
+        uintptr_t addr = (uintptr_t)image.imageVmAddr + slide;
         uintptr_t func_start = addr;
         struct leb128_uintptr_context context = {0};
         const uint8_t *data = get_linkedit_data(function_starts->dataoff, function_starts->datasize);
@@ -175,7 +180,9 @@ void bsg_symbolicate(const uintptr_t instruction_addr, struct bsg_symbolicate_re
         // may not have any symbols.
         //
         // The back-end will still be able to symbolicate if the dSYM was uploaded.
-        BSG_KSLOG_INFO("No LC_FUNCTION_STARTS, skipping in-process symbolication for %s", image->name);
+        BSG_KSLOG_INFO(
+            "No LC_FUNCTION_STARTS, skipping in-process symbolication for %s",
+            image.name);
         return;
     }
     
