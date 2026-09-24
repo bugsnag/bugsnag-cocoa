@@ -110,7 +110,11 @@
             XCTAssertEqual(image.header, dlinfo.dli_fbase);
             XCTAssertEqual(image.imageVmAddr + image.slide,
                            (uint64_t)dlinfo.dli_fbase);
-            XCTAssertEqualObjects(@(image.name), @(dlinfo.dli_fname));
+            NSString *imagePath =
+                [@(image.name) stringByResolvingSymlinksInPath];
+            NSString *dladdrPath =
+                [@(dlinfo.dli_fname) stringByResolvingSymlinksInPath];
+            XCTAssertEqualObjects(imagePath, dladdrPath);
         }
     }
 }

@@ -962,7 +962,7 @@ void bsg_kscrw_i_writeDiskInfo(const BSG_KSCrashReportWriter *const writer,
     }
     writer->endContainer(writer);
 }
-#endif 
+#endif
 
 /** Write information about the error leading to the crash to the report.
  *
@@ -1390,7 +1390,11 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
 void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
                                 const BSG_KSCrashReportWriter *writer) {
     const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
-    BSG_Referenced_Image_Set referencedImages = {0};
+    BSG_Referenced_Image_Set referencedImages = {
+        .addresses = {0},
+        .count = 0,
+        .overflowed = false,
+    };
 
     writer->beginObject(writer, BSG_KSCrashField_Crash);
     {

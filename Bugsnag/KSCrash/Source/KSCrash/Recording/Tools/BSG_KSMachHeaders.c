@@ -187,15 +187,10 @@ bool bsg_mach_headers_image_at_address(uintptr_t address,
         return copy_cached_image(cached, image);
     }
 
-    Dl_info dlInfo = {0};
-    if (dladdr((const void *)address, &dlInfo) != 0 && dlInfo.dli_fbase != NULL) {
-        if (populate_image_info((const struct mach_header *)dlInfo.dli_fbase,
-                                compute_slide((const struct mach_header *)dlInfo.dli_fbase),
-                                dlInfo.dli_fname, image) &&
-            image_contains_address(image, address)) {
-            return true;
-        }
-    }
+    // Do not call dladdr() here. This function is used while writing fatal
+    // crash reports, where another suspended thread may hold dyld's internal
+    // lock. Resolve uncached addresses from dyld's published image array
+    // instead, which does not acquire that lock.
 
     uint32_t count = 0;
     const BSG_Dyld_Image_Info *images = bsg_mach_headers_get_images(&count);
