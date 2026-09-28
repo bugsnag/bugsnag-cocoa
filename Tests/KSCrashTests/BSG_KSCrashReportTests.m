@@ -100,10 +100,22 @@
     }
 #if BSG_HAVE_MACH_THREADS
     bsg_kscrashsentry_suspendThreads();
+#else
+    // Match the NSException handler on watchOS: collect threads even though
+    // suspension is unavailable, so the reporter can write the supplied stack.
+    context->crash.allThreadsCount = 0;
+    context->crash.allThreads = bsg_ksmachgetAllThreads(&context->crash.allThreadsCount);
+    memset(context->crash.allThreadRunStates, 0, sizeof(context->crash.allThreadRunStates));
 #endif
     bsg_kscrashreport_writeStandardReport(context, reportPath);
 #if BSG_HAVE_MACH_THREADS
     bsg_kscrashsentry_resumeThreads();
+#else
+    if (context->crash.allThreads != NULL) {
+        bsg_ksmachfreeThreads(context->crash.allThreads, context->crash.allThreadsCount);
+    }
+    context->crash.allThreads = NULL;
+    context->crash.allThreadsCount = 0;
 #endif
     if (unavailable) {
         bsg_test_support_mach_headers_reset();
@@ -197,4 +209,3 @@
 }
 
 @end
-

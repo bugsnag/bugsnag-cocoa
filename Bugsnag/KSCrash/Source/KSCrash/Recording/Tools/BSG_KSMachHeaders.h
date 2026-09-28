@@ -12,6 +12,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <mach-o/loader.h>
+
+// Older Apple SDK headers omit this flag. Its Mach-O bit value is unchanged;
+// keep the compatibility definition shared by lookup, symbolication and tests.
+#ifndef MH_DYLIB_IN_CACHE
+#define MH_DYLIB_IN_CACHE 0x80000000
+#endif
 
 struct dyld_image_info;
 struct mach_header;
