@@ -21,6 +21,9 @@ struct bsg_symbolicate_result {
     const char *image_name;
     uintptr_t function_address;
     const char *function_name;
+    // Storage belongs to the result, not to dyld's image mapping.
+    char image_name_storage[1024];
+    char function_name_storage[4096];
 };
 
 void bsg_symbolicate(const uintptr_t address, struct bsg_symbolicate_result *result);

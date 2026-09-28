@@ -728,8 +728,8 @@ void bsg_kscrw_i_writeCrashInfoMessage(const BSG_KSCrashReportWriter *const writ
         BSG_KSLOG_ERROR("Could not locate mach header info");
         return;
     }
-    const char *message = bsg_mach_headers_get_crash_info_message(&image);
-    if (message) {
+    char message[500];
+    if (bsg_mach_headers_get_crash_info_message(&image, message, sizeof(message))) {
         writer->addStringElement(writer, key, message);
     }
 }
@@ -878,8 +878,8 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
         writer->addUIntegerElement(writer, BSG_KSCrashField_ImageSize,               img->imageSize);
         writer->addStringElement(writer, BSG_KSCrashField_Name,                      img->name);
         writer->addUUIDElement(writer, BSG_KSCrashField_UUID,                        img->uuid);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  img->header->cputype);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               img->header->cpusubtype);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  img->cpuType);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               img->cpuSubtype);
     }
     writer->endContainer(writer);
 }
@@ -900,15 +900,34 @@ void bsg_kscrw_i_writeBinaryImages(
     bool wroteDyldImage = false;
     writer->beginArray(writer, key);
     {
-        for (uint32_t i = 0; i < count; i++) {
-            const struct mach_header *header = images[i].imageLoadAddress;
+        if (images == NULL) {
+            // dyld can temporarily withdraw its array. Preserve the stable
+            // metadata we already have instead of writing an empty image list.
+            // Never wait for a cache lock held by a suspended/crashed thread.
+            BSG_Mach_Header_Info cachedImage;
+            for (uint32_t i = 0; bsg_mach_headers_get_cached_image(i, &cachedImage); i++) {
+                if (referencedImages != NULL && !referencedImages->overflowed &&
+                    !bsg_referenced_image_set_contains(referencedImages,
+                                                       (uintptr_t)cachedImage.header)) {
+                    continue;
+                }
+                bsg_kscrw_i_writeBinaryImage(writer, NULL, &cachedImage);
+                if (hasDyldImage && cachedImage.header == dyldImage.header) {
+                    wroteDyldImage = true;
+                }
+            }
+        }
+        for (uint32_t i = 0; images != NULL && i < count; i++) {
+            BSG_Dyld_Image_Info entry;
+            if (!bsg_mach_headers_read_image_entry(images, i, &entry)) break;
+            const struct mach_header *header = entry.imageLoadAddress;
             if (referencedImages != NULL && !referencedImages->overflowed &&
                 !bsg_referenced_image_set_contains(referencedImages,
                                                    (uintptr_t)header)) {
                 continue;
             }
             bool isDyldImage = hasDyldImage && header == dyldImage.header;
-            const char *name = images[i].imageFilePath;
+            const char *name = entry.imageFilePath;
             if (isDyldImage && name == NULL) {
                 name = dyldImage.name;
             }
