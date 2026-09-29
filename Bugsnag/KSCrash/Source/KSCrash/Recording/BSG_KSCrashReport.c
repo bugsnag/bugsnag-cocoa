@@ -574,13 +574,16 @@ void bsg_kscrw_i_writeBacktrace(const BSG_KSCrashReportWriter *const writer,
         writer->beginArray(writer, BSG_KSCrashField_Contents);
         {
             if (backtraceLength > 0) {
-                struct bsg_symbolicate_result symbolicated[backtraceLength];
-                bsg_ksbt_symbolicate(backtrace, symbolicated, backtraceLength,
-                                     skippedEntries);
-
+                // Reuse one owned result: an array grows by over 5 KB per
+                // frame and can exhaust the crash handler's limited stack.
+                struct bsg_symbolicate_result symbolicated;
                 for (int i = 0; i < backtraceLength; i++) {
+                    // Only the original first frame is an instruction address;
+                    // all subsequent frames must be adjusted as return addresses.
+                    bsg_ksbt_symbolicate(&backtrace[i], &symbolicated, 1,
+                                         i == 0 ? skippedEntries : 1);
                     bsg_kscrw_i_writeBacktraceEntry(writer, NULL, backtrace[i],
-                                                    &symbolicated[i],
+                                                    &symbolicated,
                                                     referencedImages);
                 }
             }
