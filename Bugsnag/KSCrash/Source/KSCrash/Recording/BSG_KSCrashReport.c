@@ -47,6 +47,7 @@
 #include "BSGDefines.h"
 #include "BSGRunContext.h"
 
+#include <mach/mach.h>
 #include <mach-o/loader.h>
 #include <sys/time.h>
 
@@ -78,6 +79,69 @@ typedef struct {
     char *data;
     size_t allocated_size;
 } BSG_ThreadDataBuffer;
+
+// Own the metadata used by this report, not just addresses back into dyld.
+// Allocate VM in small blocks without using malloc (another suspended thread
+// may hold the heap lock). Blocks are report-local, including on re-entry, and
+// never live on the crash handler's limited stack.
+#define BSG_REPORT_IMAGES_PER_BLOCK 8
+typedef struct BSG_Report_Image_Block {
+    struct BSG_Report_Image_Block *next;
+    uint32_t count;
+    BSG_Mach_Header_Info images[BSG_REPORT_IMAGES_PER_BLOCK];
+} BSG_Report_Image_Block;
+
+typedef struct {
+    BSG_Report_Image_Block *head;
+    BSG_Report_Image_Block *tail;
+    bool allocationFailed;
+} BSG_Referenced_Image_Set;
+
+static bool bsg_referenced_image_set_add(BSG_Referenced_Image_Set *set,
+                                         const BSG_Mach_Header_Info *image) {
+    // Minimal (recrash) reports keep their existing self-image-only format.
+    if (set == NULL) return true;
+    for (BSG_Report_Image_Block *block = set->head; block; block = block->next) {
+        for (uint32_t i = 0; i < block->count; i++) {
+            const BSG_Mach_Header_Info *saved = &block->images[i];
+            if (saved->header == image->header) {
+                // Address reuse must not attach a new library's frames to an
+                // earlier library's UUID. Keep raw addresses on a mismatch.
+                return (!!saved->uuid == !!image->uuid) &&
+                    (!saved->uuid || memcmp(saved->uuid, image->uuid, 16) == 0);
+            }
+        }
+    }
+    if (set->tail == NULL || set->tail->count == BSG_REPORT_IMAGES_PER_BLOCK) {
+        if (set->allocationFailed) return false;
+        vm_address_t address = 0;
+        if (vm_allocate(mach_task_self(), &address, sizeof(BSG_Report_Image_Block),
+                        VM_FLAGS_ANYWHERE) != KERN_SUCCESS) {
+            // Preserve the raw frames without repeatedly trying to allocate
+            // or emitting object_addr references with no binary-image entry.
+            set->allocationFailed = true;
+            return false;
+        }
+        BSG_Report_Image_Block *block = (void *)address;
+        block->next = NULL;
+        block->count = 0;
+        if (set->tail) set->tail->next = block;
+        else set->head = block;
+        set->tail = block;
+    }
+    bsg_mach_headers_copy_image(&set->tail->images[set->tail->count++], image);
+    return true;
+}
+
+static void bsg_referenced_image_set_free(BSG_Referenced_Image_Set *set) {
+    BSG_Report_Image_Block *block = set->head;
+    while (block) {
+        BSG_Report_Image_Block *next = block->next;
+        vm_deallocate(mach_task_self(), (vm_address_t)block, sizeof(*block));
+        block = next;
+    }
+    set->head = set->tail = NULL;
+}
 
 // ============================================================================
 #pragma mark - JSON Encoding -
@@ -485,17 +549,18 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
  */
 void bsg_kscrw_i_writeBacktraceEntry(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
-    const uintptr_t address, struct bsg_symbolicate_result *info) {
+    const uintptr_t address, struct bsg_symbolicate_result *info,
+    BSG_Referenced_Image_Set *referencedImages) {
     writer->beginObject(writer, key);
     {
-        if (info->image && info->image->header) {
-            info->image->inCrashReport = true;
+        if (info->image_header &&
+            bsg_referenced_image_set_add(referencedImages, &info->image)) {
             writer->addUIntegerElement(writer, BSG_KSCrashField_ObjectAddr,
-                                       (uintptr_t)info->image->header);
+                                       (uintptr_t)info->image_header);
         }
-        if (info->image && info->image->name) {
+        if (info->image_name) {
             writer->addStringElement(writer, BSG_KSCrashField_ObjectName,
-                                     bsg_ksfulastPathEntry(info->image->name));
+                                     bsg_ksfulastPathEntry(info->image_name));
         }
         if (info->function_address) {
             writer->addUIntegerElement(writer, BSG_KSCrashField_SymbolAddr,
@@ -528,19 +593,24 @@ void bsg_kscrw_i_writeBacktrace(const BSG_KSCrashReportWriter *const writer,
                                 const char *const key,
                                 const uintptr_t *const backtrace,
                                 const int backtraceLength,
-                                const int skippedEntries) {
+                                const int skippedEntries,
+                                BSG_Referenced_Image_Set *referencedImages) {
     writer->beginObject(writer, key);
     {
         writer->beginArray(writer, BSG_KSCrashField_Contents);
         {
             if (backtraceLength > 0) {
-                struct bsg_symbolicate_result symbolicated[backtraceLength];
-                bsg_ksbt_symbolicate(backtrace, symbolicated, backtraceLength,
-                                     skippedEntries);
-
+                // Reuse one owned result: an array grows by over 5 KB per
+                // frame and can exhaust the crash handler's limited stack.
+                struct bsg_symbolicate_result symbolicated;
                 for (int i = 0; i < backtraceLength; i++) {
+                    // Only the original first frame is an instruction address;
+                    // all subsequent frames must be adjusted as return addresses.
+                    bsg_ksbt_symbolicate(&backtrace[i], &symbolicated, 1,
+                                         i == 0 ? skippedEntries : 1);
                     bsg_kscrw_i_writeBacktraceEntry(writer, NULL, backtrace[i],
-                                                    &symbolicated[i]);
+                                                    &symbolicated,
+                                                    referencedImages);
                 }
             }
         }
@@ -682,13 +752,13 @@ void bsg_kscrw_i_writeRegisters(
  */
 void bsg_kscrw_i_writeCrashInfoMessage(const BSG_KSCrashReportWriter *const writer,
                                        const char *key, uintptr_t address) {
-    BSG_Mach_Header_Info *image = bsg_mach_headers_image_at_address(address);
-    if (!image) {
+    BSG_Mach_Header_Info image;
+    if (!bsg_mach_headers_image_at_address(address, &image)) {
         BSG_KSLOG_ERROR("Could not locate mach header info");
         return;
     }
-    const char *message = bsg_mach_headers_get_crash_info_message(image);
-    if (message) {
+    char message[500];
+    if (bsg_mach_headers_get_crash_info_message(&image, message, sizeof(message))) {
         writer->addStringElement(writer, key, message);
     }
 }
@@ -704,9 +774,9 @@ void bsg_kscrw_i_writeCrashInfoMessage(const BSG_KSCrashReportWriter *const writ
 void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
                              const char *const key,
                              const BSG_KSCrash_SentryContext *const crash,
-                             const thread_t thread,
-                             const int index,
-                             const integer_t threadRunState) {
+                             const thread_t thread, const int index,
+                             const integer_t threadRunState,
+                             BSG_Referenced_Image_Set *referencedImages) {
     bool isCrashedThread = thread == crash->offendingThread;
     bool isSelfThread = thread == bsg_ksmachthread_self();
     BSG_STRUCT_MCONTEXT_L machineContextBuffer;
@@ -728,7 +798,7 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
         if (backtrace != NULL) {
             bsg_kscrw_i_writeBacktrace(writer, BSG_KSCrashField_Backtrace,
                                        backtrace, backtraceLength,
-                                       skippedEntries);
+                                       skippedEntries, referencedImages);
         }
         if (machineContext != NULL && isCrashedThread) {
             bsg_kscrw_i_writeRegisters(writer, BSG_KSCrashField_Registers,
@@ -773,7 +843,8 @@ void bsg_kscrw_i_writeThread(const BSG_KSCrashReportWriter *const writer,
  */
 void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
                                  const char *const key,
-                                 const BSG_KSCrash_SentryContext *const crash) {
+                                 const BSG_KSCrash_SentryContext *const crash,
+                                 BSG_Referenced_Image_Set *referencedImages) {
     // Fetch info for all threads.
     writer->beginArray(writer, key);
     {
@@ -781,7 +852,8 @@ void bsg_kscrw_i_writeAllThreads(const BSG_KSCrashReportWriter *const writer,
             thread_t thread = crash->allThreads[i];
             integer_t threadRunState = crash->allThreadRunStates[i];
             if (crash->threadTracingEnabled || thread == crash->offendingThread) {
-                bsg_kscrw_i_writeThread(writer, NULL, crash, thread, (int) i, threadRunState);
+                bsg_kscrw_i_writeThread(writer, NULL, crash, thread, (int)i,
+                                        threadRunState, referencedImages);
             }
         }
     }
@@ -835,8 +907,8 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
         writer->addUIntegerElement(writer, BSG_KSCrashField_ImageSize,               img->imageSize);
         writer->addStringElement(writer, BSG_KSCrashField_Name,                      img->name);
         writer->addUUIDElement(writer, BSG_KSCrashField_UUID,                        img->uuid);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  img->header->cputype);
-        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               img->header->cpusubtype);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUType,                  img->cpuType);
+        writer->addIntegerElement(writer, BSG_KSCrashField_CPUSubType,               img->cpuSubtype);
     }
     writer->endContainer(writer);
 }
@@ -847,14 +919,15 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
  *
  * @param key The object key, if needed.
  */
-void bsg_kscrw_i_writeBinaryImages(const BSG_KSCrashReportWriter *const writer,
-                                   const char *const key)
-{
+void bsg_kscrw_i_writeBinaryImages(
+    const BSG_KSCrashReportWriter *const writer, const char *const key,
+    const BSG_Referenced_Image_Set *referencedImages) {
     writer->beginArray(writer, key);
-    {
-        for (BSG_Mach_Header_Info *img = bsg_mach_headers_get_images(); img != NULL; img = atomic_load(&img->next)) {
-            if (img->inCrashReport) {
-                bsg_kscrw_i_writeBinaryImage(writer, NULL, img);
+    if (referencedImages) {
+        for (const BSG_Report_Image_Block *block = referencedImages->head;
+             block; block = block->next) {
+            for (uint32_t i = 0; i < block->count; i++) {
+                bsg_kscrw_i_writeBinaryImage(writer, NULL, &block->images[i]);
             }
         }
     }
@@ -1218,18 +1291,18 @@ void bsg_kscrashreport_writeMinimalReport(
         {
             bsg_kscrw_i_writeThread(
                 writer, BSG_KSCrashField_CrashedThread, &crashContext->crash,
-                crashContext->crash.offendingThread,
-                0,
-                bsg_kscrw_i_threadIndex(crashContext->crash.offendingThread));
+                crashContext->crash.offendingThread, 0,
+                bsg_kscrw_i_threadIndex(crashContext->crash.offendingThread),
+                NULL);
             bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error,
                                    &crashContext->crash);
         }
         writer->endContainer(writer);
 
-        BSG_Mach_Header_Info *image = bsg_mach_headers_get_self_image();
-        if (image) {
+        BSG_Mach_Header_Info image;
+        if (bsg_mach_headers_get_self_image(&image)) {
             writer->beginArray(writer, BSG_KSCrashField_BinaryImages);
-            bsg_kscrw_i_writeBinaryImage(writer, NULL, image);
+            bsg_kscrw_i_writeBinaryImage(writer, NULL, &image);
             writer->endContainer(writer);
         }
     }
@@ -1320,14 +1393,21 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
 void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
                                 const BSG_KSCrashReportWriter *writer) {
     const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
+    BSG_Referenced_Image_Set referencedImages = {
+        .head = NULL, .tail = NULL, .allocationFailed = false,
+    };
 
     writer->beginObject(writer, BSG_KSCrashField_Crash);
     {
         bsg_kscrw_i_writeError(writer, BSG_KSCrashField_Error, crash);
-        bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, crash);
+        bsg_kscrw_i_writeAllThreads(writer, BSG_KSCrashField_Threads, crash,
+                                    &referencedImages);
     }
     writer->endContainer(writer);
 
     // Called *after* writeAllThreads() so that we know which images to include
-    bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages);
+    bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages,
+                                  &referencedImages);
+    bsg_referenced_image_set_free(&referencedImages);
 }
+

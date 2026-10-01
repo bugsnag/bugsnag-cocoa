@@ -234,7 +234,7 @@
 
 - (void)testRealCallStackSymbols {
     bsg_mach_headers_initialize();
-    bsg_mach_headers_get_images(); // Ensure call stack can be symbolicated
+    bsg_mach_headers_get_images(NULL); // Ensure call stack can be symbolicated
     
     NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];

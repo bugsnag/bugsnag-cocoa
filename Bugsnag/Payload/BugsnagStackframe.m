@@ -184,12 +184,15 @@ static NSDictionary * _Nullable FindImage(NSArray *images, uintptr_t addr) {
     if ((self = [super init])) {
         _frameAddress = @(address);
         _needsSymbolication = YES;
-        BSG_Mach_Header_Info *header = bsg_mach_headers_image_at_address(address);
-        if (header) {
-            _machoFile = header->name ? @(header->name) : nil;
-            _machoLoadAddress = @((uintptr_t)header->header);
-            _machoVmAddress = @(header->imageVmAddr);
-            _machoUuid = header->uuid ? [[NSUUID alloc] initWithUUIDBytes:header->uuid].UUIDString : nil;
+        BSG_Mach_Header_Info header;
+        if (bsg_mach_headers_image_at_address(address, &header)) {
+            _machoFile = header.name ? @(header.name) : nil;
+            _machoLoadAddress = @((uintptr_t)header.header);
+            _machoVmAddress = @(header.imageVmAddr);
+            _machoUuid =
+                header.uuid
+                    ? [[NSUUID alloc] initWithUUIDBytes:header.uuid].UUIDString
+                    : nil;
         }
     }
     return self;
