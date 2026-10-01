@@ -7,8 +7,6 @@
 //
 
 #import "Scenario.h"
-#import "Logging.h"
-
 @interface RemoteConfigExpiryError : NSError
 @end
 @implementation RemoteConfigExpiryError
