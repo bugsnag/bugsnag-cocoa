@@ -172,10 +172,11 @@ metadata:
             (!!image.uuid != !!verify.uuid) ||
             (image.uuid && memcmp(image.uuid, verify.uuid, 16))) goto invalid;
     }
-    result->image_header = image.header;
-    memcpy(result->image_name_storage, image.nameStorage, sizeof(result->image_name_storage));
-    result->image_name = result->image_name_storage;
+    bsg_mach_headers_copy_image(&result->image, &image);
+    result->image_header = result->image.header;
+    result->image_name = result->image.name;
     return;
 invalid:
     memset(result, 0, sizeof(*result));
 }
+

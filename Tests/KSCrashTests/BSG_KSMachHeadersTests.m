@@ -102,6 +102,39 @@ static void readDuringInitialization(void) {
     bsg_test_support_mach_headers_reset();
 }
 
+- (void)testGetImagesAcceptsStableArrayWithOptionalCount {
+    BSG_Dyld_Image_Info entries[2];
+    memset(entries, 0, sizeof(entries));
+    struct dyld_all_image_infos info = {0};
+    info.infoArray = entries;
+    info.infoArrayCount = 2;
+    bsg_test_support_mach_headers_set_dyld_info(&info);
+    uint32_t count = 99;
+    XCTAssertEqual(bsg_mach_headers_get_images(&count), (const BSG_Dyld_Image_Info *)entries);
+    XCTAssertEqual(count, 2u);
+    XCTAssertEqual(bsg_mach_headers_get_images(NULL), (const BSG_Dyld_Image_Info *)entries);
+    bsg_test_support_mach_headers_reset();
+}
+
+- (void)testUnreadableDyldInfoReturnsZeroCount {
+    vm_address_t address = 0;
+    kern_return_t result = vm_allocate(mach_task_self(), &address,
+                                       vm_page_size, VM_FLAGS_ANYWHERE);
+    XCTAssertEqual(result, KERN_SUCCESS);
+    if (result != KERN_SUCCESS) return;
+    bsg_test_support_mach_headers_set_dyld_info((const void *)address);
+    result = vm_protect(mach_task_self(), address, vm_page_size, false, VM_PROT_NONE);
+    XCTAssertEqual(result, KERN_SUCCESS);
+    if (result == KERN_SUCCESS) {
+        uint32_t count = 99;
+        XCTAssertEqual(bsg_mach_headers_get_images(&count), NULL);
+        XCTAssertEqual(count, 0u);
+        XCTAssertEqual(bsg_mach_headers_get_images(NULL), NULL);
+    }
+    bsg_test_support_mach_headers_reset();
+    XCTAssertEqual(vm_deallocate(mach_task_self(), address, vm_page_size), KERN_SUCCESS);
+}
+
 - (void)testReadersDoNotObservePartialInitialization {
     bsg_test_support_mach_headers_reset();
     initializationReadersFailedSafely = false;
@@ -158,6 +191,40 @@ static void readDuringInitialization(void) {
     XCTAssertTrue(
         bsg_mach_headers_image_named(mainImage.name, true, &foundImage));
     XCTAssertEqual(foundImage.header, mainImage.header);
+}
+
+- (void)testImageNameScanAcrossBatchBoundaries {
+    enum { imageCount = 130 };
+    BSG_Mach_Header_Info mainImage;
+    XCTAssertTrue(bsg_mach_headers_get_main_image(&mainImage));
+    NSMutableData *data = [NSMutableData dataWithLength:imageCount * sizeof(struct dyld_image_info)];
+    struct dyld_image_info *entries = data.mutableBytes;
+    for (unsigned i = 0; i < imageCount; i++) {
+        entries[i].imageLoadAddress = mainImage.header;
+        entries[i].imageFilePath = "/test/ordinary.dylib";
+    }
+    struct dyld_all_image_infos info = {0};
+    info.infoArray = entries;
+    info.infoArrayCount = imageCount;
+    bsg_test_support_mach_headers_set_dyld_info(&info);
+    XCTAssertFalse(bsg_mach_headers_image_named("MobileSubstrate", false, NULL));
+    const unsigned positions[] = {0, 63, 64, 127, 128, 129};
+    const char *path = "/test/MobileSubstrate.dylib";
+    for (unsigned i = 0; i < sizeof(positions) / sizeof(positions[0]); i++) {
+        entries[positions[i]].imageFilePath = path;
+        XCTAssertTrue(bsg_mach_headers_image_named("MobileSubstrate", false, NULL));
+        XCTAssertFalse(bsg_mach_headers_image_named("MobileSubstrate", true, NULL));
+        BSG_Mach_Header_Info image;
+        BOOL found = bsg_mach_headers_image_named(path, true, &image);
+        XCTAssertTrue(found);
+        if (found) {
+            XCTAssertEqual(image.header, mainImage.header);
+            XCTAssertEqualObjects(@(image.name), @(path));
+        }
+        entries[positions[i]].imageFilePath = "/test/ordinary.dylib";
+    }
+    bsg_test_support_mach_headers_reset();
+    bsg_mach_headers_initialize();
 }
 
 - (void)testImageAtAddress {
@@ -258,3 +325,4 @@ static void readDuringInitialization(void) {
 }
 
 @end
+

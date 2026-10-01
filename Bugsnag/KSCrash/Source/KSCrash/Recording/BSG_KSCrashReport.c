@@ -47,7 +47,7 @@
 #include "BSGDefines.h"
 #include "BSGRunContext.h"
 
-#include <mach-o/dyld_images.h>
+#include <mach/mach.h>
 #include <mach-o/loader.h>
 #include <sys/time.h>
 
@@ -80,40 +80,67 @@ typedef struct {
     size_t allocated_size;
 } BSG_ThreadDataBuffer;
 
-// Tracks images referenced by stack frames so compact crash reports can avoid
-// serializing unrelated images without mutating the shared image cache.
-#define BSG_MAX_REFERENCED_IMAGES 512
-typedef struct {
-    uintptr_t addresses[BSG_MAX_REFERENCED_IMAGES];
+// Own the metadata used by this report, not just addresses back into dyld.
+// Allocate VM in small blocks without using malloc (another suspended thread
+// may hold the heap lock). Blocks are report-local, including on re-entry, and
+// never live on the crash handler's limited stack.
+#define BSG_REPORT_IMAGES_PER_BLOCK 8
+typedef struct BSG_Report_Image_Block {
+    struct BSG_Report_Image_Block *next;
     uint32_t count;
-    bool overflowed;
+    BSG_Mach_Header_Info images[BSG_REPORT_IMAGES_PER_BLOCK];
+} BSG_Report_Image_Block;
+
+typedef struct {
+    BSG_Report_Image_Block *head;
+    BSG_Report_Image_Block *tail;
+    bool allocationFailed;
 } BSG_Referenced_Image_Set;
 
-static bool
-bsg_referenced_image_set_contains(const BSG_Referenced_Image_Set *set,
-                                  uintptr_t address) {
-    if (set == NULL) {
-        return false;
-    }
-    for (uint32_t i = 0; i < set->count; i++) {
-        if (set->addresses[i] == address) {
-            return true;
+static bool bsg_referenced_image_set_add(BSG_Referenced_Image_Set *set,
+                                         const BSG_Mach_Header_Info *image) {
+    // Minimal (recrash) reports keep their existing self-image-only format.
+    if (set == NULL) return true;
+    for (BSG_Report_Image_Block *block = set->head; block; block = block->next) {
+        for (uint32_t i = 0; i < block->count; i++) {
+            const BSG_Mach_Header_Info *saved = &block->images[i];
+            if (saved->header == image->header) {
+                // Address reuse must not attach a new library's frames to an
+                // earlier library's UUID. Keep raw addresses on a mismatch.
+                return (!!saved->uuid == !!image->uuid) &&
+                    (!saved->uuid || memcmp(saved->uuid, image->uuid, 16) == 0);
+            }
         }
     }
-    return false;
+    if (set->tail == NULL || set->tail->count == BSG_REPORT_IMAGES_PER_BLOCK) {
+        if (set->allocationFailed) return false;
+        vm_address_t address = 0;
+        if (vm_allocate(mach_task_self(), &address, sizeof(BSG_Report_Image_Block),
+                        VM_FLAGS_ANYWHERE) != KERN_SUCCESS) {
+            // Preserve the raw frames without repeatedly trying to allocate
+            // or emitting object_addr references with no binary-image entry.
+            set->allocationFailed = true;
+            return false;
+        }
+        BSG_Report_Image_Block *block = (void *)address;
+        block->next = NULL;
+        block->count = 0;
+        if (set->tail) set->tail->next = block;
+        else set->head = block;
+        set->tail = block;
+    }
+    bsg_mach_headers_copy_image(&set->tail->images[set->tail->count++], image);
+    return true;
 }
 
-static void bsg_referenced_image_set_add(BSG_Referenced_Image_Set *set,
-                                         uintptr_t address) {
-    if (set == NULL || address == 0 || set->overflowed ||
-        bsg_referenced_image_set_contains(set, address)) {
-        return;
+static void bsg_referenced_image_set_free(BSG_Referenced_Image_Set *set) {
+    BSG_Report_Image_Block *block = set->head;
+    while (block) {
+        BSG_Report_Image_Block *next = block->next;
+        vm_deallocate(mach_task_self(), (vm_address_t)block, sizeof(*block));
+        block = next;
     }
-    if (set->count < BSG_MAX_REFERENCED_IMAGES) {
-        set->addresses[set->count++] = address;
-    } else {
-        set->overflowed = true;
-    }
+    set->head = set->tail = NULL;
 }
 
 // ============================================================================
@@ -526,9 +553,8 @@ void bsg_kscrw_i_writeBacktraceEntry(
     BSG_Referenced_Image_Set *referencedImages) {
     writer->beginObject(writer, key);
     {
-        if (info->image_header) {
-            bsg_referenced_image_set_add(referencedImages,
-                                         (uintptr_t)info->image_header);
+        if (info->image_header &&
+            bsg_referenced_image_set_add(referencedImages, &info->image)) {
             writer->addUIntegerElement(writer, BSG_KSCrashField_ObjectAddr,
                                        (uintptr_t)info->image_header);
         }
@@ -896,58 +922,13 @@ void bsg_kscrw_i_writeBinaryImage(const BSG_KSCrashReportWriter *const writer,
 void bsg_kscrw_i_writeBinaryImages(
     const BSG_KSCrashReportWriter *const writer, const char *const key,
     const BSG_Referenced_Image_Set *referencedImages) {
-    uint32_t count = 0;
-    const BSG_Dyld_Image_Info *images = bsg_mach_headers_get_images(&count);
-    BSG_Mach_Header_Info dyldImage;
-    bool hasDyldImage = bsg_mach_headers_get_dyld_image(&dyldImage);
-    bool wroteDyldImage = false;
     writer->beginArray(writer, key);
-    {
-        if (images == NULL) {
-            // dyld can temporarily withdraw its array. Preserve the stable
-            // metadata we already have instead of writing an empty image list.
-            // Never wait for a cache lock held by a suspended/crashed thread.
-            BSG_Mach_Header_Info cachedImage;
-            for (uint32_t i = 0; bsg_mach_headers_get_cached_image(i, &cachedImage); i++) {
-                if (referencedImages != NULL && !referencedImages->overflowed &&
-                    !bsg_referenced_image_set_contains(referencedImages,
-                                                       (uintptr_t)cachedImage.header)) {
-                    continue;
-                }
-                bsg_kscrw_i_writeBinaryImage(writer, NULL, &cachedImage);
-                if (hasDyldImage && cachedImage.header == dyldImage.header) {
-                    wroteDyldImage = true;
-                }
+    if (referencedImages) {
+        for (const BSG_Report_Image_Block *block = referencedImages->head;
+             block; block = block->next) {
+            for (uint32_t i = 0; i < block->count; i++) {
+                bsg_kscrw_i_writeBinaryImage(writer, NULL, &block->images[i]);
             }
-        }
-        for (uint32_t i = 0; images != NULL && i < count; i++) {
-            BSG_Dyld_Image_Info entry;
-            if (!bsg_mach_headers_read_image_entry(images, i, &entry)) break;
-            const struct mach_header *header = entry.imageLoadAddress;
-            if (referencedImages != NULL && !referencedImages->overflowed &&
-                !bsg_referenced_image_set_contains(referencedImages,
-                                                   (uintptr_t)header)) {
-                continue;
-            }
-            bool isDyldImage = hasDyldImage && header == dyldImage.header;
-            const char *name = entry.imageFilePath;
-            if (isDyldImage && name == NULL) {
-                name = dyldImage.name;
-            }
-            BSG_Mach_Header_Info image;
-            if (bsg_mach_headers_image_for_header(header, name, &image)) {
-                bsg_kscrw_i_writeBinaryImage(writer, NULL, &image);
-                if (isDyldImage) {
-                    wroteDyldImage = true;
-                }
-            }
-        }
-
-        if (hasDyldImage && !wroteDyldImage &&
-            (referencedImages == NULL || referencedImages->overflowed ||
-             bsg_referenced_image_set_contains(referencedImages,
-                                               (uintptr_t)dyldImage.header))) {
-            bsg_kscrw_i_writeBinaryImage(writer, NULL, &dyldImage);
         }
     }
     writer->endContainer(writer);
@@ -1413,9 +1394,7 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
                                 const BSG_KSCrashReportWriter *writer) {
     const BSG_KSCrash_SentryContext *crash = &crashContext->crash;
     BSG_Referenced_Image_Set referencedImages = {
-        .addresses = {0},
-        .count = 0,
-        .overflowed = false,
+        .head = NULL, .tail = NULL, .allocationFailed = false,
     };
 
     writer->beginObject(writer, BSG_KSCrashField_Crash);
@@ -1429,5 +1408,6 @@ void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *crashContext,
     // Called *after* writeAllThreads() so that we know which images to include
     bsg_kscrw_i_writeBinaryImages(writer, BSG_KSCrashField_BinaryImages,
                                   &referencedImages);
+    bsg_referenced_image_set_free(&referencedImages);
 }
 

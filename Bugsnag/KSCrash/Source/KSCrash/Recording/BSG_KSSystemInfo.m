@@ -55,7 +55,7 @@ static inline bool is_jailbroken(void) {
         get_jailbreak_status(&is_jb);
 
         // Also keep using the old detection method.
-        if(bsg_mach_headers_image_named("MobileSubstrate", false, NULL)) {
+        if(!is_jb && bsg_mach_headers_image_named("MobileSubstrate", false, NULL)) {
             is_jb = true;
         }
         initialized_jb = true;
@@ -452,3 +452,4 @@ NSString * BSGGetDefaultDeviceId(void) {
 NSDictionary * BSGGetSystemInfo(void) {
     return [BSG_KSSystemInfo systemInfo];
 }
+

@@ -9,6 +9,7 @@
 #define BSG_Symbolicate_h
 
 #include <stdint.h>
+#include "BSG_KSMachHeaders.h"
 
 struct mach_header;
 
@@ -22,7 +23,7 @@ struct bsg_symbolicate_result {
     uintptr_t function_address;
     const char *function_name;
     // Storage belongs to the result, not to dyld's image mapping.
-    char image_name_storage[1024];
+    BSG_Mach_Header_Info image;
     char function_name_storage[4096];
 };
 

@@ -95,6 +95,19 @@ bool bsg_mach_headers_read_image_entry(const BSG_Dyld_Image_Info *images,
                           entry, sizeof(*entry));
 }
 
+// Copy a bounded batch instead of issuing one kernel call for every entry.
+// The entries remain local copies; never dereference dyld's live array.
+#define BSG_IMAGE_ENTRY_BATCH_SIZE 64
+static bool read_image_batch(const BSG_Dyld_Image_Info *images, uint32_t index,
+                             uint32_t count, BSG_Dyld_Image_Info *entries) {
+    if (!images || index >= count ||
+        index > (UINTPTR_MAX - (uintptr_t)images) / sizeof(*images)) return false;
+    size_t length = count - index;
+    if (length > BSG_IMAGE_ENTRY_BATCH_SIZE) length = BSG_IMAGE_ENTRY_BATCH_SIZE;
+    return bsg_image_read((const void *)((uintptr_t)images + index * sizeof(*images)),
+                          entries, length * sizeof(*images));
+}
+
 static bool is_main_header(const struct mach_header *header) {
     struct mach_header copy;
     return bsg_image_read(header, &copy, sizeof(copy)) && copy.filetype == MH_EXECUTE;
@@ -102,19 +115,22 @@ static bool is_main_header(const struct mach_header *header) {
 
 
 // dyld may temporarily publish a NULL array while changing the image list.
-// Never return a nonzero count without an array. The array remains dyld-owned.
+// Use separate checked reads: ordinary loads can be coalesced by the compiler.
+// This is a bounded consistency check, not an atomic snapshot or a lifetime
+// guarantee. Callers must still copy entries using checked reads because the
+// array remains dyld-owned and can change after this function returns.
 static const BSG_Dyld_Image_Info *get_images(uint32_t *count) {
     const BSG_Dyld_Image_Info *images = NULL;
+    const BSG_Dyld_Image_Info *confirmedImages = NULL;
     uint32_t imageCount = 0;
-    if (g_all_image_infos != NULL) {
-        images = g_all_image_infos->infoArray;
-        if (images != NULL) {
-            imageCount = g_all_image_infos->infoArrayCount;
-            if (images != g_all_image_infos->infoArray) {
-                images = NULL;
-                imageCount = 0;
-            }
-        }
+    if (g_all_image_infos == NULL ||
+        !bsg_image_read(&g_all_image_infos->infoArray, &images, sizeof(images)) ||
+        images == NULL ||
+        !bsg_image_read(&g_all_image_infos->infoArrayCount, &imageCount, sizeof(imageCount)) ||
+        !bsg_image_read(&g_all_image_infos->infoArray, &confirmedImages, sizeof(confirmedImages)) ||
+        images != confirmedImages) {
+        images = NULL;
+        imageCount = 0;
     }
     if (count != NULL) {
         *count = imageCount;
@@ -366,16 +382,11 @@ bool bsg_mach_headers_image_at_address(uintptr_t address,
         return false;
     }
 
-    BSG_Dyld_Image_Info entries[64];
+    BSG_Dyld_Image_Info entries[BSG_IMAGE_ENTRY_BATCH_SIZE];
     for (uint32_t i = 0; i < count; i++) {
-        if (i % 64 == 0) {
-            size_t length = count - i;
-            if (length > 64) length = 64;
-            if (i > (UINTPTR_MAX - (uintptr_t)images) / sizeof(*images) ||
-                !bsg_image_read((const void *)((uintptr_t)images + i * sizeof(*images)),
-                                entries, length * sizeof(*images))) break;
-        }
-        BSG_Dyld_Image_Info entry = entries[i % 64];
+        if (i % BSG_IMAGE_ENTRY_BATCH_SIZE == 0 &&
+            !read_image_batch(images, i, count, entries)) break;
+        BSG_Dyld_Image_Info entry = entries[i % BSG_IMAGE_ENTRY_BATCH_SIZE];
         const struct mach_header *header = entry.imageLoadAddress;
         if (header == NULL) {
             continue;
@@ -414,9 +425,11 @@ bool bsg_mach_headers_image_named(const char *imageName, bool exactMatch,
         return false;
     }
 
+    BSG_Dyld_Image_Info entries[BSG_IMAGE_ENTRY_BATCH_SIZE];
     for (uint32_t i = 0; i < count; i++) {
-        BSG_Dyld_Image_Info entry;
-        if (!bsg_mach_headers_read_image_entry(images, i, &entry)) break;
+        if (i % BSG_IMAGE_ENTRY_BATCH_SIZE == 0 &&
+            !read_image_batch(images, i, count, entries)) break;
+        BSG_Dyld_Image_Info entry = entries[i % BSG_IMAGE_ENTRY_BATCH_SIZE];
         char path[1024];
         if (!bsg_image_read_string(entry.imageFilePath, path, sizeof(path))) continue;
         const char *candidateName = path;
@@ -756,12 +769,15 @@ static const char *get_path(const struct mach_header *header) {
     }
     uint32_t count = 0;
     const BSG_Dyld_Image_Info *images = get_images(&count);
+    BSG_Dyld_Image_Info entries[BSG_IMAGE_ENTRY_BATCH_SIZE];
     for (uint32_t i = 0; i < count; i++) {
-        BSG_Dyld_Image_Info entry;
-        if (!bsg_mach_headers_read_image_entry(images, i, &entry)) break;
+        if (i % BSG_IMAGE_ENTRY_BATCH_SIZE == 0 &&
+            !read_image_batch(images, i, count, entries)) break;
+        BSG_Dyld_Image_Info entry = entries[i % BSG_IMAGE_ENTRY_BATCH_SIZE];
         if (entry.imageLoadAddress == header) {
             return entry.imageFilePath;
         }
     }
     return NULL;
 }
+
