@@ -107,6 +107,14 @@ static NSString * const BSGRemoteConfigExpiryRefreshAttemptPreference = @"com.bu
     XCTAssertNil([handler currentConfiguration]);
     XCTAssertEqual(service.requestCount, 0);
 }
+- (void)testRemoteConfigEnabledReflectsConfigurationURL {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    XCTAssertTrue([[self enabledHandlerWithService:service
+                                             store:[BSGInMemoryRemoteConfigStore new]] isRemoteConfigEnabled]);
+    XCTAssertFalse([[self handlerWithService:service
+                                       store:[BSGInMemoryRemoteConfigStore new]
+                            configurationURL:nil] isRemoteConfigEnabled]);
+}
 - (void)testCacheMissFetchesOnlyOnceDuringPersistedCooldown {
     BSGRecordingRemoteConfigService *firstService = [BSGRecordingRemoteConfigService new];
     [[self enabledHandlerWithService:firstService store:[BSGInMemoryRemoteConfigStore new]] currentConfiguration];

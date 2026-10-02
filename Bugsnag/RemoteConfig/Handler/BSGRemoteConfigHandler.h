@@ -20,5 +20,6 @@
 - (void)start;
 - (NSDate *)lastConfigUpdateTime;
 - (BOOL)hasValidConfig;
+- (BOOL)isRemoteConfigEnabled;
 
 @end

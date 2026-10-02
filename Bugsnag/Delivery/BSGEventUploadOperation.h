@@ -60,7 +60,7 @@ static const NSUInteger MaxPersistedSize = 1000000;
 
 - (NSString *)storeEventPayload:(NSDictionary *)eventPayload;
 - (BOOL)shouldDiscardEvent:(NSDictionary *)eventPayload;
-- (BOOL)hasValidRemoteConfig;
+- (BOOL)isRemoteConfigEnabled;
 
 @end
 
