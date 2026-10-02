@@ -152,11 +152,11 @@ static NSTimeInterval const BSGRemoteConfigCooldownJitter = 2 * 60 * 60;
                     BSGRemoteConfiguration *storedConfiguration = [self.store saveConfiguration:response.configuration];
                     if (storedConfiguration) {
                         self.remoteConfig = storedConfiguration;
+                        [self clearExpiredConfigRefreshAttempt];
                     } else {
                         self.remoteConfig = response.configuration;
                         bsg_log_debug(@"Unable to persist remote config");
                     }
-                    [self clearExpiredConfigRefreshAttempt];
                     break;
                 }
                 case BSGRemoteConfigServiceResponseTypeError:
