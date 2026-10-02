@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 6.38.1 (2026-10-02)
+
+### Bug Fixes
+
+* Enhanced Remote Config refresh operation when local cache persistence failures occur.
+  [#1968](https://github.com/bugsnag/bugsnag-cocoa/pull/1968)
+
 ## 6.38.0 (2026-09-08)
 
 ### Enhancements
