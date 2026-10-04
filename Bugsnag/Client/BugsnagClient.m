@@ -281,16 +281,15 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 }
 
 - (void)start {
-
-    // a full one time walk of every loaded dyld image
-    bsg_kssysteminfo_prefetchJailbreakStatus();
-    
     // Called here instead of in init so that a bad config will only throw an exception
     // from the start method.
     [self.configuration validate];
 
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
+    
+    // A full one time walk of every loaded dyld image
+    bsg_kssysteminfo_prefetchJailbreakStatus();
 
     // Map our bridged API early on.
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
