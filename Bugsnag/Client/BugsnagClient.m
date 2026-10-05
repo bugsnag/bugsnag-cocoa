@@ -1020,9 +1020,9 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     NSMutableDictionary *usage = [BSGTelemetryCreateUsage(self.configuration) mutableCopy] ?: [NSMutableDictionary new];
     
-    BOOL hasValidConfig = self.remoteConfigHandler && [self.remoteConfigHandler hasValidConfig];
+    BOOL remoteConfigEnabled = self.remoteConfigHandler && [self.remoteConfigHandler isRemoteConfigEnabled];
     
-    usage[@"remoteConfig"] = @(hasValidConfig); // true if config active, false otherwise
+    usage[@"remoteConfig"] = @(remoteConfigEnabled);
     
     event.usage = [NSDictionary dictionaryWithDictionary:usage];
 
