@@ -34,6 +34,7 @@
 #include "BSG_KSJSONCodec.h"
 #include "BSG_KSMach.h"
 #include "BSG_KSSignalInfo.h"
+#include "BSG_KSSystemInfoC.h"
 #include "BSG_KSString.h"
 #include "BSG_KSMachHeaders.h"
 #include "BSG_KSCrashNames.h"
@@ -1377,6 +1378,19 @@ void bsg_kscrashreport_writeKSCrashFields(BSG_KSCrash_Context *crashContext,
 
     writer->beginObject(writer, BSG_KSCrashField_SystemAtCrash);
     {
+        // The "system" object above can be a snapshot taken at install time,
+        // before the legacy (dyld image scan based) jailbreak check finished
+        // in the background -- see bsg_kssysteminfo_prefetchJailbreakStatus().
+        // Re-read the live, lock-free status here, at actual report-write
+        // time, and let it override that snapshot: a single atomic load,
+        // safe to do from a crash handler, never blocking or allocating.
+        // BSGEventUploadKSCrashReportOperation already merges this object's
+        // fields over "system"'s, so this just needs to be written, not
+        // separately wired into event parsing. The literal key must match
+        // BSG_KSSystemField_Jailbroken ("jailbroken") in BSG_KSSystemInfo.h;
+        // that header is Objective-C and can't be included from this file.
+        writer->addBooleanElement(writer, "jailbroken",
+                bsg_kssysteminfo_isJailbroken());
         BSGRunContextUpdateMemory();
         bsg_kscrw_i_writeMemoryInfo(writer, BSG_KSCrashField_Memory);
         bsg_kscrw_i_writeAppStats(writer, BSG_KSCrashField_AppStats,

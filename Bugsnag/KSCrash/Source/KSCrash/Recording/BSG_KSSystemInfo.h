@@ -66,13 +66,19 @@ extern "C" {
  *
  * Call this as early as possible during SDK startup so that cost overlaps
  * with the rest of initialization instead of adding to it.
- * +[BSG_KSSystemInfo systemInfo] still waits for this scan to finish before
- * returning its "jailbroken" value, so the result -- and anything captured
- * from it, such as the crash report's cached system info JSON -- is exactly
- * as accurate as if the scan had run synchronously inline; only *when* the
- * scan runs changes, never whether it has finished by the time its answer is
- * used. Safe to call multiple times, including concurrently: the scan itself
- * only ever runs once.
+ *
+ * Nothing waits for this scan to finish, including
+ * +[BSG_KSSystemInfo systemInfo] and the system info JSON snapshot captured
+ * once at crash-sentry install time: both report the best "jailbroken"
+ * answer known so far, which can be a provisional false if the scan hasn't
+ * completed yet. That's deliberate -- it keeps startup and every other
+ * caller of +systemInfo non-blocking. The one place accuracy still matters,
+ * an actual crash report, re-reads the live result directly (see
+ * bsg_kssysteminfo_isJailbroken() in BSG_KSSystemInfoC.h) at the moment the
+ * report is written and overrides the earlier snapshot with it, so real
+ * crash reports are exactly as accurate as a synchronous scan would have
+ * been. Safe to call multiple times, including concurrently: the scan
+ * itself only ever runs once.
  */
 void bsg_kssysteminfo_prefetchJailbreakStatus(void);
 

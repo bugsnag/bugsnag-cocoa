@@ -57,4 +57,51 @@
     }
 }
 
+// Regression coverage for the non-blocking jailbreak status (see the long
+// comment above is_jailbroken() in BSG_KSSystemInfo.m): +systemInfo must
+// never wait on the background legacy-scan, only report the best answer
+// known at the time it's called.
+
+- (void)testSystemInfoNeverBlocksOnJailbreakScan
+{
+    // A generous upper bound: even a slow device's dyld image scan is many
+    // orders of magnitude faster than this, so if +systemInfo ever starts
+    // waiting on it again, this is expected to fail well before it would
+    // from simply running on slow CI hardware.
+    NSDate *start = [NSDate date];
+    NSDictionary *info = [BSG_KSSystemInfo systemInfo];
+    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:start];
+    XCTAssertNotNil(info);
+    XCTAssertLessThan(elapsed, 0.25);
+}
+
+- (void)testJailbreakStatusIsReadableWithoutBlocking
+{
+    bsg_kssysteminfo_prefetchJailbreakStatus();
+    // A bare atomic load: must return immediately regardless of whether the
+    // background scan it reflects has finished yet.
+    NSDate *start = [NSDate date];
+    bool jailbroken = bsg_kssysteminfo_isJailbroken();
+    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:start];
+    (void)jailbroken;
+    XCTAssertLessThan(elapsed, 0.01);
+}
+
+- (void)testJailbreakDetectionEventuallyCompletes
+{
+    bsg_kssysteminfo_prefetchJailbreakStatus();
+    XCTestExpectation *done = [self expectationWithDescription:@"legacy scan completes"];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        // Poll rather than block on anything from the production code: this
+        // is the test confirming completion eventually happens at all, not
+        // exercising the (lack of) blocking behavior itself.
+        while (!bsg_kssysteminfo_isJailbreakDetectionComplete()) {
+            usleep(1000);
+        }
+        [done fulfill];
+    });
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    XCTAssertTrue(bsg_kssysteminfo_isJailbreakDetectionComplete());
+}
+
 @end

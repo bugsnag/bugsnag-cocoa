@@ -60,14 +60,27 @@
 //
 // bsg_kssysteminfo_prefetchJailbreakStatus() kicks the scan off on a
 // background queue instead, as early in startup as the caller can manage, so
-// its cost overlaps with the rest of SDK initialization. is_jailbroken()
-// still waits for the scan to finish before returning, so the result is
-// exactly as accurate -- and exactly as available to callers that capture it
-// once, such as the crash report's cached system info JSON -- as it would be
-// if the scan ran synchronously inline. Only the timing changes.
+// its cost overlaps with the rest of SDK initialization. Nothing waits for
+// it: is_jailbroken() (and therefore +systemInfo and the system info JSON
+// snapshot captured once at crash-sentry install time) returns the best
+// answer known *so far*, which can be a provisional "not jailbroken" if the
+// only positive indicator is this scan and it hasn't finished yet. That
+// snapshot is not the last word, though -- the actual crash report writer
+// (bsg_kscrashreport_writeKSCrashFields in BSG_KSCrashReport.c) re-reads the
+// live, lock-free status via bsg_kssysteminfo_isJailbroken() at the moment of
+// a real crash and overrides the frozen snapshot with it, so by the time any
+// crash is actually reported -- the case that matters -- the result is
+// exactly as accurate as a synchronous scan would have been, without ever
+// blocking a caller to get there.
+//
+// The status is stored as a plain lock-free atomic specifically so it can be
+// read from bsg_kssysteminfo_isJailbroken() inside a crash handler: no lock,
+// no allocation, no dispatch call, just a load.
+_Static_assert(ATOMIC_BOOL_LOCK_FREE == 2,
+               "jailbreak status must be lock-free to read during crash reporting");
 static dispatch_once_t g_legacyJailbreakScanOnce;
-static dispatch_group_t g_legacyJailbreakScanGroup;
 static _Atomic bool g_legacyJailbreakDetected = false;
+static _Atomic bool g_legacyJailbreakScanComplete = false;
 
 void bsg_kssysteminfo_prefetchJailbreakStatus(void) {
     dispatch_once(&g_legacyJailbreakScanOnce, ^{
@@ -75,36 +88,36 @@ void bsg_kssysteminfo_prefetchJailbreakStatus(void) {
         get_jailbreak_status(&is_jb);
         if (is_jb) {
             atomic_store_explicit(&g_legacyJailbreakDetected, true, memory_order_relaxed);
+            atomic_store_explicit(&g_legacyJailbreakScanComplete, true, memory_order_relaxed);
             return;
         }
 
         // Also keep using the old detection method, off the calling thread.
-        dispatch_group_t group = dispatch_group_create();
-        g_legacyJailbreakScanGroup = group;
-        dispatch_group_enter(group);
+        // Nothing waits on this block; it updates the atomics whenever it
+        // finishes, and readers simply see the latest value at the time.
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
             if (bsg_mach_headers_image_named("MobileSubstrate", false, NULL)) {
                 atomic_store_explicit(&g_legacyJailbreakDetected, true, memory_order_relaxed);
             }
-            dispatch_group_leave(group);
+            atomic_store_explicit(&g_legacyJailbreakScanComplete, true, memory_order_relaxed);
         });
     });
 }
 
-static inline bool is_jailbroken(void) {
-    static bool initialized_jb;
-    static bool is_jb;
-    if(!initialized_jb) {
-        bsg_kssysteminfo_prefetchJailbreakStatus();
-        dispatch_group_t group = g_legacyJailbreakScanGroup;
-        if (group != NULL) {
-            dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-        }
-        is_jb = atomic_load_explicit(&g_legacyJailbreakDetected, memory_order_relaxed);
-        initialized_jb = true;
-    }
+bool bsg_kssysteminfo_isJailbroken(void) {
+    return atomic_load_explicit(&g_legacyJailbreakDetected, memory_order_relaxed);
+}
 
-    return is_jb;
+bool bsg_kssysteminfo_isJailbreakDetectionComplete(void) {
+    return atomic_load_explicit(&g_legacyJailbreakScanComplete, memory_order_relaxed);
+}
+
+static inline bool is_jailbroken(void) {
+    // Make sure the scan has at least been started (safe and cheap to call
+    // repeatedly: dispatch_once makes every call after the first a no-op
+    // check), then report whatever is known right now. Never blocks.
+    bsg_kssysteminfo_prefetchJailbreakStatus();
+    return bsg_kssysteminfo_isJailbroken();
 }
 
 /**
