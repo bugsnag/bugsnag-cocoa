@@ -88,10 +88,13 @@
             NSURLComponents *components = [NSURLComponents componentsWithString:url ?: @""];
             NSMutableDictionary *params = [NSMutableDictionary new];
             for (NSURLQueryItem *item in components.queryItems) {
-                params[item.name] = item.value;
+                NSString *name = item.name;
+                if (name == nil) {
+                    continue;
+                }
+                params[name] = item.value;
             }
             self.params = params;
-
         } else {
             self.url = url;
         }
