@@ -258,7 +258,7 @@ steps:
     depends_on: "cocoa_fixture"
     matrix:
       setup:
-        os: ["15", "14", "13", "12", "11", "10.15", "10.14", "10.13"]
+        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
     agents:
       queue: "macos-{{matrix.os}}-isolated"
     timeout_in_minutes: 120
@@ -541,17 +541,21 @@ steps:
 
   ##############################################################################
   #
-  # NEW (TEMP, PLAT-17374): Xcode 27 on macos-26-2
+  # TEMP (PLAT-17374): Xcode 27 on the macos-26-2 agent
   #
   # - Everything above is unchanged (Xcode 26 jobs).
   # - Every job below is soft_fail, so it can't turn the build red.
   # - Artifacts use *_xcode27 names so they never replace the Xcode 26 artifacts
   #   that the jobs above download by fixed path.
-  #
-  # TODO before pushing:
-  #   1. Replace  xcode: "27"  with macos-26-2's real unique agent tag (8 places).
-  #   2. Replace  27.X.X  with the XCODE_VERSION string infra gives you (8 places).
-  #   3. Run the env check job once, then fill in OS=27.X and the DEVICE names.
+  # - All Mac jobs target   queue: "macos-26-2"   (the only agent tag used).
+  #   If the agent's real tag is different, change it in the 8 places below:
+  #     sed -i '' 's/queue: "macos-26-2"/queue: "<real-queue>"/' .buildkite/pipeline.yml
+  # - No XCODE_VERSION is set: the jobs use the agent's default Xcode, and
+  #   every job first checks that the default really is Xcode 27.
+  #   Once you know the exact version (from the env check log), you can pin it
+  #   by adding  XCODE_VERSION: "<version>"  to each step's env.
+  # - Simulator OS/SDK versions are detected at run time from `xcodebuild -showsdks`.
+  #   ($$ is used so Buildkite doesn't interpolate shell variables at upload time.)
   #
 
   - group: ":xcode: Xcode 27 (macos-26-2)"
@@ -562,17 +566,16 @@ steps:
         timeout_in_minutes: 5
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO: macos-26-2's unique tag
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
           - "hostname"
           - "sw_vers"
           - "xcode-select -p"
           - "xcodebuild -version"
+          - "xcodebuild -showsdks"
           - "xcrun simctl list runtimes"
           - "xcrun simctl list devicetypes | grep -E 'iPhone|Apple Watch|Apple TV'"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: default Xcode on this agent is not Xcode 27' && exit 1)"
 
       - label: "Xcode 27 - Static framework and SPM builds"
         key: "xcode27_framework_build"
@@ -580,13 +583,11 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
+          queue: "macos-26-2"
         env:
-          XCODE_VERSION: "27.X.X"        # TODO
           CODE_SIGN_XCFRAMEWORK: "true"
         commands:
-          - "xcodebuild -version"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "make build_xcframework"
           - "make build_swift"
           - "make build_ios_static"
@@ -601,12 +602,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
-          - "xcodebuild -version"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "./scripts/build-carthage.sh"
         artifact_paths:
           - "features/fixtures/carthage/carthage-*.log"
@@ -617,12 +615,9 @@ steps:
         timeout_in_minutes: 20
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
-          - "xcodebuild -version"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "ruby scripts/build-test-fixture.rb"
           - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
           - "cp features/fixtures/ios/output/ipa_url_bb_debug.txt features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
@@ -632,45 +627,48 @@ steps:
           - "features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
           - "features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip"
 
-      - label: "Xcode 27 - iOS 27 unit tests"
+      - label: "Xcode 27 - iOS unit tests"
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=27.X DEVICE=\"<iPhone from env check>\""
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
+            echo "Using iOS simulator $$IOS_OS"
+            ./scripts/run-unit-tests.sh PLATFORM=iOS OS=$$IOS_OS DEVICE="iPhone 17"
         artifact_paths:
           - "logs/*"
 
-      - label: "Xcode 27 - tvOS 27 unit tests"
+      - label: "Xcode 27 - tvOS unit tests"
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=tvOS OS=27.X"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
+            echo "Using tvOS simulator $$TVOS_OS"
+            ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=$$TVOS_OS
         artifact_paths:
           - "logs/*"
 
-      - label: "Xcode 27 - watchOS 27 unit tests"
+      - label: "Xcode 27 - watchOS unit tests"
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=watchOS OS=27.X SDK=watchsimulator27.X DEVICE=\"<Apple Watch from env check>\""
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
+            echo "Using watchOS simulator $$WATCH_OS"
+            ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 11 (46mm)"
         artifact_paths:
           - "logs/*"
 
@@ -679,11 +677,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          xcode: "27"                    # TODO
-        env:
-          XCODE_VERSION: "27.X.X"        # TODO
+          queue: "macos-26-2"
         commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "./scripts/run-unit-tests.sh PLATFORM=macOS"
         artifact_paths:
           - "logs/*"
