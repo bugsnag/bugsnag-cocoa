@@ -11,120 +11,126 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdatomic.h>
+#include <stddef.h>
+#include <mach-o/loader.h>
 
-/* Maintaining our own list of framework Mach headers means that we avoid potential
- * deadlock situations where we try and suspend lock-holding threads prior to
- * loading mach headers as part of our normal event handling behaviour.
- */
+// Older Apple SDK headers omit this flag. Its Mach-O bit value is unchanged;
+// keep the compatibility definition shared by lookup, symbolication and tests.
+#ifndef MH_DYLIB_IN_CACHE
+#define MH_DYLIB_IN_CACHE 0x80000000
+#endif
 
-/**
- * An encapsulation of the Mach header data as a linked list - either 64 or 32 bit, along with some additiona
- * information required for detailing a crash report's binary images.
- */
+struct dyld_image_info;
+struct mach_header;
+struct dyld_all_image_infos;
+
+/** An image entry supplied by dyld. */
+typedef struct dyld_image_info BSG_Dyld_Image_Info;
+
+/** Information required to symbolicate an address and describe its binary
+ * image. */
 typedef struct bsg_mach_image {
-
-    /// The mach_header or mach_header_64
+    /// The mach_header or mach_header_64.
     ///
-    /// This is also the memory address where the __TEXT segment has been loaded by dyld, including slide.
+    /// This is also the address where the __TEXT segment was loaded by dyld,
+    /// including its slide.
     const struct mach_header *header;
 
-    /// The vmaddr specified for the __TEXT segment
-    ///
-    /// This is the load address specified at build time, and does not account for slide applied by dyld.
+    /// The vmaddr specified for the __TEXT segment.
     uint64_t imageVmAddr;
 
-    /// The vmsize of the __TEXT segment
+    /// The vmsize of the __TEXT segment.
     uint64_t imageSize;
 
-    /// A UUID that uniquely identifies this image, used to identify its associated dSYM
+    /// The image UUID used to identify its associated dSYM.
     const uint8_t *uuid;
 
-    /// The pathname of the shared object (Dl_info.dli_fname)
-    const char* name;
+    /// The pathname of the image.
+    const char *name;
 
-    /// The virtual memory address slide of the image
+    /// The virtual memory address slide of the image.
     intptr_t slide;
 
-    /// True if the image has been unloaded and should be ignored
-    bool unloaded;
-    
-    /// True if the image is referenced by the current crash report.
-    bool inCrashReport;
-
-    /// The next image in the linked list
-    _Atomic(struct bsg_mach_image *) next;
+    // Caller-owned metadata: never return UUID/name pointers into an unloadable
+    // image. Copy this structure using the helper below to rebase its pointers.
+    uint32_t flags;
+    int32_t cpuType;
+    int32_t cpuSubtype;
+    uint8_t uuidStorage[16];
+    char nameStorage[1024];
 } BSG_Mach_Header_Info;
+
+void bsg_mach_headers_copy_image(BSG_Mach_Header_Info *destination,
+                                const BSG_Mach_Header_Info *source);
+
+/** Copy a dyld array entry without dereferencing potentially unmapped memory. */
+bool bsg_mach_headers_read_image_entry(const BSG_Dyld_Image_Info *images,
+                                      uint32_t index, BSG_Dyld_Image_Info *entry);
 
 // MARK: - Operations
 
 /**
- * Initialize the headers management system.
- * This MUST be called before calling anything else.
+ * Initialize the three startup images. Readers never wait for an initializer
+ * interrupted by a crash; lookups may fail until initialization completes.
+ * System shared-cache images are cached on demand in a fixed-size cache.
  */
 void bsg_mach_headers_initialize(void);
 
 /**
- * Returns the head of the link list of headers
+ * Return dyld's live array of loaded images and place its current count in
+ * `count`. dyld itself is not included in this array. An unavailable array is
+ * returned as NULL with count zero. The array is owned by dyld, not a snapshot.
  */
-BSG_Mach_Header_Info *bsg_mach_headers_get_images(void);
+const BSG_Dyld_Image_Info *bsg_mach_headers_get_images(uint32_t *count);
+
+/** Copy information about the process's main image into `image`. */
+bool bsg_mach_headers_get_main_image(BSG_Mach_Header_Info *image);
+
+/** Copy information about the image that contains Bugsnag into `image`. */
+bool bsg_mach_headers_get_self_image(BSG_Mach_Header_Info *image);
+
+/** Copy information about dyld into `image`. */
+bool bsg_mach_headers_get_dyld_image(BSG_Mach_Header_Info *image);
+
+/** Copy a cached image by index, without waiting for a busy shared cache.
+ * Enumerates unique startup images followed by shared-cache images. Returns
+ * false at the end or if initialization/cache access is unavailable.
+ * This is a best-effort fallback, not a complete list of loaded images.
+ */
+bool bsg_mach_headers_get_cached_image(uint32_t index, BSG_Mach_Header_Info *image);
 
 /**
- * Returns the process's main image
+ * Populate `image` for a known header and path. This does not add the image to
+ * the address lookup cache.
  */
-BSG_Mach_Header_Info *bsg_mach_headers_get_main_image(void);
+bool bsg_mach_headers_image_for_header(const struct mach_header *header,
+                                       const char *name,
+                                       BSG_Mach_Header_Info *image);
 
-/**
- * Returns the image that contains KSCrash.
+/** Find the loaded binary image containing `address` and copy it into `image`.
  */
-BSG_Mach_Header_Info *bsg_mach_headers_get_self_image(void);
+bool bsg_mach_headers_image_at_address(uintptr_t address,
+                                       BSG_Mach_Header_Info *image);
 
-/**
- * Find the loaded binary image that contains the specified instruction address.
-*/
-BSG_Mach_Header_Info *bsg_mach_headers_image_at_address(const uintptr_t address);
+/** Find a loaded image whose path matches `imageName`. */
+bool bsg_mach_headers_image_named(const char *imageName, bool exactMatch,
+                                  BSG_Mach_Header_Info *image);
 
-
-/** Find a loaded binary image with the specified name.
- *
- * @param imageName The image name to look for.
- *
- * @param exactMatch If true, look for an exact match instead of a partial one.
- *
- * @return the matched image, or NULL if not found.
- */
-BSG_Mach_Header_Info *bsg_mach_headers_image_named(const char *const imageName, bool exactMatch);
-
-/** Get the address of the first command following a header (which will be of
- * type struct load_command).
- *
- * @param header The header to get commands for.
- *
- * @return The address of the first command, or NULL if none was found (which
- *         should not happen unless the header or image is corrupt).
- */
+/** Get the address of the first load command following a Mach header. */
 uintptr_t bsg_mach_headers_first_cmd_after_header(const struct mach_header *header);
 
-/** Get the __crash_info message of the specified image.
- *
- * @param header The header to get commands for.
- * @return The __crash_info message, or NULL if no readable message could be found.
- */
-const char *bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *header);
+/** Copy the __crash_info message; fail if unreadable or larger than capacity. */
+bool bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *image,
+                                             char *message, size_t capacity);
 
-/**
- * Resets mach header data (for unit tests).
- */
+/** Reset Mach header data for unit tests. */
 void bsg_test_support_mach_headers_reset(void);
 
-/**
- * Add a binary image (for unit tests).
- */
-void bsg_test_support_mach_headers_add_image(const struct mach_header *mh, intptr_t slide);
+/** Return the number of startup images cached, excluding the shared-image cache. */
+uint32_t bsg_test_support_mach_headers_cached_image_count(void);
 
-/**
- * Remove a binary image (for unit tests).
- */
-void bsg_test_support_mach_headers_remove_image(const struct mach_header *mh, intptr_t slide);
+/** Test hooks; callers must ensure no other readers or initializer are active. */
+void bsg_test_support_mach_headers_set_initialization_hook(void (*hook)(void));
+void bsg_test_support_mach_headers_set_dyld_info(const struct dyld_all_image_infos *info);
 
 #endif /* BSG_KSMachHeaders_h */

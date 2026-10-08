@@ -52,6 +52,40 @@
 #define BSG_KSSystemField_Translated "proc_translated"
 #define BSG_KSSystemField_iOSSupportVersion "iOSSupportVersion"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Kicks off the legacy (dyld image scan based) jailbreak check on a
+ * background queue, if it has not been started yet. The scan walks every
+ * currently loaded image looking for one whose path contains
+ * "MobileSubstrate", which is O(number of loaded images) and would block
+ * Bugsnag's startup if run inline -- the common case, a non-jailbroken
+ * device, never finds a match and so always pays the full cost.
+ *
+ * Call this as early as possible during SDK startup so that cost overlaps
+ * with the rest of initialization instead of adding to it.
+ *
+ * Nothing waits for this scan to finish, including
+ * +[BSG_KSSystemInfo systemInfo] and the system info JSON snapshot captured
+ * once at crash-sentry install time: both report the best "jailbroken"
+ * answer known so far, which can be a provisional false if the scan hasn't
+ * completed yet. That's deliberate -- it keeps startup and every other
+ * caller of +systemInfo non-blocking. The one place accuracy still matters,
+ * an actual crash report, re-reads the live result directly (see
+ * bsg_kssysteminfo_isJailbroken() in BSG_KSSystemInfoC.h) at the moment the
+ * report is written and overrides the earlier snapshot with it, so real
+ * crash reports are exactly as accurate as a synchronous scan would have
+ * been. Safe to call multiple times, including concurrently: the scan
+ * itself only ever runs once.
+ */
+void bsg_kssysteminfo_prefetchJailbreakStatus(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 /**
  * Provides system information useful for a crash report.
  */

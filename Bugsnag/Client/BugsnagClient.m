@@ -287,6 +287,9 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
+    
+    // A full one time walk of every loaded dyld image
+    bsg_kssysteminfo_prefetchJailbreakStatus();
 
     // Map our bridged API early on.
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
