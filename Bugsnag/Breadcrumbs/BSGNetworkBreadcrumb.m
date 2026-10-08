@@ -62,6 +62,11 @@ NSDictionary<NSString *, id> * BSGURLParamsForQueryItems(NSArray<NSURLQueryItem 
     }
     NSMutableDictionary *result = [NSMutableDictionary new];
     for (NSURLQueryItem *item in queryItems) {
+        NSString *name = item.name;
+        if (name == nil) {
+            continue;
+        }
+
         // - note: If a NSURLQueryItem name-value pair is empty (i.e. the query string starts with '&', ends
         // with '&', or has "&&" within it), you get a NSURLQueryItem with a zero-length name and a nil value.
         // If a NSURLQueryItem name-value pair has nothing before the equals sign, you get a zero-length name.
@@ -69,14 +74,14 @@ NSDictionary<NSString *, id> * BSGURLParamsForQueryItems(NSArray<NSURLQueryItem 
         // If a NSURLQueryItem name-value pair has no equals sign, the NSURLQueryItem name-value pair string
         // is the name and you get a nil value.
         id value = item.value ?: [NSNull null];
-        
-        id existingValue = result[item.name]; 
+
+        id existingValue = result[name];
         if ([existingValue isKindOfClass:[NSMutableArray class]]) {
             [existingValue addObject:value];
         } else if (existingValue) {
-            result[item.name] = [NSMutableArray arrayWithObjects:existingValue, value, nil];
+            result[name] = [NSMutableArray arrayWithObjects:existingValue, value, nil];
         } else {
-            result[item.name] = value;
+            result[name] = value;
         }
     }
     return result;
