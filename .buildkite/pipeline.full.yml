@@ -2,6 +2,17 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
+  # NOTE: Keep your existing "framework_build" and "cocoa_fixture" steps here
+  #       (they were not part of the snippet you shared). Do not change them.
+
+  ##############################################################################
+  #
+  # Test fixtures
+  #
+  ##############################################################################
+
+  # Stays on Xcode 26 in this pipeline. Xcode 27 fixture builds go in the main
+  # pipeline, so the two never overwrite each other's artifacts.
   - label: "Build XcFramework test fixtures"
     key: "xcframework_cocoa_fixture"
     depends_on: "framework_build"
@@ -11,14 +22,14 @@ steps:
     env:
       XCODE_VERSION: "26.1.1"
     plugins:
-      - artifacts#v1.9.4:
-          download:
-            - "Bugsnag.xcframework.zip"
-            - "BugsnagNetworkRequestPlugin.xcframework.zip"
-          upload:
-            - "features/fixtures/ios/output/iOSTestAppXcFramework.ipa"
-            - "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-            - "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+      artifacts#v1.9.4:
+        download:
+          - "Bugsnag.xcframework.zip"
+          - "BugsnagNetworkRequestPlugin.xcframework.zip"
+        upload:
+          - "features/fixtures/ios/output/iOSTestAppXcFramework.ipa"
+          - "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+          - "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
     commands:
       - "unzip Bugsnag.xcframework.zip"
       - "unzip BugsnagNetworkRequestPlugin.xcframework.zip"
@@ -30,12 +41,11 @@ steps:
   #
   # e2e tests
   #
-
   ##############################################################################
+
   #
   # XcFramework e2e tests
   #
-
   - label: ":bitbar: {{matrix}} XcFramework barebone e2e tests"
     matrix:
       - "IOS_26"
@@ -107,6 +117,7 @@ steps:
   #
   - label: ":bitbar: {{matrix}} e2e tests batch 1"
     matrix:
+      - "IOS_26"   # iOS 26 moves here from the main pipeline
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -126,7 +137,7 @@ steps:
       docker-compose#v4.7.0:
         pull: "cocoa-maze-runner-bitbar"
         run: "cocoa-maze-runner-bitbar"
-        service-ports: "true"
+        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -152,6 +163,7 @@ steps:
 
   - label: ":bitbar: {{matrix}} e2e tests batch 2"
     matrix:
+      - "IOS_26"   # iOS 26 moves here from the main pipeline
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -171,7 +183,7 @@ steps:
       docker-compose#v4.7.0:
         pull: "cocoa-maze-runner-bitbar"
         run: "cocoa-maze-runner-bitbar"
-        service-ports: "true"
+        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -201,13 +213,14 @@ steps:
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ":browserstack: {{matrix}} app hang tests"
     matrix:
+      - "IOS_26"   # iOS 26 moves here from the main pipeline
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
       - "IOS_14"
       # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
-      #- "IOS_13"
+      # - "IOS_13"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
@@ -250,7 +263,7 @@ steps:
   - label: "macOS {{matrix.os}} e2e tests"
     matrix:
       setup:
-        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "26", "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]   # added "26"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
@@ -272,14 +285,35 @@ steps:
 
   ##############################################################################
   #
-  # Build example apps
+  # Build example apps - on BOTH Xcode 26 and Xcode 27
   #
+  # Each step is a matrix of (queue, xcode). Mismatched combinations are
+  # skipped, so every example app builds exactly twice:
+  #   - macos-26   + Xcode 26.1.1
+  #   - macos-26-2 + Xcode 27.0
+  #
+  # TODO: confirm the Xcode 27 queue name and the exact Xcode 27 version string
+  #       (run `xcodes installed` on the agent).
+  #
+  ##############################################################################
+
   - group: "Build Example Apps"
     steps:
-      - label: 'examples/objective-c-ios'
+      - label: "examples/objective-c-ios (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "macos-26-2" ]
+            xcode: [ "26.1.1", "27.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0" }
+              skip: true
+            - with: { queue: "macos-26-2", xcode: "26.1.1" }
+              skip: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
           - bundle install
           - cd examples/objective-c-ios
@@ -292,24 +326,46 @@ steps:
           - echo "+++ Build Debug Mac Catalyst"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
 
-      - label: 'examples/objective-c-osx'
+      - label: "examples/objective-c-osx (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "macos-26-2" ]
+            xcode: [ "26.1.1", "27.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0" }
+              skip: true
+            - with: { queue: "macos-26-2", xcode: "26.1.1" }
+              skip: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
           - bundle install
           - cd examples/objective-c-osx
           - echo "--- Pod install"
           - pod install
-          - echo "+++ Build Release iOS"
+          - echo "+++ Build Release macOS"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-          - echo "+++ Build Debug iOS Simulator"
+          - echo "+++ Build Debug macOS"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      - label: 'examples/swift-ios'
+      - label: "examples/swift-ios (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "macos-26-2" ]
+            xcode: [ "26.1.1", "27.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0" }
+              skip: true
+            - with: { queue: "macos-26-2", xcode: "26.1.1" }
+              skip: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
           - bundle install
           - cd examples/swift-ios
@@ -320,10 +376,21 @@ steps:
           - echo "+++ Build Debug iOS Simulator"
           - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      - label: 'examples/swift-package-manager'
+      - label: "examples/swift-package-manager (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "macos-26-2" ]
+            xcode: [ "26.1.1", "27.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0" }
+              skip: true
+            - with: { queue: "macos-26-2", xcode: "26.1.1" }
+              skip: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
           - bundle install
           - cd examples/swift-package-manager
@@ -335,10 +402,21 @@ steps:
           - echo "+++ Build Debug iOS Simulator"
           - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      - label: 'examples/swiftui'
+      - label: "examples/swiftui (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "macos-26-2" ]
+            xcode: [ "26.1.1", "27.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0" }
+              skip: true
+            - with: { queue: "macos-26-2", xcode: "26.1.1" }
+              skip: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
           - bundle install
           - cd examples/swiftui
@@ -352,6 +430,6 @@ steps:
           - echo "+++ Build Release macOS"
           - xcodebuild -allowProvisioningUpdates -scheme "swiftui (macOS)" -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Release tvOS"
-          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Debug tvOS Simulator"
-          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES

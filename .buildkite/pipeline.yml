@@ -2,10 +2,12 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
+
   ##############################################################################
   #
   # Build
   #
+
   - label: "Static framework and Swift Package Manager builds"
     key: "framework_build"
     timeout_in_minutes: 10
@@ -256,7 +258,7 @@ steps:
     depends_on: "cocoa_fixture"
     matrix:
       setup:
-        os: ["15", "14", "13", "12", "11", "10.15", "10.14", "10.13"]
+        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
     agents:
       queue: "macos-{{matrix.os}}-isolated"
     timeout_in_minutes: 120
@@ -301,6 +303,7 @@ steps:
   #
   # Full set of e2e tests on one iOS version
   #
+
   - group: "iOS 26 e2e tests"
     steps:
       - label: ":bitbar: iOS 26 e2e tests batch 1"
@@ -421,6 +424,7 @@ steps:
   #
   # Basic build e2e tests - Release Configuration
   #
+
   - label: ":bitbar: {{matrix}} barebone tests"
     matrix:
       - "IOS_18"
@@ -469,6 +473,7 @@ steps:
   #
   # Debug configration e2e tests
   #
+
   - label: ":bitbar: {{matrix}} debug configuration tests"
     matrix:
       - "IOS_26"
@@ -536,8 +541,264 @@ steps:
 
   ##############################################################################
   #
+  # TEMP (PLAT-17374): Xcode 27 on the macos-26-2 machine
+  #
+  # - Everything above is unchanged (Xcode 26 jobs).
+  # - Every job below is soft_fail, so it can't turn the build red.
+  # - Artifacts use *_xcode27 names so they never replace the Xcode 26 artifacts
+  #   that the jobs above download by fixed path.
+  # - macos-26-2 is a HOSTNAME, not a queue (confirmed by the CI build team).
+  #   So every Xcode 27 Mac job targets the shared macos-26 queue AND the
+  #   hostname tag of that one machine:
+  #       agents:
+  #         queue: "macos-26"
+  #         hostname: "macos-26-2"
+  #   This only matches if the agent on macos-26-2 publishes a hostname tag
+  #   (agent started with tags-from-host=true, or tags="...,hostname=macos-26-2").
+  #   Confirm the exact tag name/value with the CI build team.
+  # - Each job also checks `hostname` at run time and fails fast if it landed
+  #   on the wrong Mac.
+  # - No XCODE_VERSION is set: the jobs use the agent's default Xcode, and
+  #   every job first checks that the default really is Xcode 27.
+  # - Simulator OS/SDK versions are detected at run time from `xcodebuild -showsdks`.
+  #   ($$ is used so Buildkite doesn't interpolate shell variables at upload time.)
+  #
+
+  - group: ":xcode: Xcode 27 (macos-26-2)"
+    key: "xcode27"
+    steps:
+      - label: "Xcode 27 - environment check"
+        key: "xcode27_env"
+        timeout_in_minutes: 5
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "hostname"
+          - "sw_vers"
+          - "xcode-select -p"
+          - "xcodebuild -version"
+          - "xcodebuild -showsdks"
+          - "xcrun simctl list runtimes"
+          - "xcrun simctl list devicetypes | grep -E 'iPhone|Apple Watch|Apple TV'"
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: default Xcode on this agent is not Xcode 27' && exit 1)"
+
+      - label: "Xcode 27 - Static framework and SPM builds"
+        key: "xcode27_framework_build"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        env:
+          CODE_SIGN_XCFRAMEWORK: "true"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - "make build_xcframework"
+          - "make build_swift"
+          - "make build_ios_static"
+          - "zip -ry Bugsnag.xcframework_xcode27.zip build/xcframeworks/products/Bugsnag.xcframework"
+          - "zip -ry BugsnagNetworkRequestPlugin.xcframework_xcode27.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework"
+        artifact_paths:
+          - "Bugsnag.xcframework_xcode27.zip"
+          - "BugsnagNetworkRequestPlugin.xcframework_xcode27.zip"
+
+      - label: "Xcode 27 - Carthage"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - "./scripts/build-carthage.sh"
+        artifact_paths:
+          - "features/fixtures/carthage/carthage-*.log"
+
+      - label: "Xcode 27 - Build test fixtures"
+        key: "xcode27_cocoa_fixture"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 20
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - "ruby scripts/build-test-fixture.rb"
+          - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
+          - "cp features/fixtures/ios/output/ipa_url_bb_debug.txt features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
+          - "cp features/fixtures/macos/output/macOSTestApp_Release.zip features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip"
+        artifact_paths:
+          - "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
+          - "features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
+          - "features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip"
+
+      - label: "Xcode 27 - iOS unit tests"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
+            echo "Using iOS simulator $$IOS_OS"
+            ./scripts/run-unit-tests.sh PLATFORM=iOS OS=$$IOS_OS DEVICE="iPhone 17"
+        artifact_paths:
+          - "logs/*"
+
+      - label: "Xcode 27 - tvOS unit tests"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
+            echo "Using tvOS simulator $$TVOS_OS"
+            ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=$$TVOS_OS
+        artifact_paths:
+          - "logs/*"
+
+      - label: "Xcode 27 - watchOS unit tests"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
+            echo "Using watchOS simulator $$WATCH_OS"
+            ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 11 (46mm)"
+        artifact_paths:
+          - "logs/*"
+
+      - label: "Xcode 27 - macOS unit tests (macOS 26 host)"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "macos-26"
+          hostname: "macos-26-2"
+        commands:
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - "./scripts/run-unit-tests.sh PLATFORM=macOS"
+        artifact_paths:
+          - "logs/*"
+
+      # IOS_26 = Xcode 27 fixture on a known-good OS. IOS_27 only works if BitBar has iOS 27 devices.
+      - label: ":bitbar: {{matrix}} e2e batch 1 (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_cocoa_fixture"
+        timeout_in_minutes: 60
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          artifacts#v1.9.4:
+            download: "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+          docker-compose#v5.8.0:
+            pull: "cocoa-maze-runner-bitbar"
+            run: "cocoa-maze-runner-bitbar"
+            service-ports: true
+            command:
+              - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
+              - "--farm=bb"
+              - "--device={{matrix}}"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--fail-fast"
+              - "features/release"
+              - "--exclude=features/release/[e-z].*.feature$"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":bitbar: {{matrix}} e2e batch 2 (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_cocoa_fixture"
+        timeout_in_minutes: 60
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          artifacts#v1.9.4:
+            download: "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+          docker-compose#v5.8.0:
+            pull: "cocoa-maze-runner-bitbar"
+            run: "cocoa-maze-runner-bitbar"
+            service-ports: true
+            command:
+              - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
+              - "--farm=bb"
+              - "--device={{matrix}}"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--fail-fast"
+              - "features/release"
+              - "--exclude=features/release/[a-d].*.feature$"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: "macOS 26 e2e tests (Xcode 27 fixture)"
+        depends_on: "xcode27_cocoa_fixture"
+        timeout_in_minutes: 120
+        soft_fail: true
+        agents:
+          queue: "macos-26-isolated"
+        plugins:
+          artifacts#v1.9.4:
+            upload:
+              - "macOSTestApp.stderr.log"
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+        commands:
+          - "buildkite-agent artifact download \"features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip\" ."
+          - "mv features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip features/fixtures/macos/output/macOSTestApp_Release.zip"
+          - "bundle install"
+          - "bundle exec maze-runner features/release --os=macos --fail-fast"
+
+  ##############################################################################
+  #
   # Trigger more tests
   #
+
   - label: "Conditionally trigger full set of tests"
     timeout_in_minutes: 5
     agents:
