@@ -569,6 +569,17 @@ steps:
   #   No file is committed to the repo, and the Xcode 26 jobs are not affected.
   #   The SDK's shipped minimum OS versions are NOT changed.
   #
+  # - Simulator isolation (unit test steps only):
+  #   macos-26-2 runs more than one Buildkite agent (macos-26-2-1, macos-26-2-2),
+  #   and run-unit-tests.sh shuts down / erases ALL simulators on the machine.
+  #   If two unit test jobs run at once, one can kill the other's test host
+  #   ("Early unexpected exit ... before establishing connection"). The iOS,
+  #   tvOS, watchOS and macOS unit test steps share one concurrency group so
+  #   only one of them runs at a time.
+  # - Crash reports: after the tests run, any TestHost crash reports from the
+  #   last 60 minutes are copied into logs/ (uploaded via artifact_paths), and
+  #   the step still exits with the original test result.
+  #
 
   - group: ":xcode: Xcode 27 (macos-26-2)"
     key: "xcode27"
@@ -659,6 +670,8 @@ steps:
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
+        concurrency: 1
+        concurrency_group: "bugsnag-cocoa/xcode27-simulators"
         agents:
           queue: "developer-machine"
         commands:
@@ -671,7 +684,11 @@ steps:
           - |
             IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
             echo "Using iOS simulator $$IOS_OS"
-            ./scripts/run-unit-tests.sh PLATFORM=iOS OS=$$IOS_OS DEVICE="iPhone 17"
+            STATUS=0
+            ./scripts/run-unit-tests.sh PLATFORM=iOS OS=$$IOS_OS DEVICE="iPhone 17" || STATUS=$$?
+            mkdir -p logs
+            find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
+            exit $$STATUS
         artifact_paths:
           - "logs/*"
 
@@ -679,6 +696,8 @@ steps:
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
+        concurrency: 1
+        concurrency_group: "bugsnag-cocoa/xcode27-simulators"
         agents:
           queue: "developer-machine"
         commands:
@@ -691,7 +710,11 @@ steps:
           - |
             TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
             echo "Using tvOS simulator $$TVOS_OS"
-            ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=$$TVOS_OS
+            STATUS=0
+            ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=$$TVOS_OS || STATUS=$$?
+            mkdir -p logs
+            find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
+            exit $$STATUS
         artifact_paths:
           - "logs/*"
 
@@ -699,6 +722,8 @@ steps:
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
+        concurrency: 1
+        concurrency_group: "bugsnag-cocoa/xcode27-simulators"
         agents:
           queue: "developer-machine"
         commands:
@@ -711,7 +736,11 @@ steps:
           - |
             WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
             echo "Using watchOS simulator $$WATCH_OS"
-            ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 11 (46mm)"
+            STATUS=0
+            ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 11 (46mm)" || STATUS=$$?
+            mkdir -p logs
+            find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
+            exit $$STATUS
         artifact_paths:
           - "logs/*"
 
@@ -719,6 +748,8 @@ steps:
         depends_on: "xcode27_env"
         timeout_in_minutes: 15
         soft_fail: true
+        concurrency: 1
+        concurrency_group: "bugsnag-cocoa/xcode27-simulators"
         agents:
           queue: "developer-machine"
         commands:
@@ -728,7 +759,12 @@ steps:
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
             printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
-          - "./scripts/run-unit-tests.sh PLATFORM=macOS"
+          - |
+            STATUS=0
+            ./scripts/run-unit-tests.sh PLATFORM=macOS || STATUS=$$?
+            mkdir -p logs
+            find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
+            exit $$STATUS
         artifact_paths:
           - "logs/*"
 
