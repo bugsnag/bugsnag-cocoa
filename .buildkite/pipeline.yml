@@ -551,17 +551,23 @@ steps:
   #   in the "developer-machine" queue. All Xcode 27 Mac jobs target that queue.
   # - Every Xcode 27 Mac job checks the hostname and the Xcode version first and
   #   fails fast if it landed on the wrong Mac or the default Xcode isn't 27.
-  # - No XCODE_VERSION is set: the jobs use the agent's default Xcode.
+  # - No XCODE_VERSION is set: the jobs use the agent's default Xcode (27.0.0).
   # - Simulator OS/SDK versions are detected at run time from `xcodebuild -showsdks`.
   #   ($$ is used so Buildkite doesn't interpolate shell variables at upload time.)
   #
-  # - Deployment target override (CI-only, Xcode 27 only):
-  #   Xcode 27 only supports iOS/tvOS deployment targets 15.0+, but
-  #   Bugsnag.xcodeproj uses 12.0, so the archive fails. Each Xcode 27 build
-  #   step writes a temporary xcconfig to /tmp at run time and exports
-  #   XCODE_XCCONFIG_FILE, which xcodebuild applies on top of every target.
+  # - CI-only build setting overrides (Xcode 27 only):
+  #   Each Xcode 27 build step writes a temporary xcconfig to /tmp at run time
+  #   and exports XCODE_XCCONFIG_FILE, which xcodebuild (and Carthage, which
+  #   calls xcodebuild) applies on top of every target:
+  #     IPHONEOS_DEPLOYMENT_TARGET = 15.0   (Xcode 27 supports iOS 15.0+, project uses 12.0)
+  #     TVOS_DEPLOYMENT_TARGET     = 15.0   (Xcode 27 supports tvOS 15.0+)
+  #     MACOSX_DEPLOYMENT_TARGET   = 12.0   (Xcode 27 supports macOS 12.0+, project uses 10.11)
+  #     OTHER_CFLAGS += -Wno-error=deprecated-declarations
+  #       (with a 15.0 target, APIs deprecated in iOS 13 - e.g. -[NSURLSessionDataTask init]
+  #        in BSGURLSessionTracingProxyTests.m - become warnings, and -Werror turns
+  #        them into errors. This keeps them as warnings only.)
   #   No file is committed to the repo, and the Xcode 26 jobs are not affected.
-  #   The SDK's shipped minimum iOS version is NOT changed.
+  #   The SDK's shipped minimum OS versions are NOT changed.
   #
 
   - group: ":xcode: Xcode 27 (macos-26-2)"
@@ -598,7 +604,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "make build_xcframework"
           - "make build_swift"
@@ -620,7 +626,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "./scripts/build-carthage.sh"
         artifact_paths:
@@ -638,7 +644,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "ruby scripts/build-test-fixture.rb"
           - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
@@ -660,7 +666,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - |
             IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
@@ -680,7 +686,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - |
             TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
@@ -700,7 +706,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - |
             WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
@@ -720,7 +726,7 @@ steps:
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
-            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "./scripts/run-unit-tests.sh PLATFORM=macOS"
         artifact_paths:
