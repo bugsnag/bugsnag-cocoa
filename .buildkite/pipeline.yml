@@ -547,19 +547,11 @@ steps:
   # - Every job below is soft_fail, so it can't turn the build red.
   # - Artifacts use *_xcode27 names so they never replace the Xcode 26 artifacts
   #   that the jobs above download by fixed path.
-  # - macos-26-2 is a HOSTNAME, not a queue (confirmed by the CI build team).
-  #   So every Xcode 27 Mac job targets the shared macos-26 queue AND the
-  #   hostname tag of that one machine:
-  #       agents:
-  #         queue: "macos-26"
-  #         hostname: "macos-26-2"
-  #   This only matches if the agent on macos-26-2 publishes a hostname tag
-  #   (agent started with tags-from-host=true, or tags="...,hostname=macos-26-2").
-  #   Confirm the exact tag name/value with the CI build team.
-  # - Each job also checks `hostname` at run time and fails fast if it landed
-  #   on the wrong Mac.
-  # - No XCODE_VERSION is set: the jobs use the agent's default Xcode, and
-  #   every job first checks that the default really is Xcode 27.
+  # - Per the infra team, the Xcode 27 Mac (hostname macos-26-2) is registered
+  #   in the "developer-machine" queue. All Xcode 27 Mac jobs target that queue.
+  # - Every Xcode 27 Mac job checks the hostname and the Xcode version first and
+  #   fails fast if it landed on the wrong Mac or the default Xcode isn't 27.
+  # - No XCODE_VERSION is set: the jobs use the agent's default Xcode.
   # - Simulator OS/SDK versions are detected at run time from `xcodebuild -showsdks`.
   #   ($$ is used so Buildkite doesn't interpolate shell variables at upload time.)
   #
@@ -572,8 +564,7 @@ steps:
         timeout_in_minutes: 5
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
           - "hostname"
           - "sw_vers"
@@ -591,11 +582,11 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         env:
           CODE_SIGN_XCFRAMEWORK: "true"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "make build_xcframework"
           - "make build_swift"
@@ -611,9 +602,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "./scripts/build-carthage.sh"
         artifact_paths:
@@ -625,9 +616,9 @@ steps:
         timeout_in_minutes: 20
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "ruby scripts/build-test-fixture.rb"
           - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
@@ -643,9 +634,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
@@ -659,9 +650,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
@@ -675,9 +666,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
             WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
@@ -691,9 +682,9 @@ steps:
         timeout_in_minutes: 15
         soft_fail: true
         agents:
-          queue: "macos-26"
-          hostname: "macos-26-2"
+          queue: "developer-machine"
         commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - "./scripts/run-unit-tests.sh PLATFORM=macOS"
         artifact_paths:
