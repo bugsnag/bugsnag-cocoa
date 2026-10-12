@@ -298,6 +298,13 @@ steps:
   # first check that they landed on the macos-26-2 host with Xcode 27 as the
   # active Xcode. If they didn't, they fail straight away with a clear error.
   #
+  # PLAT-17374: Xcode 27 only supports iOS/tvOS deployment targets 15.0+, but the
+  # SDK/Pods targets use 12.0. For the Xcode 27 jobs ONLY, a CI-only xcconfig is
+  # written to /tmp and exported as XCODE_XCCONFIG_FILE, which xcodebuild applies
+  # to every target (including Pods). Nothing is added to the repo, and the
+  # Xcode 26 jobs build exactly as before. All commands in a step run in one
+  # shell, so the export applies to pod install / xcodebuild later in the step.
+  #
   ##############################################################################
 
   - group: "Build Example Apps"
@@ -324,6 +331,9 @@ steps:
             if [ "{{matrix.queue}}" = "developer-machine" ]; then
               hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
               xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
             fi
           - bundle install
           - cd examples/objective-c-ios
@@ -358,6 +368,9 @@ steps:
             if [ "{{matrix.queue}}" = "developer-machine" ]; then
               hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
               xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
             fi
           - bundle install
           - cd examples/objective-c-osx
@@ -390,6 +403,9 @@ steps:
             if [ "{{matrix.queue}}" = "developer-machine" ]; then
               hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
               xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
             fi
           - bundle install
           - cd examples/swift-ios
@@ -422,6 +438,9 @@ steps:
             if [ "{{matrix.queue}}" = "developer-machine" ]; then
               hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
               xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
             fi
           - bundle install
           - cd examples/swift-package-manager
@@ -455,6 +474,9 @@ steps:
             if [ "{{matrix.queue}}" = "developer-machine" ]; then
               hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
               xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
             fi
           - bundle install
           - cd examples/swiftui

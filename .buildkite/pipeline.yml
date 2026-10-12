@@ -555,6 +555,14 @@ steps:
   # - Simulator OS/SDK versions are detected at run time from `xcodebuild -showsdks`.
   #   ($$ is used so Buildkite doesn't interpolate shell variables at upload time.)
   #
+  # - Deployment target override (CI-only, Xcode 27 only):
+  #   Xcode 27 only supports iOS/tvOS deployment targets 15.0+, but
+  #   Bugsnag.xcodeproj uses 12.0, so the archive fails. Each Xcode 27 build
+  #   step writes a temporary xcconfig to /tmp at run time and exports
+  #   XCODE_XCCONFIG_FILE, which xcodebuild applies on top of every target.
+  #   No file is committed to the repo, and the Xcode 26 jobs are not affected.
+  #   The SDK's shipped minimum iOS version is NOT changed.
+  #
 
   - group: ":xcode: Xcode 27 (macos-26-2)"
     key: "xcode27"
@@ -588,6 +596,10 @@ steps:
         commands:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "make build_xcframework"
           - "make build_swift"
           - "make build_ios_static"
@@ -606,6 +618,10 @@ steps:
         commands:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "./scripts/build-carthage.sh"
         artifact_paths:
           - "features/fixtures/carthage/carthage-*.log"
@@ -620,6 +636,10 @@ steps:
         commands:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "ruby scripts/build-test-fixture.rb"
           - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
           - "cp features/fixtures/ios/output/ipa_url_bb_debug.txt features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
@@ -639,6 +659,10 @@ steps:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+          - |
             IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
             echo "Using iOS simulator $$IOS_OS"
             ./scripts/run-unit-tests.sh PLATFORM=iOS OS=$$IOS_OS DEVICE="iPhone 17"
@@ -654,6 +678,10 @@ steps:
         commands:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - |
             TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
             echo "Using tvOS simulator $$TVOS_OS"
@@ -671,6 +699,10 @@ steps:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
           - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+          - |
             WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
             echo "Using watchOS simulator $$WATCH_OS"
             ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 11 (46mm)"
@@ -686,6 +718,10 @@ steps:
         commands:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "./scripts/run-unit-tests.sh PLATFORM=macOS"
         artifact_paths:
           - "logs/*"
