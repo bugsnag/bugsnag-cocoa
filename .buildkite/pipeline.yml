@@ -5,10 +5,28 @@ steps:
 
   ##############################################################################
   #
+  # TEMP (PLAT-17374): Xcode 27-only builds on the working branch
+  #
+  # Every Xcode 26 step/group below has:
+  #   if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
+  # so builds of that branch run ONLY the ":xcode: Xcode 27 (macos-26-2)" group.
+  # All other branches (next, master, PRs from other branches) run everything.
+  # The "Conditionally trigger full set of tests" step is also skipped on that
+  # branch, so pipeline.full.yml is not uploaded (its steps depend on
+  # framework_build / cocoa_fixture, which are skipped there).
+  #
+  # Re-enable everything before review/merge:
+  #   sed -i '' '/if: build.branch != "meiy\/plat-17374-Xcode-27-CI-Setup"/d' .buildkite/pipeline.yml
+  #
+  ##############################################################################
+
+  ##############################################################################
+  #
   # Build
   #
 
   - label: "Static framework and Swift Package Manager builds"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     key: "framework_build"
     timeout_in_minutes: 10
     agents:
@@ -29,6 +47,7 @@ steps:
             - "BugsnagNetworkRequestPlugin.xcframework.zip"
 
   - label: "Build test fixtures"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     key: "cocoa_fixture"
     timeout_in_minutes: 15
     agents:
@@ -48,6 +67,7 @@ steps:
       - "ruby scripts/build-test-fixture.rb"
 
   - label: "Carthage"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     timeout_in_minutes: 15
     agents:
       queue: "macos-26"
@@ -65,6 +85,7 @@ steps:
   #
 
   - label: "macOS {{matrix.os}} unit tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     matrix:
       setup:
         os: [ "26", "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
@@ -77,6 +98,7 @@ steps:
       - "logs/*"
 
   - group: "iOS unit tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     steps:
       - label: "iOS 26 unit tests"
         timeout_in_minutes: 10
@@ -145,6 +167,7 @@ steps:
           - "logs/*"
 
   - group: "tvOS unit tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     steps:
       - label: "tvOS 26 unit tests"
         timeout_in_minutes: 10
@@ -189,6 +212,7 @@ steps:
           - "logs/*"
 
   - group: "watchOS unit tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     steps:
       - label: "watchOS 26 unit tests"
         timeout_in_minutes: 10
@@ -235,6 +259,7 @@ steps:
           - "logs/*"
 
   - label: "macos 26 e2e tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     depends_on: "cocoa_fixture"
     agents:
       queue: "macos-26-isolated"
@@ -255,6 +280,7 @@ steps:
       - "bundle exec maze-runner features/release --os=macos --fail-fast"
 
   - label: "macos {{matrix.os}} barebones e2e tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     depends_on: "cocoa_fixture"
     matrix:
       setup:
@@ -278,6 +304,7 @@ steps:
       - "bundle exec maze-runner features/release/barebone_tests.feature --os=macos --fail-fast"
 
   - label: "macOS stress test"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     timeout_in_minutes: 5
     agents:
       queue: "macos-26-isolated"
@@ -305,6 +332,7 @@ steps:
   #
 
   - group: "iOS 26 e2e tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     steps:
       - label: ":bitbar: iOS 26 e2e tests batch 1"
         depends_on: "cocoa_fixture"
@@ -384,6 +412,7 @@ steps:
 
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ":browserstack: iOS 26 app hang tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
@@ -426,6 +455,7 @@ steps:
   #
 
   - label: ":bitbar: {{matrix}} barebone tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     matrix:
       - "IOS_18"
       - "IOS_17"
@@ -475,6 +505,7 @@ steps:
   #
 
   - label: ":bitbar: {{matrix}} debug configuration tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     matrix:
       - "IOS_26"
       - "IOS_13"
@@ -517,6 +548,7 @@ steps:
           limit: 2
 
   - label: "macOS {{matrix.os}} debug e2e tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     depends_on: "cocoa_fixture"
     matrix:
       setup:
@@ -543,8 +575,10 @@ steps:
   #
   # TEMP (PLAT-17374): Xcode 27 on the macos-26-2 machine
   #
-  # - Everything above is unchanged (Xcode 26 jobs).
+  # - Everything above is the existing Xcode 26 set of jobs (temporarily skipped
+  #   on the meiy/plat-17374-Xcode-27-CI-Setup branch - see the note at the top).
   # - Every job below is soft_fail, so it can't turn the build red.
+  # - Nothing in this group depends on the Xcode 26 steps, so it runs on its own.
   # - Artifacts use *_xcode27 names so they never replace the Xcode 26 artifacts
   #   that the jobs above download by fixed path.
   # - Per the infra team, the Xcode 27 Mac (hostname macos-26-2) is registered
@@ -572,10 +606,8 @@ steps:
   # - Simulator isolation (unit test steps only):
   #   macos-26-2 runs more than one Buildkite agent (macos-26-2-1, macos-26-2-2),
   #   and run-unit-tests.sh shuts down / erases ALL simulators on the machine.
-  #   If two unit test jobs run at once, one can kill the other's test host
-  #   ("Early unexpected exit ... before establishing connection"). The iOS,
-  #   tvOS, watchOS and macOS unit test steps share one concurrency group so
-  #   only one of them runs at a time.
+  #   The iOS, tvOS, watchOS and macOS unit test steps share one concurrency
+  #   group so only one of them runs at a time.
   # - Crash reports: after the tests run, any TestHost crash reports from the
   #   last 60 minutes are copied into logs/ (uploaded via artifact_paths), and
   #   the step still exits with the original test result.
@@ -869,6 +901,7 @@ steps:
   #
 
   - label: "Conditionally trigger full set of tests"
+    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
     timeout_in_minutes: 5
     agents:
       queue: "macos"
