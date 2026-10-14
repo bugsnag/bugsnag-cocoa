@@ -1,24 +1,23 @@
 env:
   LANG: "en_GB.UTF-8"
 
-steps:
+################################################################################
+#
+# TEMP (PLAT-17374): Xcode 27-only builds on the working branch
+#
+# Every Xcode 26 entry below has:
+#   if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
+# so builds on that branch run ONLY the Xcode 27 group. All other branches
+# (including next and master) run everything as before. The trigger step is
+# also skipped there, so pipeline.full.yml is not uploaded on that branch.
+#
+# Remove before review/merge:
+#   sed -i '' '/if: build.branch != "meiy\/plat-17374-Xcode-27-CI-Setup"/d' .buildkite/pipeline.yml
+# and delete this comment block.
+#
+################################################################################
 
-  ##############################################################################
-  #
-  # TEMP (PLAT-17374): Xcode 27-only builds on the working branch
-  #
-  # Every Xcode 26 step/group below has:
-  #   if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
-  # so builds of that branch run ONLY the ":xcode: Xcode 27 (macos-26-2)" group.
-  # All other branches (next, master, PRs from other branches) run everything.
-  # The "Conditionally trigger full set of tests" step is also skipped on that
-  # branch, so pipeline.full.yml is not uploaded (its steps depend on
-  # framework_build / cocoa_fixture, which are skipped there).
-  #
-  # Re-enable everything before review/merge:
-  #   sed -i '' '/if: build.branch != "meiy\/plat-17374-Xcode-27-CI-Setup"/d' .buildkite/pipeline.yml
-  #
-  ##############################################################################
+steps:
 
   ##############################################################################
   #
@@ -575,10 +574,9 @@ steps:
   #
   # TEMP (PLAT-17374): Xcode 27 on the macos-26-2 machine
   #
-  # - Everything above is the existing Xcode 26 set of jobs (temporarily skipped
-  #   on the meiy/plat-17374-Xcode-27-CI-Setup branch - see the note at the top).
+  # - Everything above is unchanged (Xcode 26 jobs), apart from the TEMP
+  #   branch filter described at the top of this file.
   # - Every job below is soft_fail, so it can't turn the build red.
-  # - Nothing in this group depends on the Xcode 26 steps, so it runs on its own.
   # - Artifacts use *_xcode27 names so they never replace the Xcode 26 artifacts
   #   that the jobs above download by fixed path.
   # - Per the infra team, the Xcode 27 Mac (hostname macos-26-2) is registered
@@ -588,6 +586,8 @@ steps:
   # - No XCODE_VERSION is set: the jobs use the agent's default Xcode (27.0.0).
   # - Simulator OS/SDK versions are detected at run time from `xcodebuild -showsdks`.
   #   ($$ is used so Buildkite doesn't interpolate shell variables at upload time.)
+  # - macos-26-2 runs macOS 26, so the "macOS" Xcode 27 jobs are Xcode 27 builds
+  #   tested on a macOS 26 host. True macOS 27 jobs need a macOS 27 host.
   #
   # - CI-only build setting overrides (Xcode 27 only):
   #   Each Xcode 27 build step writes a temporary xcconfig to /tmp at run time
@@ -611,6 +611,18 @@ steps:
   # - Crash reports: after the tests run, any TestHost crash reports from the
   #   last 60 minutes are copied into logs/ (uploaded via artifact_paths), and
   #   the step still exits with the original test result.
+  #
+  # - Xcode 27 equivalents of the Xcode 26 / iOS 26 jobs:
+  #     macOS 26 unit tests                    -> Xcode 27 - macOS unit tests (macOS 26 host)
+  #     iOS / tvOS / watchOS 26 unit tests     -> Xcode 27 - iOS / tvOS / watchOS unit tests
+  #     iOS 26 e2e tests batch 1 / 2           -> IOS_26 / IOS_27 e2e batch 1 / 2 (Xcode 27 fixture)
+  #     macos 26 e2e tests                     -> macOS 26 e2e tests (Xcode 27 fixture)
+  #     iOS 26 app hang tests                  -> IOS_27 app hang tests (Xcode 27 fixture)
+  #     IOS_26 debug configuration tests       -> IOS_26 / IOS_27 debug configuration tests (Xcode 27 fixture)
+  #     macOS 26 debug e2e tests               -> macOS 26 debug e2e tests (Xcode 27 fixture)
+  #     IOS_26 XcFramework barebone e2e tests  -> IOS_26 / IOS_27 XcFramework barebone e2e (Xcode 27 XCFramework)
+  #     macOS 26 XcFramework barebone e2e      -> macOS 26 XcFramework barebone e2e (Xcode 27 XCFramework)
+  #   IOS_27 jobs only work once BitBar / BrowserStack have iOS 27 devices.
   #
 
   - group: ":xcode: Xcode 27 (macos-26-2)"
@@ -692,11 +704,43 @@ steps:
           - "ruby scripts/build-test-fixture.rb"
           - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
           - "cp features/fixtures/ios/output/ipa_url_bb_debug.txt features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
+          - "cp features/fixtures/ios/output/ipa_url_bs_release.txt features/fixtures/ios/output/ipa_url_bs_release_xcode27.txt"
           - "cp features/fixtures/macos/output/macOSTestApp_Release.zip features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip"
+          - "cp features/fixtures/macos/output/macOSTestApp_Debug.zip features/fixtures/macos/output/macOSTestApp_Debug_xcode27.zip"
         artifact_paths:
           - "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
           - "features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
+          - "features/fixtures/ios/output/ipa_url_bs_release_xcode27.txt"
           - "features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip"
+          - "features/fixtures/macos/output/macOSTestApp_Debug_xcode27.zip"
+
+      # Xcode 27 version of "Build XcFramework test fixtures" (pipeline.full.yml).
+      # Uses the XCFrameworks built by "Xcode 27 - Static framework and SPM builds".
+      - label: "Xcode 27 - Build XcFramework test fixtures"
+        key: "xcode27_xcframework_cocoa_fixture"
+        depends_on: "xcode27_framework_build"
+        timeout_in_minutes: 30
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
+          - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
+          - |
+            export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+            printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+            echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+          - "buildkite-agent artifact download \"Bugsnag.xcframework_xcode27.zip\" ."
+          - "buildkite-agent artifact download \"BugsnagNetworkRequestPlugin.xcframework_xcode27.zip\" ."
+          - "unzip -o Bugsnag.xcframework_xcode27.zip"
+          - "unzip -o BugsnagNetworkRequestPlugin.xcframework_xcode27.zip"
+          - "bundle install"
+          - "make xcframework-test-fixtures"
+          - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb_xcode27.txt"
+          - "cp features/fixtures/macos/output/macOSTestAppXcFramework.zip features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip"
+        artifact_paths:
+          - "features/fixtures/ios/output/xcframework_ipa_url_bb_xcode27.txt"
+          - "features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip"
 
       - label: "Xcode 27 - iOS unit tests"
         depends_on: "xcode27_env"
@@ -894,6 +938,157 @@ steps:
           - "mv features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip features/fixtures/macos/output/macOSTestApp_Release.zip"
           - "bundle install"
           - "bundle exec maze-runner features/release --os=macos --fail-fast"
+
+      # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now.
+      # IOS_27 needs iOS 27 devices on BrowserStack; Appium 1.21.0 may not support iOS 27.
+      - label: ":browserstack: IOS_27 app hang tests (Xcode 27 fixture)"
+        depends_on: "xcode27_cocoa_fixture"
+        timeout_in_minutes: 30
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          artifacts#v1.9.4:
+            download: "features/fixtures/ios/output/ipa_url_bs_release_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+          docker-compose#v5.8.0:
+            pull: "cocoa-maze-runner"
+            run: "cocoa-maze-runner"
+            command:
+              - "--app=@build/ipa_url_bs_release_xcode27.txt"
+              - "--farm=bs"
+              - "--device=IOS_27"
+              - "--appium-version=1.21.0"
+              - "--fail-fast"
+              - "features/app_hangs.feature"
+        concurrency: 5
+        concurrency_group: "browserstack-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 104 # App hang related error
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":bitbar: {{matrix}} debug configuration tests (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_cocoa_fixture"
+        timeout_in_minutes: 30
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          artifacts#v1.9.4:
+            download: "features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+          docker-compose#v5.8.0:
+            pull: "cocoa-maze-runner-bitbar"
+            run: "cocoa-maze-runner-bitbar"
+            service-ports: true
+            command:
+              - "--app=@/app/build/ipa_url_bb_debug_xcode27.txt"
+              - "--farm=bb"
+              - "--device={{matrix}}"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--fail-fast"
+              - "--repeater-api-key="
+              - "--hub-repeater-api-key="
+              - "features/debug"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: "macOS 26 debug e2e tests (Xcode 27 fixture)"
+        depends_on: "xcode27_cocoa_fixture"
+        timeout_in_minutes: 20
+        soft_fail: true
+        agents:
+          queue: "macos-26-isolated"
+        plugins:
+          artifacts#v1.9.4:
+            upload:
+              - "macOSTestApp.log"
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+        commands:
+          - "buildkite-agent artifact download \"features/fixtures/macos/output/macOSTestApp_Debug_xcode27.zip\" ."
+          - "mv features/fixtures/macos/output/macOSTestApp_Debug_xcode27.zip features/fixtures/macos/output/macOSTestApp_Debug.zip"
+          - "bundle install"
+          - "bundle exec maze-runner features/debug --repeater-api-key= --hub-repeater-api-key= --os=macos --fail-fast"
+
+      - label: ":bitbar: {{matrix}} XcFramework barebone e2e tests (Xcode 27 XCFramework)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_xcframework_cocoa_fixture"
+        timeout_in_minutes: 20
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          artifacts#v1.9.4:
+            download: "features/fixtures/ios/output/xcframework_ipa_url_bb_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+          docker-compose#v5.8.0:
+            pull: "cocoa-maze-runner-bitbar"
+            run: "cocoa-maze-runner-bitbar"
+            service-ports: true
+            command:
+              - "--app=@/app/build/xcframework_ipa_url_bb_xcode27.txt"
+              - "--farm=bb"
+              - "--device={{matrix}}"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--repeater-api-key="
+              - "--hub-repeater-api-key="
+              - "features/release/barebone_tests.feature"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: "macOS 26 XcFramework barebone e2e tests (Xcode 27 XCFramework)"
+        depends_on: "xcode27_xcframework_cocoa_fixture"
+        timeout_in_minutes: 10
+        soft_fail: true
+        agents:
+          queue: "macos-26-isolated"
+        env:
+          RUN_XCFRAMEWORK_APP: "true"
+        plugins:
+          artifacts#v1.9.4:
+            upload:
+              - "*.log"
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+        commands:
+          - "buildkite-agent artifact download \"features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip\" ."
+          - "mv features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+          - "bundle install"
+          - "bundle exec maze-runner features/release/barebone_tests.feature --os=macos --repeater-api-key= --hub-repeater-api-key="
 
   ##############################################################################
   #
