@@ -258,7 +258,7 @@
             // This frame is part of the simulator environment
             return;
         }
-        if (!stackframe.machoUuid || !stackframe.machoVmAddress || !stackframe.machoLoadAddress) {
+        if (stackframe.machoUuid == nil || stackframe.machoVmAddress == nil || stackframe.machoLoadAddress == nil) {
             // Newer simulator runtimes can include startup frames that are not in bsg_mach_headers image data
             return;
         }
