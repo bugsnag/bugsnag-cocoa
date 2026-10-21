@@ -595,6 +595,9 @@ steps:
   #   calls xcodebuild) applies on top of every target:
   #     IPHONEOS_DEPLOYMENT_TARGET = 15.0   (Xcode 27 supports iOS 15.0+, project uses 12.0)
   #     TVOS_DEPLOYMENT_TARGET     = 15.0   (Xcode 27 supports tvOS 15.0+)
+  #     WATCHOS_DEPLOYMENT_TARGET  = 9.0    (Xcode 27 supports watchOS 9.0+, project uses 6.3)
+  #     ARCHS[sdk=watch*] = $(ARCHS_STANDARD)
+  #       (Xcode 27 rejects the deprecated armv7k architecture the project sets for watchOS)
   #     MACOSX_DEPLOYMENT_TARGET   = 12.0   (Xcode 27 supports macOS 12.0+, project uses 10.11)
   #     OTHER_CFLAGS += -Wno-error=deprecated-declarations
   #       (with a 15.0 target, APIs deprecated in iOS 13 - e.g. -[NSURLSessionDataTask init]
@@ -608,6 +611,11 @@ steps:
   #   after `make build_xcframework`, before the SPM/static builds, so a later
   #   failure can't stop the *_xcode27.zip artifacts being uploaded.
   #   CODE_SIGN_XCFRAMEWORK is "false" until signing is set up on macos-26-2.
+  #   That step ALSO appends CODE_SIGNING_ALLOWED = NO (plus CODE_SIGNING_REQUIRED
+  #   = NO and an empty CODE_SIGN_IDENTITY) to its xcconfig, because macos-26-2
+  #   has no "iOS Development" / "Mac Development" certificate for team 7W9PZ27Y5F
+  #   and the BugsnagNetworkRequestPlugin archives fail without it. Only that step
+  #   disables signing - fixture builds (.ipa for BitBar/BrowserStack) still sign.
   #   "Xcode 27 - Build XcFramework test fixtures" checks the zips exist before
   #   downloading them and fails with a clear message if they don't.
   #
@@ -668,6 +676,9 @@ steps:
           - |
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
             printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+            # TEMP (PLAT-17374): no signing certificate for team 7W9PZ27Y5F on macos-26-2,
+            # so don't sign the framework archives in this step only (append with >>).
+            printf 'CODE_SIGNING_ALLOWED = NO\nCODE_SIGNING_REQUIRED = NO\nCODE_SIGN_IDENTITY =\n' >> "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "make build_xcframework"
           # Zip straight away so a later SPM/static failure can't stop the zips being created
