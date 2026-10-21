@@ -19,6 +19,43 @@ env:
 
 steps:
 
+  # TEMP (PLAT-17374): compare signing setup on macos-26 vs macos-26-2. Remove after checking.
+  - label: ":lock: TEMP - signing check (macos-26)"
+    timeout_in_minutes: 5
+    soft_fail: true
+    agents:
+      queue: "macos-26"
+    commands: &signing_check
+      - |
+        echo "--- Host: $$(hostname -s), user: $$(whoami)"
+        echo "--- Signing identities"
+        security find-identity -v -p codesigning || true
+        echo "--- Provisioning profiles"
+        for f in \
+          "$$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles/"*.mobileprovision \
+          "$$HOME/Library/MobileDevice/Provisioning Profiles/"*.mobileprovision
+        do
+          [ -f "$$f" ] || continue
+          P=$$(security cms -D -i "$$f" 2>/dev/null)
+          echo "== $$f"
+          for k in Name TeamIdentifier.0 Entitlements.application-identifier ExpirationDate; do
+            printf '  %s: ' "$$k"
+            printf '%s\n' "$$P" | plutil -extract "$$k" raw -o - - 2>/dev/null || echo "(n/a)"
+          done
+        done
+        echo "--- Xcode accounts"
+        defaults read com.apple.dt.Xcode DVTDeveloperAccountManagerAppleIDLists >/dev/null 2>&1 \
+          && echo "Xcode account signed in: YES" || echo "Xcode account signed in: NO"
+        echo "--- GUI session (needed for macOS unit tests)"
+        launchctl print gui/$$(id -u) >/dev/null 2>&1 && echo "GUI session: YES" || echo "GUI session: NO"
+        DevToolsSecurity -status || true
+  - label: ":lock: TEMP - signing check (macos-26-2)"
+    timeout_in_minutes: 5
+    soft_fail: true
+    agents:
+      queue: "developer-machine"
+    commands: *signing_check
+
   ##############################################################################
   #
   # Build
