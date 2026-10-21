@@ -839,7 +839,7 @@ steps:
             WATCH_OS=$$(xcodebuild -showsdks | grep -Eo 'watchsimulator[0-9.]+' | tail -1 | sed 's/watchsimulator//')
             echo "Using watchOS simulator $$WATCH_OS"
             STATUS=0
-            ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 11 (46mm)" || STATUS=$$?
+            ./scripts/run-unit-tests.sh PLATFORM=watchOS OS=$$WATCH_OS SDK=watchsimulator$$WATCH_OS DEVICE="Apple Watch Series 12 (46mm)" || STATUS=$$?
             mkdir -p logs
             find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
             exit $$STATUS
