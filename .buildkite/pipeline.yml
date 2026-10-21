@@ -850,7 +850,7 @@ steps:
             TVOS_OS=$$(xcodebuild -showsdks | grep -Eo 'appletvsimulator[0-9.]+' | tail -1 | sed 's/appletvsimulator//')
             echo "Using tvOS simulator $$TVOS_OS"
             STATUS=0
-            ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=$$TVOS_OS DEVICE="Apple TV 4K (3rd generation)" || STATUS=$$?
+            ./scripts/run-unit-tests.sh PLATFORM=tvOS OS=$$TVOS_OS DESTINATION="platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=$$TVOS_OS" || STATUS=$$?
             mkdir -p logs
             find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
             exit $$STATUS
