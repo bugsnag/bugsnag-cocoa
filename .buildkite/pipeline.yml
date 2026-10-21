@@ -603,6 +603,14 @@ steps:
   #   No file is committed to the repo, and the Xcode 26 jobs are not affected.
   #   The SDK's shipped minimum OS versions are NOT changed.
   #
+  # - XCFramework artifacts (Xcode 27 only):
+  #   "Xcode 27 - Static framework and SPM builds" zips the XCFrameworks straight
+  #   after `make build_xcframework`, before the SPM/static builds, so a later
+  #   failure can't stop the *_xcode27.zip artifacts being uploaded.
+  #   CODE_SIGN_XCFRAMEWORK is "false" until signing is set up on macos-26-2.
+  #   "Xcode 27 - Build XcFramework test fixtures" checks the zips exist before
+  #   downloading them and fails with a clear message if they don't.
+  #
   # - Simulator isolation (unit test steps only):
   #   macos-26-2 runs more than one Buildkite agent (macos-26-2-1, macos-26-2-2),
   #   and run-unit-tests.sh shuts down / erases ALL simulators on the machine.
@@ -653,7 +661,7 @@ steps:
         agents:
           queue: "developer-machine"
         env:
-          CODE_SIGN_XCFRAMEWORK: "true"
+          CODE_SIGN_XCFRAMEWORK: "false"   # TEMP (PLAT-17374): set back to "true" once signing works on macos-26-2
         commands:
           - "hostname -s | grep -q '^macos-26-2' || (echo \"ERROR: expected macos-26-2, got $$(hostname -s)\" && exit 1)"
           - "xcodebuild -version | grep -q '^Xcode 27' || (echo 'ERROR: not Xcode 27' && exit 1)"
@@ -662,10 +670,11 @@ steps:
             printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
           - "make build_xcframework"
-          - "make build_swift"
-          - "make build_ios_static"
+          # Zip straight away so a later SPM/static failure can't stop the zips being created
           - "zip -ry Bugsnag.xcframework_xcode27.zip build/xcframeworks/products/Bugsnag.xcframework"
           - "zip -ry BugsnagNetworkRequestPlugin.xcframework_xcode27.zip build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework"
+          - "make build_swift"
+          - "make build_ios_static"
         artifact_paths:
           - "Bugsnag.xcframework_xcode27.zip"
           - "BugsnagNetworkRequestPlugin.xcframework_xcode27.zip"
@@ -730,6 +739,12 @@ steps:
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
             printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+          # Fail with a clear message if the producer didn't upload the zips
+          - |
+            if ! buildkite-agent artifact search "*xcode27.zip"; then
+              echo "ERROR: Xcode 27 XCFramework zips were not uploaded - check the 'Xcode 27 - Static framework and SPM builds' log"
+              exit 1
+            fi
           - "buildkite-agent artifact download \"Bugsnag.xcframework_xcode27.zip\" ."
           - "buildkite-agent artifact download \"BugsnagNetworkRequestPlugin.xcframework_xcode27.zip\" ."
           - "unzip -o Bugsnag.xcframework_xcode27.zip"
