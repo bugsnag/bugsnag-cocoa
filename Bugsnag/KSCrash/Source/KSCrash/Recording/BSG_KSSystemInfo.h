@@ -52,6 +52,40 @@
 #define BSG_KSSystemField_Translated "proc_translated"
 #define BSG_KSSystemField_iOSSupportVersion "iOSSupportVersion"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Kicks off the legacy (dyld image scan based) jailbreak check on a
+ * background queue, if it has not been started yet. The scan walks every
+ * currently loaded image looking for one whose path contains
+ * "MobileSubstrate", which is O(number of loaded images) and would block
+ * Bugsnag's startup if run inline -- the common case, a non-jailbroken
+ * device, never finds a match and so always pays the full cost.
+ *
+ * Call this as early as possible during SDK startup so that cost overlaps
+ * with the rest of initialization instead of adding to it.
+ *
+ * Nothing waits for this scan to finish, including
+ * +[BSG_KSSystemInfo systemInfo] and the system info JSON snapshot captured
+ * once at crash-sentry install time: both report the best "jailbroken"
+ * answer known so far, which can be a provisional false if the scan hasn't
+ * completed yet. That's deliberate -- it keeps startup and every other
+ * caller of +systemInfo non-blocking. The one place accuracy still matters,
+ * an actual crash report, re-reads the live result directly (see
+ * bsg_kssysteminfo_isJailbroken() in BSG_KSSystemInfoC.h) at the moment the
+ * report is written and overrides the earlier snapshot with it, so real
+ * crash reports are exactly as accurate as a synchronous scan would have
+ * been. Safe to call multiple times, including concurrently: the scan
+ * itself only ever runs once.
+ */
+void bsg_kssysteminfo_prefetchJailbreakStatus(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 /**
  * Provides system information useful for a crash report.
  */
@@ -63,6 +97,26 @@
  * @return The system info.
  */
 + (NSDictionary *)systemInfo;
+
+/** Run a completion block once the legacy (dyld image scan based) jailbreak
+ * check has a final result, or immediately (but still asynchronously) if it
+ * already does. Starts the scan if it hasn't been started yet -- see
+ * bsg_kssysteminfo_prefetchJailbreakStatus() above. The block always runs on
+ * a background queue and this method never blocks the calling thread while
+ * waiting for it, so it is safe to call from -[BugsnagClient start] or
+ * anywhere else that must stay non-blocking. Not for use from a crash
+ * handler: use bsg_kssysteminfo_isJailbroken() there instead.
+ *
+ * This exists for callers that snapshot +systemInfo once, early in startup
+ * (before the background scan can realistically have finished), and cache
+ * that snapshot for later -- such as BugsnagSystemState's persisted launch
+ * state, used to reconstruct app hang/OOM events on the next launch, and
+ * BugsnagClient's own cached device metadata, used by notify(). Without
+ * this, such a cached value could stay a stale "not jailbroken" for the
+ * rest of the session (or into the next launch) even after the scan finds
+ * a positive result.
+ */
++ (void)notifyWhenJailbreakDetectionComplete:(void (^)(BOOL jailbroken))completion;
 
 /** Get this application's UUID.
  *

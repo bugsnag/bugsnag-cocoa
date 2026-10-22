@@ -9,15 +9,22 @@
 #define BSG_Symbolicate_h
 
 #include <stdint.h>
+#include "BSG_KSMachHeaders.h"
+
+struct mach_header;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 struct bsg_symbolicate_result {
-    struct bsg_mach_image *image;
+    const struct mach_header *image_header;
+    const char *image_name;
     uintptr_t function_address;
     const char *function_name;
+    // Storage belongs to the result, not to dyld's image mapping.
+    BSG_Mach_Header_Info image;
+    char function_name_storage[4096];
 };
 
 void bsg_symbolicate(const uintptr_t address, struct bsg_symbolicate_result *result);

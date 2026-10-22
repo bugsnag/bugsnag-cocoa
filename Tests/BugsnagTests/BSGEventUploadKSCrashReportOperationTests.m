@@ -77,6 +77,29 @@
     XCTAssertTrue(event.app.inForeground);
 }
 
+// Regression coverage for the crash-time jailbreak override written by
+// bsg_kscrashreport_writeKSCrashFields (BSG_KSCrashReport.c): "system" can
+// be a stale, install-time snapshot, but "system_atcrash" is written fresh
+// at the moment of the crash and must win when the two disagree. This tests
+// the merge BSGEventUploadKSCrashReportOperation already performs, which is
+// what makes that override actually take effect in a parsed BugsnagEvent.
+- (void)testCrashTimeJailbreakStatusOverridesStaleStartupSnapshot {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"KSCrashReport1" ofType:@"json" inDirectory:@"Data"];
+    NSMutableDictionary *report = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path]
+                                                                 options:NSJSONReadingMutableContainers
+                                                                   error:nil];
+    XCTAssertEqualObjects(report[@"system"][@"jailbroken"], @NO);
+    NSMutableDictionary *systemAtCrash = report[@"system_atcrash"];
+    XCTAssertNotNil(systemAtCrash, @"fixture is expected to already have a system_atcrash object");
+    systemAtCrash[@"jailbroken"] = @YES;
+
+    NSData *data = [NSJSONSerialization dataWithJSONObject:report options:0 error:nil];
+    NSString *file = [self temporaryFileWithContents:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+    BugsnagEvent *event = [[self operationWithFile:file] loadEventAndReturnError:nil];
+    XCTAssertNotNil(event);
+    XCTAssertTrue(event.device.jailbroken);
+}
+
 - (void)testEmptyFile {
     NSString *file = [self temporaryFileWithContents:@""];
     BSGEventUploadKSCrashReportOperation *operation = [self operationWithFile:file];
