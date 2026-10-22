@@ -85,7 +85,14 @@ typedef struct {
 // Allocate VM in small blocks without using malloc (another suspended thread
 // may hold the heap lock). Blocks are report-local, including on re-entry, and
 // never live on the crash handler's limited stack.
-#define BSG_REPORT_IMAGES_PER_BLOCK 8
+//
+// sizeof(BSG_Mach_Header_Info) is ~1.1 KB (dominated by nameStorage[1024]),
+// and vm_allocate rounds any request up to a full 16 KB page on arm64/x86_64
+// regardless of how many entries are requested, so size the block to use
+// that whole page instead of leaving most of it unused: 14 entries is the
+// most that fits (14 * sizeof(BSG_Mach_Header_Info) + the block's own
+// header still comes in under 16 KB; 15 does not).
+#define BSG_REPORT_IMAGES_PER_BLOCK 14
 typedef struct BSG_Report_Image_Block {
     struct BSG_Report_Image_Block *next;
     uint32_t count;
@@ -753,6 +760,14 @@ void bsg_kscrw_i_writeRegisters(
  */
 void bsg_kscrw_i_writeCrashInfoMessage(const BSG_KSCrashReportWriter *const writer,
                                        const char *key, uintptr_t address) {
+    // This runs only from crash-handler context. Startup should always have
+    // finished initializing the image cache well before any crash handler
+    // can run (see bsg_mach_headers_ready()'s doc comment), but skip rather
+    // than risk running the initializer here on the rare path where it
+    // somehow hasn't.
+    if (!bsg_mach_headers_ready()) {
+        return;
+    }
     BSG_Mach_Header_Info image;
     if (!bsg_mach_headers_image_at_address(address, &image)) {
         BSG_KSLOG_ERROR("Could not locate mach header info");
@@ -1300,8 +1315,11 @@ void bsg_kscrashreport_writeMinimalReport(
         }
         writer->endContainer(writer);
 
+        // Same reasoning as bsg_kscrw_i_writeCrashInfoMessage() above: this
+        // minimal/recrash report path runs only from crash-handler context,
+        // so skip rather than risk running the initializer here.
         BSG_Mach_Header_Info image;
-        if (bsg_mach_headers_get_self_image(&image)) {
+        if (bsg_mach_headers_ready() && bsg_mach_headers_get_self_image(&image)) {
             writer->beginArray(writer, BSG_KSCrashField_BinaryImages);
             bsg_kscrw_i_writeBinaryImage(writer, NULL, &image);
             writer->endContainer(writer);

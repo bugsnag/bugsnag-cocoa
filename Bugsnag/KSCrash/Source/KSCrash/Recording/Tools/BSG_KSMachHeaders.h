@@ -76,6 +76,17 @@ bool bsg_mach_headers_read_image_entry(const BSG_Dyld_Image_Info *images,
  */
 void bsg_mach_headers_initialize(void);
 
+/** Whether startup-image initialization has already completed. Never
+ * triggers it: a single atomic load, safe to call from a crash handler when
+ * the caller would rather skip than risk running the (non-reentrant,
+ * allocating) initializer inline during crash handling. Initialization
+ * normally completes at SDK startup, well before any crash handler could
+ * run, so this should read true in practice; it exists as a defensive guard
+ * for callers that are reached only from crash-time code, not a normal way
+ * to use this cache.
+ */
+bool bsg_mach_headers_ready(void);
+
 /**
  * Return dyld's live array of loaded images and place its current count in
  * `count`. dyld itself is not included in this array. An unavailable array is

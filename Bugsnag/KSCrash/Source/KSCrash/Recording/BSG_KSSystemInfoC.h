@@ -72,6 +72,22 @@ bool bsg_kssysteminfo_isJailbreakDetectionComplete(void);
  */
 char *bsg_kssysteminfo_copyProcessName(void);
 
+/** Test-only. Installs a hook the background jailbreak scan calls once, at
+ * the start of its run, before touching dyld -- lets a test hold the scan
+ * open deterministically (e.g. on a semaphore) to exercise the non-blocking
+ * guarantee on +[BSG_KSSystemInfo systemInfo] / bsg_kssysteminfo_isJailbroken()
+ * without relying on wall-clock timing. Pass NULL to remove the hook.
+ */
+void bsg_test_support_systeminfo_set_jailbreak_scan_hook(void (*hook)(void));
+
+/** Test-only. Resets the legacy jailbreak scan's one-shot state (including
+ * clearing any hook set via bsg_test_support_systeminfo_set_jailbreak_scan_hook)
+ * so a subsequent bsg_kssysteminfo_prefetchJailbreakStatus() call runs the
+ * scan again from scratch. Never call this outside of tests: the scan is
+ * meant to run exactly once per process in production.
+ */
+void bsg_test_support_systeminfo_reset_jailbreak_scan(void);
+
 #ifdef __cplusplus
 }
 #endif

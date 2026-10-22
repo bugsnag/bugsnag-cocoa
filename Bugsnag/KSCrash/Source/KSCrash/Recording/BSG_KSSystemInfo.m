@@ -81,6 +81,31 @@ _Static_assert(ATOMIC_BOOL_LOCK_FREE == 2,
 static dispatch_once_t g_legacyJailbreakScanOnce;
 static _Atomic bool g_legacyJailbreakDetected = false;
 static _Atomic bool g_legacyJailbreakScanComplete = false;
+// Exists only so +notifyWhenJailbreakDetectionComplete: can ask to be told
+// when the scan below finishes, via dispatch_group_notify. Deliberately
+// never passed to dispatch_group_wait anywhere in this file -- that was the
+// bug this whole non-blocking rewrite fixed, and re-adding a wait on this
+// group would reintroduce it.
+static dispatch_group_t g_legacyJailbreakScanNotifyGroup;
+
+// Test-only: when set, the background scan below calls this once per run,
+// before touching dyld, so a test can hold the scan open deterministically
+// (e.g. on a semaphore) instead of relying on wall-clock timing to exercise
+// the non-blocking guarantee. Mirrors the g_initialization_hook pattern in
+// BSG_KSMachHeaders.c.
+static void (*g_jailbreakScanTestHook)(void);
+
+void bsg_test_support_systeminfo_set_jailbreak_scan_hook(void (*hook)(void)) {
+    g_jailbreakScanTestHook = hook;
+}
+
+void bsg_test_support_systeminfo_reset_jailbreak_scan(void) {
+    g_legacyJailbreakScanOnce = 0;
+    atomic_store_explicit(&g_legacyJailbreakDetected, false, memory_order_relaxed);
+    atomic_store_explicit(&g_legacyJailbreakScanComplete, false, memory_order_relaxed);
+    g_legacyJailbreakScanNotifyGroup = NULL;
+    g_jailbreakScanTestHook = NULL;
+}
 
 void bsg_kssysteminfo_prefetchJailbreakStatus(void) {
     dispatch_once(&g_legacyJailbreakScanOnce, ^{
@@ -95,11 +120,18 @@ void bsg_kssysteminfo_prefetchJailbreakStatus(void) {
         // Also keep using the old detection method, off the calling thread.
         // Nothing waits on this block; it updates the atomics whenever it
         // finishes, and readers simply see the latest value at the time.
+        dispatch_group_t group = dispatch_group_create();
+        g_legacyJailbreakScanNotifyGroup = group;
+        dispatch_group_enter(group);
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+            if (g_jailbreakScanTestHook != NULL) {
+                g_jailbreakScanTestHook();
+            }
             if (bsg_mach_headers_image_named("MobileSubstrate", false, NULL)) {
                 atomic_store_explicit(&g_legacyJailbreakDetected, true, memory_order_relaxed);
             }
             atomic_store_explicit(&g_legacyJailbreakScanComplete, true, memory_order_relaxed);
+            dispatch_group_leave(group);
         });
     });
 }
@@ -167,6 +199,29 @@ static NSDictionary * bsg_systemversion(void) {
 
 
 @implementation BSG_KSSystemInfo
+
++ (void)notifyWhenJailbreakDetectionComplete:(void (^)(BOOL jailbroken))completion {
+    bsg_kssysteminfo_prefetchJailbreakStatus();
+    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
+    // Snapshot the group before checking completion: if the scan finishes
+    // between these two lines, dispatch_group_notify on an already-empty
+    // group still fires its block (asynchronously) rather than hanging, so
+    // this has no lost-wakeup race either way.
+    dispatch_group_t group = g_legacyJailbreakScanNotifyGroup;
+    if (bsg_kssysteminfo_isJailbreakDetectionComplete() || group == NULL) {
+        // Either the fast synchronous check already found a positive result
+        // (which never creates a group) or the scan has already finished.
+        // Still hop to a background queue rather than calling the block
+        // inline, so callers can rely on "never synchronous" unconditionally.
+        dispatch_async(queue, ^{
+            completion(bsg_kssysteminfo_isJailbroken());
+        });
+        return;
+    }
+    dispatch_group_notify(group, queue, ^{
+        completion(bsg_kssysteminfo_isJailbroken());
+    });
+}
 
 // ============================================================================
 #pragma mark - Utility -

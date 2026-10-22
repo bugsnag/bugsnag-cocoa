@@ -30,6 +30,14 @@
 #import "BSG_KSSystemInfoC.h"
 
 
+// Test-only bridge between the plain C jailbreak-scan hook
+// (bsg_test_support_systeminfo_set_jailbreak_scan_hook, which takes a plain
+// function pointer, not a block) and a per-test semaphore.
+static dispatch_semaphore_t sKSSystemInfoTestsHoldSemaphore;
+static void KSSystemInfoTestsWaitOnHoldSemaphore(void) {
+    dispatch_semaphore_wait(sKSSystemInfoTestsHoldSemaphore, DISPATCH_TIME_FOREVER);
+}
+
 @interface KSSystemInfo_Tests : XCTestCase @end
 
 
@@ -60,31 +68,41 @@
 // Regression coverage for the non-blocking jailbreak status (see the long
 // comment above is_jailbroken() in BSG_KSSystemInfo.m): +systemInfo must
 // never wait on the background legacy-scan, only report the best answer
-// known at the time it's called.
+// known at the time it's called. These deliberately avoid wall-clock
+// thresholds (flaky under load on CI/simulator hardware) in favor of a test
+// hook that holds the scan open deterministically, per review feedback on
+// the original timing-based versions of these tests.
 
-- (void)testSystemInfoNeverBlocksOnJailbreakScan
+- (void)testSystemInfoNeverBlocksWhileScanIsHeldOpen
 {
-    // A generous upper bound: even a slow device's dyld image scan is many
-    // orders of magnitude faster than this, so if +systemInfo ever starts
-    // waiting on it again, this is expected to fail well before it would
-    // from simply running on slow CI hardware.
-    NSDate *start = [NSDate date];
-    NSDictionary *info = [BSG_KSSystemInfo systemInfo];
-    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:start];
-    XCTAssertNotNil(info);
-    XCTAssertLessThan(elapsed, 0.25);
-}
+    bsg_test_support_systeminfo_reset_jailbreak_scan();
+    dispatch_semaphore_t hold = dispatch_semaphore_create(0);
+    sKSSystemInfoTestsHoldSemaphore = hold;
+    bsg_test_support_systeminfo_set_jailbreak_scan_hook(&KSSystemInfoTestsWaitOnHoldSemaphore);
 
-- (void)testJailbreakStatusIsReadableWithoutBlocking
-{
     bsg_kssysteminfo_prefetchJailbreakStatus();
-    // A bare atomic load: must return immediately regardless of whether the
-    // background scan it reflects has finished yet.
-    NSDate *start = [NSDate date];
+    // The background scan is now blocked indefinitely inside the hook above.
+    // If +systemInfo (or bsg_kssysteminfo_isJailbroken(), exercised below)
+    // ever started waiting on it again, these calls would hang until the
+    // test times out; instead they must return immediately regardless.
+    NSDictionary *info = [BSG_KSSystemInfo systemInfo];
+    XCTAssertNotNil(info);
+    XCTAssertNotNil(info[@BSG_KSSystemField_Jailbroken]);
     bool jailbroken = bsg_kssysteminfo_isJailbroken();
-    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:start];
     (void)jailbroken;
-    XCTAssertLessThan(elapsed, 0.01);
+    XCTAssertFalse(bsg_kssysteminfo_isJailbreakDetectionComplete());
+
+    dispatch_semaphore_signal(hold);
+    XCTestExpectation *done = [self expectationWithDescription:@"held scan completes once released"];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        while (!bsg_kssysteminfo_isJailbreakDetectionComplete()) {
+            usleep(1000);
+        }
+        [done fulfill];
+    });
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    bsg_test_support_systeminfo_reset_jailbreak_scan();
+    sKSSystemInfoTestsHoldSemaphore = nil;
 }
 
 - (void)testJailbreakDetectionEventuallyCompletes
@@ -102,6 +120,46 @@
     });
     [self waitForExpectationsWithTimeout:10 handler:nil];
     XCTAssertTrue(bsg_kssysteminfo_isJailbreakDetectionComplete());
+}
+
+- (void)testNotifyWhenJailbreakDetectionCompleteNeverRunsSynchronously
+{
+    // XCTest methods run on the main thread, so a completion that fired
+    // synchronously (before notifyWhenJailbreakDetectionComplete: returns)
+    // would observe NSThread.isMainThread == YES here.
+    XCTestExpectation *done = [self expectationWithDescription:@"completion runs"];
+    [BSG_KSSystemInfo notifyWhenJailbreakDetectionComplete:^(BOOL jailbroken) {
+        (void)jailbroken;
+        XCTAssertFalse(NSThread.isMainThread);
+        [done fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+}
+
+- (void)testNotifyWhenJailbreakDetectionCompleteFiresAfterHeldScanReleases
+{
+    bsg_test_support_systeminfo_reset_jailbreak_scan();
+    dispatch_semaphore_t hold = dispatch_semaphore_create(0);
+    sKSSystemInfoTestsHoldSemaphore = hold;
+    bsg_test_support_systeminfo_set_jailbreak_scan_hook(&KSSystemInfoTestsWaitOnHoldSemaphore);
+
+    XCTestExpectation *done = [self expectationWithDescription:@"notified after release"];
+    __block BOOL notified = NO;
+    [BSG_KSSystemInfo notifyWhenJailbreakDetectionComplete:^(BOOL jailbroken) {
+        (void)jailbroken;
+        notified = YES;
+        [done fulfill];
+    }];
+    // Give the completion a moment to (incorrectly) fire early, then confirm
+    // it hasn't: the scan is still held at this point.
+    usleep(50 * 1000);
+    XCTAssertFalse(notified);
+
+    dispatch_semaphore_signal(hold);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    XCTAssertTrue(notified);
+    bsg_test_support_systeminfo_reset_jailbreak_scan();
+    sKSSystemInfoTestsHoldSemaphore = nil;
 }
 
 @end

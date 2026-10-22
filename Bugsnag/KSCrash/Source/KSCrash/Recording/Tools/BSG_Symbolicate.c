@@ -100,9 +100,18 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
         command += lc.cmdsize;
     }
 
+    // From here on, every failure is specific to reading the symbol table
+    // itself (function-starts data, nlist entries, the string table) -- the
+    // image's own load-command structure was already walked successfully
+    // above, so its identity and address range are already established and
+    // trustworthy. A symbol-table read failure here (e.g. a transient
+    // unmapping) should only cost us the function name/address, not the
+    // frame's already-known image: goto metadata, not goto invalid, so the
+    // image verification and copy below still runs and the frame keeps its
+    // object_addr/binary-image association even without a symbol name.
     if (!hasLinkedit || !hasStarts) goto metadata;
     uintptr_t data = linkedit_data(&linkedit, (uintptr_t)image.slide, starts.dataoff, starts.datasize);
-    if (!data) goto invalid;
+    if (!data) goto metadata;
     uintptr_t function = (uintptr_t)image.header, decoded = 0, value = 0;
     unsigned shift = 0;
     uint8_t bytes[256];
@@ -111,15 +120,15 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
         if (i % sizeof(bytes) == 0) {
             buffered = starts.datasize - i;
             if (buffered > sizeof(bytes)) buffered = sizeof(bytes);
-            if (!read_data(permanent, data + i, bytes, buffered)) goto invalid;
+            if (!read_data(permanent, data + i, bytes, buffered)) goto metadata;
         }
         uint8_t byte = bytes[i % sizeof(bytes)];
         if (shift >= sizeof(uintptr_t) * 8 ||
-            (uintptr_t)(byte & 0x7f) > (UINTPTR_MAX >> shift)) goto invalid;
+            (uintptr_t)(byte & 0x7f) > (UINTPTR_MAX >> shift)) goto metadata;
         value |= (uintptr_t)(byte & 0x7f) << shift;
         if (byte & 0x80) { shift += 7; continue; }
         if (!value) break;
-        if (value > UINTPTR_MAX - function) goto invalid;
+        if (value > UINTPTR_MAX - function) goto metadata;
         function += value;
         uintptr_t next = function;
 #if defined(__arm__)
@@ -135,21 +144,21 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
     uintptr_t symbols = linkedit_data(&linkedit, (uintptr_t)image.slide, symtab.symoff,
                                       (uint64_t)symtab.nsyms * sizeof(nlist_t));
     uintptr_t strings = linkedit_data(&linkedit, (uintptr_t)image.slide, symtab.stroff, symtab.strsize);
-    if (!symbols || !strings) goto invalid;
+    if (!symbols || !strings) goto metadata;
     nlist_t best = {{0}};
     nlist_t entries[64];
     for (uint32_t i = 0; i < symtab.nsyms; ) {
         size_t count = symtab.nsyms - i;
         if (count > 64) count = 64;
         if (!read_data(permanent, symbols + (uintptr_t)i * sizeof(nlist_t),
-                       entries, count * sizeof(nlist_t))) goto invalid;
+                       entries, count * sizeof(nlist_t))) goto metadata;
         for (size_t j = 0; j < count; j++) {
             nlist_t candidate = entries[j];
             if (candidate.n_value != decoded - (uintptr_t)image.slide ||
                 (candidate.n_type & N_STAB) || candidate.n_un.n_strx >= symtab.strsize ||
                 ((best.n_type & N_EXT) && !(candidate.n_type & N_EXT))) continue;
             char first;
-            if (!read_data(permanent, strings + candidate.n_un.n_strx, &first, 1)) goto invalid;
+            if (!read_data(permanent, strings + candidate.n_un.n_strx, &first, 1)) goto metadata;
             if (first) best = candidate;
         }
         i += (uint32_t)count;

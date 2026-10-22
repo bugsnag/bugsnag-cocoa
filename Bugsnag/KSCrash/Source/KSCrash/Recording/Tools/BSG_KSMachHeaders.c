@@ -12,6 +12,7 @@
 #include "BSG_KSMach.h"
 #include "BSG_KSImageMemory.h"
 
+#include <dlfcn.h>
 #include <mach-o/dyld.h>
 #include <mach-o/dyld_images.h>
 #include <os/trace.h>
@@ -140,6 +141,15 @@ static const BSG_Dyld_Image_Info *get_images(uint32_t *count) {
 
 static bool images_ready(void) {
     bsg_mach_headers_initialize();
+    return atomic_load_explicit(&g_initialization_state, memory_order_acquire) ==
+           BSGImagesReady;
+}
+
+bool bsg_mach_headers_ready(void) {
+    // Unlike images_ready(), never triggers initialization itself: a single
+    // atomic load, safe to call from a crash handler for callers that must
+    // not risk running register_dyld_images() (calloc, _dyld_get_image_header)
+    // inline in that context -- see its callers in BSG_KSCrashReport.c.
     return atomic_load_explicit(&g_initialization_state, memory_order_acquire) ==
            BSGImagesReady;
 }
@@ -586,7 +596,14 @@ static void register_dyld_images(void) {
         }
     }
 
-    cache_image_for_header((const struct mach_header *)&__dso_handle, NULL,
+    // A NULL name here would make cache_image_for_header() fall back to
+    // get_path(), which walks the whole dyld image array just to find
+    // Bugsnag's own path -- fine at startup, not crash time, but needless
+    // when dladdr() can answer the same question directly from the address
+    // we already have, with no array walk at all.
+    Dl_info selfInfo;
+    const char *selfPath = dladdr(&__dso_handle, &selfInfo) ? selfInfo.dli_fname : NULL;
+    cache_image_for_header((const struct mach_header *)&__dso_handle, selfPath,
                            &g_self_image);
 }
 

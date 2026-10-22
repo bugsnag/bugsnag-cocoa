@@ -126,6 +126,27 @@ static NSDictionary *copyDictionary(NSDictionary *launchState) {
         _currentLaunchState = initCurrentState(config);
         _consecutiveLaunchCrashes = [_lastLaunchState[InternalKey][ConsecutiveLaunchCrashesKey] unsignedIntegerValue];
         [self sync];
+
+        // initCurrentState() above reads "jailbroken" via
+        // +[BSG_KSSystemInfo systemInfo], which can be a provisional false
+        // if called (as it is here, right at SDK start) before the legacy
+        // MobileSubstrate scan has finished -- see
+        // bsg_kssysteminfo_prefetchJailbreakStatus(). Promote the cached
+        // (and persisted, via -sync below) value if that scan later finds a
+        // positive result, so app hang/OOM events reconstructed from
+        // lastLaunchState on the *next* launch don't carry a stale false. A
+        // later genuine negative can never undo an earlier genuine positive,
+        // so this only ever promotes false -> true, never the reverse.
+        __weak BugsnagSystemState *weakSelf = self;
+        [BSG_KSSystemInfo notifyWhenJailbreakDetectionComplete:^(BOOL jailbroken) {
+            BugsnagSystemState *strongSelf = weakSelf;
+            if (jailbroken && strongSelf != nil &&
+                ![strongSelf.currentLaunchState[SYSTEMSTATE_KEY_DEVICE][@"jailbroken"] boolValue]) {
+                // setValue:forKey:inSection: serializes concurrent updates
+                // and re-persists via -sync, same as any other state change.
+                [strongSelf setValue:@YES forKey:@"jailbroken" inSection:SYSTEMSTATE_KEY_DEVICE];
+            }
+        }];
     }
     return self;
 }

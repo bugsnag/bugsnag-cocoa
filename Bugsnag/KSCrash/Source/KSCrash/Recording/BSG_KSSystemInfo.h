@@ -98,6 +98,26 @@ void bsg_kssysteminfo_prefetchJailbreakStatus(void);
  */
 + (NSDictionary *)systemInfo;
 
+/** Run a completion block once the legacy (dyld image scan based) jailbreak
+ * check has a final result, or immediately (but still asynchronously) if it
+ * already does. Starts the scan if it hasn't been started yet -- see
+ * bsg_kssysteminfo_prefetchJailbreakStatus() above. The block always runs on
+ * a background queue and this method never blocks the calling thread while
+ * waiting for it, so it is safe to call from -[BugsnagClient start] or
+ * anywhere else that must stay non-blocking. Not for use from a crash
+ * handler: use bsg_kssysteminfo_isJailbroken() there instead.
+ *
+ * This exists for callers that snapshot +systemInfo once, early in startup
+ * (before the background scan can realistically have finished), and cache
+ * that snapshot for later -- such as BugsnagSystemState's persisted launch
+ * state, used to reconstruct app hang/OOM events on the next launch, and
+ * BugsnagClient's own cached device metadata, used by notify(). Without
+ * this, such a cached value could stay a stale "not jailbroken" for the
+ * rest of the session (or into the next launch) even after the scan finds
+ * a positive result.
+ */
++ (void)notifyWhenJailbreakDetectionComplete:(void (^)(BOOL jailbroken))completion;
+
 /** Get this application's UUID.
  *
  * @return The UUID.
