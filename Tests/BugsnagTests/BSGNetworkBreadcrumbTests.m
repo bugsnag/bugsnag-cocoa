@@ -8,12 +8,77 @@
 #import "BSGTestCase.h"
 
 #import "BSGNetworkBreadcrumb.h"
+#import "BugsnagInternals.h"
+#import <objc/runtime.h>
 
 @interface BSGNetworkBreadcrumbTests : BSGTestCase
 
 @end
 
 @implementation BSGNetworkBreadcrumbTests
+
+- (void)withNilQueryName:(void (^)(NSString *url))test {
+    NSString *url = @"https://example.com/?category=books&__nil_name__=ignored&=empty-name&category=music&flag";
+    NSURLQueryItem *sample = [NSURLComponents componentsWithString:url].queryItems.firstObject;
+    Method method = class_getInstanceMethod(sample.class, @selector(name));
+    IMP original = method_getImplementation(method);
+    // Foundation may normalize a nil initializer argument to an empty name.
+    // Inject nil at the getter to exercise both production parsing paths.
+    IMP replacement = imp_implementationWithBlock(^NSString *(NSURLQueryItem *item) {
+        NSString *name = ((NSString *(*)(id, SEL))original)(item, @selector(name));
+        return [name isEqualToString:@"__nil_name__"] ? nil : name;
+    });
+    method_setImplementation(method, replacement);
+    @try {
+        test(url);
+    } @finally {
+        method_setImplementation(method, original);
+        imp_removeBlock(replacement);
+    }
+}
+
+- (void)testUrlParamsSkipsNilNames {
+    [self withNilQueryName:^(NSString *url) {
+        NSArray<NSURLQueryItem *> *items = [NSURLComponents componentsWithString:url].queryItems;
+        XCTAssertNil(items[1].name);
+        NSDictionary *breadcrumbParams = BSGURLParamsForQueryItems(items);
+        NSDictionary *expectedBreadcrumbParams = @{
+            @"category": @[@"books", @"music"],
+            @"": @"empty-name",
+            @"flag": [NSNull null]
+        };
+        XCTAssertEqualObjects(breadcrumbParams, expectedBreadcrumbParams);
+    }];
+}
+
+- (void)testRequestParamsSkipsNilNames {
+    [self withNilQueryName:^(NSString *url) {
+        XCTAssertNil([NSURLComponents componentsWithString:url].queryItems[1].name);
+        BugsnagHttpRequest *request = [BugsnagHttpRequest new];
+        [request setNewUrl:url];
+        // Request payloads retain their existing last-value-wins and nil-value behavior.
+        NSDictionary *expectedRequestParams = @{@"category": @"music", @"": @"empty-name"};
+        XCTAssertEqualObjects(request.params, expectedRequestParams);
+        XCTAssertEqualObjects(request.url, @"https://example.com/");
+    }];
+}
+
+// Real-world inputs whose names cannot be percent-decoded. Tried ?%FF=1, ?%E2%82=1, ?%C0%AF=1
+// and ?%=1 on the iOS 26 simulator: none return a nil name (Foundation returns @"" instead), so
+// the swizzled tests above are needed to exercise the nil path. These inputs still guard against
+// regressions: parsing must not throw and valid items must still be captured.
+- (void)testUndecodableQueryNamesDoNotThrow {
+    for (NSString *url in @[@"https://example.com/?%FF=1&a=b",
+                            @"https://example.com/?%E2%82=1&a=b"]) {
+        NSArray<NSURLQueryItem *> *items = [NSURLComponents componentsWithString:url].queryItems;
+        XCTAssertNoThrow(BSGURLParamsForQueryItems(items), @"%@", url);
+        XCTAssertEqualObjects(BSGURLParamsForQueryItems(items)[@"a"], @"b", @"%@", url);
+
+        BugsnagHttpRequest *request = [BugsnagHttpRequest new];
+        XCTAssertNoThrow([request setNewUrl:url], @"%@", url);
+        XCTAssertEqualObjects(request.params[@"a"], @"b", @"%@", url);
+    }
+}
 
 - (void)testUrlParamsForQueryItems {
 #define TEST(url, expected) \
