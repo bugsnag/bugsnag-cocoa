@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Fixed an `NSInvalidArgumentException` ("key cannot be nil") when a request URL contains a query item whose name cannot be decoded.
+  [#1972](https://github.com/bugsnag/bugsnag-cocoa/pull/1972)
+
 ## 6.38.1 (2026-10-02)
 
 ### Bug Fixes

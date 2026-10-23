@@ -88,6 +88,9 @@
             NSURLComponents *components = [NSURLComponents componentsWithString:url ?: @""];
             NSMutableDictionary *params = [NSMutableDictionary new];
             for (NSURLQueryItem *item in components.queryItems) {
+                // NSURLQueryItem.name is declared nonnull, but it can return nil
+                // see BSGURLParamsForQueryItems. Existing behaviour
+                // (last value wins, nil value removes the key) is intentionally unchanged.
                 NSString *name = item.name;
                 if (name == nil) {
                     continue;

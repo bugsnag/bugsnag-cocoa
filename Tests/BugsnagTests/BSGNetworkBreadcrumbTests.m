@@ -63,6 +63,23 @@
     }];
 }
 
+// Real-world inputs whose names cannot be percent-decoded. Tried ?%FF=1, ?%E2%82=1, ?%C0%AF=1
+// and ?%=1 on the iOS 26 simulator: none return a nil name (Foundation returns @"" instead), so
+// the swizzled tests above are needed to exercise the nil path. These inputs still guard against
+// regressions: parsing must not throw and valid items must still be captured.
+- (void)testUndecodableQueryNamesDoNotThrow {
+    for (NSString *url in @[@"https://example.com/?%FF=1&a=b",
+                            @"https://example.com/?%E2%82=1&a=b"]) {
+        NSArray<NSURLQueryItem *> *items = [NSURLComponents componentsWithString:url].queryItems;
+        XCTAssertNoThrow(BSGURLParamsForQueryItems(items), @"%@", url);
+        XCTAssertEqualObjects(BSGURLParamsForQueryItems(items)[@"a"], @"b", @"%@", url);
+
+        BugsnagHttpRequest *request = [BugsnagHttpRequest new];
+        XCTAssertNoThrow([request setNewUrl:url], @"%@", url);
+        XCTAssertEqualObjects(request.params[@"a"], @"b", @"%@", url);
+    }
+}
+
 - (void)testUrlParamsForQueryItems {
 #define TEST(url, expected) \
 XCTAssertEqualObjects(BSGURLParamsForQueryItems([NSURLComponents componentsWithString:url].queryItems), expected)

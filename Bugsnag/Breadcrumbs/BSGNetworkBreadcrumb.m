@@ -62,6 +62,9 @@ NSDictionary<NSString *, id> * BSGURLParamsForQueryItems(NSArray<NSURLQueryItem 
     }
     NSMutableDictionary *result = [NSMutableDictionary new];
     for (NSURLQueryItem *item in queryItems) {
+        // NSURLQueryItem.name is declared nonnull, but it can return nil
+        // Skip these items rather than use the raw percent-encoded
+        // name, so redaction can't be bypassed by an encoded key.
         NSString *name = item.name;
         if (name == nil) {
             continue;
