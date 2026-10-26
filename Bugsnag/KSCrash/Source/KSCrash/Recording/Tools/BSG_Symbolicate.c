@@ -35,6 +35,36 @@ static bool read_data(bool permanent, uintptr_t address, void *out, size_t size)
     return bsg_image_read((const void *)address, out, size);
 }
 
+// Load commands are contiguous and small (usually 1-4 KB), but reading each
+// one through the kernel costs a syscall, and a report can symbolicate
+// thousands of frames. Serve them from a small window refilled in bulk, never
+// reading past the end of the load-command area.
+typedef struct {
+    uintptr_t base;
+    size_t length;
+    uint8_t bytes[2048];
+} command_window;
+
+static bool read_command(bool permanent, command_window *window, uintptr_t limit,
+                         uintptr_t address, void *out, size_t size) {
+    if (permanent || size > sizeof(window->bytes) || address > limit || size > limit - address) {
+        return read_data(permanent, address, out, size);
+    }
+    if (!(address >= window->base && address - window->base <= window->length &&
+          size <= window->length - (address - window->base))) {
+        size_t count = limit - address;
+        if (count > sizeof(window->bytes)) count = sizeof(window->bytes);
+        window->length = 0;
+        if (!read_data(false, address, window->bytes, count)) {
+            return read_data(false, address, out, size);
+        }
+        window->base = address;
+        window->length = count;
+    }
+    memcpy(out, window->bytes + (address - window->base), size);
+    return true;
+}
+
 static uintptr_t linkedit_data(const segment_command_t *segment, uintptr_t slide,
                               uint64_t offset, uint64_t size) {
     if (offset < segment->fileoff || size > segment->filesize ||
@@ -45,19 +75,27 @@ static uintptr_t linkedit_data(const segment_command_t *segment, uintptr_t slide
     return base + (uintptr_t)relative;
 }
 
-void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
-    memset(result, 0, sizeof(*result));
-    BSG_Mach_Header_Info image;
-    if (!bsg_mach_headers_image_at_address(address, &image)) return;
-
+// Shared by both entry points below: everything from here on only needs an
+// already-resolved image, not how it was found (a fresh dyld-array scan, or
+// an image the caller already knows about from earlier in this report).
+static void symbolicate_image(uintptr_t address, const BSG_Mach_Header_Info *imagePtr,
+                              struct bsg_symbolicate_result *result, bool verifyImage) {
+    BSG_Mach_Header_Info image = *imagePtr;
     bool permanent = (image.flags & MH_DYLIB_IN_CACHE) != 0;
     struct mach_header header;
     if (!read_data(permanent, (uintptr_t)image.header, &header, sizeof(header))) return;
+    // The main executable stays mapped for the life of the process, like the
+    // shared cache, so its (often large) symbol table can be read directly
+    // instead of through thousands of kernel reads.
+    if (header.filetype == MH_EXECUTE) permanent = true;
     uintptr_t command = (uintptr_t)image.header +
         ((header.magic == MH_MAGIC_64 || header.magic == MH_CIGAM_64) ?
          sizeof(struct mach_header_64) : sizeof(struct mach_header));
     if (header.sizeofcmds > UINTPTR_MAX - command) return;
     uintptr_t end = command + header.sizeofcmds;
+    command_window window;
+    window.base = 0;
+    window.length = 0;
     segment_command_t linkedit = {0};
     struct symtab_command symtab = {0};
     struct linkedit_data_command starts = {0};
@@ -65,12 +103,12 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
     for (uint32_t i = 0; i < header.ncmds; i++) {
         struct load_command lc;
         if (command > end || end - command < sizeof(lc) ||
-            !read_data(permanent, command, &lc, sizeof(lc)) ||
+            !read_command(permanent, &window, end, command, &lc, sizeof(lc)) ||
             lc.cmdsize < sizeof(lc) || lc.cmdsize > end - command) goto invalid;
         if (lc.cmd == LC_SEGMENT_BSG) {
             segment_command_t segment;
             if (lc.cmdsize < sizeof(segment) ||
-                !read_data(permanent, command, &segment, sizeof(segment))) goto invalid;
+                !read_command(permanent, &window, end, command, &segment, sizeof(segment))) goto invalid;
             if (!strncmp(segment.segname, SEG_LINKEDIT, sizeof(segment.segname))) {
                 linkedit = segment;
                 hasLinkedit = true;
@@ -79,8 +117,9 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
                 if (segment.nsects > (lc.cmdsize - sizeof(segment)) / sizeof(section_t)) goto invalid;
                 for (uint32_t j = 0; j < segment.nsects; j++) {
                     section_t section;
-                    if (!read_data(permanent, command + sizeof(segment) + j * sizeof(section),
-                                   &section, sizeof(section))) goto invalid;
+                    if (!read_command(permanent, &window, end,
+                                      command + sizeof(segment) + j * sizeof(section),
+                                      &section, sizeof(section))) goto invalid;
                     if (!strncmp(section.sectname, SECT_TEXT, sizeof(section.sectname))) {
                         uintptr_t start = section.addr + (uintptr_t)image.slide;
                         if (address < start || address - start >= section.size) goto metadata;
@@ -90,11 +129,11 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
             }
         } else if (lc.cmd == LC_SYMTAB) {
             if (lc.cmdsize < sizeof(symtab) ||
-                !read_data(permanent, command, &symtab, sizeof(symtab))) goto invalid;
+                !read_command(permanent, &window, end, command, &symtab, sizeof(symtab))) goto invalid;
             hasSymtab = true;
         } else if (lc.cmd == LC_FUNCTION_STARTS) {
             if (lc.cmdsize < sizeof(starts) ||
-                !read_data(permanent, command, &starts, sizeof(starts))) goto invalid;
+                !read_command(permanent, &window, end, command, &starts, sizeof(starts))) goto invalid;
             hasStarts = true;
         }
         command += lc.cmdsize;
@@ -146,10 +185,10 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
     uintptr_t strings = linkedit_data(&linkedit, (uintptr_t)image.slide, symtab.stroff, symtab.strsize);
     if (!symbols || !strings) goto metadata;
     nlist_t best = {{0}};
-    nlist_t entries[64];
+    nlist_t entries[128];
     for (uint32_t i = 0; i < symtab.nsyms; ) {
         size_t count = symtab.nsyms - i;
-        if (count > 64) count = 64;
+        if (count > sizeof(entries) / sizeof(entries[0])) count = sizeof(entries) / sizeof(entries[0]);
         if (!read_data(permanent, symbols + (uintptr_t)i * sizeof(nlist_t),
                        entries, count * sizeof(nlist_t))) goto metadata;
         for (size_t j = 0; j < count; j++) {
@@ -173,7 +212,7 @@ void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
         }
     }
 metadata:
-    if (!permanent) {
+    if (!permanent && verifyImage) {
         // Reject a disappeared/replaced mapping rather than attaching symbols
         // from a different UUID after address reuse.
         BSG_Mach_Header_Info verify;
@@ -187,5 +226,27 @@ metadata:
     return;
 invalid:
     memset(result, 0, sizeof(*result));
+}
+
+void bsg_symbolicate(uintptr_t address, struct bsg_symbolicate_result *result) {
+    memset(result, 0, sizeof(*result));
+    // Never trigger lazy initialisation from a crash-handler call: if the
+    // cache never finished initialising (e.g. a prior task_info() failure),
+    // bail out instead of running calloc()/_dyld_get_image_header() here.
+    if (!bsg_mach_headers_ready()) return;
+    BSG_Mach_Header_Info image;
+    if (!bsg_mach_headers_image_at_address(address, &image)) return;
+    symbolicate_image(address, &image, result, true);
+}
+
+void bsg_symbolicate_with_image(uintptr_t address, const BSG_Mach_Header_Info *image,
+                                struct bsg_symbolicate_result *result) {
+    memset(result, 0, sizeof(*result));
+    // Same crash-handler guard as bsg_symbolicate(): the known image was
+    // itself only ever produced while the cache was ready, but a defensive,
+    // cheap, non-initializing check here costs nothing and keeps both entry
+    // points consistent.
+    if (!bsg_mach_headers_ready()) return;
+    symbolicate_image(address, image, result, false);
 }
 

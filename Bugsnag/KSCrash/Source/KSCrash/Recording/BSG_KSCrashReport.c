@@ -99,10 +99,33 @@ typedef struct BSG_Report_Image_Block {
     BSG_Mach_Header_Info images[BSG_REPORT_IMAGES_PER_BLOCK];
 } BSG_Report_Image_Block;
 
+/* Symbols already resolved for this report. A report often repeats the same
+ * return addresses (many threads parked in the same call chain), and every
+ * resolution walks an image's load commands and symbol table through the
+ * kernel. Entries are variable-length and bump-allocated from vm_allocate'd
+ * blocks, so no malloc is needed in the crash handler. */
+#define BSG_SYMBOL_MEMO_BLOCK_SIZE 16384
+typedef struct BSG_Symbol_Memo_Block {
+    struct BSG_Symbol_Memo_Block *next;
+    uint32_t used;
+    uint32_t reserved;
+    uint8_t bytes[BSG_SYMBOL_MEMO_BLOCK_SIZE - 16];
+} BSG_Symbol_Memo_Block;
+
+typedef struct {
+    uintptr_t address;
+    uintptr_t functionAddress;
+    uint32_t nameLength; /* including the NUL; 0 when there is no name */
+    uint32_t entrySize;  /* total size including padding */
+} BSG_Symbol_Memo_Entry;
+
 typedef struct {
     BSG_Report_Image_Block *head;
     BSG_Report_Image_Block *tail;
     bool allocationFailed;
+    BSG_Symbol_Memo_Block *memoHead;
+    BSG_Symbol_Memo_Block *memoTail;
+    bool memoAllocationFailed;
 } BSG_Referenced_Image_Set;
 
 static bool bsg_referenced_image_set_add(BSG_Referenced_Image_Set *set,
@@ -141,7 +164,86 @@ static bool bsg_referenced_image_set_add(BSG_Referenced_Image_Set *set,
     return true;
 }
 
+/** Look up `address` among the images already resolved and copied into
+ * this report (added via bsg_referenced_image_set_add() for an earlier
+ * frame). On a hit, the caller can symbolicate using this known image
+ * directly instead of letting bsg_symbolicate() re-scan dyld's whole image
+ * array for an address that -- for repeated frames into the same library --
+ * is very likely to land in an image this report already has a copy of. */
+static bool bsg_referenced_image_set_find(const BSG_Referenced_Image_Set *set,
+                                          uintptr_t address,
+                                          BSG_Mach_Header_Info *image) {
+    if (set == NULL) return false;
+    for (const BSG_Report_Image_Block *block = set->head; block; block = block->next) {
+        for (uint32_t i = 0; i < block->count; i++) {
+            const BSG_Mach_Header_Info *candidate = &block->images[i];
+            if (candidate->header != NULL && candidate->imageSize != 0 &&
+                address >= (uintptr_t)candidate->header &&
+                address - (uintptr_t)candidate->header < candidate->imageSize) {
+                bsg_mach_headers_copy_image(image, candidate);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+static bool bsg_symbol_memo_find(const BSG_Referenced_Image_Set *set, uintptr_t address,
+                                 uintptr_t *functionAddress, const char **name) {
+    if (set == NULL) return false;
+    for (const BSG_Symbol_Memo_Block *block = set->memoHead; block; block = block->next) {
+        uint32_t offset = 0;
+        while (offset < block->used) {
+            const BSG_Symbol_Memo_Entry *entry = (const void *)(block->bytes + offset);
+            if (entry->address == address) {
+                *functionAddress = entry->functionAddress;
+                *name = entry->nameLength ? (const char *)(entry + 1) : NULL;
+                return true;
+            }
+            offset += entry->entrySize;
+        }
+    }
+    return false;
+}
+
+static void bsg_symbol_memo_add(BSG_Referenced_Image_Set *set, uintptr_t address,
+                                uintptr_t functionAddress, const char *name) {
+    if (set == NULL || set->memoAllocationFailed) return;
+    size_t nameLength = name ? strlen(name) + 1 : 0;
+    size_t entrySize = (sizeof(BSG_Symbol_Memo_Entry) + nameLength + 7) & ~(size_t)7;
+    if (entrySize > sizeof(set->memoTail->bytes)) return;
+    if (set->memoTail == NULL ||
+        entrySize > sizeof(set->memoTail->bytes) - set->memoTail->used) {
+        vm_address_t block = 0;
+        if (vm_allocate(mach_task_self(), &block, sizeof(BSG_Symbol_Memo_Block),
+                        VM_FLAGS_ANYWHERE) != KERN_SUCCESS) {
+            set->memoAllocationFailed = true;
+            return;
+        }
+        BSG_Symbol_Memo_Block *created = (void *)block;
+        created->next = NULL;
+        created->used = 0;
+        if (set->memoTail) set->memoTail->next = created;
+        else set->memoHead = created;
+        set->memoTail = created;
+    }
+    BSG_Symbol_Memo_Entry *entry = (void *)(set->memoTail->bytes + set->memoTail->used);
+    entry->address = address;
+    entry->functionAddress = functionAddress;
+    entry->nameLength = (uint32_t)nameLength;
+    entry->entrySize = (uint32_t)entrySize;
+    if (nameLength) memcpy(entry + 1, name, nameLength);
+    set->memoTail->used += (uint32_t)entrySize;
+}
+
 static void bsg_referenced_image_set_free(BSG_Referenced_Image_Set *set) {
+    BSG_Symbol_Memo_Block *memo = set->memoHead;
+    while (memo) {
+        BSG_Symbol_Memo_Block *next = memo->next;
+        vm_deallocate(mach_task_self(), (vm_address_t)memo, sizeof(*memo));
+        memo = next;
+    }
+    set->memoHead = set->memoTail = NULL;
     BSG_Report_Image_Block *block = set->head;
     while (block) {
         BSG_Report_Image_Block *next = block->next;
@@ -614,8 +716,54 @@ void bsg_kscrw_i_writeBacktrace(const BSG_KSCrashReportWriter *const writer,
                 for (int i = 0; i < backtraceLength; i++) {
                     // Only the original first frame is an instruction address;
                     // all subsequent frames must be adjusted as return addresses.
-                    bsg_ksbt_symbolicate(&backtrace[i], &symbolicated, 1,
-                                         i == 0 ? skippedEntries : 1);
+                    // This mirrors bsg_ksbt_symbolicate()'s own first-frame
+                    // check exactly, so the address checked against this
+                    // report's already-resolved images is the same address
+                    // bsg_symbolicate()/bsg_symbolicate_with_image() would
+                    // actually look up.
+                    bool isRawInstructionAddress = (i == 0 && skippedEntries == 0);
+                    uintptr_t symbolicateAddress = isRawInstructionAddress
+                        ? backtrace[i]
+                        : CALL_INSTRUCTION_FROM_RETURN_ADDRESS(backtrace[i]);
+
+                    // Repeated frames into the same (often non-shared-cache)
+                    // library are common; reuse an image this report has
+                    // already resolved and copied instead of making
+                    // bsg_symbolicate() re-scan dyld's whole image array for
+                    // an address that is very likely to fall inside it.
+                    BSG_Mach_Header_Info knownImage;
+                    if (bsg_referenced_image_set_find(referencedImages, symbolicateAddress, &knownImage)) {
+                        uintptr_t memoFunction = 0;
+                        const char *memoName = NULL;
+                        if (bsg_symbol_memo_find(referencedImages, symbolicateAddress,
+                                                 &memoFunction, &memoName)) {
+                            // Same address already resolved for this report.
+                            memset(&symbolicated, 0, sizeof(symbolicated));
+                            bsg_mach_headers_copy_image(&symbolicated.image, &knownImage);
+                            symbolicated.image_header = symbolicated.image.header;
+                            symbolicated.image_name = symbolicated.image.name;
+                            symbolicated.function_address = memoFunction;
+                            if (memoName) {
+                                size_t length = strlen(memoName);
+                                if (length >= sizeof(symbolicated.function_name_storage)) {
+                                    length = sizeof(symbolicated.function_name_storage) - 1;
+                                }
+                                memcpy(symbolicated.function_name_storage, memoName, length);
+                                symbolicated.function_name_storage[length] = '\0';
+                                symbolicated.function_name = symbolicated.function_name_storage;
+                            }
+                        } else {
+                            bsg_symbolicate_with_image(symbolicateAddress, &knownImage, &symbolicated);
+                            if (symbolicated.image_header) {
+                                bsg_symbol_memo_add(referencedImages, symbolicateAddress,
+                                                    symbolicated.function_address,
+                                                    symbolicated.function_name);
+                            }
+                        }
+                    } else {
+                        bsg_ksbt_symbolicate(&backtrace[i], &symbolicated, 1,
+                                             i == 0 ? skippedEntries : 1);
+                    }
                     bsg_kscrw_i_writeBacktraceEntry(writer, NULL, backtrace[i],
                                                     &symbolicated,
                                                     referencedImages);

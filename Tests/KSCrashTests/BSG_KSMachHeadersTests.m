@@ -108,12 +108,153 @@ static void readDuringInitialization(void) {
     struct dyld_all_image_infos info = {0};
     info.infoArray = entries;
     info.infoArrayCount = 2;
+    // A non-zero, unchanging timestamp: proves the new stability check
+    // accepts a genuinely stable read, not just the zero-initialized
+    // default this fixture would otherwise leave untested.
+    info.infoArrayChangeTimestamp = 0x1234;
     bsg_test_support_mach_headers_set_dyld_info(&info);
     uint32_t count = 99;
     XCTAssertEqual(bsg_mach_headers_get_images(&count), (const BSG_Dyld_Image_Info *)entries);
     XCTAssertEqual(count, 2u);
     XCTAssertEqual(bsg_mach_headers_get_images(NULL), (const BSG_Dyld_Image_Info *)entries);
     bsg_test_support_mach_headers_reset();
+}
+
+// dyld documents infoArray as transiently NULL while it is being changed.
+// This fixture holds it NULL forever (not just transiently), which is the
+// worst case for the bounded-retry loop in get_images(): every one of its
+// BSG_GET_IMAGES_MAX_ATTEMPTS attempts fails the same way. This proves that
+// is still bounded. Recovery from a *transient* change is covered
+// deterministically by the testGetImages...Retry... tests below.
+- (void)testPersistentlyUnstableDyldArrayGivesUpBoundedly {
+    struct dyld_all_image_infos info = {0};
+    info.infoArray = NULL;
+    info.infoArrayCount = 17;
+    info.infoArrayChangeTimestamp = 0x1234;
+    bsg_test_support_mach_headers_set_dyld_info(&info);
+    uint32_t count = 99;
+    NSDate *start = [NSDate date];
+    XCTAssertEqual(bsg_mach_headers_get_images(&count), NULL);
+    XCTAssertEqual(count, 0u);
+    // Generous upper bound: this only guards against an unbounded loop, not
+    // a performance target.
+    XCTAssertLessThan([[NSDate date] timeIntervalSinceDate:start], 1.0);
+    bsg_test_support_mach_headers_reset();
+}
+
+// MARK: - get_images() retry, driven deterministically by the test hook
+//
+// The hook runs at the two points a real concurrent dyld update could land
+// (see bsg_test_support_mach_headers_set_get_images_hook), so each scenario
+// below scripts exactly what dyld would do between attempts -- no threads,
+// no sleeps, no timing.
+
+static struct dyld_all_image_infos *retryInfo;
+static BSG_Dyld_Image_Info *retryEntriesA, *retryEntriesB;
+static int retryStage0Calls;
+static void (*retryScript)(int attempt, int stage);
+
+static void retryHook(int attempt, int stage) {
+    if (stage == 0) retryStage0Calls++;
+    retryScript(attempt, stage);
+}
+
+// dyld publishes a NULL array for the first two attempts, then a good one.
+static void scriptNullThenRecovers(int attempt, int stage) {
+    if (stage == 0) retryInfo->infoArray = attempt < 2 ? NULL : retryEntriesA;
+}
+
+// An update lands mid-read on attempt 0: array and count both change and the
+// timestamp advances. Later attempts see the new, stable state.
+static void scriptUpdateLandsMidRead(int attempt, int stage) {
+    if (stage == 1 && attempt == 0) {
+        retryInfo->infoArray = retryEntriesB;
+        retryInfo->infoArrayCount = 3;
+        retryInfo->infoArrayChangeTimestamp++;
+    }
+}
+
+// Every attempt but the last is interrupted by an update.
+static void scriptStableOnlyOnLastAttempt(int attempt, int stage) {
+    if (stage == 1 && attempt < BSG_GET_IMAGES_MAX_ATTEMPTS - 1) {
+        retryInfo->infoArrayChangeTimestamp++;
+    }
+}
+
+// Every attempt is interrupted: dyld never settles.
+static void scriptNeverSettles(__unused int attempt, int stage) {
+    if (stage == 1) retryInfo->infoArrayChangeTimestamp++;
+}
+
+- (void)runRetryScenario:(void (*)(int, int))script
+                 initial:(struct dyld_all_image_infos *)info
+                  result:(const BSG_Dyld_Image_Info **)result
+                   count:(uint32_t *)count {
+    retryInfo = info;
+    retryStage0Calls = 0;
+    retryScript = script;
+    bsg_test_support_mach_headers_set_dyld_info(info);
+    bsg_test_support_mach_headers_set_get_images_hook(retryHook);
+    *count = 99;
+    *result = bsg_mach_headers_get_images(count);
+    bsg_test_support_mach_headers_reset(); // Also removes the hook.
+}
+
+- (void)testGetImagesRetryRecoversFromTransientlyNullArray {
+    BSG_Dyld_Image_Info a[2] = {{0}}, b[3] = {{0}};
+    retryEntriesA = a; retryEntriesB = b;
+    struct dyld_all_image_infos info = {0};
+    info.infoArrayCount = 2;
+    info.infoArrayChangeTimestamp = 0x1234;
+    const BSG_Dyld_Image_Info *result; uint32_t count;
+    [self runRetryScenario:scriptNullThenRecovers initial:&info result:&result count:&count];
+    XCTAssertEqual(result, (const BSG_Dyld_Image_Info *)a);
+    XCTAssertEqual(count, 2u);
+    XCTAssertEqual(retryStage0Calls, 3, @"Two failed attempts, then success");
+}
+
+- (void)testGetImagesRetryRejectsReadInterruptedByUpdate {
+    BSG_Dyld_Image_Info a[2] = {{0}}, b[3] = {{0}};
+    retryEntriesA = a; retryEntriesB = b;
+    struct dyld_all_image_infos info = {0};
+    info.infoArray = a;
+    info.infoArrayCount = 2;
+    info.infoArrayChangeTimestamp = 0x1234;
+    const BSG_Dyld_Image_Info *result; uint32_t count;
+    [self runRetryScenario:scriptUpdateLandsMidRead initial:&info result:&result count:&count];
+    // Attempt 0 read (a, 2) but the timestamp moved, so it must be discarded.
+    // Never a torn pair such as (a, 3) or (b, 2).
+    XCTAssertEqual(result, (const BSG_Dyld_Image_Info *)b);
+    XCTAssertEqual(count, 3u);
+    XCTAssertEqual(retryStage0Calls, 2);
+}
+
+- (void)testGetImagesRetrySucceedsOnFinalAllowedAttempt {
+    BSG_Dyld_Image_Info a[2] = {{0}}, b[3] = {{0}};
+    retryEntriesA = a; retryEntriesB = b;
+    struct dyld_all_image_infos info = {0};
+    info.infoArray = a;
+    info.infoArrayCount = 2;
+    info.infoArrayChangeTimestamp = 0x1234;
+    const BSG_Dyld_Image_Info *result; uint32_t count;
+    [self runRetryScenario:scriptStableOnlyOnLastAttempt initial:&info result:&result count:&count];
+    XCTAssertEqual(result, (const BSG_Dyld_Image_Info *)a);
+    XCTAssertEqual(count, 2u);
+    XCTAssertEqual(retryStage0Calls, BSG_GET_IMAGES_MAX_ATTEMPTS);
+}
+
+- (void)testGetImagesRetryGivesUpExactlyAtTheLimitWhenDyldNeverSettles {
+    BSG_Dyld_Image_Info a[2] = {{0}}, b[3] = {{0}};
+    retryEntriesA = a; retryEntriesB = b;
+    struct dyld_all_image_infos info = {0};
+    info.infoArray = a;
+    info.infoArrayCount = 2;
+    info.infoArrayChangeTimestamp = 0x1234;
+    const BSG_Dyld_Image_Info *result; uint32_t count;
+    [self runRetryScenario:scriptNeverSettles initial:&info result:&result count:&count];
+    XCTAssertEqual(result, NULL);
+    XCTAssertEqual(count, 0u);
+    XCTAssertEqual(retryStage0Calls, BSG_GET_IMAGES_MAX_ATTEMPTS, @"Bounded, not unlimited");
 }
 
 - (void)testUnreadableDyldInfoReturnsZeroCount {
@@ -322,6 +463,111 @@ static void readDuringInitialization(void) {
     XCTAssertEqual(vm_deallocate(mach_task_self(), address, vm_page_size), KERN_SUCCESS);
     BSG_Dyld_Image_Info entry;
     XCTAssertFalse(bsg_mach_headers_read_image_entry((void *)address, 0, &entry));
+}
+
+#pragma mark - Address-sorted image snapshot
+
+- (void)testSnapshotLookupResolvesEveryLoadedImageConsistently {
+    // The first lookup builds the sorted snapshot; later ones are served from
+    // it. Both must agree with dyld for every loaded image.
+    uint32_t count = _dyld_image_count();
+    XCTAssertGreaterThan(count, 0u);
+    for (int pass = 0; pass < 2; pass++) {
+        for (uint32_t i = 0; i < count; i++) {
+            const struct mach_header *header = _dyld_get_image_header(i);
+            if (!header) continue;
+            BSG_Mach_Header_Info image;
+            XCTAssertTrue(bsg_mach_headers_image_at_address((uintptr_t)header + 16, &image),
+                          @"image %u (%s), pass %d", i, _dyld_get_image_name(i), pass);
+            XCTAssertEqual(image.header, header,
+                           @"image %u (%s), pass %d", i, _dyld_get_image_name(i), pass);
+        }
+    }
+}
+
+- (void)testSnapshotRejectsAddressesBetweenImagesDefinitively {
+    vm_address_t address = 0;
+    XCTAssertEqual(vm_allocate(mach_task_self(), &address, vm_page_size, VM_FLAGS_ANYWHERE), KERN_SUCCESS);
+    if (!address) return;
+    XCTAssertEqual(vm_deallocate(mach_task_self(), address, vm_page_size), KERN_SUCCESS);
+    BSG_Mach_Header_Info image;
+    for (int i = 0; i < 3; i++) {
+        XCTAssertFalse(bsg_mach_headers_image_at_address((uintptr_t)address, &image));
+    }
+}
+
+- (void)testSnapshotIncludesImagesLoadedAfterItWasBuilt {
+    // Build the snapshot first, then load an image that is not yet loaded.
+    uintptr_t address = (uintptr_t)class_getMethodImplementation([NSObject class], @selector(description));
+    BSG_Mach_Header_Info image;
+    XCTAssertTrue(bsg_mach_headers_image_at_address(address, &image));
+
+    static const struct { const char *path; const char *symbol; } candidates[] = {
+        {"/usr/lib/libbz2.dylib", "BZ2_bzlibVersion"},
+        {"/usr/lib/libcompression.dylib", "compression_encode_buffer"},
+        {"/usr/lib/libxml2.dylib", "xmlCleanupParser"},
+        {"/usr/lib/libsqlite3.dylib", "sqlite3_libversion"},
+        {"/usr/lib/libexpat.dylib", "XML_ParserCreate"},
+    };
+    for (size_t i = 0; i < sizeof(candidates) / sizeof(candidates[0]); i++) {
+        if (dlopen(candidates[i].path, RTLD_NOLOAD)) continue; // already loaded
+        void *handle = dlopen(candidates[i].path, RTLD_NOW);
+        if (!handle) continue;
+        void *symbol = dlsym(handle, candidates[i].symbol);
+        struct dl_info info = {0};
+        if (symbol && dladdr(symbol, &info)) {
+            BSG_Mach_Header_Info loaded;
+            XCTAssertTrue(bsg_mach_headers_image_at_address((uintptr_t)symbol, &loaded));
+            XCTAssertEqual(loaded.header, info.dli_fbase);
+        }
+        dlclose(handle);
+        return;
+    }
+    // Every candidate was already loaded or unavailable on this host.
+}
+
+- (void)testSymbolicatingWithAKnownImageMatchesFullSymbolication {
+    // bsg_symbolicate_with_image() skips re-resolving the image and re-verifying
+    // it for each frame; its result must match bsg_symbolicate().
+    uintptr_t addresses[] = {
+        (uintptr_t)class_getMethodImplementation([NSObject class], @selector(description)),
+        (uintptr_t)class_getMethodImplementation([self class], _cmd),
+        (uintptr_t)dlsym(RTLD_MAIN_ONLY, "main"),
+        (uintptr_t)&dlopen,
+    };
+    for (size_t i = 0; i < sizeof(addresses) / sizeof(addresses[0]); i++) {
+        if (!addresses[i]) continue;
+        BSG_Mach_Header_Info image;
+        if (!bsg_mach_headers_image_at_address(addresses[i], &image)) continue;
+        struct bsg_symbolicate_result full, known;
+        bsg_symbolicate(addresses[i], &full);
+        bsg_symbolicate_with_image(addresses[i], &image, &known);
+        XCTAssertEqual(known.image_header, full.image_header, @"address %zu", i);
+        XCTAssertEqual(known.function_address, full.function_address, @"address %zu", i);
+        if (full.function_name) {
+            XCTAssertTrue(known.function_name != NULL, @"address %zu", i);
+            if (known.function_name) {
+                XCTAssertEqual(strcmp(known.function_name, full.function_name), 0, @"address %zu", i);
+            }
+        } else {
+            XCTAssertTrue(known.function_name == NULL, @"address %zu", i);
+        }
+    }
+}
+
+- (void)testRepeatedSymbolicationIsStable {
+    // The crash report reuses earlier results for repeated addresses; make sure
+    // symbolicating the same address repeatedly always gives the same answer.
+    uintptr_t address = (uintptr_t)class_getMethodImplementation([self class], _cmd);
+    struct bsg_symbolicate_result first, again;
+    bsg_symbolicate(address, &first);
+    XCTAssertTrue(first.image_header != NULL);
+    for (int i = 0; i < 5; i++) {
+        bsg_symbolicate(address, &again);
+        XCTAssertEqual(again.image_header, first.image_header);
+        XCTAssertEqual(again.function_address, first.function_address);
+        XCTAssertEqual((again.function_name == NULL), (first.function_name == NULL));
+    }
 }
 
 @end

@@ -144,4 +144,14 @@ uint32_t bsg_test_support_mach_headers_cached_image_count(void);
 void bsg_test_support_mach_headers_set_initialization_hook(void (*hook)(void));
 void bsg_test_support_mach_headers_set_dyld_info(const struct dyld_all_image_infos *info);
 
+/** Maximum number of times get_images() re-reads dyld's image array while it
+ * is being changed before giving up. Exposed so tests can assert against it. */
+#define BSG_GET_IMAGES_MAX_ATTEMPTS 5
+
+/** Test-only: `hook` is called with (attempt, 0) before each read attempt and
+ * (attempt, 1) after the array/count reads but before the closing timestamp
+ * read, allowing a test to mutate a fake dyld_all_image_infos at those points.
+ * Pass NULL to remove. Callers must ensure no other readers are active. */
+void bsg_test_support_mach_headers_set_get_images_hook(void (*hook)(int attempt, int stage));
+
 #endif /* BSG_KSMachHeaders_h */

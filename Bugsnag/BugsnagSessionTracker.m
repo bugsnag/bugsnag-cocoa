@@ -170,6 +170,19 @@ static NSTimeInterval const BSGNewSessionBackgroundDuration = 30;
         [device appendRuntimeInfo:self.extraRuntimeInfo];
     }
 
+    // device.jailbroken above came from a systemInfo snapshot taken right
+    // now, which -- especially for the first session -- is often before the
+    // background MobileSubstrate scan finishes, so it can be a provisional
+    // false. If the scan later finds a positive result, correct this
+    // session's own device record too. Same promotion-only pattern (false ->
+    // true only, never the reverse) as BugsnagSystemState and BugsnagClient.
+    __weak BugsnagDevice *weakDevice = device;
+    [BSG_KSSystemInfo notifyWhenJailbreakDetectionComplete:^(BOOL jailbroken) {
+        if (jailbroken) {
+            weakDevice.jailbroken = YES;
+        }
+    }];
+
     BugsnagSession *newSession = [[BugsnagSession alloc] initWithId:[[NSUUID UUID] UUIDString]
                                                           startedAt:[NSDate date]
                                                                user:[self.client.user withId]
