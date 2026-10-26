@@ -335,9 +335,9 @@ static NSTimeInterval CrashTimeDeliveryTimeout = 1;
     return [self.discardProcessor shouldDiscardEvent:eventPayload];
 }
 
-- (BOOL)hasValidRemoteConfig {
+- (BOOL)isRemoteConfigEnabled {
     BSGRemoteConfigHandler *handler = self.remoteConfigHandler;
-    return handler && [handler hasValidConfig];
+    return handler && [handler isRemoteConfigEnabled];
 }
 
 @end

@@ -27,7 +27,7 @@ static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
 
 static const NSInteger HTTPStatusCodeNotModified = 304;
-static const NSInteger HTTPStatusCodeBadRequest = 400;
+static const NSInteger HTTPStatusCodeOK = 200;
 
 static NSString *CurrentPayloadVersion = @"1";
 
@@ -138,14 +138,12 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
         return;
     }
     [self downloadRemoteConfigWithRequest:request
-                                 didRetry:NO
                                completion:completion];
 }
 
 #pragma mark - Helpers
 
 - (void)downloadRemoteConfigWithRequest:(NSURLRequest *)request
-                               didRetry:(BOOL)didRetry
                              completion:(BSGRemoteConfigServiceCompletion)completion {
     __weak typeof(self) weakSelf = self;
     [[self.session dataTaskWithRequest:request
@@ -174,8 +172,12 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
                                                                     configurationTag:etag]);
                 return;
             }
-            if (httpResponse.statusCode == HTTPStatusCodeBadRequest ||
-                [data length] == 0) {
+            if (httpResponse.statusCode != HTTPStatusCodeOK) {
+                completion([BSGRemoteConfigServiceResponse responseWithError:
+                            [strongSelf unexpectedResponseErrorWithStatusCode:httpResponse.statusCode]]);
+                return;
+            }
+            if ([data length] == 0) {
                 BSGRemoteConfiguration *emptyConfig = [BSGRemoteConfiguration configFromJson:@{}
                                                                                         eTag:etag
                                                                                   expiryDate:expiryDate];
@@ -204,11 +206,7 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
         if (remoteConfig) {
             completion([BSGRemoteConfigServiceResponse responseWithConfig:remoteConfig]);
         } else {
-            if (didRetry) {
-                completion([BSGRemoteConfigServiceResponse responseWithError:[strongSelf configNotValidError]]);
-            } else {
-                [strongSelf downloadRemoteConfigWithRequest:request didRetry:YES completion:completion];
-            }
+            completion([BSGRemoteConfigServiceResponse responseWithError:[strongSelf configNotValidError]]);
         }
     }] resume];
 }
@@ -223,6 +221,12 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
 
 - (NSError *)configNotValidError {
     return [NSError errorWithDomain:@"BSGRemoteConfigServiceDomain" code:2 userInfo:@{}];
+}
+
+- (NSError *)unexpectedResponseErrorWithStatusCode:(NSInteger)statusCode {
+    return [NSError errorWithDomain:@"BSGRemoteConfigServiceDomain"
+                               code:statusCode
+                           userInfo:@{NSLocalizedDescriptionKey: @"Unexpected Remote Config response"}];
 }
 
 - (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {

@@ -53,6 +53,7 @@ static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
         NSError *error = nil;
         if(!BSGJSONWriteToFileAtomically(configurationJson, [self configurationFilePath], &error)) {
             bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+            return nil;
         }
         return configuration;
     }
@@ -68,9 +69,12 @@ static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
         return nil;
     }
     if (configuration != nil) {
+        NSDate *previousExpiryDate = configuration.expiryDate;
         configuration.expiryDate = expiryDate;
-        [self saveConfiguration:configuration];
-        return configuration;
+        if ([self saveConfiguration:configuration]) {
+            return configuration;
+        }
+        configuration.expiryDate = previousExpiryDate;
     }
     return nil;
 }

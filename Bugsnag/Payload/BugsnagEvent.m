@@ -886,9 +886,9 @@ NSDictionary *BSGParseCustomException(NSDictionary *report,
     self.handledState.unhandled = unhandled;
 }
 
-- (void)setRemoteConfigFlag:(BOOL)hasValidConfig {
+- (void)setRemoteConfigFlag:(BOOL)isRemoteConfigEnabled {
     NSMutableDictionary *usage = [self.usage mutableCopy] ?: [NSMutableDictionary new];
-    usage[@"remoteConfig"] = @(hasValidConfig);
+    usage[@"remoteConfig"] = @(isRemoteConfigEnabled);
     self.usage = usage;
 }
 

@@ -62,8 +62,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     
     BugsnagConfiguration *configuration = delegate.configuration;
     
-    BOOL hasValidConfig = [delegate hasValidRemoteConfig];
-    [event setRemoteConfigFlag:hasValidConfig];
+    [event setRemoteConfigFlag:[delegate isRemoteConfigEnabled]];
     
     if (!configuration.shouldSendReports || ![event shouldBeSent]) {
         bsg_log_info(@"Discarding event %@ because releaseStage not in enabledReleaseStages", self.name);
