@@ -37,7 +37,7 @@ steps:
       - "unzip BugsnagNetworkRequestPlugin.xcframework.zip"
       - "bundle install"
       - "make xcframework-test-fixtures"
-      - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+      - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
 
   ##############################################################################
   #
@@ -68,7 +68,7 @@ steps:
         service-ports: true
         command:
           - "--app=@/app/build/xcframework_ipa_url_bb.txt"
-          - "--farm=bs"
+          - "--farm=bb"
           - "--device={{matrix}}"
           - "--no-tunnel"
           - "--aws-public-ip"
@@ -142,7 +142,7 @@ steps:
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
-          - "--farm=bs"
+          - "--farm=bb"
           - "--device={{matrix}}"
           - "--no-tunnel"
           - "--aws-public-ip"
@@ -188,7 +188,7 @@ steps:
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
-          - "--farm=bs"
+          - "--farm=bb"
           - "--device={{matrix}}"
           - "--no-tunnel"
           - "--aws-public-ip"
