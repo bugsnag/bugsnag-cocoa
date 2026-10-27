@@ -68,7 +68,7 @@ steps:
         service-ports: true
         command:
           - "--app=@/app/build/xcframework_ipa_url_bb.txt"
-          - "--farm=bb"
+          - "--farm=bs"
           - "--device={{matrix}}"
           - "--no-tunnel"
           - "--aws-public-ip"
@@ -142,7 +142,7 @@ steps:
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
-          - "--farm=bb"
+          - "--farm=bs"
           - "--device={{matrix}}"
           - "--no-tunnel"
           - "--aws-public-ip"
@@ -188,7 +188,7 @@ steps:
         service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
-          - "--farm=bb"
+          - "--farm=bs"
           - "--device={{matrix}}"
           - "--no-tunnel"
           - "--aws-public-ip"
