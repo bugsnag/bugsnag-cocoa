@@ -44,7 +44,6 @@
         NSDictionary *breadcrumbParams = BSGURLParamsForQueryItems(items);
         NSDictionary *expectedBreadcrumbParams = @{
             @"category": @[@"books", @"music"],
-            @"": @"empty-name",
             @"flag": [NSNull null]
         };
         XCTAssertEqualObjects(breadcrumbParams, expectedBreadcrumbParams);
@@ -100,9 +99,9 @@ XCTAssertEqualObjects(BSGURLParamsForQueryItems([NSURLComponents componentsWithS
     
     TEST(@"http://example.com?foo", @{@"foo": [NSNull null]});
     
-    TEST(@"http://example.com?=bar", @{@"": @"bar"});
+    TEST(@"http://example.com?=bar", @{});
     
-    TEST(@"http://example.com?foo=bar&", (@{@"foo": @"bar", @"": [NSNull null]}));
+    TEST(@"http://example.com?foo=bar&", (@{@"foo": @"bar"}));
     
     TEST(@"http://example.com?foo=bar&baz", (@{@"foo": @"bar", @"baz": [NSNull null]}));
     

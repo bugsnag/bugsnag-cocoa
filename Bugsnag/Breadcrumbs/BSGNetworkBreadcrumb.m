@@ -34,9 +34,9 @@ BugsnagBreadcrumb * BSGNetworkBreadcrumbWithTaskMetrics(NSURLSessionTask *task, 
 
     NSString *message = @"NSURLSession request error";
 
-    // NSURLSessionTaskTransactionMetrics.response is nil when a custom NSURLProtocol is used. 
+    // NSURLSessionTaskTransactionMetrics.response is nil when a custom NSURLProtocol is used.
     // If there was an error, task.response will be nil.
-    NSURLResponse *response = task.response; 
+    NSURLResponse *response = task.response;
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
         if (100 <= statusCode && statusCode < 400) {
@@ -62,11 +62,10 @@ NSDictionary<NSString *, id> * BSGURLParamsForQueryItems(NSArray<NSURLQueryItem 
     }
     NSMutableDictionary *result = [NSMutableDictionary new];
     for (NSURLQueryItem *item in queryItems) {
-        // NSURLQueryItem.name is declared nonnull, but it can return nil
-        // Skip these items rather than use the raw percent-encoded
-        // name, so redaction can't be bypassed by an encoded key.
+        // NSURLQueryItem.name is declared nonnull, but in malformed cases it can be nil.
+        // Also skip empty keys (e.g. "=value" or trailing '&') so only valid key names are kept.
         NSString *name = item.name;
-        if (name == nil) {
+        if (name == nil || name.length == 0) {
             continue;
         }
 
