@@ -211,14 +211,14 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
             XCTAssertTrue(found);
             if (!found) return;
             XCTAssertNotEqual(image.uuid, NULL);
-            BOOL cached = NO;
-            BSG_Mach_Header_Info cachedImage;
-            for (uint32_t index = 0; bsg_mach_headers_get_cached_image(index, &cachedImage); index++) {
-                if (cachedImage.header == image.header) {
-                    cached = YES;
-                    break;
-                }
-            }
+            // Both fixture addresses are in startup-cached images (Bugsnag's
+            // own image and the main image), so they remain resolvable once
+            // dyld's array is withdrawn.
+            BSG_Mach_Header_Info startupImage;
+            BOOL cached = (bsg_mach_headers_get_main_image(&startupImage) &&
+                           startupImage.header == image.header) ||
+                          (bsg_mach_headers_get_self_image(&startupImage) &&
+                           startupImage.header == image.header);
             XCTAssertTrue(cached, @"The fixture image must be cached before withdrawing dyld's array");
             if (image.uuid != NULL) {
                 expectedUUIDs[@((uintptr_t)image.header)] =

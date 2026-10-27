@@ -288,12 +288,6 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
     
-    // Start the background jailbreak scan early so its cost overlaps with
-    // the rest of startup below instead of blocking it. See the comment on
-    // bsg_kssysteminfo_prefetchJailbreakStatus() in BSG_KSSystemInfo.h: this
-    // kicks the scan off in the background and returns immediately.
-    bsg_kssysteminfo_prefetchJailbreakStatus();
-
     // Map our bridged API early on.
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
 
@@ -310,20 +304,6 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
     [self.metadata addMetadata:BSGParseAppMetadata(@{@"system": systemInfo}) toSection:BSGKeyApp];
     [self.metadata addMetadata:BSGParseDeviceMetadata(@{@"system": systemInfo}) toSection:BSGKeyDevice];
     
-    // The "jailbroken" value folded into metadata above can be a provisional
-    // false if the legacy MobileSubstrate scan (see
-    // bsg_kssysteminfo_prefetchJailbreakStatus()) hasn't finished yet.
-    // self.metadata is long-lived and read fresh by notify() on every call,
-    // so refresh this one cached key if the scan later finds a positive
-    // result -- otherwise handled errors could report false for the rest of
-    // the session on a MobileSubstrate-only jailbroken device.
-    __weak BugsnagClient *weakSelf = self;
-    [BSG_KSSystemInfo notifyWhenJailbreakDetectionComplete:^(BOOL jailbroken) {
-        if (jailbroken) {
-            [weakSelf.metadata addMetadata:@YES withKey:@"jailbroken" toSection:BSGKeyDevice];
-        }
-    }];
-
     [self setupRemoteConfigHandlerWithSystemInfo:systemInfo];
 
     [self computeDidCrashLastLaunch];

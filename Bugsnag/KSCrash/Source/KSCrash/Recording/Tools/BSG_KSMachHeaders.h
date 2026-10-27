@@ -100,16 +100,6 @@ bool bsg_mach_headers_get_main_image(BSG_Mach_Header_Info *image);
 /** Copy information about the image that contains Bugsnag into `image`. */
 bool bsg_mach_headers_get_self_image(BSG_Mach_Header_Info *image);
 
-/** Copy information about dyld into `image`. */
-bool bsg_mach_headers_get_dyld_image(BSG_Mach_Header_Info *image);
-
-/** Copy a cached image by index, without waiting for a busy shared cache.
- * Enumerates unique startup images followed by shared-cache images. Returns
- * false at the end or if initialization/cache access is unavailable.
- * This is a best-effort fallback, not a complete list of loaded images.
- */
-bool bsg_mach_headers_get_cached_image(uint32_t index, BSG_Mach_Header_Info *image);
-
 /**
  * Populate `image` for a known header and path. This does not add the image to
  * the address lookup cache.
@@ -122,6 +112,19 @@ bool bsg_mach_headers_image_for_header(const struct mach_header *header,
  */
 bool bsg_mach_headers_image_at_address(uintptr_t address,
                                        BSG_Mach_Header_Info *image);
+
+/**
+ * Cheap check that `image` -- previously returned by
+ * bsg_mach_headers_image_at_address() -- is still the image dyld has loaded at
+ * that address: the address-sorted snapshot it came from is still valid for
+ * dyld's current list (timestamp, array pointer and count all unchanged) and
+ * holds the same UUID and size. One kernel read, versus re-parsing the image's
+ * load commands. Returns false if that cannot be established (no snapshot, a
+ * busy snapshot, or dyld's list changed), in which case the caller should fall
+ * back to a full re-verification with bsg_mach_headers_image_for_header().
+ * Never waits.
+ */
+bool bsg_mach_headers_image_is_current(const BSG_Mach_Header_Info *image);
 
 /** Find a loaded image whose path matches `imageName`. */
 bool bsg_mach_headers_image_named(const char *imageName, bool exactMatch,

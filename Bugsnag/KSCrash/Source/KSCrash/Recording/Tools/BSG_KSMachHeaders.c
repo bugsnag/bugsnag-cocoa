@@ -270,27 +270,6 @@ bool bsg_mach_headers_get_self_image(BSG_Mach_Header_Info *image) {
     return populate_image_info(header, 0, NULL, image);
 }
 
-bool bsg_mach_headers_get_dyld_image(BSG_Mach_Header_Info *image) {
-    if (image == NULL) {
-        return false;
-    }
-    if (!images_ready()) {
-        return false;
-    }
-
-    if (g_dyld_image != NULL) {
-        return copy_cached_image(g_dyld_image, image);
-    }
-
-    if (g_all_image_infos == NULL || g_all_image_infos->dyldImageLoadAddress == NULL) {
-        return false;
-    }
-
-    return populate_image_info(g_all_image_infos->dyldImageLoadAddress,
-                               0,
-                               g_all_image_infos->dyldPath, image);
-}
-
 bool bsg_mach_headers_image_for_header(const struct mach_header *header,
                                        const char *name,
                                        BSG_Mach_Header_Info *image) {
@@ -301,28 +280,6 @@ bool bsg_mach_headers_image_for_header(const struct mach_header *header,
         return false;
     }
     return populate_image_info(header, 0, name, image);
-}
-
-bool bsg_mach_headers_get_cached_image(uint32_t index, BSG_Mach_Header_Info *image) {
-    if (image == NULL || !images_ready()) {
-        return false;
-    }
-    for (BSG_Mach_Image_Node *node = g_cached_images_head; node != NULL;
-         node = node->next) {
-        if (index == 0) {
-            return copy_cached_image(node, image);
-        }
-        index--;
-    }
-    if (atomic_flag_test_and_set_explicit(&g_shared_images_busy, memory_order_acquire)) {
-        return false;
-    }
-    bool found = index < g_shared_image_count;
-    if (found) {
-        bsg_mach_headers_copy_image(image, &g_shared_images[index]);
-    }
-    atomic_flag_clear_explicit(&g_shared_images_busy, memory_order_release);
-    return found;
 }
 
 static bool find_shared_image(uintptr_t address, BSG_Mach_Header_Info *image) {
@@ -416,11 +373,18 @@ static bool header_contains_address(const struct mach_header *header, uintptr_t 
 // lookup reads the array ONCE, records each image's address range, sorts
 // the ranges, and later lookups binary-search them (O(log images)).
 //
-// The snapshot is only a lookup index: it is stamped with dyld's
-// infoArrayChangeTimestamp and is rebuilt whenever that changes, and the
-// full image info for a hit is still read with checked reads on demand, so
-// an image unloaded after the snapshot was taken is reported as "not found"
-// (falling back to the scan) and never dereferenced.
+// The snapshot is only a lookup index. It is stamped with three values read
+// from dyld's all_image_infos -- infoArrayChangeTimestamp, the infoArray
+// pointer and infoArrayCount -- and is rebuilt as soon as ANY of them
+// differs from what it was built for. A negative answer ("not in any image")
+// is only trusted while all three still match, so a dyld that fails to bump
+// the timestamp on some image load/unload (on any OS version) is still
+// caught by the pointer or the count changing. If dyld's list cannot be read
+// consistently, or the index could not be built completely, the snapshot
+// reports "unavailable" and the caller falls back to the full scan: it never
+// answers "not found" from an incomplete or stale index. The full image
+// info for a hit is still read with checked reads on demand, so an image
+// unloaded after the snapshot was taken is never dereferenced.
 //
 // Async-signal-safe: no malloc and no locks. Memory comes from vm_allocate;
 // access is guarded by a try-lock that is never waited on -- if it is busy
@@ -435,8 +399,15 @@ typedef struct {
     uint32_t slot;
 } BSG_Image_Snapshot_Entry;
 
+// What the snapshot (or a failed attempt to build one) is valid for.
 typedef struct {
     uint64_t timestamp;
+    const void *array;
+    uint32_t count;
+} BSG_Dyld_List_State;
+
+typedef struct {
+    BSG_Dyld_List_State state;
     uint32_t count;
     vm_size_t size; // allocation size, for vm_deallocate
     BSG_Image_Snapshot_Entry *entries; // sorted by start
@@ -445,7 +416,7 @@ typedef struct {
 } BSG_Image_Snapshot;
 
 static BSG_Image_Snapshot *g_image_snapshot;
-static uint64_t g_image_snapshot_failed_timestamp;
+static BSG_Dyld_List_State g_image_snapshot_failed_state;
 static bool g_image_snapshot_failed;
 static atomic_flag g_image_snapshot_busy = ATOMIC_FLAG_INIT;
 
@@ -482,16 +453,61 @@ static void snapshot_free(BSG_Image_Snapshot *snapshot) {
 
 #define BSG_ALIGN8(x) (((x) + 7u) & ~(size_t)7u)
 
-static BSG_Image_Snapshot *snapshot_build(uint64_t *timestampOut) {
-    uint64_t before = 0, after = 0;
-    if (g_all_image_infos == NULL ||
-        !bsg_image_read(&g_all_image_infos->infoArrayChangeTimestamp, &before, sizeof(before))) {
+// One checked read covers infoArrayCount, infoArray and
+// infoArrayChangeTimestamp (they sit within the first ~200 bytes of
+// dyld_all_image_infos), so validating the snapshot costs a single kernel
+// call per lookup instead of three. The fields are copied out of a local
+// buffer, so the compiler cannot coalesce or re-read them. Like the separate
+// reads this replaces, it is a bounded consistency check, not an atomic one:
+// a concurrent dyld update can still land mid-copy, which is why snapshot_build()
+// compares the state again after it has read the array. Fails if dyld's list
+// is being modified (NULL infoArray) or unreadable.
+#define BSG_DYLD_STATE_OFFSET offsetof(struct dyld_all_image_infos, infoArrayCount)
+#define BSG_DYLD_STATE_END (offsetof(struct dyld_all_image_infos, infoArrayChangeTimestamp) + \
+                            sizeof(((struct dyld_all_image_infos *)0)->infoArrayChangeTimestamp))
+#define BSG_DYLD_STATE_LENGTH (BSG_DYLD_STATE_END - BSG_DYLD_STATE_OFFSET)
+_Static_assert(BSG_DYLD_STATE_END > BSG_DYLD_STATE_OFFSET && BSG_DYLD_STATE_LENGTH <= 256,
+               "dyld state fields must fit in one small read");
+
+static bool read_dyld_list_state(BSG_Dyld_List_State *state) {
+    memset(state, 0, sizeof(*state));
+    if (g_all_image_infos == NULL) return false;
+    uint8_t buffer[BSG_DYLD_STATE_LENGTH];
+    if (!bsg_image_read((const uint8_t *)g_all_image_infos + BSG_DYLD_STATE_OFFSET,
+                        buffer, sizeof(buffer))) {
+        return false;
+    }
+    const BSG_Dyld_Image_Info *array = NULL;
+    uint32_t count = 0;
+    uint64_t timestamp = 0;
+    memcpy(&count, buffer + (offsetof(struct dyld_all_image_infos, infoArrayCount) - BSG_DYLD_STATE_OFFSET),
+           sizeof(count));
+    memcpy(&array, buffer + (offsetof(struct dyld_all_image_infos, infoArray) - BSG_DYLD_STATE_OFFSET),
+           sizeof(array));
+    memcpy(&timestamp, buffer + (offsetof(struct dyld_all_image_infos, infoArrayChangeTimestamp) - BSG_DYLD_STATE_OFFSET),
+           sizeof(timestamp));
+    if (array == NULL) return false;
+    state->timestamp = timestamp;
+    state->array = array;
+    state->count = count;
+    return true;
+}
+
+static bool dyld_list_state_equal(const BSG_Dyld_List_State *a, const BSG_Dyld_List_State *b) {
+    return a->timestamp == b->timestamp && a->array == b->array && a->count == b->count;
+}
+
+static BSG_Image_Snapshot *snapshot_build(BSG_Dyld_List_State *stateOut) {
+    BSG_Dyld_List_State before, after;
+    if (!read_dyld_list_state(&before)) {
         return NULL;
     }
-    *timestampOut = before;
+    *stateOut = before;
     uint32_t count = 0;
     const BSG_Dyld_Image_Info *images = get_images(&count);
-    if (images == NULL || count == 0 || count > BSG_IMAGE_SNAPSHOT_MAX_IMAGES) {
+    // The index must describe exactly the list that was stamped above.
+    if (images == NULL || count == 0 || count > BSG_IMAGE_SNAPSHOT_MAX_IMAGES ||
+        (const void *)images != before.array || count != before.count) {
         return NULL;
     }
     size_t entriesOffset = BSG_ALIGN8(sizeof(BSG_Image_Snapshot));
@@ -514,7 +530,13 @@ static BSG_Image_Snapshot *snapshot_build(uint64_t *timestampOut) {
     BSG_Dyld_Image_Info batch[BSG_IMAGE_ENTRY_BATCH_SIZE];
     for (uint32_t i = 0; i < count; i++) {
         if (i % BSG_IMAGE_ENTRY_BATCH_SIZE == 0 &&
-            !read_image_batch(images, i, count, batch)) break;
+            !read_image_batch(images, i, count, batch)) {
+            // An unreadable part of dyld's array would leave images missing
+            // from the index, and a missing image would be reported as
+            // "not found". Never publish an incomplete index.
+            snapshot_free(snapshot);
+            return NULL;
+        }
         BSG_Dyld_Image_Info entry = batch[i % BSG_IMAGE_ENTRY_BATCH_SIZE];
         const struct mach_header *header = entry.imageLoadAddress;
         uint64_t textSize = 0;
@@ -528,12 +550,11 @@ static BSG_Image_Snapshot *snapshot_build(uint64_t *timestampOut) {
     }
     // If dyld changed the list while we were reading it, the index may mix
     // old and new images: discard it rather than trust it.
-    if (!bsg_image_read(&g_all_image_infos->infoArrayChangeTimestamp, &after, sizeof(after)) ||
-        after != before) {
+    if (!read_dyld_list_state(&after) || !dyld_list_state_equal(&after, &before)) {
         snapshot_free(snapshot);
         return NULL;
     }
-    snapshot->timestamp = before;
+    snapshot->state = before;
     snapshot->count = used;
     snapshot_sort(snapshot->entries, used);
     return snapshot;
@@ -545,22 +566,25 @@ static int snapshot_find(uintptr_t address, BSG_Mach_Header_Info *image) {
         return BSGSnapshotUnavailable;
     }
     int result = BSGSnapshotUnavailable;
-    uint64_t current = 0;
-    if (bsg_image_read(&g_all_image_infos->infoArrayChangeTimestamp, &current, sizeof(current))) {
-        if (g_image_snapshot == NULL || g_image_snapshot->timestamp != current) {
-            if (!(g_image_snapshot_failed && g_image_snapshot_failed_timestamp == current)) {
-                uint64_t builtFor = 0;
+    BSG_Dyld_List_State current;
+    if (read_dyld_list_state(&current)) {
+        if (g_image_snapshot == NULL ||
+            !dyld_list_state_equal(&g_image_snapshot->state, &current)) {
+            if (!(g_image_snapshot_failed &&
+                  dyld_list_state_equal(&g_image_snapshot_failed_state, &current))) {
+                BSG_Dyld_List_State builtFor;
+                memset(&builtFor, 0, sizeof(builtFor));
                 BSG_Image_Snapshot *fresh = snapshot_build(&builtFor);
                 snapshot_free(g_image_snapshot);
                 g_image_snapshot = fresh;
                 // Do not retry (and pay for a failed build) on every frame
-                // while dyld's list stays unreadable/unstable at this timestamp.
+                // while dyld's list stays unreadable/unstable in this state.
                 g_image_snapshot_failed = fresh == NULL;
-                g_image_snapshot_failed_timestamp = builtFor;
+                g_image_snapshot_failed_state = builtFor;
             }
         }
         BSG_Image_Snapshot *snapshot = g_image_snapshot;
-        if (snapshot != NULL && snapshot->timestamp == current) {
+        if (snapshot != NULL && dyld_list_state_equal(&snapshot->state, &current)) {
             result = BSGSnapshotNotFound;
             uint32_t low = 0, high = snapshot->count; // find last entry with start <= address
             while (low < high) {
@@ -644,6 +668,35 @@ bool bsg_mach_headers_image_at_address(uintptr_t address,
     }
 
     return false;
+}
+
+bool bsg_mach_headers_image_is_current(const BSG_Mach_Header_Info *image) {
+    if (image == NULL || image->header == NULL || image->uuid == NULL ||
+        g_all_image_infos == NULL ||
+        atomic_flag_test_and_set_explicit(&g_image_snapshot_busy, memory_order_acquire)) {
+        return false;
+    }
+    bool current = false;
+    BSG_Dyld_List_State state;
+    const BSG_Image_Snapshot *snapshot = g_image_snapshot;
+    if (snapshot != NULL && read_dyld_list_state(&state) &&
+        dyld_list_state_equal(&snapshot->state, &state)) {
+        const uintptr_t start = (uintptr_t)image->header;
+        uint32_t low = 0, high = snapshot->count; // last entry with start <= header
+        while (low < high) {
+            uint32_t mid = low + (high - low) / 2;
+            if (snapshot->entries[mid].start <= start) low = mid + 1; else high = mid;
+        }
+        if (low > 0 && snapshot->entries[low - 1].start == start) {
+            const uint32_t slot = snapshot->entries[low - 1].slot;
+            const BSG_Mach_Header_Info *known = &snapshot->infos[slot];
+            current = snapshot->populated[slot] && known->uuid != NULL &&
+                      known->imageSize == image->imageSize &&
+                      memcmp(known->uuid, image->uuid, 16) == 0;
+        }
+    }
+    atomic_flag_clear_explicit(&g_image_snapshot_busy, memory_order_release);
+    return current;
 }
 
 bool bsg_mach_headers_image_named(const char *imageName, bool exactMatch,

@@ -46,110 +46,42 @@
 #import "BugsnagLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
-#import <dispatch/dispatch.h>
 #import <mach-o/dyld.h>
-#import <stdatomic.h>
 
-// The legacy jailbreak check below walks dyld's full image list looking for
-// a path containing "MobileSubstrate" (bsg_mach_headers_image_named), which
-// is O(number of loaded images): every image is read safely (one or more
-// vm_read_overwrite calls each) before concluding there is no match. On a
-// non-jailbroken device -- the overwhelming majority of installs -- that
-// conclusion is reached every single time, so running it inline on the
-// calling thread would add that full cost to every Bugsnag.start().
+// Jailbreak status is computed once, synchronously, the first time it is
+// needed (+systemInfo / bsg_kssysteminfo_toJSON, both called during
+// Bugsnag.start() on a normal thread -- never from a crash handler).
 //
-// bsg_kssysteminfo_prefetchJailbreakStatus() kicks the scan off on a
-// background queue instead, as early in startup as the caller can manage, so
-// its cost overlaps with the rest of SDK initialization. Nothing waits for
-// it: is_jailbroken() (and therefore +systemInfo and the system info JSON
-// snapshot captured once at crash-sentry install time) returns the best
-// answer known *so far*, which can be a provisional "not jailbroken" if the
-// only positive indicator is this scan and it hasn't finished yet. That
-// snapshot is not the last word, though -- the actual crash report writer
-// (bsg_kscrashreport_writeKSCrashFields in BSG_KSCrashReport.c) re-reads the
-// live, lock-free status via bsg_kssysteminfo_isJailbroken() at the moment of
-// a real crash and overrides the frozen snapshot with it, so by the time any
-// crash is actually reported -- the case that matters -- the result is
-// exactly as accurate as a synchronous scan would have been, without ever
-// blocking a caller to get there.
-//
-// The status is stored as a plain lock-free atomic specifically so it can be
-// read from bsg_kssysteminfo_isJailbroken() inside a crash handler: no lock,
-// no allocation, no dispatch call, just a load.
-_Static_assert(ATOMIC_BOOL_LOCK_FREE == 2,
-               "jailbreak status must be lock-free to read during crash reporting");
-static dispatch_once_t g_legacyJailbreakScanOnce;
-static _Atomic bool g_legacyJailbreakDetected = false;
-static _Atomic bool g_legacyJailbreakScanComplete = false;
-// Exists only so +notifyWhenJailbreakDetectionComplete: can ask to be told
-// when the scan below finishes, via dispatch_group_notify. Deliberately
-// never passed to dispatch_group_wait anywhere in this file -- that was the
-// bug this whole non-blocking rewrite fixed, and re-adding a wait on this
-// group would reintroduce it.
-static dispatch_group_t g_legacyJailbreakScanNotifyGroup;
-
-// Test-only: when set, the background scan below calls this once per run,
-// before touching dyld, so a test can hold the scan open deterministically
-// (e.g. on a semaphore) instead of relying on wall-clock timing to exercise
-// the non-blocking guarantee. Mirrors the g_initialization_hook pattern in
-// BSG_KSMachHeaders.c.
-static void (*g_jailbreakScanTestHook)(void);
-
-void bsg_test_support_systeminfo_set_jailbreak_scan_hook(void (*hook)(void)) {
-    g_jailbreakScanTestHook = hook;
-}
-
-void bsg_test_support_systeminfo_reset_jailbreak_scan(void) {
-    g_legacyJailbreakScanOnce = 0;
-    atomic_store_explicit(&g_legacyJailbreakDetected, false, memory_order_relaxed);
-    atomic_store_explicit(&g_legacyJailbreakScanComplete, false, memory_order_relaxed);
-    g_legacyJailbreakScanNotifyGroup = NULL;
-    g_jailbreakScanTestHook = NULL;
-}
-
-void bsg_kssysteminfo_prefetchJailbreakStatus(void) {
-    dispatch_once(&g_legacyJailbreakScanOnce, ^{
-        bool is_jb = false;
-        get_jailbreak_status(&is_jb);
-        if (is_jb) {
-            atomic_store_explicit(&g_legacyJailbreakDetected, true, memory_order_relaxed);
-            atomic_store_explicit(&g_legacyJailbreakScanComplete, true, memory_order_relaxed);
-            return;
+// The MobileSubstrate check reads dyld's own, in-process image name table
+// (_dyld_image_count / _dyld_get_image_name): no kernel reads and no
+// allocation, so it is cheap even with thousands of loaded images and,
+// unlike walking Bugsnag's image cache, does not depend on how the cache
+// is populated. _dyld_get_image_name returns NULL if an image was unloaded
+// between the count and the lookup, so NULL names are skipped.
+static bool bsg_detect_mobile_substrate(void) {
+    const uint32_t count = _dyld_image_count();
+    for (uint32_t i = 0; i < count; i++) {
+        const char *name = _dyld_get_image_name(i);
+        if (name != NULL && strstr(name, "MobileSubstrate") != NULL) {
+            return true;
         }
-
-        // Also keep using the old detection method, off the calling thread.
-        // Nothing waits on this block; it updates the atomics whenever it
-        // finishes, and readers simply see the latest value at the time.
-        dispatch_group_t group = dispatch_group_create();
-        g_legacyJailbreakScanNotifyGroup = group;
-        dispatch_group_enter(group);
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-            if (g_jailbreakScanTestHook != NULL) {
-                g_jailbreakScanTestHook();
-            }
-            if (bsg_mach_headers_image_named("MobileSubstrate", false, NULL)) {
-                atomic_store_explicit(&g_legacyJailbreakDetected, true, memory_order_relaxed);
-            }
-            atomic_store_explicit(&g_legacyJailbreakScanComplete, true, memory_order_relaxed);
-            dispatch_group_leave(group);
-        });
-    });
-}
-
-bool bsg_kssysteminfo_isJailbroken(void) {
-    return atomic_load_explicit(&g_legacyJailbreakDetected, memory_order_relaxed);
-}
-
-bool bsg_kssysteminfo_isJailbreakDetectionComplete(void) {
-    return atomic_load_explicit(&g_legacyJailbreakScanComplete, memory_order_relaxed);
+    }
+    return false;
 }
 
 static inline bool is_jailbroken(void) {
-    // Make sure the scan has at least been started (safe and cheap to call
-    // repeatedly: dispatch_once makes every call after the first a no-op
-    // check), then report whatever is known right now. Never blocks.
-    bsg_kssysteminfo_prefetchJailbreakStatus();
-    return bsg_kssysteminfo_isJailbroken();
+    static dispatch_once_t once;
+    static bool is_jb;
+    dispatch_once(&once, ^{
+        get_jailbreak_status(&is_jb);
+
+        // Also keep using the old detection method.
+        if (!is_jb && bsg_detect_mobile_substrate()) {
+            is_jb = true;
+        }
+    });
+
+    return is_jb;
 }
 
 /**
@@ -199,29 +131,6 @@ static NSDictionary * bsg_systemversion(void) {
 
 
 @implementation BSG_KSSystemInfo
-
-+ (void)notifyWhenJailbreakDetectionComplete:(void (^)(BOOL jailbroken))completion {
-    bsg_kssysteminfo_prefetchJailbreakStatus();
-    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
-    // Snapshot the group before checking completion: if the scan finishes
-    // between these two lines, dispatch_group_notify on an already-empty
-    // group still fires its block (asynchronously) rather than hanging, so
-    // this has no lost-wakeup race either way.
-    dispatch_group_t group = g_legacyJailbreakScanNotifyGroup;
-    if (bsg_kssysteminfo_isJailbreakDetectionComplete() || group == NULL) {
-        // Either the fast synchronous check already found a positive result
-        // (which never creates a group) or the scan has already finished.
-        // Still hop to a background queue rather than calling the block
-        // inline, so callers can rely on "never synchronous" unconditionally.
-        dispatch_async(queue, ^{
-            completion(bsg_kssysteminfo_isJailbroken());
-        });
-        return;
-    }
-    dispatch_group_notify(group, queue, ^{
-        completion(bsg_kssysteminfo_isJailbroken());
-    });
-}
 
 // ============================================================================
 #pragma mark - Utility -
