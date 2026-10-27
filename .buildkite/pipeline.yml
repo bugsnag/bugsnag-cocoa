@@ -929,7 +929,7 @@ steps:
             service-ports: true
             command:
               - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
-              - "--farm=bb"
+              - "--farm=bs"
               - "--device={{matrix}}"
               - "--no-tunnel"
               - "--aws-public-ip"
@@ -967,7 +967,7 @@ steps:
             service-ports: true
             command:
               - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
-              - "--farm=bb"
+              - "--farm=bs"
               - "--device={{matrix}}"
               - "--no-tunnel"
               - "--aws-public-ip"
@@ -1059,7 +1059,7 @@ steps:
             service-ports: true
             command:
               - "--app=@/app/build/ipa_url_bb_debug_xcode27.txt"
-              - "--farm=bb"
+              - "--farm=bs"
               - "--device={{matrix}}"
               - "--no-tunnel"
               - "--aws-public-ip"
@@ -1116,7 +1116,7 @@ steps:
             service-ports: true
             command:
               - "--app=@/app/build/xcframework_ipa_url_bb_xcode27.txt"
-              - "--farm=bb"
+              - "--farm=bs"
               - "--device={{matrix}}"
               - "--no-tunnel"
               - "--aws-public-ip"
