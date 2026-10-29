@@ -40,7 +40,7 @@
     id proxy = [[BSGURLSessionTracingProxy alloc] initWithDelegate:sessionDelegate tracingDelegate:(id)tracingDelegate];
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.ephemeralSessionConfiguration];
-    NSURLSessionDataTask *task = [[NSURLSessionDataTask alloc] init];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://example.com"]];
     
     XCTAssertTrue([proxy respondsToSelector:@selector(URLSession:dataTask:didReceiveData:)]);
     [proxy URLSession:session dataTask:task didReceiveData:[NSData data]];
@@ -55,11 +55,14 @@
         id proxy = [[BSGURLSessionTracingProxy alloc] initWithDelegate:sessionDelegate tracingDelegate:(id)tracingDelegate];
         
         NSURLSession *session = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.ephemeralSessionConfiguration];
-        NSURLSessionDataTask *task = [[NSURLSessionDataTask alloc] init];
+        NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://example.com"]];
         
         XCTAssertFalse([proxy respondsToSelector:@selector(URLSession:dataTask:didReceiveData:)]);
         XCTAssertTrue([proxy respondsToSelector:@selector(URLSession:task:didFinishCollectingMetrics:)]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [proxy URLSession:session task:task didFinishCollectingMetrics:[[NSURLSessionTaskMetrics alloc] init]];
+#pragma clang diagnostic pop
         XCTAssertTrue(sessionDelegate.didFinishCollectingMetricsWasCalled, @"The session delegate's method should be called");
         XCTAssertTrue(tracingDelegate.didFinishCollectingMetricsWasCalled, @"The tracing delegate's method should be called");
     } else {
@@ -75,10 +78,13 @@
         id proxy = [[BSGURLSessionTracingProxy alloc] initWithDelegate:sessionDelegate tracingDelegate:(id)tracingDelegate];
         
         NSURLSession *session = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.ephemeralSessionConfiguration];
-        NSURLSessionDataTask *task = [[NSURLSessionDataTask alloc] init];
+        NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://example.com"]];
         
         XCTAssertTrue([proxy respondsToSelector:@selector(URLSession:task:didFinishCollectingMetrics:)]);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         XCTAssertNoThrow([proxy URLSession:session task:task didFinishCollectingMetrics:[[NSURLSessionTaskMetrics alloc] init]]);
+#pragma clang diagnostic pop
         XCTAssertTrue(tracingDelegate.didFinishCollectingMetricsWasCalled, @"The tracing delegate's method should be called");
     } else {
         XCTSkip(@"Required API is not available for this test.");
