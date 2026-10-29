@@ -49,6 +49,7 @@ steps:
         echo "--- GUI session (needed for macOS unit tests)"
         launchctl print gui/$$(id -u) >/dev/null 2>&1 && echo "GUI session: YES" || echo "GUI session: NO"
         DevToolsSecurity -status || true
+
   - label: ":lock: TEMP - signing check (macos-26-2)"
     timeout_in_minutes: 5
     soft_fail: true
@@ -112,8 +113,8 @@ steps:
     commands:
       - "./scripts/build-carthage.sh"
     plugins:
-      artifacts#v1.9.4:
-        upload: "features/fixtures/carthage/carthage-*.log"
+      - artifacts#v1.9.4:
+          upload: "features/fixtures/carthage/carthage-*.log"
 
   ##############################################################################
   #
@@ -301,16 +302,16 @@ steps:
       queue: "macos-26-isolated"
     timeout_in_minutes: 120
     plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
+      - artifacts#v1.9.4:
+          download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
+          upload:
+            - "macOSTestApp.stderr.log"
+            - "maze_output/failed/**/*"
+            - "maze_output/maze_output.zip"
+      - test-collector#v1.11.0:
+          files: "reports/TEST-*.xml"
+          format: "junit"
+          branch: "^master|next$$"
     commands:
       - "bundle install"
       - "bundle exec maze-runner features/release --os=macos --fail-fast"
@@ -325,16 +326,16 @@ steps:
       queue: "macos-{{matrix.os}}-isolated"
     timeout_in_minutes: 120
     plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
-        upload:
-          - "macOSTestApp.stderr.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
+      - artifacts#v1.9.4:
+          download: "features/fixtures/macos/output/macOSTestApp_Release.zip"
+          upload:
+            - "macOSTestApp.stderr.log"
+            - "maze_output/failed/**/*"
+            - "maze_output/maze_output.zip"
+      - test-collector#v1.11.0:
+          files: "reports/TEST-*.xml"
+          format: "junit"
+          branch: "^master|next$$"
     commands:
       - "bundle install"
       - "bundle exec maze-runner features/release/barebone_tests.feature --os=macos --fail-fast"
@@ -347,10 +348,10 @@ steps:
     env:
       STRESS_TEST: "true"
     plugins:
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
+      - test-collector#v1.11.0:
+          files: "reports/TEST-*.xml"
+          format: "junit"
+          branch: "^master|next$$"
     commands:
       - "echo \"--- Bundle install\""
       - "bundle install"
@@ -376,28 +377,28 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner-bitbar"
-            run: "cocoa-maze-runner-bitbar"
-            service-ports: true
-            command:
-              - "--app=@/app/build/ipa_url_bb_release.txt"
-              - "--farm=bb"
-              - "--device=IOS_26"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--fail-fast"
-              - "features/release"
-              - "--exclude=features/release/[e-z].*.feature$"
-          test-collector#v1.11.0:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner-bitbar"
+              run: "cocoa-maze-runner-bitbar"
+              service-ports: true
+              command:
+                - "--app=@/app/build/ipa_url_bb_release.txt"
+                - "--farm=bb"
+                - "--device=IOS_26"
+                - "--no-tunnel"
+                - "--aws-public-ip"
+                - "--fail-fast"
+                - "features/release"
+                - "--exclude=features/release/[e-z].*.feature$"
+          - test-collector#v1.11.0:
+              files: "reports/TEST-*.xml"
+              format: "junit"
+              branch: "^master|next$$"
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: "eager"
@@ -414,28 +415,28 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner-bitbar"
-            run: "cocoa-maze-runner-bitbar"
-            service-ports: true
-            command:
-              - "--app=@/app/build/ipa_url_bb_release.txt"
-              - "--farm=bb"
-              - "--device=IOS_26"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--fail-fast"
-              - "features/release"
-              - "--exclude=features/release/[a-d].*.feature$"
-          test-collector#v1.11.0:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner-bitbar"
+              run: "cocoa-maze-runner-bitbar"
+              service-ports: true
+              command:
+                - "--app=@/app/build/ipa_url_bb_release.txt"
+                - "--farm=bb"
+                - "--device=IOS_26"
+                - "--no-tunnel"
+                - "--aws-public-ip"
+                - "--fail-fast"
+                - "features/release"
+                - "--exclude=features/release/[a-d].*.feature$"
+          - test-collector#v1.11.0:
+              files: "reports/TEST-*.xml"
+              format: "junit"
+              branch: "^master|next$$"
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: "eager"
@@ -446,44 +447,44 @@ steps:
             - exit_status: 103  # Appium session failed
               limit: 2
 
-  # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
-  - label: ":browserstack: iOS 26 app hang tests"
-    if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
-    depends_on: "cocoa_fixture"
-    timeout_in_minutes: 30
-    agents:
-      queue: "opensource"
-    plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v5.8.0:
-        pull: "cocoa-maze-runner"
-        run: "cocoa-maze-runner"
-        command:
-          - "--app=@build/ipa_url_bs_release.txt"
-          - "--farm=bs"
-          - "--device=IOS_26"
-          - "--appium-version=1.21.0"
-          - "--fail-fast"
-          - "features/app_hangs.feature"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
-    concurrency: 5
-    concurrency_group: "browserstack-app"
-    concurrency_method: "eager"
-    retry:
-      automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 2
-        - exit_status: 104 # App hang related error
-          limit: 2
-        - exit_status: 103  # Appium session failed
-          limit: 2
+      # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
+      - label: ":browserstack: iOS 26 app hang tests"
+        if: build.branch != "meiy/plat-17374-Xcode-27-CI-Setup"
+        depends_on: "cocoa_fixture"
+        timeout_in_minutes: 30
+        agents:
+          queue: "opensource"
+        plugins:
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bs_release.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner"
+              run: "cocoa-maze-runner"
+              command:
+                - "--app=@build/ipa_url_bs_release.txt"
+                - "--farm=bs"
+                - "--device=IOS_26"
+                - "--appium-version=1.21.0"
+                - "--fail-fast"
+                - "features/app_hangs.feature"
+          - test-collector#v1.11.0:
+              files: "reports/TEST-*.xml"
+              format: "junit"
+              branch: "^master|next$$"
+        concurrency: 5
+        concurrency_group: "browserstack-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 104 # App hang related error
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   ##############################################################################
   #
@@ -504,27 +505,27 @@ steps:
     agents:
       queue: "opensource"
     plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v4.7.0:
-        pull: "cocoa-maze-runner-bitbar"
-        run: "cocoa-maze-runner-bitbar"
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bb_release.txt"
-          - "--farm=bb"
-          - "--device={{matrix}}"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "features/release/barebone_tests.feature"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
+      - artifacts#v1.9.4:
+          download: "features/fixtures/ios/output/ipa_url_bb_release.txt"
+          upload:
+            - "maze_output/failed/**/*"
+            - "maze_output/maze_output.zip"
+      - docker-compose#v4.7.0:
+          pull: "cocoa-maze-runner-bitbar"
+          run: "cocoa-maze-runner-bitbar"
+          service-ports: true
+          command:
+            - "--app=@/app/build/ipa_url_bb_release.txt"
+            - "--farm=bb"
+            - "--device={{matrix}}"
+            - "--no-tunnel"
+            - "--aws-public-ip"
+            - "--fail-fast"
+            - "features/release/barebone_tests.feature"
+      - test-collector#v1.11.0:
+          files: "reports/TEST-*.xml"
+          format: "junit"
+          branch: "^master|next$$"
     concurrency: 25
     concurrency_group: "bitbar"
     concurrency_method: "eager"
@@ -550,29 +551,29 @@ steps:
     agents:
       queue: "opensource"
     plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
-        upload:
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      docker-compose#v4.7.0:
-        pull: "cocoa-maze-runner-bitbar"
-        run: "cocoa-maze-runner-bitbar"
-        service-ports: true
-        command:
-          - "--app=@/app/build/ipa_url_bb_debug.txt"
-          - "--farm=bb"
-          - "--device={{matrix}}"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-          - "--repeater-api-key="
-          - "--hub-repeater-api-key="
-          - "features/debug"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
+      - artifacts#v1.9.4:
+          download: "features/fixtures/ios/output/ipa_url_bb_debug.txt"
+          upload:
+            - "maze_output/failed/**/*"
+            - "maze_output/maze_output.zip"
+      - docker-compose#v4.7.0:
+          pull: "cocoa-maze-runner-bitbar"
+          run: "cocoa-maze-runner-bitbar"
+          service-ports: true
+          command:
+            - "--app=@/app/build/ipa_url_bb_debug.txt"
+            - "--farm=bb"
+            - "--device={{matrix}}"
+            - "--no-tunnel"
+            - "--aws-public-ip"
+            - "--fail-fast"
+            - "--repeater-api-key="
+            - "--hub-repeater-api-key="
+            - "features/debug"
+      - test-collector#v1.11.0:
+          files: "reports/TEST-*.xml"
+          format: "junit"
+          branch: "^master|next$$"
     concurrency: 25
     concurrency_group: "bitbar"
     concurrency_method: "eager"
@@ -593,16 +594,16 @@ steps:
     agents:
       queue: "macos-{{matrix.os}}-isolated"
     plugins:
-      artifacts#v1.9.4:
-        download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
-        upload:
-          - "macOSTestApp.log"
-          - "maze_output/failed/**/*"
-          - "maze_output/maze_output.zip"
-      test-collector#v1.11.0:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^master|next$$"
+      - artifacts#v1.9.4:
+          download: "features/fixtures/macos/output/macOSTestApp_Debug.zip"
+          upload:
+            - "macOSTestApp.log"
+            - "maze_output/failed/**/*"
+            - "maze_output/maze_output.zip"
+      - test-collector#v1.11.0:
+          files: "reports/TEST-*.xml"
+          format: "junit"
+          branch: "^master|next$$"
     commands:
       - "bundle install"
       - "bundle exec maze-runner features/debug --repeater-api-key= --hub-repeater-api-key= --os=macos --fail-fast"
@@ -918,24 +919,24 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner-bitbar"
-            run: "cocoa-maze-runner-bitbar"
-            service-ports: true
-            command:
-              - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
-              - "--farm=bs"
-              - "--device={{matrix}}"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--fail-fast"
-              - "features/release"
-              - "--exclude=features/release/[e-z].*.feature$"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner-bitbar"
+              run: "cocoa-maze-runner-bitbar"
+              service-ports: true
+              command:
+                - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
+                - "--farm=bb"
+                - "--device={{matrix}}"
+                - "--no-tunnel"
+                - "--aws-public-ip"
+                - "--fail-fast"
+                - "features/release"
+                - "--exclude=features/release/[e-z].*.feature$"
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: "eager"
@@ -956,24 +957,24 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner-bitbar"
-            run: "cocoa-maze-runner-bitbar"
-            service-ports: true
-            command:
-              - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
-              - "--farm=bs"
-              - "--device={{matrix}}"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--fail-fast"
-              - "features/release"
-              - "--exclude=features/release/[a-d].*.feature$"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner-bitbar"
+              run: "cocoa-maze-runner-bitbar"
+              service-ports: true
+              command:
+                - "--app=@/app/build/ipa_url_bb_release_xcode27.txt"
+                - "--farm=bb"
+                - "--device={{matrix}}"
+                - "--no-tunnel"
+                - "--aws-public-ip"
+                - "--fail-fast"
+                - "features/release"
+                - "--exclude=features/release/[a-d].*.feature$"
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: "eager"
@@ -991,19 +992,18 @@ steps:
         agents:
           queue: "macos-26-isolated"
         plugins:
-          artifacts#v1.9.4:
-            upload:
-              - "macOSTestApp.stderr.log"
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
+          - artifacts#v1.9.4:
+              upload:
+                - "macOSTestApp.stderr.log"
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
         commands:
           - "buildkite-agent artifact download \"features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip\" ."
           - "mv features/fixtures/macos/output/macOSTestApp_Release_xcode27.zip features/fixtures/macos/output/macOSTestApp_Release.zip"
           - "bundle install"
           - "bundle exec maze-runner features/release --os=macos --fail-fast"
 
-      # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now.
-      # IOS_27 needs iOS 27 devices on BrowserStack; Appium 1.21.0 may not support iOS 27.
+      # PLAT-11155: App hang tests run on BrowserStack (Appium 2.x for iOS 27)
       - label: ":browserstack: IOS_27 app hang tests (Xcode 27 fixture)"
         depends_on: "xcode27_cocoa_fixture"
         timeout_in_minutes: 30
@@ -1011,21 +1011,21 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/ipa_url_bs_release_xcode27.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner"
-            run: "cocoa-maze-runner"
-            command:
-              - "--app=@build/ipa_url_bs_release_xcode27.txt"
-              - "--farm=bs"
-              - "--device=IOS_27"
-              - "--appium-version=1.21.0"
-              - "--fail-fast"
-              - "features/app_hangs.feature"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bs_release_xcode27.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner"
+              run: "cocoa-maze-runner"
+              command:
+                - "--app=@build/ipa_url_bs_release_xcode27.txt"
+                - "--farm=bs"
+                - "--device=IOS_27"
+                - "--appium-version=2.19.0"
+                - "--fail-fast"
+                - "features/app_hangs.feature"
         concurrency: 5
         concurrency_group: "browserstack-app"
         concurrency_method: "eager"
@@ -1048,25 +1048,25 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner-bitbar"
-            run: "cocoa-maze-runner-bitbar"
-            service-ports: true
-            command:
-              - "--app=@/app/build/ipa_url_bb_debug_xcode27.txt"
-              - "--farm=bs"
-              - "--device={{matrix}}"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--fail-fast"
-              - "--repeater-api-key="
-              - "--hub-repeater-api-key="
-              - "features/debug"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner-bitbar"
+              run: "cocoa-maze-runner-bitbar"
+              service-ports: true
+              command:
+                - "--app=@/app/build/ipa_url_bb_debug_xcode27.txt"
+                - "--farm=bb"
+                - "--device={{matrix}}"
+                - "--no-tunnel"
+                - "--aws-public-ip"
+                - "--fail-fast"
+                - "--repeater-api-key="
+                - "--hub-repeater-api-key="
+                - "features/debug"
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: "eager"
@@ -1084,11 +1084,11 @@ steps:
         agents:
           queue: "macos-26-isolated"
         plugins:
-          artifacts#v1.9.4:
-            upload:
-              - "macOSTestApp.log"
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
+          - artifacts#v1.9.4:
+              upload:
+                - "macOSTestApp.log"
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
         commands:
           - "buildkite-agent artifact download \"features/fixtures/macos/output/macOSTestApp_Debug_xcode27.zip\" ."
           - "mv features/fixtures/macos/output/macOSTestApp_Debug_xcode27.zip features/fixtures/macos/output/macOSTestApp_Debug.zip"
@@ -1105,24 +1105,24 @@ steps:
         agents:
           queue: "opensource"
         plugins:
-          artifacts#v1.9.4:
-            download: "features/fixtures/ios/output/xcframework_ipa_url_bb_xcode27.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-          docker-compose#v5.8.0:
-            pull: "cocoa-maze-runner-bitbar"
-            run: "cocoa-maze-runner-bitbar"
-            service-ports: true
-            command:
-              - "--app=@/app/build/xcframework_ipa_url_bb_xcode27.txt"
-              - "--farm=bs"
-              - "--device={{matrix}}"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--repeater-api-key="
-              - "--hub-repeater-api-key="
-              - "features/release/barebone_tests.feature"
+          - artifacts#v1.9.4:
+              download: "features/fixtures/ios/output/xcframework_ipa_url_bb_xcode27.txt"
+              upload:
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
+          - docker-compose#v5.8.0:
+              pull: "cocoa-maze-runner-bitbar"
+              run: "cocoa-maze-runner-bitbar"
+              service-ports: true
+              command:
+                - "--app=@/app/build/xcframework_ipa_url_bb_xcode27.txt"
+                - "--farm=bb"
+                - "--device={{matrix}}"
+                - "--no-tunnel"
+                - "--aws-public-ip"
+                - "--repeater-api-key="
+                - "--hub-repeater-api-key="
+                - "features/release/barebone_tests.feature"
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: "eager"
@@ -1142,11 +1142,11 @@ steps:
         env:
           RUN_XCFRAMEWORK_APP: "true"
         plugins:
-          artifacts#v1.9.4:
-            upload:
-              - "*.log"
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
+          - artifacts#v1.9.4:
+              upload:
+                - "*.log"
+                - "maze_output/failed/**/*"
+                - "maze_output/maze_output.zip"
         commands:
           - "buildkite-agent artifact download \"features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip\" ."
           - "mv features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip features/fixtures/macos/output/macOSTestAppXcFramework.zip"
