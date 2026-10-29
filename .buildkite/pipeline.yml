@@ -1023,7 +1023,7 @@ steps:
                 - "--app=@build/ipa_url_bs_release_xcode27.txt"
                 - "--farm=bs"
                 - "--device=IOS_27"
-                - "--appium-version=2.19.0"
+                # Removed --appium-version line
                 - "--fail-fast"
                 - "features/app_hangs.feature"
         concurrency: 5
