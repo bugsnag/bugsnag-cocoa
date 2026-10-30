@@ -214,10 +214,11 @@ static void symbolicate_image(uintptr_t address, const BSG_Mach_Header_Info *ima
 metadata:
     if (!permanent && verifyImage && !bsg_mach_headers_image_is_current(&image)) {
         // Reject a disappeared/replaced mapping rather than attaching symbols
+        // from a different UUID after address reuse.
         BSG_Mach_Header_Info verify;
         if (!bsg_mach_headers_image_for_header(image.header, image.name, &verify) ||
             (!!image.uuid != !!verify.uuid) ||
-            (image.uuid && memcmp(image.uuid, verify.uuid, 16))) goto invalid;
+            (image.uuid && verify.uuid && memcmp(image.uuid, verify.uuid, 16))) goto invalid;
     }
     bsg_mach_headers_copy_image(&result->image, &image);
     result->image_header = result->image.header;
