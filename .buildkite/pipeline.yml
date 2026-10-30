@@ -625,6 +625,13 @@ steps:
   #   "Xcode 27 - Build XcFramework test fixtures" checks the zips exist before
   #   downloading them and fails with a clear message if they don't.
   #
+  # - UIScene life cycle (Xcode 27 iOS fixture builds only):
+  #   Apps built with the iOS 27 SDK must adopt UIScene or they fail to launch.
+  #   .buildkite/xcode27-enable-uiscene.sh adds the scene manifest to the shared
+  #   iOSTestApp/Info.plist before the build. It is not committed, because the
+  #   Xcode 26 fixtures run on iOS 13-16 where it breaks the orientation check
+  #   in the barebone tests.
+  #
   # - Simulator isolation (unit test steps only):
   #   macos-26-2 runs more than one Buildkite agent (macos-26-2-1, macos-26-2-2),
   #   and run-unit-tests.sh shuts down / erases ALL simulators on the machine.
@@ -727,6 +734,7 @@ steps:
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
             printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+          - "./.buildkite/xcode27-enable-uiscene.sh"
           - "ruby scripts/build-test-fixture.rb"
           - "cp features/fixtures/ios/output/ipa_url_bb_release.txt features/fixtures/ios/output/ipa_url_bb_release_xcode27.txt"
           - "cp features/fixtures/ios/output/ipa_url_bb_debug.txt features/fixtures/ios/output/ipa_url_bb_debug_xcode27.txt"
@@ -767,6 +775,7 @@ steps:
           - "unzip -o Bugsnag.xcframework_xcode27.zip"
           - "unzip -o BugsnagNetworkRequestPlugin.xcframework_xcode27.zip"
           - "bundle install"
+          - "./.buildkite/xcode27-enable-uiscene.sh"
           - "make xcframework-test-fixtures"
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/iOSTestAppXcFramework.ipa --app-id-file=./features/fixtures/ios/output/xcframework_ipa_url_bb_xcode27.txt"
           - "cp features/fixtures/macos/output/macOSTestAppXcFramework.zip features/fixtures/macos/output/macOSTestAppXcFramework_xcode27.zip"

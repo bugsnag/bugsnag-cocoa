@@ -20,7 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 // Apps built with the iOS 27 SDK must adopt the UIScene life cycle or they fail to launch.
-// The window and root view controller come from the storyboard named in Info.plist.
+// Only used by Xcode 27 CI builds: .buildkite/xcode27-enable-uiscene.sh adds the scene
+// manifest that names this class to Info.plist. The window and root view controller come
+// from the storyboard named in that manifest.
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
