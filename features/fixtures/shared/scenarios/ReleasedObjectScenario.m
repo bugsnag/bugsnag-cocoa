@@ -61,7 +61,8 @@
 #endif
     ^ __attribute__((noreturn)) {
         for (;;) {
-            [object self];
+            // Don't use [object self]: with an iOS 13+ deployment target clang emits
+            // objc_opt_self() instead of objc_msgSend, changing the crashing frame.
             [object description];
             [object debugDescription];
         }

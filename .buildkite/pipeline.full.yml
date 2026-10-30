@@ -1,7 +1,20 @@
 env:
   LANG: "en_GB.UTF-8"
 
+# This file is uploaded into the same build as pipeline.yml (via the
+# "Trigger a full build" block step), so it can depend on the
+# "framework_build" and "cocoa_fixture" steps defined there.
+# Do NOT copy those steps into this file - duplicate keys break the upload.
+
 steps:
+  ##############################################################################
+  #
+  # Test fixtures
+  #
+  ##############################################################################
+
+  # Stays on Xcode 26 in this pipeline. Xcode 27 fixture builds live in the
+  # main pipeline (pipeline.yml), so the two never overwrite each other's artifacts.
   - label: "Build XcFramework test fixtures"
     key: "xcframework_cocoa_fixture"
     depends_on: "framework_build"
@@ -11,14 +24,14 @@ steps:
     env:
       XCODE_VERSION: "26.1.1"
     plugins:
-      - artifacts#v1.9.4:
-          download:
-            - "Bugsnag.xcframework.zip"
-            - "BugsnagNetworkRequestPlugin.xcframework.zip"
-          upload:
-            - "features/fixtures/ios/output/iOSTestAppXcFramework.ipa"
-            - "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
-            - "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
+      artifacts#v1.9.4:
+        download:
+          - "Bugsnag.xcframework.zip"
+          - "BugsnagNetworkRequestPlugin.xcframework.zip"
+        upload:
+          - "features/fixtures/ios/output/iOSTestAppXcFramework.ipa"
+          - "features/fixtures/ios/output/xcframework_ipa_url_bb.txt"
+          - "features/fixtures/macos/output/macOSTestAppXcFramework.zip"
     commands:
       - "unzip Bugsnag.xcframework.zip"
       - "unzip BugsnagNetworkRequestPlugin.xcframework.zip"
@@ -30,12 +43,11 @@ steps:
   #
   # e2e tests
   #
-
   ##############################################################################
+
   #
   # XcFramework e2e tests
   #
-
   - label: ":bitbar: {{matrix}} XcFramework barebone e2e tests"
     matrix:
       - "IOS_26"
@@ -107,6 +119,7 @@ steps:
   #
   - label: ":bitbar: {{matrix}} e2e tests batch 1"
     matrix:
+      - "IOS_26"
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -126,7 +139,7 @@ steps:
       docker-compose#v4.7.0:
         pull: "cocoa-maze-runner-bitbar"
         run: "cocoa-maze-runner-bitbar"
-        service-ports: "true"
+        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -152,6 +165,7 @@ steps:
 
   - label: ":bitbar: {{matrix}} e2e tests batch 2"
     matrix:
+      - "IOS_26"
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -171,7 +185,7 @@ steps:
       docker-compose#v4.7.0:
         pull: "cocoa-maze-runner-bitbar"
         run: "cocoa-maze-runner-bitbar"
-        service-ports: "true"
+        service-ports: true
         command:
           - "--app=@/app/build/ipa_url_bb_release.txt"
           - "--farm=bb"
@@ -201,13 +215,14 @@ steps:
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ":browserstack: {{matrix}} app hang tests"
     matrix:
+      - "IOS_26"
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
       - "IOS_14"
       # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
-      #- "IOS_13"
+      # - "IOS_13"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
@@ -250,7 +265,7 @@ steps:
   - label: "macOS {{matrix.os}} e2e tests"
     matrix:
       setup:
-        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "26", "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
@@ -272,45 +287,135 @@ steps:
 
   ##############################################################################
   #
-  # Build example apps
+  # Build example apps - on BOTH Xcode 26 and Xcode 27
   #
+  # Each step is a matrix of (queue, xcode). Mismatched combinations are
+  # skipped, so every example app builds exactly twice:
+  #   - macos-26          + Xcode 26.1.1   (must pass, as before)
+  #   - developer-machine + Xcode 27.0.0   (soft_fail, like pipeline.yml)
+  #
+  # The Xcode 27 jobs run on the "developer-machine" queue (infra team) and
+  # first check that they landed on the macos-26-2 host with Xcode 27 as the
+  # active Xcode. If they didn't, they fail straight away with a clear error.
+  # "27.0.0" matches the installed app (/Applications/Xcode-27.0.0.app).
+  #
+  # PLAT-17374: CI-only overrides for the Xcode 27 jobs ONLY. A temporary
+  # xcconfig is written to /tmp and exported as XCODE_XCCONFIG_FILE, which
+  # xcodebuild applies to every target (including Pods):
+  #   - IPHONEOS_DEPLOYMENT_TARGET = 15.0  (Xcode 27 supports 15.0+; SDK uses 12.0)
+  #   - TVOS_DEPLOYMENT_TARGET     = 15.0
+  #   - MACOSX_DEPLOYMENT_TARGET   = 12.0  (Xcode 27 supports 12.0+; SDK uses 10.11)
+  #   - OTHER_CFLAGS += -Wno-error=deprecated-declarations
+  #       (APIs deprecated before iOS 15 become warnings, not -Werror failures)
+  # Nothing is added to the repo, and the Xcode 26 jobs build exactly as before.
+  # All commands in a step run in one shell, so the export applies to
+  # pod install / xcodebuild later in the step.
+  #
+  ##############################################################################
+
   - group: "Build Example Apps"
     steps:
-      - label: 'examples/objective-c-ios'
+      - label: "examples/objective-c-ios (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "developer-machine" ]
+            xcode: [ "26.1.1", "27.0.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0.0" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "26.1.1" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "27.0.0" }
+              soft_fail: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
+          - |
+            if [ "{{matrix.queue}}" = "developer-machine" ]; then
+              hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
+              xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+            fi
           - bundle install
           - cd examples/objective-c-ios
           - echo "--- Pod install"
           - pod install
           - echo "+++ Build Release iOS"
-          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          # The scheme enables Thread Sanitizer, which isn't supported on iOS devices.
+          # Xcode 26 ignores it for device builds; Xcode 27 fails with
+          # "unsupported option '-fsanitize=thread'", so turn it off for this build only.
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet -enableThreadSanitizer NO build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Debug iOS Simulator"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Debug Mac Catalyst"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=macOS -derivedDataPath DerivedData -quiet build
 
-      - label: 'examples/objective-c-osx'
+      - label: "examples/objective-c-osx (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "developer-machine" ]
+            xcode: [ "26.1.1", "27.0.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0.0" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "26.1.1" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "27.0.0" }
+              soft_fail: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
+          - |
+            if [ "{{matrix.queue}}" = "developer-machine" ]; then
+              hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
+              xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+            fi
           - bundle install
           - cd examples/objective-c-osx
           - echo "--- Pod install"
           - pod install
-          - echo "+++ Build Release iOS"
+          - echo "+++ Build Release macOS"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
-          - echo "+++ Build Debug iOS Simulator"
+          - echo "+++ Build Debug macOS"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-osx.xcworkspace -scheme objective-c-osx -configuration Debug -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      - label: 'examples/swift-ios'
+      - label: "examples/swift-ios (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "developer-machine" ]
+            xcode: [ "26.1.1", "27.0.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0.0" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "26.1.1" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "27.0.0" }
+              soft_fail: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
+          - |
+            if [ "{{matrix.queue}}" = "developer-machine" ]; then
+              hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
+              xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+            fi
           - bundle install
           - cd examples/swift-ios
           - echo "--- Pod install"
@@ -320,11 +425,32 @@ steps:
           - echo "+++ Build Debug iOS Simulator"
           - xcodebuild -allowProvisioningUpdates -workspace swift-ios.xcworkspace -scheme swift-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      - label: 'examples/swift-package-manager'
+      - label: "examples/swift-package-manager (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "developer-machine" ]
+            xcode: [ "26.1.1", "27.0.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0.0" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "26.1.1" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "27.0.0" }
+              soft_fail: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
+          - |
+            if [ "{{matrix.queue}}" = "developer-machine" ]; then
+              hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
+              xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+            fi
           - bundle install
           - cd examples/swift-package-manager
           - echo "--- Resolve Swift Package Dependencies"
@@ -335,11 +461,32 @@ steps:
           - echo "+++ Build Debug iOS Simulator"
           - xcodebuild -allowProvisioningUpdates -scheme swift-package-manager -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
 
-      - label: 'examples/swiftui'
+      - label: "examples/swiftui (Xcode {{matrix.xcode}})"
         timeout_in_minutes: 10
+        matrix:
+          setup:
+            queue: [ "macos-26", "developer-machine" ]
+            xcode: [ "26.1.1", "27.0.0" ]
+          adjustments:
+            - with: { queue: "macos-26", xcode: "27.0.0" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "26.1.1" }
+              skip: true
+            - with: { queue: "developer-machine", xcode: "27.0.0" }
+              soft_fail: true
         agents:
-          queue: macos-26
+          queue: "{{matrix.queue}}"
+        env:
+          XCODE_VERSION: "{{matrix.xcode}}"
         commands:
+          - |
+            if [ "{{matrix.queue}}" = "developer-machine" ]; then
+              hostname -s | grep -q '^macos-26-2' || { echo "ERROR: expected macos-26-2, got $$(hostname -s)"; exit 1; }
+              xcodebuild -version | grep -q '^Xcode 27' || { echo "ERROR: active Xcode is not Xcode 27"; xcodebuild -version; exit 1; }
+              export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
+              printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
+              echo "Using CI-only Xcode 27 overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+            fi
           - bundle install
           - cd examples/swiftui
           - echo "--- Resolve Swift Package Dependencies"
@@ -352,6 +499,6 @@ steps:
           - echo "+++ Build Release macOS"
           - xcodebuild -allowProvisioningUpdates -scheme "swiftui (macOS)" -configuration Release -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Release tvOS"
-          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Release -destination generic/platform=tvOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Debug tvOS Simulator"
-          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -allowProvisioningUpdates -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - xcodebuild -allowProvisioningUpdates -scheme "swiftui (tvOS)" -configuration Debug -destination generic/platform=tvOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES

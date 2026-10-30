@@ -56,6 +56,7 @@
 #include <mach-o/dyld.h>
 #include <mach-o/nlist.h>
 #include <mach/mach.h>
+#include <mach/mach_error.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -145,7 +146,15 @@ static void perform_rebinding_with_section(const section_t *dataSection, intptr_
         if (mprotect(indirect_symbol_bindings, dataSection->size, PROT_READ | PROT_WRITE) != 0) {
             BSG_KSLOG_DEBUG("mprotect failed to set PROT_READ | PROT_WRITE for section %s,%s: %s", dataSection->segname,
                         dataSection->sectname, strerror(errno));
-            return;
+            // The segment's maximum protection may not include write. VM_PROT_COPY
+            // makes a private copy of the pages, which can then be made writable.
+            kern_return_t kr = vm_protect(mach_task_self(), (vm_address_t)indirect_symbol_bindings, dataSection->size,
+                                          false, VM_PROT_READ | VM_PROT_WRITE | VM_PROT_COPY);
+            if (kr != KERN_SUCCESS) {
+                BSG_KSLOG_ERROR("vm_protect failed to make section %s,%s writable: %s", dataSection->segname,
+                                dataSection->sectname, mach_error_string(kr));
+                return;
+            }
         }
     }
     for (uint i = 0; i < dataSection->size / sizeof(void *); i++) {
