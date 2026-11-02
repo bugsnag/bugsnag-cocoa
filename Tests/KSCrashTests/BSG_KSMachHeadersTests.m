@@ -464,15 +464,29 @@ static void scriptNeverSettles(__unused int attempt, int stage) {
     // it. Both must agree with dyld for every loaded image.
     uint32_t count = _dyld_image_count();
     XCTAssertGreaterThan(count, 0u);
+    // Diagnostic context for failures: the dyld image is one of the startup
+    // images that is matched before the snapshot is consulted.
+    task_dyld_info_data_t dyldInfo = {0};
+    mach_msg_type_number_t dyldInfoCount = TASK_DYLD_INFO_COUNT;
+    const struct dyld_all_image_infos *allImageInfos = NULL;
+    if (task_info(mach_task_self(), TASK_DYLD_INFO, (task_info_t)&dyldInfo, &dyldInfoCount) == KERN_SUCCESS) {
+        allImageInfos = (const void *)dyldInfo.all_image_info_addr;
+    }
     for (int pass = 0; pass < 2; pass++) {
         for (uint32_t i = 0; i < count; i++) {
             const struct mach_header *header = _dyld_get_image_header(i);
             if (!header) continue;
             BSG_Mach_Header_Info image;
-            XCTAssertTrue(bsg_mach_headers_image_at_address((uintptr_t)header + 16, &image),
-                          @"image %u (%s), pass %d", i, _dyld_get_image_name(i), pass);
+            memset(&image, 0, sizeof(image));
+            BOOL found = bsg_mach_headers_image_at_address((uintptr_t)header + 16, &image);
+            XCTAssertTrue(found, @"image %u (%s), pass %d", i, _dyld_get_image_name(i), pass);
             XCTAssertEqual(image.header, header,
-                           @"image %u (%s), pass %d", i, _dyld_get_image_name(i), pass);
+                           @"image %u (%s), pass %d; resolved to %s (header %p, __TEXT size 0x%llx); "
+                           @"dyld load address %p (%s)",
+                           i, _dyld_get_image_name(i), pass,
+                           image.name ? image.name : "(none)", image.header, image.imageSize,
+                           allImageInfos ? allImageInfos->dyldImageLoadAddress : NULL,
+                           allImageInfos && allImageInfos->dyldPath ? allImageInfos->dyldPath : "(unknown)");
         }
     }
 }
