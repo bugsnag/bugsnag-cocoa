@@ -33,6 +33,9 @@
 //   log = record*
 //   record = [name length][variant length][name][variant]
 //
+// Lengths are uint32 values in native byte order (little-endian on every supported platform),
+// and records are packed with no alignment padding. The name and variant are UTF-8.
+//
 // The variant length is UINT32_MAX for a flag without a variant, and UINT32_MAX - 1 for a
 // record that removes the flag (which has no variant bytes). Replaying the log in order gives
 // the flags: a record for a flag that is already present replaces it and moves it to the end.
@@ -227,7 +230,8 @@ static BOOL BSGFeatureFlagFileAllocate(int fd, size_t size) {
 
 /// Mappings of a file with NSFileProtectionComplete become invalid 10 seconds after the device is
 /// locked. NSFileProtectionCompleteUnlessOpen only keeps a file accessible while it is open, and the
-/// descriptor is closed once the file is mapped. So the file is given
+/// descriptor is closed once the file is mapped, and NSFileProtectionCompleteWhenUserInactive makes
+/// a file inaccessible after a period of inactivity. So the file is given
 /// NSFileProtectionCompleteUntilFirstUserAuthentication, which keeps it accessible while the device
 /// is locked once it has been unlocked after starting up.
 static BOOL BSGFeatureFlagFileSetProtection(NSString *path) {
@@ -237,7 +241,10 @@ static BOOL BSGFeatureFlagFileSetProtection(NSString *path) {
         NSURL *url = [NSURL fileURLWithPath:path];
         NSURLFileProtectionType protection = nil;
         [url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil];
-        if (protection != NSURLFileProtectionComplete && protection != NSURLFileProtectionCompleteUnlessOpen) {
+        // Every other class (Complete, CompleteUnlessOpen, CompleteWhenUserInactive and any newer
+        // one) can make the file inaccessible while it is mapped
+        if (!protection || [protection isEqualToString:NSURLFileProtectionNone] ||
+            [protection isEqualToString:NSURLFileProtectionCompleteUntilFirstUserAuthentication]) {
             return YES;
         }
         NSError *error = nil;

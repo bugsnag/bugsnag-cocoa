@@ -13,6 +13,10 @@
 //  split into a "JSON" and an "Mmap" test with an identical workload.
 //  testPrintComparisonTable logs a markdown table of p50 / p95 timings.
 //
+//  The benchmarks take several minutes, so they only run when the environment
+//  variable BSG_RUN_PERFORMANCE_TESTS is set, for example:
+//  TEST_RUNNER_BSG_RUN_PERFORMANCE_TESTS=1 xcodebuild test ...
+//
 
 #import "BSGTestCase.h"
 
@@ -60,6 +64,15 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
 @end
 
 @implementation BSGFeatureFlagStorePerformanceTests
+
++ (XCTestSuite *)defaultTestSuite {
+    // An empty suite rather than XCTSkip, which is unavailable in the oldest versions of Xcode
+    // used to run the tests
+    if (!NSProcessInfo.processInfo.environment[@"BSG_RUN_PERFORMANCE_TESTS"]) {
+        return [XCTestSuite testSuiteWithName:NSStringFromClass(self)];
+    }
+    return [super defaultTestSuite];
+}
 
 - (void)setUp {
     [super setUp];
