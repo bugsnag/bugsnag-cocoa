@@ -21,6 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clear:(nullable NSString *)name;
 - (void)clear;
 
+/// Replaces all of the flags. BSGPersistentFeatureFlagStore saves the new set in a single update so
+/// that an empty or partial set cannot be observed if the process is killed part way through; the
+/// other stores clear their flags and then add the new ones.
+- (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags;
+
 @end
 
 NS_ASSUME_NONNULL_END

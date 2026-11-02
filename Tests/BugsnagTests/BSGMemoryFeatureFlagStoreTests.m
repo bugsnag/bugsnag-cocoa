@@ -126,4 +126,24 @@
     [self measureBlock:block];
 }
 
+
+- (void)testReplaceAllFlags {
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
+    [store addFeatureFlag:@"featureA" withVariant:@"enabled"];
+    [store addFeatureFlag:@"featureB" withVariant:nil];
+
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"featureC" variant:@"checked"],
+                             [BugsnagFeatureFlag flagWithName:@"featureA"],
+                             [BugsnagFeatureFlag flagWithName:@"featureC" variant:@"unchecked"]]];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[
+                            @{@"featureFlag": @"featureC", @"variant": @"unchecked"},
+                            @{@"featureFlag": @"featureA"}
+                          ]));
+
+    [store replaceAllFlags:@[]];
+    XCTAssertTrue(store.isEmpty);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
+}
+
 @end

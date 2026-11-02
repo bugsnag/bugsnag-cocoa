@@ -38,11 +38,10 @@
 }
 
 - (void)synchronizeFlagsWithMemoryStore {
-    [self.atomicStore clear];
-    [self.persistentStore clear];
     NSArray<BugsnagFeatureFlag *> *featureFlags = [self.memoryStore allFlags];
-    [self.atomicStore addFeatureFlags:featureFlags];
-    [self.persistentStore addFeatureFlags:featureFlags];
+    [self.atomicStore replaceAllFlags:featureFlags];
+    // Replaced in one update so that a kill during startup cannot leave an empty set persisted
+    [self.persistentStore replaceAllFlags:featureFlags];
 }
 
 #pragma mark - BSGFeatureFlagStore
@@ -77,6 +76,12 @@
     [self.atomicStore clear];
     [self.memoryStore clear];
     [self.persistentStore clear];
+}
+
+- (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    [self.atomicStore replaceAllFlags:featureFlags];
+    [self.memoryStore replaceAllFlags:featureFlags];
+    [self.persistentStore replaceAllFlags:featureFlags];
 }
 
 @end

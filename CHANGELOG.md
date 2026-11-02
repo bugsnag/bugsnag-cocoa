@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Feature flags for OOM and thermal kill events are now persisted in a single memory-mapped file instead of one file per flag,
+  which makes adding and clearing flags, and starting Bugsnag, faster when many flags are used. Each update is atomic, so the app
+  being terminated part way through an update does not leave a partial set of flags (if the file cannot be written, for example
+  because the disk is full, no flags are persisted until the flags next change after it can be written). Flags persisted by
+  earlier versions are imported at the first launch after upgrading.
+
 ## 6.38.1 (2026-10-02)
 
 ### Bug Fixes
