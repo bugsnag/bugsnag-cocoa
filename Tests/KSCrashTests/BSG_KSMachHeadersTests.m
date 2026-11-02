@@ -459,13 +459,48 @@ static void scriptNeverSettles(__unused int attempt, int stage) {
 
 #pragma mark - Address-sorted image snapshot
 
+// Diagnostic for lookup failures: is `header` in dyld's all_image_infos array
+// (which the snapshot and scan read), under which address/path, and can its
+// load commands be parsed on their own?
+static NSString *DescribeDyldArrayEntry(const struct dyld_all_image_infos *infos,
+                                        const struct mach_header *header, const char *name) {
+    NSMutableString *description = [NSMutableString string];
+    BSG_Mach_Header_Info parsed;
+    memset(&parsed, 0, sizeof(parsed));
+    BOOL parsable = bsg_mach_headers_image_for_header(header, name, &parsed);
+    [description appendFormat:@"image_for_header %s (__TEXT size 0x%llx); ",
+     parsable ? "ok" : "FAILED", parsed.imageSize];
+    if (infos == NULL || infos->infoArray == NULL) {
+        [description appendString:@"dyld infoArray unavailable"];
+        return description;
+    }
+    [description appendFormat:@"infoArrayCount %u vs _dyld_image_count %u; ",
+     infos->infoArrayCount, _dyld_image_count()];
+    const char *baseName = name ? strrchr(name, '/') : NULL;
+    baseName = baseName ? baseName + 1 : name;
+    BOOL listed = NO;
+    for (uint32_t i = 0; i < infos->infoArrayCount; i++) {
+        const struct dyld_image_info *entry = &infos->infoArray[i];
+        const char *path = entry->imageFilePath;
+        BOOL sameHeader = entry->imageLoadAddress == header;
+        BOOL sameName = baseName && path && strstr(path, baseName) != NULL;
+        if (sameHeader || sameName) {
+            listed = listed || sameHeader;
+            [description appendFormat:@"entry %u at %p (%s); ", i, entry->imageLoadAddress,
+             path ? path : "(null path)"];
+        }
+    }
+    if (!listed) [description appendString:@"header NOT in dyld infoArray"];
+    return description;
+}
+
 - (void)testSnapshotLookupResolvesEveryLoadedImageConsistently {
     // The first lookup builds the sorted snapshot; later ones are served from
     // it. Both must agree with dyld for every loaded image.
     uint32_t count = _dyld_image_count();
     XCTAssertGreaterThan(count, 0u);
-    // Diagnostic context for failures: the dyld image is one of the startup
-    // images that is matched before the snapshot is consulted.
+    // Diagnostic context for failures: dyld's all_image_infos is what the
+    // snapshot and the fallback scan read.
     task_dyld_info_data_t dyldInfo = {0};
     mach_msg_type_number_t dyldInfoCount = TASK_DYLD_INFO_COUNT;
     const struct dyld_all_image_infos *allImageInfos = NULL;
@@ -479,7 +514,8 @@ static void scriptNeverSettles(__unused int attempt, int stage) {
             BSG_Mach_Header_Info image;
             memset(&image, 0, sizeof(image));
             BOOL found = bsg_mach_headers_image_at_address((uintptr_t)header + 16, &image);
-            XCTAssertTrue(found, @"image %u (%s), pass %d", i, _dyld_get_image_name(i), pass);
+            XCTAssertTrue(found, @"image %u (%s) at %p, pass %d; %@", i, _dyld_get_image_name(i), header, pass,
+                          found ? @"" : DescribeDyldArrayEntry(allImageInfos, header, _dyld_get_image_name(i)));
             XCTAssertEqual(image.header, header,
                            @"image %u (%s), pass %d; resolved to %s (header %p, __TEXT size 0x%llx); "
                            @"dyld load address %p (%s)",
