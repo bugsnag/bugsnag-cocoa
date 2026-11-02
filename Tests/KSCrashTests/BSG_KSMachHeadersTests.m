@@ -459,72 +459,55 @@ static void scriptNeverSettles(__unused int attempt, int stage) {
 
 #pragma mark - Address-sorted image snapshot
 
-// Diagnostic for lookup failures: is `header` in dyld's all_image_infos array
-// (which the snapshot and scan read), under which address/path, and can its
-// load commands be parsed on their own?
-static NSString *DescribeDyldArrayEntry(const struct dyld_all_image_infos *infos,
-                                        const struct mach_header *header, const char *name) {
-    NSMutableString *description = [NSMutableString string];
-    BSG_Mach_Header_Info parsed;
-    memset(&parsed, 0, sizeof(parsed));
-    BOOL parsable = bsg_mach_headers_image_for_header(header, name, &parsed);
-    [description appendFormat:@"image_for_header %s (__TEXT size 0x%llx); ",
-     parsable ? "ok" : "FAILED", parsed.imageSize];
-    if (infos == NULL || infos->infoArray == NULL) {
-        [description appendString:@"dyld infoArray unavailable"];
-        return description;
-    }
-    [description appendFormat:@"infoArrayCount %u vs _dyld_image_count %u; ",
-     infos->infoArrayCount, _dyld_image_count()];
-    const char *baseName = name ? strrchr(name, '/') : NULL;
-    baseName = baseName ? baseName + 1 : name;
-    BOOL listed = NO;
+// The snapshot and the scan resolve addresses only from dyld's published
+// all_image_infos array (they cannot call into dyld at crash time).
+static BOOL HeaderIsInDyldArray(const struct dyld_all_image_infos *infos,
+                                const struct mach_header *header) {
+    if (infos == NULL || infos->infoArray == NULL) return NO;
     for (uint32_t i = 0; i < infos->infoArrayCount; i++) {
-        const struct dyld_image_info *entry = &infos->infoArray[i];
-        const char *path = entry->imageFilePath;
-        BOOL sameHeader = entry->imageLoadAddress == header;
-        BOOL sameName = baseName && path && strstr(path, baseName) != NULL;
-        if (sameHeader || sameName) {
-            listed = listed || sameHeader;
-            [description appendFormat:@"entry %u at %p (%s); ", i, entry->imageLoadAddress,
-             path ? path : "(null path)"];
-        }
+        if (infos->infoArray[i].imageLoadAddress == header) return YES;
     }
-    if (!listed) [description appendString:@"header NOT in dyld infoArray"];
-    return description;
+    return NO;
 }
 
 - (void)testSnapshotLookupResolvesEveryLoadedImageConsistently {
     // The first lookup builds the sorted snapshot; later ones are served from
-    // it. Both must agree with dyld for every loaded image.
+    // it. Both must agree with dyld for every image dyld publishes.
     uint32_t count = _dyld_image_count();
     XCTAssertGreaterThan(count, 0u);
-    // Diagnostic context for failures: dyld's all_image_infos is what the
-    // snapshot and the fallback scan read.
     task_dyld_info_data_t dyldInfo = {0};
     mach_msg_type_number_t dyldInfoCount = TASK_DYLD_INFO_COUNT;
-    const struct dyld_all_image_infos *allImageInfos = NULL;
-    if (task_info(mach_task_self(), TASK_DYLD_INFO, (task_info_t)&dyldInfo, &dyldInfoCount) == KERN_SUCCESS) {
-        allImageInfos = (const void *)dyldInfo.all_image_info_addr;
-    }
+    XCTAssertEqual(task_info(mach_task_self(), TASK_DYLD_INFO, (task_info_t)&dyldInfo, &dyldInfoCount),
+                   KERN_SUCCESS);
+    const struct dyld_all_image_infos *allImageInfos = (const void *)dyldInfo.all_image_info_addr;
+    XCTAssertTrue(allImageInfos != NULL && allImageInfos->infoArray != NULL);
+    uint32_t checked = 0;
     for (int pass = 0; pass < 2; pass++) {
         for (uint32_t i = 0; i < count; i++) {
             const struct mach_header *header = _dyld_get_image_header(i);
             if (!header) continue;
+            if (!HeaderIsInDyldArray(allImageInfos, header)) {
+#if TARGET_OS_SIMULATOR
+                // Older simulator runtimes (e.g. watchOS 8) do not publish
+                // every dyld_sim image to the host dyld's array -- XCTest
+                // itself can be missing -- so nothing that reads that array
+                // can resolve it.
+                continue;
+#else
+                XCTFail(@"image %u (%s) at %p is not in dyld's infoArray", i, _dyld_get_image_name(i), header);
+                continue;
+#endif
+            }
+            checked++;
             BSG_Mach_Header_Info image;
             memset(&image, 0, sizeof(image));
-            BOOL found = bsg_mach_headers_image_at_address((uintptr_t)header + 16, &image);
-            XCTAssertTrue(found, @"image %u (%s) at %p, pass %d; %@", i, _dyld_get_image_name(i), header, pass,
-                          found ? @"" : DescribeDyldArrayEntry(allImageInfos, header, _dyld_get_image_name(i)));
-            XCTAssertEqual(image.header, header,
-                           @"image %u (%s), pass %d; resolved to %s (header %p, __TEXT size 0x%llx); "
-                           @"dyld load address %p (%s)",
-                           i, _dyld_get_image_name(i), pass,
-                           image.name ? image.name : "(none)", image.header, image.imageSize,
-                           allImageInfos ? allImageInfos->dyldImageLoadAddress : NULL,
-                           allImageInfos && allImageInfos->dyldPath ? allImageInfos->dyldPath : "(unknown)");
+            XCTAssertTrue(bsg_mach_headers_image_at_address((uintptr_t)header + 16, &image),
+                          @"image %u (%s) at %p, pass %d", i, _dyld_get_image_name(i), header, pass);
+            XCTAssertEqual(image.header, header, @"image %u (%s), pass %d; resolved to %s",
+                           i, _dyld_get_image_name(i), pass, image.name ? image.name : "(none)");
         }
     }
+    XCTAssertGreaterThan(checked, 0u);
 }
 
 - (void)testSnapshotRejectsAddressesBetweenImagesDefinitively {
