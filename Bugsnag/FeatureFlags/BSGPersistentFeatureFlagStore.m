@@ -271,6 +271,10 @@ static int BSGFeatureFlagFileOpen(NSString *path, int flags) {
     [BSGFilesystem applyFileBackupSupportToPath:path];
     if (!BSGFeatureFlagFileSetProtection(path)) {
         close(fd);
+        if (flags & O_EXCL) {
+            // The file was created here, so it must not be left behind
+            unlink(path.fileSystemRepresentation);
+        }
         return -1;
     }
     return fd;
@@ -304,7 +308,8 @@ static NSArray<NSString *> * BSGLegacyFeatureFlagFilePaths(NSString *directory) 
     }
     NSMutableArray<NSString *> *paths = [NSMutableArray array];
     for (NSString *file in files) {
-        if ([file.pathExtension isEqualToString:@"json"]) {
+        // A flag with an empty name was saved as ".json", which pathExtension treats as having no extension
+        if ([file hasSuffix:@".json"]) {
             [paths addObject:[directory stringByAppendingPathComponent:file]];
         }
     }
@@ -552,6 +557,8 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
 
 /// Adds or replaces a flag, moving it to the end. Returns the records to append to the log.
 - (NSData *)setFlagNamed:(NSString *)name variant:(nullable NSString *)variant {
+    // A mutable name changed by the caller would no longer match its entry in names
+    name = [name copy];
     const BOOL wasPersisted = self.recordsByName[name] != nil;
     [self.names removeObject:name];
     [self.names addObject:name];

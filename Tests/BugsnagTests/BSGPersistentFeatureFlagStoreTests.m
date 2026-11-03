@@ -313,6 +313,18 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self reopenedFlags], expected);
 }
 
+- (void)testMutableNameChangedAfterAddingDoesNotAffectTheFlag {
+    BSGPersistentFeatureFlagStore *store = [self openStore];
+    NSMutableString *name = [NSMutableString stringWithString:@"a"];
+    [store addFeatureFlag:name withVariant:@"1"];
+    [name setString:@"b"];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"a", @"1"]]));
+
+    [store clear:@"a"];
+    XCTAssertTrue(store.isEmpty);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+}
+
 - (void)testClearAll {
     BSGPersistentFeatureFlagStore *store = [self openStore];
     [store addFeatureFlag:@"a" withVariant:@"1"];
@@ -784,6 +796,18 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
     XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
+    XCTAssertEqualObjects([self reopenedFlags], expected);
+}
+
+- (void)testLegacyFlagWithAnEmptyNameIsImportedAndDeleted {
+    // Saved as ".json", which has no path extension
+    [self writeLegacyFlag:@"" variant:@"empty name" index:1];
+    [self writeLegacyFlag:@"a" variant:nil index:0];
+    XCTAssertEqual([self jsonFiles].count, 2);
+
+    NSArray *expected = @[@[@"a", NSNull.null], @[@"", @"empty name"]];
+    XCTAssertEqualObjects(FlagsToArray([self openStore].allFlags), expected);
+    XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertEqualObjects([self reopenedFlags], expected);
 }
 
