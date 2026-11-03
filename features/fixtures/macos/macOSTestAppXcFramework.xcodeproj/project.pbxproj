@@ -192,6 +192,7 @@
 		96A25F382D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F372D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */; };
 		96C7358E2E89E44300F3CB3C /* RemoteConfigBasicScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */; };
 		96C735962E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C735952E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m */; };
+		ED9DB403B1D5E8F8CC66F1D0 /* FeatureFlagsPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 5427DDE09C9DB9953158430D /* FeatureFlagsPersistenceScenario.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -401,10 +402,12 @@
 		09F1E3562CDCCA8D007F5933 /* BugsnagNetworkRequestPlugin.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagNetworkRequestPlugin.xcframework; path = ../../../../build/xcframeworks/products/BugsnagNetworkRequestPlugin.xcframework; sourceTree = "<group>"; };
 		09F1E3572CDCCA8D007F5933 /* Bugsnag.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Bugsnag.xcframework; path = ../../../../build/xcframeworks/products/Bugsnag.xcframework; sourceTree = "<group>"; };
 		1C8CB8BC2EBE3CE0007BF492 /* CaptureOptionsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionsScenario.swift; sourceTree = "<group>"; };
+		5427DDE09C9DB9953158430D /* FeatureFlagsPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FeatureFlagsPersistenceScenario.m; sourceTree = "<group>"; };
 		710618F62CF0BBCE00423249 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		96A25F372D66B57E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionFeatureFlagsScenario.m; sourceTree = "<group>"; };
 		96C7358D2E89E44300F3CB3C /* RemoteConfigBasicScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigBasicScenario.m; sourceTree = "<group>"; };
 		96C735952E89E5C200F3CB3C /* RemoteConfigExpiryScenario.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemoteConfigExpiryScenario.m; sourceTree = "<group>"; };
+		A65A307479D5FD0820929FA3 /* FeatureFlagsPersistenceScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FeatureFlagsPersistenceScenario.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -620,6 +623,8 @@
 				09AABC0B2CDCED61007D6FC0 /* UserPersistencePersistUserClientScenario.m */,
 				09AABC0C2CDCED61007D6FC0 /* UserPersistencePersistUserScenario.m */,
 				09AABC0D2CDCED61007D6FC0 /* UserSessionOverrideScenario.swift */,
+				A65A307479D5FD0820929FA3 /* FeatureFlagsPersistenceScenario.h */,
+				5427DDE09C9DB9953158430D /* FeatureFlagsPersistenceScenario.m */,
 			);
 			name = scenarios;
 			path = ../shared/scenarios;
@@ -912,6 +917,7 @@
 				09AABC672CDCED61007D6FC0 /* MaxPersistedSessionsScenario.m in Sources */,
 				09AABC6E2CDCED61007D6FC0 /* NetworkBreadcrumbsScenario.swift in Sources */,
 				09AABC572CDCED61007D6FC0 /* HandledErrorThreadSendUnhandledOnlyScenario.m in Sources */,
+				ED9DB403B1D5E8F8CC66F1D0 /* FeatureFlagsPersistenceScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

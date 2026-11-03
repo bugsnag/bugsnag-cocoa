@@ -755,6 +755,9 @@
 		09E313322BF3867C0081F219 /* BugsnagPerformanceBridgeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E3132E2BF3867C0081F219 /* BugsnagPerformanceBridgeTests.m */; };
 		09E313362BF4A7BD0081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312EE2BF230660081F219 /* BugsnagCocoaPerformanceFromBugsnagCocoa.m */; };
 		09E313372BF4A7CB0081F219 /* BugsnagCorrelation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E312FD2BF34D6D0081F219 /* BugsnagCorrelation.m */; };
+		0CF241DC365782F61857AFE0 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */; };
+		0EB6026049DAECBDE7AD0AA2 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */; };
+		11767C210D9A0AC2B657B0CD /* BSGLegacyJSONFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E31ECBE867A1BD6CE0C7DCE4 /* BSGLegacyJSONFeatureFlagStore.m */; };
 		1C3163722F327B1A00A3F1E2 /* BugsnagHttpRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163712F327B1200A3F1E2 /* BugsnagHttpRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3163732F327B1A00A3F1E2 /* BugsnagHttpRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163712F327B1200A3F1E2 /* BugsnagHttpRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C3163742F327B1A00A3F1E2 /* BugsnagHttpRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3163712F327B1200A3F1E2 /* BugsnagHttpRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -793,6 +796,7 @@
 		1C7ADF7A2EB1608F00A930A6 /* BugsnagCaptureOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7ADF762EB1608700A930A6 /* BugsnagCaptureOptions.m */; };
 		1C7ADF7B2EB1608F00A930A6 /* BugsnagCaptureOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C7ADF762EB1608700A930A6 /* BugsnagCaptureOptions.m */; };
 		1C8CB8B12EB968EA007BF492 /* BugsnagCaptureOptions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1C3E2DB52EAD462500B32AD2 /* BugsnagCaptureOptions.h */; };
+		1E1332DC1957B8631BE4980B /* BSGFeatureFlagStorePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C7F5DB8C2114BB31E41510 /* BSGFeatureFlagStorePerformanceTests.m */; };
 		3A700A9424A63ABC0068CD1B /* BugsnagThread.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8024A63A8E0068CD1B /* BugsnagThread.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A700A9524A63AC50068CD1B /* BugsnagSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8124A63A8E0068CD1B /* BugsnagSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A700A9624A63AC60068CD1B /* BugsnagStackframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A700A8224A63A8E0068CD1B /* BugsnagStackframe.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -873,6 +877,15 @@
 		3A700AF824A6492F0068CD1B /* BugsnagError.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A700A9124A63A8E0068CD1B /* BugsnagError.h */; };
 		3A700AF924A6492F0068CD1B /* BugsnagDeviceWithState.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A700A9224A63A8E0068CD1B /* BugsnagDeviceWithState.h */; };
 		3A700AFA24A6492F0068CD1B /* BugsnagMetadata.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A700A9324A63A8E0068CD1B /* BugsnagMetadata.h */; };
+		3EC9B54E6E5DD9C56041B0D4 /* BSGFeatureFlagStorePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C7F5DB8C2114BB31E41510 /* BSGFeatureFlagStorePerformanceTests.m */; };
+		5B2C931448036860341E2600 /* BSGLegacyJSONFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E31ECBE867A1BD6CE0C7DCE4 /* BSGLegacyJSONFeatureFlagStore.m */; };
+		5BF91F46FA5C890864855356 /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */; };
+		5FB8C5AB4F1CF03746811B21 /* BSGPersistentFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */; };
+		60C06C89790D650F5683BCBD /* BSGFeatureFlagStorePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C7F5DB8C2114BB31E41510 /* BSGFeatureFlagStorePerformanceTests.m */; };
+		776238E57B7BF91CC23F32EC /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */; };
+		838E5167EB8411AC6C06FDD8 /* BSGLegacyJSONFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E31ECBE867A1BD6CE0C7DCE4 /* BSGLegacyJSONFeatureFlagStore.m */; };
+		885F8A400928846B57C7190D /* BSGPersistentFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */; };
+		9564682EFA4D160E280250FB /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */; };
 		9627A1352D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */; };
 		9627A1362D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */; };
 		9627A1372D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */; };
@@ -1166,6 +1179,11 @@
 		96E45C0A2D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E45C032D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m */; };
 		96E45C0B2D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E45C032D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m */; };
 		96E45C0C2D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E45C032D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m */; };
+		9A4A21F723BF5C375B7085D3 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */; };
+		B15E3D6BA54C295FF2B8A6AF /* BSGPersistentFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */; };
+		B8366F656BA3E4F786DF9EA2 /* BSGPersistentFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */; };
+		BCDC84A5F9B4FE71306279BD /* BSGFeatureFlagStorePerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 35C7F5DB8C2114BB31E41510 /* BSGFeatureFlagStorePerformanceTests.m */; };
+		BD32B22D3D9B3AAC6CBFCFA1 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */; };
 		CB156241270707740097334C /* KSCrashNames_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = CB156240270707740097334C /* KSCrashNames_Test.m */; };
 		CB156242270707740097334C /* KSCrashNames_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = CB156240270707740097334C /* KSCrashNames_Test.m */; };
 		CB156243270707740097334C /* KSCrashNames_Test.m in Sources */ = {isa = PBXBuildFile; fileRef = CB156240270707740097334C /* KSCrashNames_Test.m */; };
@@ -1497,6 +1515,7 @@
 		CBEC89412A4ACD240088A3CE /* FileBasedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC893F2A4ACD230088A3CE /* FileBasedTest.m */; };
 		CBEC89422A4ACD240088A3CE /* FileBasedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC893F2A4ACD230088A3CE /* FileBasedTest.m */; };
 		CBEC89432A4ACD240088A3CE /* FileBasedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC893F2A4ACD230088A3CE /* FileBasedTest.m */; };
+		D9A0F054A6E329688C3F241E /* BSGLegacyJSONFeatureFlagStore.m in Sources */ = {isa = PBXBuildFile; fileRef = E31ECBE867A1BD6CE0C7DCE4 /* BSGLegacyJSONFeatureFlagStore.m */; };
 		E1F167802F655D76002B14C0 /* BSGLoadConfigTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E1F1677F2F655D76002B14C0 /* BSGLoadConfigTests.m */; };
 		E1F167812F655D76002B14C0 /* BSGLoadConfigTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E1F1677F2F655D76002B14C0 /* BSGLoadConfigTests.m */; };
 		E1F167822F655D76002B14C0 /* BSGLoadConfigTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E1F1677F2F655D76002B14C0 /* BSGLoadConfigTests.m */; };
@@ -1509,6 +1528,7 @@
 		E1F394373040707B00D512BA /* BSG_KSCrashSentry_CPPException_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = E1F394353040707700D512BA /* BSG_KSCrashSentry_CPPException_Private.h */; };
 		E1F394383040707B00D512BA /* BSG_KSCrashSentry_CPPException_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = E1F394353040707700D512BA /* BSG_KSCrashSentry_CPPException_Private.h */; };
 		E1F394393040707B00D512BA /* BSG_KSCrashSentry_CPPException_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = E1F394353040707700D512BA /* BSG_KSCrashSentry_CPPException_Private.h */; };
+		E2454B8C0EE0FB8E2AF21CED /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */; };
 		E701FA9F2490EF4A008D842F /* BugsnagApiValidationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E701FA9E2490EF4A008D842F /* BugsnagApiValidationTest.m */; };
 		E701FAA02490EF4A008D842F /* BugsnagApiValidationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E701FA9E2490EF4A008D842F /* BugsnagApiValidationTest.m */; };
 		E701FAA12490EF4A008D842F /* BugsnagApiValidationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = E701FA9E2490EF4A008D842F /* BugsnagApiValidationTest.m */; };
@@ -1939,6 +1959,8 @@
 		1C3E2DB52EAD462500B32AD2 /* BugsnagCaptureOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagCaptureOptions.h; sourceTree = "<group>"; };
 		1C55AD8D2EB91E9B0097F3C2 /* BugsnagCaptureOptionsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagCaptureOptionsTests.m; sourceTree = "<group>"; };
 		1C7ADF762EB1608700A930A6 /* BugsnagCaptureOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagCaptureOptions.m; sourceTree = "<group>"; };
+		29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGFeatureFlagStoreSwitchingTests.m; sourceTree = "<group>"; };
+		35C7F5DB8C2114BB31E41510 /* BSGFeatureFlagStorePerformanceTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGFeatureFlagStorePerformanceTests.m; sourceTree = "<group>"; };
 		3A700A8024A63A8E0068CD1B /* BugsnagThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagThread.h; sourceTree = "<group>"; };
 		3A700A8124A63A8E0068CD1B /* BugsnagSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSession.h; sourceTree = "<group>"; };
 		3A700A8224A63A8E0068CD1B /* BugsnagStackframe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagStackframe.h; sourceTree = "<group>"; };
@@ -1959,6 +1981,8 @@
 		3A700A9124A63A8E0068CD1B /* BugsnagError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagError.h; sourceTree = "<group>"; };
 		3A700A9224A63A8E0068CD1B /* BugsnagDeviceWithState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagDeviceWithState.h; sourceTree = "<group>"; };
 		3A700A9324A63A8E0068CD1B /* BugsnagMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetadata.h; sourceTree = "<group>"; };
+		3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStoreTests.m; sourceTree = "<group>"; };
+		561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStoreStressTests.m; sourceTree = "<group>"; };
 		9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAtomicFeatureFlagStoreTests.m; sourceTree = "<group>"; };
 		9627A1392D92200300696E3C /* WriterTestsSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WriterTestsSupport.h; sourceTree = "<group>"; };
 		9627A13A2D92201B00696E3C /* WriterTestsSupport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WriterTestsSupport.m; sourceTree = "<group>"; };
@@ -2025,6 +2049,7 @@
 		96E45BFD2D103B1F00BEF978 /* BSGFeatureFlagStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGFeatureFlagStore.h; sourceTree = "<group>"; };
 		96E45C022D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGCompositeFeatureFlagStore.h; sourceTree = "<group>"; };
 		96E45C032D10CCBE00BEF978 /* BSGCompositeFeatureFlagStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGCompositeFeatureFlagStore.m; sourceTree = "<group>"; };
+		A171C28C1F1185A29FBB05C1 /* BSGLegacyJSONFeatureFlagStore.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = BSGLegacyJSONFeatureFlagStore.h; sourceTree = "<group>"; };
 		CB156240270707740097334C /* KSCrashNames_Test.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashNames_Test.m; sourceTree = "<group>"; };
 		CB28F11D282A71AB003AB200 /* BSGWatchKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGWatchKit.h; sourceTree = "<group>"; };
 		CB33CCFC2703438400C76656 /* BSG_KSCrashNames.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSCrashNames.h; sourceTree = "<group>"; };
@@ -2066,6 +2091,7 @@
 		E1F1677F2F655D76002B14C0 /* BSGLoadConfigTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGLoadConfigTests.m; sourceTree = "<group>"; };
 		E1F3943030406F1400D512BA /* KSCrashSentry_CPPException_Tests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = KSCrashSentry_CPPException_Tests.mm; sourceTree = "<group>"; };
 		E1F394353040707700D512BA /* BSG_KSCrashSentry_CPPException_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSG_KSCrashSentry_CPPException_Private.h; sourceTree = "<group>"; };
+		E31ECBE867A1BD6CE0C7DCE4 /* BSGLegacyJSONFeatureFlagStore.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGLegacyJSONFeatureFlagStore.m; sourceTree = "<group>"; };
 		E701FA9E2490EF4A008D842F /* BugsnagApiValidationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagApiValidationTest.m; sourceTree = "<group>"; };
 		E701FAA62490EF77008D842F /* ClientApiValidationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClientApiValidationTest.m; sourceTree = "<group>"; };
 		E701FAAA2490EFD9008D842F /* EventApiValidationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EventApiValidationTest.m; sourceTree = "<group>"; };
@@ -2503,6 +2529,12 @@
 				CB6419B325A7419400613D25 /* v0_files */,
 				9627A1392D92200300696E3C /* WriterTestsSupport.h */,
 				9627A13A2D92201B00696E3C /* WriterTestsSupport.m */,
+				3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */,
+				35C7F5DB8C2114BB31E41510 /* BSGFeatureFlagStorePerformanceTests.m */,
+				E31ECBE867A1BD6CE0C7DCE4 /* BSGLegacyJSONFeatureFlagStore.m */,
+				A171C28C1F1185A29FBB05C1 /* BSGLegacyJSONFeatureFlagStore.h */,
+				561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */,
+				29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */,
 			);
 			path = BugsnagTests;
 			sourceTree = "<group>";
@@ -3388,6 +3420,48 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		204B8A1C9C8A4723BB596EDD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		47977C7693FA8FECC9DDB9F2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51AF0BA19B173B2F7AA4753C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		554BA1677D8344AE00C2135F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B759FA70DCEB12A6B4FDABDE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C32BA73421ED3FAB54B9099B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CBBDE8F3280067AB0070DCD3 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -3555,6 +3629,7 @@
 				00AD1C7724869B0E00A27979 /* Sources */,
 				00AD1C7824869B0E00A27979 /* Frameworks */,
 				00AD1C7924869B0E00A27979 /* Resources */,
+				47977C7693FA8FECC9DDB9F2 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3592,6 +3667,7 @@
 				00AD1CB124869C1200A27979 /* Sources */,
 				00AD1CB224869C1200A27979 /* Frameworks */,
 				00AD1CB324869C1200A27979 /* Resources */,
+				554BA1677D8344AE00C2135F /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3628,6 +3704,7 @@
 				00AD1CCD24869C2400A27979 /* Sources */,
 				00AD1CCE24869C2400A27979 /* Frameworks */,
 				00AD1CCF24869C2400A27979 /* Resources */,
+				51AF0BA19B173B2F7AA4753C /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3646,6 +3723,7 @@
 				00AD1CE024869C6C00A27979 /* Sources */,
 				00AD1CE124869C6C00A27979 /* Frameworks */,
 				00AD1CE224869C6C00A27979 /* CopyFiles */,
+				204B8A1C9C8A4723BB596EDD /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3664,6 +3742,7 @@
 				01A617682733CFEA00024A0B /* Frameworks */,
 				01A617692733CFEA00024A0B /* Resources */,
 				01A6178B2733D15C00024A0B /* Embed Frameworks */,
+				B759FA70DCEB12A6B4FDABDE /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3700,6 +3779,7 @@
 				CBBDE8FD280067AB0070DCD3 /* Sources */,
 				CBBDE8FE280067AB0070DCD3 /* Frameworks */,
 				CBBDE8FF280067AB0070DCD3 /* Resources */,
+				C32BA73421ED3FAB54B9099B /* Headers */,
 			);
 			buildRules = (
 			);
@@ -4095,6 +4175,11 @@
 				008967362486D43700DC48C2 /* BugsnagMetadataTests.m in Sources */,
 				008967992486D43700DC48C2 /* FileBasedTestCase.m in Sources */,
 				CB26E9BB28350E0B005A1865 /* UISceneStub.m in Sources */,
+				B15E3D6BA54C295FF2B8A6AF /* BSGPersistentFeatureFlagStoreTests.m in Sources */,
+				60C06C89790D650F5683BCBD /* BSGFeatureFlagStorePerformanceTests.m in Sources */,
+				838E5167EB8411AC6C06FDD8 /* BSGLegacyJSONFeatureFlagStore.m in Sources */,
+				5BF91F46FA5C890864855356 /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */,
+				0EB6026049DAECBDE7AD0AA2 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4313,6 +4398,11 @@
 				008967042486D43700DC48C2 /* BugsnagThreadSerializationTest.m in Sources */,
 				96828B132F0AA3C90020821F /* BSGJsonCollectionPathTests.m in Sources */,
 				008966FE2486D43700DC48C2 /* BugsnagOnBreadcrumbTest.m in Sources */,
+				B8366F656BA3E4F786DF9EA2 /* BSGPersistentFeatureFlagStoreTests.m in Sources */,
+				BCDC84A5F9B4FE71306279BD /* BSGFeatureFlagStorePerformanceTests.m in Sources */,
+				D9A0F054A6E329688C3F241E /* BSGLegacyJSONFeatureFlagStore.m in Sources */,
+				E2454B8C0EE0FB8E2AF21CED /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */,
+				9A4A21F723BF5C375B7085D3 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4532,6 +4622,11 @@
 				008967052486D43700DC48C2 /* BugsnagThreadSerializationTest.m in Sources */,
 				E1F167832F655D76002B14C0 /* BSGLoadConfigTests.m in Sources */,
 				008966FF2486D43700DC48C2 /* BugsnagOnBreadcrumbTest.m in Sources */,
+				885F8A400928846B57C7190D /* BSGPersistentFeatureFlagStoreTests.m in Sources */,
+				1E1332DC1957B8631BE4980B /* BSGFeatureFlagStorePerformanceTests.m in Sources */,
+				5B2C931448036860341E2600 /* BSGLegacyJSONFeatureFlagStore.m in Sources */,
+				9564682EFA4D160E280250FB /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */,
+				BD32B22D3D9B3AAC6CBFCFA1 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4877,6 +4972,11 @@
 				9627A13E2D92201B00696E3C /* WriterTestsSupport.m in Sources */,
 				1C55AD8F2EB91EA30097F3C2 /* BugsnagCaptureOptionsTests.m in Sources */,
 				CB28F09F28294D44003AB200 /* BSG_KSMachTests.m in Sources */,
+				5FB8C5AB4F1CF03746811B21 /* BSGPersistentFeatureFlagStoreTests.m in Sources */,
+				3EC9B54E6E5DD9C56041B0D4 /* BSGFeatureFlagStorePerformanceTests.m in Sources */,
+				11767C210D9A0AC2B657B0CD /* BSGLegacyJSONFeatureFlagStore.m in Sources */,
+				776238E57B7BF91CC23F32EC /* BSGPersistentFeatureFlagStoreStressTests.m in Sources */,
+				0CF241DC365782F61857AFE0 /* BSGFeatureFlagStoreSwitchingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

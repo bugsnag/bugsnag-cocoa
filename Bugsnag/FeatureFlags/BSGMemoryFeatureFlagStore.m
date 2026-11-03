@@ -182,4 +182,9 @@ static inline int getIndexFromDict(NSDictionary *dict, NSString *name) {
     [self.flags removeAllObjects];
 }
 
+- (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    [self clear];
+    [self addFeatureFlags:featureFlags];
+}
+
 @end

@@ -13,6 +13,7 @@
 #import "BSGInternalErrorReporter.h"
 #import "BSGJSONSerialization.h"
 #import "BSGKeys.h"
+#import "BSGPersistentFeatureFlagStore.h"
 #import "BSGRunContext.h"
 #import "Bugsnag+Private.h"
 #import "BugsnagBreadcrumb+Private.h"
@@ -53,6 +54,12 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
         }];
     }
     return [[BugsnagClient alloc] initWithConfiguration:configuration];
+}
+
+- (void)testFeatureFlagsArePersistedInMappedFile {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
+    XCTAssertEqualObjects([[client.featureFlagStore valueForKey:@"persistentStore"] class], [BSGPersistentFeatureFlagStore class]);
 }
 
 /**

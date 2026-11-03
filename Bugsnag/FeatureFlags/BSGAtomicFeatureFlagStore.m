@@ -78,6 +78,11 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
     }
 }
 
+- (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    [self clear];
+    [self addFeatureFlags:featureFlags];
+}
+
 #pragma mark - Private methods
 
 - (void)_awaitAtomicFeatureFlagsLockIfNeeded {
