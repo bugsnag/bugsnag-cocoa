@@ -240,7 +240,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertNotEqual(fd, -1);
     struct stat st;
     XCTAssertEqual(fstat(fd, &st), 0);
-    XCTAssertEqual(lseek(fd, 0, SEEK_HOLE), st.st_size, @"The file should not be sparse");
+    const off_t hole = lseek(fd, 0, SEEK_HOLE);
+    if (hole == -1) {
+        // File systems without SEEK_HOLE support (such as HFS+) cannot hold sparse files
+        XCTAssertGreaterThanOrEqual((long long)st.st_blocks * 512, (long long)st.st_size, @"errno %d", errno);
+    } else {
+        XCTAssertEqual(hole, st.st_size, @"The file should not be sparse");
+    }
     close(fd);
 }
 
