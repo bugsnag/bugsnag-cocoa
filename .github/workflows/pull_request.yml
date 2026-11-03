@@ -24,6 +24,8 @@ jobs:
       run: make oclint
 
   danger:
+    env:
+      BUNDLE_GEMFILE: .github/Gemfile
     permissions:
       pull-requests: write
       statuses: write
@@ -43,7 +45,7 @@ jobs:
     - name: Build framework
       run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO
     - name: Install dependencies
-      run: brew install bloaty && gem install danger
+      run: brew install bloaty && bundle install
     - name: Run bloaty (compileunits)
       run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d compileunits
     - name: Run bloaty (sections,compileunits)
@@ -53,6 +55,6 @@ jobs:
     - name: Run bloaty (segments,sections)
       run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d segments,sections
     - name: Run danger
-      run: danger
+      run: bundle exec danger
       env:
         DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
