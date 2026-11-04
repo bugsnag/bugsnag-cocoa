@@ -341,8 +341,11 @@ steps:
           - echo "+++ Build Release iOS"
           # The scheme enables Thread Sanitizer, which isn't supported on iOS devices.
           # Xcode 26 ignores it for device builds; Xcode 27 fails with
-          # "unsupported option '-fsanitize=thread'", so turn it off for this build only.
-          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet -enableThreadSanitizer NO build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          # "unsupported option '-fsanitize=thread'" (even with -enableThreadSanitizer NO),
+          # so turn it off in the scheme for this build only, then restore the scheme.
+          - sed -i '' 's/enableThreadSanitizer = "YES"/enableThreadSanitizer = "NO"/' objective-c-ios.xcodeproj/xcshareddata/xcschemes/objective-c-ios.xcscheme
+          - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Release -destination generic/platform=iOS -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
+          - git checkout -- objective-c-ios.xcodeproj/xcshareddata/xcschemes/objective-c-ios.xcscheme
           - echo "+++ Build Debug iOS Simulator"
           - xcodebuild -allowProvisioningUpdates -workspace objective-c-ios.xcworkspace -scheme objective-c-ios -configuration Debug -destination generic/platform=iOS\ Simulator -derivedDataPath DerivedData -quiet build GCC_TREAT_WARNINGS_AS_ERRORS=YES
           - echo "+++ Build Debug Mac Catalyst"
