@@ -754,6 +754,8 @@ steps:
             export XCODE_XCCONFIG_FILE="/tmp/xcode27-overrides-$$BUILDKITE_JOB_ID.xcconfig"
             printf 'IPHONEOS_DEPLOYMENT_TARGET = 15.0\nTVOS_DEPLOYMENT_TARGET = 15.0\nWATCHOS_DEPLOYMENT_TARGET = 9.0\nARCHS[sdk=watch*] = $$(ARCHS_STANDARD)\nMACOSX_DEPLOYMENT_TARGET = 12.0\nOTHER_CFLAGS = $$(inherited) -Wno-error=deprecated-declarations\n' > "$$XCODE_XCCONFIG_FILE"
             echo "Using CI-only overrides from $$XCODE_XCCONFIG_FILE:" && cat "$$XCODE_XCCONFIG_FILE"
+          # The unit test host app needs the UIScene life cycle on the iOS 27 SDK (see xcode27-enable-uiscene.sh).
+          - "./.buildkite/xcode27-enable-uiscene.sh Tests/TestHost-iOS/Info.plist SceneDelegate \"\""
           - |
             IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
             echo "Using iOS simulator $$IOS_OS"
