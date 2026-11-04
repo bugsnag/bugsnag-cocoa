@@ -105,7 +105,7 @@ steps:
   - label: "macOS {{matrix.os}} unit tests"
     matrix:
       setup:
-        os: [ "26", "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "26", "15", "14", "13", "12" ]
     agents:
       queue: "macos-{{matrix.os}}"
     timeout_in_minutes: 10
@@ -171,17 +171,6 @@ steps:
         artifact_paths:
           - "logs/*"
 
-      - label: "iOS 14 unit tests"
-        timeout_in_minutes: 10
-        agents:
-          queue: "macos-12-isolated"
-        env:
-          XCODE_VERSION: "14.2.0"
-        commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5 DEVICE=\"iPhone 12\""
-        artifact_paths:
-          - "logs/*"
-
   - group: "tvOS unit tests"
     steps:
       - label: "tvOS 26 unit tests"
@@ -217,15 +206,6 @@ steps:
         artifact_paths:
           - "logs/*"
 
-      - label: "tvOS 14 unit tests"
-        timeout_in_minutes: 10
-        agents:
-          queue: "macos-12-isolated"
-        commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=tvOS OS=14.5"
-        artifact_paths:
-          - "logs/*"
-
   - group: "watchOS unit tests"
     steps:
       - label: "watchOS 26 unit tests"
@@ -247,28 +227,6 @@ steps:
           XCODE_VERSION: "16.3.0"
         commands:
           - "./scripts/run-unit-tests.sh PLATFORM=watchOS OS=11.4 SDK=watchsimulator11.4 DEVICE=\"Apple Watch Series 10 (46mm)\""
-        artifact_paths:
-          - "logs/*"
-
-      - label: "watchOS 8 unit tests"
-        timeout_in_minutes: 10
-        agents:
-          queue: "macos-15"
-        env:
-          XCODE_VERSION: "16.3.0"
-        commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=watchOS OS=8.5 SDK=watchsimulator11.4 DEVICE=\"Apple Watch Series 7 (41mm)\""
-        artifact_paths:
-          - "logs/*"
-
-      - label: "watchOS 7 unit tests"
-        timeout_in_minutes: 10
-        agents:
-          queue: "macos-12-isolated"
-        env:
-          XCODE_VERSION: "14.2.0"
-        commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=watchOS OS=7.4 SDK=watchsimulator9.1"
         artifact_paths:
           - "logs/*"
 
@@ -296,7 +254,7 @@ steps:
     depends_on: "cocoa_fixture"
     matrix:
       setup:
-        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "15", "14", "13", "12" ]
     agents:
       queue: "macos-{{matrix.os}}-isolated"
     timeout_in_minutes: 120
@@ -469,8 +427,6 @@ steps:
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
-      - "IOS_14"
-      - "IOS_13"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
@@ -515,7 +471,7 @@ steps:
   - label: ":bitbar: {{matrix}} debug configuration tests"
     matrix:
       - "IOS_26"
-      - "IOS_13"
+      - "IOS_15"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
@@ -558,7 +514,7 @@ steps:
     depends_on: "cocoa_fixture"
     matrix:
       setup:
-        os: [ "10.13", "26" ]
+        os: [ "12", "26" ]
     timeout_in_minutes: 20
     agents:
       queue: "macos-{{matrix.os}}-isolated"

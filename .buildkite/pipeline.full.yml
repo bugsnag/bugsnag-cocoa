@@ -51,7 +51,7 @@ steps:
   - label: ":bitbar: {{matrix}} XcFramework barebone e2e tests"
     matrix:
       - "IOS_26"
-      - "IOS_13"
+      - "IOS_15"
     depends_on: "xcframework_cocoa_fixture"
     timeout_in_minutes: 20
     agents:
@@ -92,7 +92,7 @@ steps:
   - label: "macOS {{matrix.os}} XcFramework barebone e2e tests"
     matrix:
       setup:
-        os: [ "26", "10.13" ]
+        os: [ "26", "12" ]
     depends_on: "xcframework_cocoa_fixture"
     timeout_in_minutes: 10
     agents:
@@ -124,8 +124,6 @@ steps:
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
-      - "IOS_14"
-      - "IOS_13"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
@@ -170,8 +168,6 @@ steps:
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
-      - "IOS_14"
-      - "IOS_13"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
@@ -220,9 +216,6 @@ steps:
       - "IOS_17"
       - "IOS_16"
       - "IOS_15"
-      - "IOS_14"
-      # PLAT-12554: Currently being skipped due to issues with app-hang test on iOS 13
-      # - "IOS_13"
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 30
     agents:
@@ -265,7 +258,7 @@ steps:
   - label: "macOS {{matrix.os}} e2e tests"
     matrix:
       setup:
-        os: [ "26", "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "26", "15", "14", "13", "12" ]
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
