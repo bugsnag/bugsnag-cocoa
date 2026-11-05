@@ -48,18 +48,38 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <mach-o/dyld.h>
 
+// Jailbreak status is computed once, synchronously, the first time it is
+// needed (+systemInfo / bsg_kssysteminfo_toJSON, both called during
+// Bugsnag.start() on a normal thread -- never from a crash handler).
+//
+// The MobileSubstrate check reads dyld's own, in-process image name table
+// (_dyld_image_count / _dyld_get_image_name): no kernel reads and no
+// allocation, so it is cheap even with thousands of loaded images and,
+// unlike walking Bugsnag's image cache, does not depend on how the cache
+// is populated. _dyld_get_image_name returns NULL if an image was unloaded
+// between the count and the lookup, so NULL names are skipped.
+static bool bsg_detect_mobile_substrate(void) {
+    const uint32_t count = _dyld_image_count();
+    for (uint32_t i = 0; i < count; i++) {
+        const char *name = _dyld_get_image_name(i);
+        if (name != NULL && strstr(name, "MobileSubstrate") != NULL) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static inline bool is_jailbroken(void) {
-    static bool initialized_jb;
+    static dispatch_once_t once;
     static bool is_jb;
-    if(!initialized_jb) {
+    dispatch_once(&once, ^{
         get_jailbreak_status(&is_jb);
 
         // Also keep using the old detection method.
-        if(bsg_mach_headers_image_named("MobileSubstrate", false) != NULL) {
+        if (!is_jb && bsg_detect_mobile_substrate()) {
             is_jb = true;
         }
-        initialized_jb = true;
-    }
+    });
 
     return is_jb;
 }
@@ -148,9 +168,9 @@ static NSDictionary * bsg_systemversion(void) {
  * @return The UUID.
  */
 + (NSString *)appUUID {
-    BSG_Mach_Header_Info *image = bsg_mach_headers_get_main_image();
-    if (image && image->uuid) {
-        return [[[NSUUID alloc] initWithUUIDBytes:image->uuid] UUIDString];
+    BSG_Mach_Header_Info image;
+    if (bsg_mach_headers_get_main_image(&image) && image.uuid) {
+        return [[[NSUUID alloc] initWithUUIDBytes:image.uuid] UUIDString];
     }
     return nil;
 }
@@ -452,3 +472,4 @@ NSString * BSGGetDefaultDeviceId(void) {
 NSDictionary * BSGGetSystemInfo(void) {
     return [BSG_KSSystemInfo systemInfo];
 }
+

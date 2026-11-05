@@ -22,7 +22,11 @@ static NSNumber *_Nullable IntegerValue(NSUInteger actual, NSUInteger defaultVal
 }
 
 static BOOL IsStaticallyLinked(void) {
-    return bsg_mach_headers_get_self_image() == bsg_mach_headers_get_main_image();
+    BSG_Mach_Header_Info selfImage;
+    BSG_Mach_Header_Info mainImage;
+    return bsg_mach_headers_get_self_image(&selfImage) &&
+           bsg_mach_headers_get_main_image(&mainImage) &&
+           selfImage.header == mainImage.header;
 }
 
 static NSDictionary * ConfigValue(BugsnagConfiguration *configuration) {
