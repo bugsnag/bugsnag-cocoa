@@ -65,7 +65,7 @@ steps:
   - label: "macOS {{matrix.os}} unit tests"
     matrix:
       setup:
-        os: [ "26", "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "26", "15", "14", "13", "12", "10.15", "10.14", "10.13" ]
     agents:
       queue: "macos-{{matrix.os}}"
     timeout_in_minutes: 10
@@ -256,7 +256,7 @@ steps:
     depends_on: "cocoa_fixture"
     matrix:
       setup:
-        os: ["15", "14", "13", "12", "11", "10.15", "10.14", "10.13"]
+        os: ["15", "14", "13", "12", "10.15", "10.14", "10.13"]
     agents:
       queue: "macos-{{matrix.os}}-isolated"
     timeout_in_minutes: 120
