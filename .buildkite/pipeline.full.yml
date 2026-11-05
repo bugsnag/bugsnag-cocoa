@@ -250,7 +250,7 @@ steps:
   - label: "macOS {{matrix.os}} e2e tests"
     matrix:
       setup:
-        os: [ "15", "14", "13", "12", "11", "10.15", "10.14", "10.13" ]
+        os: [ "15", "14", "13", "12", "10.15", "10.14", "10.13" ]
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
