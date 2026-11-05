@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Reduced the synchronous, per-image work `Bugsnag.start()` previously did on every loaded Mach-O image: images are now resolved lazily and cached, instead of being walked and copied up front.
+  [#1965](https://github.com/bugsnag/bugsnag-cocoa/pull/1965)
+
 ## 6.38.1 (2026-10-02)
 
 ### Bug Fixes
