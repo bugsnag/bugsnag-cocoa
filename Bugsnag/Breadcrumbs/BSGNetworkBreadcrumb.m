@@ -34,9 +34,9 @@ BugsnagBreadcrumb * BSGNetworkBreadcrumbWithTaskMetrics(NSURLSessionTask *task, 
 
     NSString *message = @"NSURLSession request error";
 
-    // NSURLSessionTaskTransactionMetrics.response is nil when a custom NSURLProtocol is used. 
+    // NSURLSessionTaskTransactionMetrics.response is nil when a custom NSURLProtocol is used.
     // If there was an error, task.response will be nil.
-    NSURLResponse *response = task.response; 
+    NSURLResponse *response = task.response;
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
         if (100 <= statusCode && statusCode < 400) {
@@ -62,6 +62,13 @@ NSDictionary<NSString *, id> * BSGURLParamsForQueryItems(NSArray<NSURLQueryItem 
     }
     NSMutableDictionary *result = [NSMutableDictionary new];
     for (NSURLQueryItem *item in queryItems) {
+        // NSURLQueryItem.name is declared nonnull, but in malformed cases it can be nil.
+        // Also skip empty keys (e.g. "=value" or trailing '&') so only valid key names are kept.
+        NSString *name = item.name;
+        if (name == nil || name.length == 0) {
+            continue;
+        }
+
         // - note: If a NSURLQueryItem name-value pair is empty (i.e. the query string starts with '&', ends
         // with '&', or has "&&" within it), you get a NSURLQueryItem with a zero-length name and a nil value.
         // If a NSURLQueryItem name-value pair has nothing before the equals sign, you get a zero-length name.
@@ -69,14 +76,14 @@ NSDictionary<NSString *, id> * BSGURLParamsForQueryItems(NSArray<NSURLQueryItem 
         // If a NSURLQueryItem name-value pair has no equals sign, the NSURLQueryItem name-value pair string
         // is the name and you get a nil value.
         id value = item.value ?: [NSNull null];
-        
-        id existingValue = result[item.name]; 
+
+        id existingValue = result[name];
         if ([existingValue isKindOfClass:[NSMutableArray class]]) {
             [existingValue addObject:value];
         } else if (existingValue) {
-            result[item.name] = [NSMutableArray arrayWithObjects:existingValue, value, nil];
+            result[name] = [NSMutableArray arrayWithObjects:existingValue, value, nil];
         } else {
-            result[item.name] = value;
+            result[name] = value;
         }
     }
     return result;

@@ -287,7 +287,7 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     // MUST be called before any code that accesses bsg_runContext
     BSGRunContextInit(BSGFileLocations.current.runContext);
-
+    
     // Map our bridged API early on.
     [BugsnagCocoaPerformanceFromBugsnagCocoa sharedInstance];
 
