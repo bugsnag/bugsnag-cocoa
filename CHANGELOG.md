@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Bug Fixes
+
+* Fixed an `NSInvalidArgumentException` ("key cannot be nil") when a request URL contains a query item whose name cannot be decoded.
+  [#1972](https://github.com/bugsnag/bugsnag-cocoa/pull/1972)
+
 ### Enhancements
 
 * Reduced the synchronous, per-image work `Bugsnag.start()` previously did on every loaded Mach-O image: images are now resolved lazily and cached, instead of being walked and copied up front.
