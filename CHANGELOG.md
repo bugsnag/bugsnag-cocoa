@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 7.0.0 (2026-11-06)
+
+### Enhancements
+
+* Change minimum supported OS versions to iOS 15.0, macOS 12.0, tvOS 15.0 and watchOS 9.0 (previously iOS 9.0, macOS 10.11, tvOS 9.2 and watchOS 6.3), as Xcode 27 no longer builds for the earlier versions. Apps that need to support older OS versions should stay on 6.39.0.
+[#1971](https://github.com/bugsnag/bugsnag-cocoa/pull/1971)
+
 ## 6.39.0 (2026-11-05)
 
 ### Bug Fixes

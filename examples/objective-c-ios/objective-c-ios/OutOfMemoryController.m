@@ -15,7 +15,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = UIColor.groupTableViewBackgroundColor;
+    self.view.backgroundColor = UIColor.systemGroupedBackgroundColor;
 }
 
 - (void)didReceiveMemoryWarning {
