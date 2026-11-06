@@ -13,7 +13,7 @@
     "tag": "v7.0.0"
   },
   "dependencies": {
-    "Bugsnag": "~> 6.13"
+    "Bugsnag": "~> 7.0"
   },
   "platforms": {
     "ios": "15.0",
