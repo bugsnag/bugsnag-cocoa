@@ -7,10 +7,11 @@ jobs:
   analyze:
     permissions:
       statuses: write
-    runs-on: macos-14
+    # macos-14 runner image was retired by GitHub on 2026-11-02
+    runs-on: macos-15
     env:
-      # Infer 1.0.1 cannot parse the iOS 15 SDK headers
-      DEVELOPER_DIR: /Applications/Xcode_15.4.app
+      # Pin Xcode explicitly so OCLint results don't change when the image's default Xcode does
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app
     steps:
     - name: Checkout pull request HEAD
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
@@ -29,7 +30,7 @@ jobs:
     permissions:
       pull-requests: write
       statuses: write
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
     - name: Checkout target branch
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
