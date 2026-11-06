@@ -4,10 +4,10 @@ import PackageDescription
 let package = Package(
     name: "Bugsnag",
     platforms: [
-        .macOS(.v10_11),
-        .tvOS("9.2"),
-        .iOS("9.0"),
-        .watchOS("6.3"),
+        .macOS("12.0"),
+        .tvOS("15.0"),
+        .iOS("15.0"),
+        .watchOS("9.0"),
     ],
     products: [
         .library(name: "Bugsnag", targets: ["Bugsnag"]),
