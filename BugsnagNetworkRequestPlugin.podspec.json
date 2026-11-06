@@ -16,10 +16,10 @@
     "Bugsnag": "~> 6.13"
   },
   "platforms": {
-    "ios": "9.0",
-    "osx": "10.11",
-    "tvos": "9.2",
-    "watchos": "6.3"
+    "ios": "15.0",
+    "osx": "12.0",
+    "tvos": "15.0",
+    "watchos": "9.0"
   },
   "source_files": [
     "BugsnagNetworkRequestPlugin/BugsnagNetworkRequestPlugin/{**/,}*.{m,h,mm,c}"

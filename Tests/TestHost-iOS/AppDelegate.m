@@ -11,3 +11,29 @@
 @implementation AppDelegate
 
 @end
+
+API_AVAILABLE(ios(13.0))
+@interface SceneDelegate : UIResponder <UIWindowSceneDelegate>
+
+@property (strong, nonatomic) UIWindow *window;
+
+@end
+
+@implementation SceneDelegate
+
+- (void)scene:(UIScene *)scene
+willConnectToSession:(UISceneSession *)session
+      options:(UISceneConnectionOptions *)connectionOptions API_AVAILABLE(ios(13.0)) {
+    (void)session;
+    (void)connectionOptions;
+
+    if (![scene isKindOfClass:[UIWindowScene class]]) {
+        return;
+    }
+
+    self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
+    self.window.rootViewController = [[UIViewController alloc] init];
+    [self.window makeKeyAndVisible];
+}
+
+@end

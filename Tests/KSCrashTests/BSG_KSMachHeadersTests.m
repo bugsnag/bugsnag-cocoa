@@ -361,12 +361,34 @@ static void scriptNeverSettles(__unused int attempt, int stage) {
 }
 
 - (void)testImageAtAddress {
+#if TARGET_OS_SIMULATOR
+    // From the iOS 27 simulator onwards, the outermost frame (start) is in the
+    // host Mac's dyld. dladdr() reports it as /usr/lib/dyld, but it is neither
+    // the simulator's dyld (dyldImageLoadAddress) nor in dyld's image list, so
+    // Bugsnag correctly cannot resolve it. That image doesn't exist on devices.
+    task_dyld_info_data_t dyldInfo = {0};
+    mach_msg_type_number_t dyldInfoCount = TASK_DYLD_INFO_COUNT;
+    XCTAssertEqual(task_info(mach_task_self(), TASK_DYLD_INFO,
+                             (task_info_t)&dyldInfo, &dyldInfoCount), KERN_SUCCESS);
+    const struct dyld_all_image_infos *allImageInfos =
+        (const void *)dyldInfo.all_image_info_addr;
+    const void *simulatorDyld = allImageInfos ? allImageInfos->dyldImageLoadAddress : NULL;
+#endif
     for (NSNumber *number in NSThread.callStackReturnAddresses) {
         uintptr_t address = number.unsignedIntegerValue;
         BSG_Mach_Header_Info image;
         struct dl_info dlinfo = {0};
         if (dladdr((const void *)address, &dlinfo) != 0) {
-            XCTAssertTrue(bsg_mach_headers_image_at_address(address, &image));
+#if TARGET_OS_SIMULATOR
+            if (dlinfo.dli_fname && strcmp(dlinfo.dli_fname, "/usr/lib/dyld") == 0 &&
+                dlinfo.dli_fbase != simulatorDyld) {
+                continue;
+            }
+#endif
+            if (!bsg_mach_headers_image_at_address(address, &image)) {
+                XCTFail(@"No image found for %p (%s)", (void *)address, dlinfo.dli_fname);
+                continue;
+            }
             XCTAssertEqual(image.header, dlinfo.dli_fbase);
             XCTAssertEqual(image.imageVmAddr + image.slide,
                            (uint64_t)dlinfo.dli_fbase);
