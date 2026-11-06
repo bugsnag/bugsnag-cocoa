@@ -57,4 +57,41 @@
     }
 }
 
+// The jailbreak status is detected synchronously (once) from +systemInfo, so
+// every reader sees the same, final answer straight away: there is no window
+// in which an early reader can get a provisional value.
+- (void) testJailbrokenIsPresentAndStable
+{
+    NSNumber *first = [BSG_KSSystemInfo systemInfo][@BSG_KSSystemField_Jailbroken];
+    XCTAssertTrue([first isKindOfClass:[NSNumber class]]);
+    for (int i = 0; i < 5; i++) {
+        XCTAssertEqualObjects([BSG_KSSystemInfo systemInfo][@BSG_KSSystemField_Jailbroken], first);
+    }
+}
+
+- (void) testJailbrokenIsConsistentAcrossThreads
+{
+    NSNumber *expected = [BSG_KSSystemInfo systemInfo][@BSG_KSSystemField_Jailbroken];
+    __block BOOL allMatch = YES;
+    dispatch_apply(16, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^(size_t __unused i) {
+        NSNumber *value = [BSG_KSSystemInfo systemInfo][@BSG_KSSystemField_Jailbroken];
+        if (![value isEqual:expected]) {
+            @synchronized (self) { allMatch = NO; }
+        }
+    });
+    XCTAssertTrue(allMatch);
+}
+
+- (void) testSystemInfoJSONAgreesWithSystemInfoOnJailbroken
+{
+    char *json = bsg_kssysteminfo_toJSON();
+    XCTAssertTrue(json != NULL);
+    if (json == NULL) return;
+    NSData *data = [NSData dataWithBytes:json length:strlen(json)];
+    free(json);
+    NSDictionary *parsed = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    XCTAssertEqualObjects(parsed[@BSG_KSSystemField_Jailbroken],
+                          [BSG_KSSystemInfo systemInfo][@BSG_KSSystemField_Jailbroken]);
+}
+
 @end
