@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'danger', '~>9.6'
+# Danger requires Git::Base, which was removed in git 6.
+gem 'git', '~>5.7'

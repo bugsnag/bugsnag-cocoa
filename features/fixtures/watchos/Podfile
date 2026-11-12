@@ -1,4 +1,4 @@
-platform :watchos, '6.3'
+platform :watchos, '9.0'
 
 # target 'watchOSTestApp' do
 # end

@@ -234,7 +234,7 @@
 
 - (void)testRealCallStackSymbols {
     bsg_mach_headers_initialize();
-    bsg_mach_headers_get_images(); // Ensure call stack can be symbolicated
+    bsg_mach_headers_get_images(NULL); // Ensure call stack can be symbolicated
     
     NSArray<NSString *> *callStackSymbols = [NSThread callStackSymbols];
     NSArray<BugsnagStackframe *> *stackframes = [BugsnagStackframe stackframesWithCallStackSymbols:callStackSymbols];
@@ -256,6 +256,10 @@
         }
         if ([stackframe.method isEqualToString: @"start_sim"]) {
             // This frame is part of the simulator environment
+            return;
+        }
+        if (stackframe.machoUuid == nil || stackframe.machoVmAddress == nil || stackframe.machoLoadAddress == nil) {
+            // Newer simulator runtimes can include startup frames that are not in bsg_mach_headers image data
             return;
         }
 #endif

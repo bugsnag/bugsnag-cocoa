@@ -7,10 +7,11 @@ jobs:
   analyze:
     permissions:
       statuses: write
-    runs-on: macos-14
+    # macos-14 runner image was retired by GitHub on 2026-11-02
+    runs-on: macos-15
     env:
-      # Infer 1.0.1 cannot parse the iOS 15 SDK headers
-      DEVELOPER_DIR: /Applications/Xcode_15.4.app
+      # Pin Xcode explicitly so OCLint results don't change when the image's default Xcode does
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app
     steps:
     - name: Checkout pull request HEAD
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
@@ -24,10 +25,12 @@ jobs:
       run: make oclint
 
   danger:
+    env:
+      BUNDLE_GEMFILE: .github/Gemfile
     permissions:
       pull-requests: write
       statuses: write
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
     - name: Checkout target branch
       uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
@@ -43,7 +46,7 @@ jobs:
     - name: Build framework
       run: xcodebuild -project Bugsnag.xcodeproj -configuration Release -target Bugsnag-iOS -destination generic/platform=iOS -quiet clean build VALID_ARCHS=arm64 RUN_CLANG_STATIC_ANALYZER=NO
     - name: Install dependencies
-      run: brew install bloaty && gem install danger
+      run: brew install bloaty && bundle install
     - name: Run bloaty (compileunits)
       run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d compileunits
     - name: Run bloaty (sections,compileunits)
@@ -53,6 +56,6 @@ jobs:
     - name: Run bloaty (segments,sections)
       run: bloaty build/Release-iphoneos/Bugsnag.framework/Bugsnag --debug-file=build/Release-iphoneos/Bugsnag.framework.dSYM/Contents/Resources/DWARF/Bugsnag -n 0 -d segments,sections
     - name: Run danger
-      run: danger
+      run: bundle exec danger
       env:
         DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

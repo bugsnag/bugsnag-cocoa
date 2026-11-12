@@ -34,6 +34,12 @@
 
 @implementation BSGURLSessionTracingProxyTests
 
+// These tests need standalone NSURLSessionDataTask and NSURLSessionTaskMetrics objects
+// to pass to the proxy. Their -init methods are deprecated (macOS 10.15 / iOS 13) but
+// still work, and there is no public way to create NSURLSessionTaskMetrics otherwise.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 - (void)testDidReceiveDataIsForwarded {
     BSGURLSessionTracingProxyTests_DidReceiveDataStub *sessionDelegate = [[BSGURLSessionTracingProxyTests_DidReceiveDataStub alloc] init];
     BSGURLSessionTracingProxyTests_TracingStub *tracingDelegate = [[BSGURLSessionTracingProxyTests_TracingStub alloc] init];
@@ -84,6 +90,8 @@
         XCTSkip(@"Required API is not available for this test.");
     };
 }
+
+#pragma clang diagnostic pop
 
 #pragma mark - NSProxy correctness
 
