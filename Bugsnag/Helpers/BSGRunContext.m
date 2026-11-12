@@ -8,7 +8,6 @@
 #import "BSGRunContext.h"
 
 #import "BSGAppKit.h"
-#import "BSGFilesystem.h"
 #import "BSGHardware.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
@@ -547,37 +546,15 @@ static struct BSGRunContext bsg_lastRunContext_fallback = {
 const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 
 /// Opens the file and disables content protection, returning -1 on error.
+///
+/// NSFileProtectionComplete invalidates mappings 10 seconds after device is
+/// locked, so must be disabled to prevent segfaults when accessing
+/// bsg_runContext. It is downgraded to NSFileProtectionCompleteUnlessOpen,
+/// which only keeps the file accessible while the device is locked for as
+/// long as it stays open, so the descriptor returned here must be kept open
+/// for as long as the file is mapped (see ResizeAndMapFile.)
 static int OpenFile(NSString *_Nonnull path) {
-    int fd = open(path.fileSystemRepresentation, O_RDWR | O_CREAT, 0600);
-    if (fd == -1) {
-        bsg_log_warn(@"Could not open %@", path);
-        return -1;
-    }
-    // This file is created with low-level APIs for memory mapping, so apply
-    // Bugsnag's Apple backup policy here instead of relying on JSON helpers.
-    [BSGFilesystem applyFileBackupSupportToPath:path];
-    
-    // NSFileProtectionComplete invalidates mappings 10 seconds after device is
-    // locked, so must be disabled to prevent segfaults when accessing
-    // bsg_runContext. It is downgraded to NSFileProtectionCompleteUnlessOpen,
-    // which only keeps the file accessible while the device is locked for as
-    // long as it stays open, so the descriptor returned here must be kept open
-    // for as long as the file is mapped (see ResizeAndMapFile.)
-    if (!BSGDisableNSFileProtectionComplete(path)) {
-        close(fd);
-        return -1;
-    }
-    
-    // Reopen so that the descriptor that is kept open was opened after the
-    // protection class was changed, rather than under NSFileProtectionComplete.
-    // O_CLOEXEC because it is long lived and must not leak into child processes.
-    int reopened = open(path.fileSystemRepresentation, O_RDWR | O_CLOEXEC);
-    if (reopened != -1) {
-        close(fd);
-        fd = reopened;
-    }
-
-    return fd;
+    return BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
 }
 
 /// Loads the contents of the state file into memory and sets the

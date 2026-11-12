@@ -5,12 +5,12 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 //  Benchmarks comparing the legacy feature flag persistence (one JSON file per
-//  flag, BSGLegacyJSONFeatureFlagStore) with the memory-mapped
-//  BSGPersistentFeatureFlagStore. Each workload runs against both stores, each
-//  in a fresh temporary directory.
+//  flag, BSGLegacyJSONFeatureFlagStore) with
+//  BSGPersistentFeatureFlagStore, which keeps them in one binary file. Each
+//  workload runs against both stores, each in a fresh temporary directory.
 //
 //  XCTest allows only one measure block per test method, so every benchmark is
-//  split into a "JSON" and an "Mmap" test with an identical workload.
+//  split into a "JSON" and a "Binary" test with an identical workload.
 //  testPrintComparisonTable logs a markdown table of p50 / p95 timings.
 //
 //  The benchmarks take several minutes, so they only run when the environment
@@ -35,7 +35,7 @@
 
 typedef NS_ENUM(NSUInteger, BSGFeatureFlagStoreKind) {
     BSGFeatureFlagStoreKindJSON,
-    BSGFeatureFlagStoreKindMmap,
+    BSGFeatureFlagStoreKindBinary,
 };
 
 static NSArray<BugsnagFeatureFlag *> * BSGMakeFlags(NSUInteger start, NSUInteger count) {
@@ -110,11 +110,13 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
     [self.temporaryDirectories removeObject:directory];
 }
 
-- (id<BSGFeatureFlagStore>)storeOfKind:(BSGFeatureFlagStoreKind)kind directory:(NSString *)directory {
+// Named new... so that ARC returns the store retained rather than autoreleased: a persistent store holds
+// the lock on its directory until it is released, and only the store holding it writes.
+- (id<BSGFeatureFlagStore>)newStoreOfKind:(BSGFeatureFlagStoreKind)kind directory:(NSString *)directory {
     switch (kind) {
         case BSGFeatureFlagStoreKindJSON:
             return [[BSGLegacyJSONFeatureFlagStore alloc] initWithStorageDirectory:directory];
-        case BSGFeatureFlagStoreKindMmap:
+        case BSGFeatureFlagStoreKindBinary:
             return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
     }
 }
@@ -122,7 +124,7 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
 /// A fresh directory holding `count` flags written by a previous store instance.
 - (NSString *)directoryWithFlags:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind {
     NSString *directory = [self makeTemporaryDirectory];
-    [[self storeOfKind:kind directory:directory] addFeatureFlags:BSGMakeFlags(0, count)];
+    [[self newStoreOfKind:kind directory:directory] addFeatureFlags:BSGMakeFlags(0, count)];
     return directory;
 }
 
@@ -153,7 +155,7 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
     NSArray<BugsnagFeatureFlag *> *flags = BSGMakeFlags(0, count);
     [self measureWithIterations:BSGIterationsForFlagCount(count) block:^{
         NSString *directory = [self makeTemporaryDirectory];
-        id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+        id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
         [self startMeasuring];
         [store addFeatureFlags:flags];
         [self stopMeasuring];
@@ -163,18 +165,18 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
 }
 
 - (void)testBatchAdd100JSON   { [self measureBatchAdd:100 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testBatchAdd100Mmap   { [self measureBatchAdd:100 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testBatchAdd100Binary   { [self measureBatchAdd:100 kind:BSGFeatureFlagStoreKindBinary]; }
 - (void)testBatchAdd1000JSON  { [self measureBatchAdd:1000 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testBatchAdd1000Mmap  { [self measureBatchAdd:1000 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testBatchAdd1000Binary  { [self measureBatchAdd:1000 kind:BSGFeatureFlagStoreKindBinary]; }
 - (void)testBatchAdd10000JSON { [self measureBatchAdd:10000 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testBatchAdd10000Mmap { [self measureBatchAdd:10000 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testBatchAdd10000Binary { [self measureBatchAdd:10000 kind:BSGFeatureFlagStoreKindBinary]; }
 
 - (void)measureIncrementalAdds:(NSUInteger)adds onTopOf:(NSUInteger)existing kind:(BSGFeatureFlagStoreKind)kind {
     NSArray<BugsnagFeatureFlag *> *initial = BSGMakeFlags(0, existing);
     NSArray<BugsnagFeatureFlag *> *additional = BSGMakeFlags(existing, adds);
     [self measureWithIterations:BSGIterationsForFlagCount(existing) block:^{
         NSString *directory = [self makeTemporaryDirectory];
-        id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+        id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
         [store addFeatureFlags:initial];
         [self startMeasuring];
         for (BugsnagFeatureFlag *flag in additional) {
@@ -190,15 +192,15 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
     [self measureIncrementalAdds:100 onTopOf:1000 kind:BSGFeatureFlagStoreKindJSON];
 }
 
-- (void)testIncrementalAdds100OnTopOf1000Mmap {
-    [self measureIncrementalAdds:100 onTopOf:1000 kind:BSGFeatureFlagStoreKindMmap];
+- (void)testIncrementalAdds100OnTopOf1000Binary {
+    [self measureIncrementalAdds:100 onTopOf:1000 kind:BSGFeatureFlagStoreKindBinary];
 }
 
 - (void)measureClearAll:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind {
     NSArray<BugsnagFeatureFlag *> *flags = BSGMakeFlags(0, count);
     [self measureWithIterations:BSGIterationsForFlagCount(count) block:^{
         NSString *directory = [self makeTemporaryDirectory];
-        id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+        id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
         [store addFeatureFlags:flags];
         [self startMeasuring];
         [store clear];
@@ -209,13 +211,13 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
 }
 
 - (void)testClearAll1000JSON { [self measureClearAll:1000 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testClearAll1000Mmap { [self measureClearAll:1000 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testClearAll1000Binary { [self measureClearAll:1000 kind:BSGFeatureFlagStoreKindBinary]; }
 
 - (void)measureColdLoad:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind {
     NSString *directory = [self directoryWithFlags:count kind:kind];
     [self measureWithIterations:BSGIterationsForFlagCount(count) block:^{
         [self startMeasuring];
-        id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+        id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
         NSArray<BugsnagFeatureFlag *> *flags = store.allFlags;
         [self stopMeasuring];
         XCTAssertEqual(flags.count, count);
@@ -223,9 +225,9 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
 }
 
 - (void)testColdLoad1000JSON  { [self measureColdLoad:1000 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testColdLoad1000Mmap  { [self measureColdLoad:1000 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testColdLoad1000Binary  { [self measureColdLoad:1000 kind:BSGFeatureFlagStoreKindBinary]; }
 - (void)testColdLoad10000JSON { [self measureColdLoad:10000 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testColdLoad10000Mmap { [self measureColdLoad:10000 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testColdLoad10000Binary { [self measureColdLoad:10000 kind:BSGFeatureFlagStoreKindBinary]; }
 
 #pragma mark - Disk writes
 
@@ -240,7 +242,7 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
                          options:options
                            block:^{
             NSString *directory = [self makeTemporaryDirectory];
-            id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+            id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
             [self startMeasuring];
             [store addFeatureFlags:flags];
             [self stopMeasuring];
@@ -256,7 +258,7 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
 }
 
 - (void)testDiskWritesBatchAdd1000JSON { [self measureDiskWritesForBatchAdd:1000 kind:BSGFeatureFlagStoreKindJSON]; }
-- (void)testDiskWritesBatchAdd1000Mmap { [self measureDiskWritesForBatchAdd:1000 kind:BSGFeatureFlagStoreKindMmap]; }
+- (void)testDiskWritesBatchAdd1000Binary { [self measureDiskWritesForBatchAdd:1000 kind:BSGFeatureFlagStoreKindBinary]; }
 
 #pragma mark - Comparison table
 
@@ -285,7 +287,7 @@ typedef void (^ BSGTimedBlock)(void);
             [self removeDirectory:previous];
         }
         NSString *directory = previous = [self makeTemporaryDirectory];
-        id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+        id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
         return ^{ [store addFeatureFlags:flags]; };
     }];
     [self removeDirectory:previous];
@@ -296,7 +298,7 @@ typedef void (^ BSGTimedBlock)(void);
     NSString *directory = [self directoryWithFlags:count kind:kind];
     NSArray *samples = [self sample:iterations setup:^BSGTimedBlock{
         return ^{
-            id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+            id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
             if (store.allFlags.count != count) {
                 XCTFail(@"Cold load returned the wrong number of flags");
             }
@@ -309,7 +311,7 @@ typedef void (^ BSGTimedBlock)(void);
 /// One addFeatureFlag: call that changes the variant of an existing flag in a store holding `count` flags.
 - (NSArray<NSNumber *> *)singleUpdateSamples:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind iterations:(NSUInteger)iterations {
     NSString *directory = [self makeTemporaryDirectory];
-    id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+    id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
     [store addFeatureFlags:BSGMakeFlags(0, count)];
     NSString *name = [NSString stringWithFormat:@"flag-%lu", (unsigned long)(count / 2)];
     __block NSUInteger iteration = 0;
@@ -324,7 +326,7 @@ typedef void (^ BSGTimedBlock)(void);
 /// One addFeatureFlag: call that adds a new flag to a store holding `count` flags.
 - (NSArray<NSNumber *> *)singleAddSamples:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind iterations:(NSUInteger)iterations {
     NSString *directory = [self makeTemporaryDirectory];
-    id<BSGFeatureFlagStore> store = [self storeOfKind:kind directory:directory];
+    id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
     [store addFeatureFlags:BSGMakeFlags(0, count)];
     __block NSUInteger iteration = 0;
     NSArray *samples = [self sample:iterations setup:^BSGTimedBlock{
@@ -361,18 +363,18 @@ static NSUInteger BSGTableIterations(NSUInteger count) {
 
     NSMutableString *table = [NSMutableString string];
     [table appendString:@"\n10 iterations per cell (5 for 10,000 flags), nearest-rank percentiles\n"];
-    [table appendString:@"| Operation | Flags | JSON p50 (ms) | JSON p95 (ms) | mmap p50 (ms) | mmap p95 (ms) | p50 speed-up |\n"];
+    [table appendString:@"| Operation | Flags | JSON p50 (ms) | JSON p95 (ms) | binary p50 (ms) | binary p95 (ms) | p50 speed-up |\n"];
     [table appendString:@"|---|---:|---:|---:|---:|---:|---:|\n"];
     for (NSArray *operation in operations) {
         NSString *title = operation[0];
         BSGSampler sampler = operation[1];
         for (NSNumber *count in counts) {
             NSArray<NSNumber *> *json = sampler(count.unsignedIntegerValue, BSGFeatureFlagStoreKindJSON);
-            NSArray<NSNumber *> *mmap = sampler(count.unsignedIntegerValue, BSGFeatureFlagStoreKindMmap);
+            NSArray<NSNumber *> *binary = sampler(count.unsignedIntegerValue, BSGFeatureFlagStoreKindBinary);
             double jsonP50 = BSGPercentile(json, 50), jsonP95 = BSGPercentile(json, 95);
-            double mmapP50 = BSGPercentile(mmap, 50), mmapP95 = BSGPercentile(mmap, 95);
+            double binaryP50 = BSGPercentile(binary, 50), binaryP95 = BSGPercentile(binary, 95);
             [table appendFormat:@"| %@ | %@ | %.3f | %.3f | %.3f | %.3f | %.1fx |\n",
-             title, count, jsonP50, jsonP95, mmapP50, mmapP95, mmapP50 > 0 ? jsonP50 / mmapP50 : 0];
+             title, count, jsonP50, jsonP95, binaryP50, binaryP95, binaryP50 > 0 ? jsonP50 / binaryP50 : 0];
         }
     }
     NSLog(@"BSGFeatureFlagStore comparison:%@", table);

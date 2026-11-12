@@ -10,6 +10,10 @@
 
 #import "BSGUtils.h"
 
+#import <fcntl.h>
+#import <sys/stat.h>
+#import <unistd.h>
+
 @interface BSGUtilsTests : BSGTestCase
 @end
 
@@ -71,5 +75,43 @@
 }
 
 #endif
+
+- (void)testOpenFileWithoutCompleteProtection {
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+
+    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    // Long lived descriptors must not leak into child processes
+    XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
+    struct stat st;
+    XCTAssertEqual(fstat(fd, &st), 0);
+    XCTAssertEqual(st.st_mode & 0777, 0600);
+    // The descriptor is usable for reading and writing
+    XCTAssertEqual(pwrite(fd, "abc", 3, 0), 3);
+    char buffer[3] = {0};
+    XCTAssertEqual(pread(fd, buffer, 3, 0), 3);
+    XCTAssertEqual(memcmp(buffer, "abc", 3), 0);
+    close(fd);
+
+    // O_EXCL still fails for a file that exists, and the file is left alone
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL), -1);
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+
+    // An existing file is not truncated when it is reopened
+    fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    XCTAssertEqual(fstat(fd, &st), 0);
+    XCTAssertEqual(st.st_size, 3);
+    close(fd);
+
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
+}
 
 @end

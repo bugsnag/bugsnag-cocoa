@@ -1,7 +1,9 @@
 Feature: Feature flag persistence
 
-  # Feature flags are persisted in <storage>/featureFlags/flags.bin so that they can be included in
+  # Feature flags are persisted in <storage>/featureFlags/featureflag.bin so that they can be included in
   # Out Of Memory / thermal kill events at next launch. Older SDKs persisted one JSON file per flag.
+  # The file is created when there are first flags to save. Adding a flag that is already present
+  # replaces its variant and keeps its position, in memory and in the file.
   #
   # Handled errors use the in-memory flags and crash reports use the crash-safe atomic store, so only
   # OOM events (iOS only, tagged @skip_macos) report the flags read back from disk.
@@ -144,18 +146,24 @@ Feature: Feature flag persistence
     And I configure Bugsnag for "FeatureFlagsOOMScenario"
     And I wait to receive an error
     Then the error is an OOM event
-    And the event "metaData.flagsDir.flagsBinHasValidHeader" is true
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
     And the event "metaData.flagsDir.jsonFileCount" equals 0
-    # config-flag + 498 bulk flags + bulk-123 (moved to the end when updated) + 4 others
+    # config-flag + 499 bulk flags (bulk-123 keeps its position when updated) + 4 others
     And the error payload field "events.0.featureFlags" is an array with 504 elements
     And the event "featureFlags.0.featureFlag" equals "config-flag"
     And the event "featureFlags.0.variant" equals "config-flag:config"
     And the event "featureFlags.1.featureFlag" equals "bulk-000"
     And the event "featureFlags.1.variant" equals "bulk-000:v1"
-    And the event "featureFlags.498.featureFlag" equals "bulk-499"
-    And the event "featureFlags.498.variant" equals "bulk-499:v1"
-    And the event "featureFlags.499.featureFlag" equals "bulk-123"
-    And the event "featureFlags.499.variant" equals "bulk-123:updated"
+    And the event "featureFlags.123.featureFlag" equals "bulk-122"
+    And the event "featureFlags.123.variant" equals "bulk-122:v1"
+    And the event "featureFlags.124.featureFlag" equals "bulk-123"
+    And the event "featureFlags.124.variant" equals "bulk-123:updated"
+    And the event "featureFlags.125.featureFlag" equals "bulk-124"
+    And the event "featureFlags.125.variant" equals "bulk-124:v1"
+    And the event "featureFlags.456.featureFlag" equals "bulk-455"
+    And the event "featureFlags.457.featureFlag" equals "bulk-457"
+    And the event "featureFlags.499.featureFlag" equals "bulk-499"
+    And the event "featureFlags.499.variant" equals "bulk-499:v1"
     And the event does not contain the feature flag "bulk-456"
     And the event "featureFlags.500.featureFlag" matches "^long-name-n{300}-end$"
     And the event "featureFlags.500.variant" matches "^long-variant-v{300}-end$"
@@ -169,12 +177,12 @@ Feature: Feature flag persistence
   # 8 (OOM)
   @skip_macos
   Scenario: Flags stored as JSON files by an older SDK are reported in an OOM event after upgrading
-    # Launch 1 replaces flags.bin with legacy JSON files after Bugsnag has started, then is killed
+    # Launch 1 replaces featureflag.bin with legacy JSON files after Bugsnag has started, then is killed
     When I run "FeatureFlagsLegacyUpgradeOOMScenario" and relaunch the crashed app
     And I configure Bugsnag for "FeatureFlagsLegacyUpgradeOOMScenario"
     And I wait to receive an error
     Then the error is an OOM event
-    And the event "metaData.flagsDirBeforeStart.flagsBinExists" is false
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileExists" is false
     And the event "metaData.flagsDirBeforeStart.jsonFileCount" equals 5
     # The legacy files are imported in index order, and then deleted
     And the error payload field "events.0.featureFlags" is an array with 5 elements
@@ -189,25 +197,25 @@ Feature: Feature flag persistence
     And the event "featureFlags.4.featureFlag" equals "legacy-empty"
     And the event contains the feature flag "legacy-empty" with variant ""
     And the event "metaData.flagsDir.jsonFileCount" equals 0
-    And the event "metaData.flagsDir.flagsBinHasValidHeader" is true
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
 
   # 8
-  Scenario: Flags stored as JSON files by an older SDK are migrated to flags.bin
+  Scenario: Flags stored as JSON files by an older SDK are migrated to featureflag.bin
     When I run "FeatureFlagsLegacyMigrationScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the event "metaData.flagsDirBeforeStart.flagsBinExists" is false
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileExists" is false
     And the event "metaData.flagsDirBeforeStart.jsonFileCount" equals 3
     And the event "metaData.flagsDir.jsonFileCount" equals 0
-    And the event "metaData.flagsDir.flagsBinExists" is true
-    And the event "metaData.flagsDir.flagsBinHasValidHeader" is true
+    And the event "metaData.flagsDir.featureFlagFileExists" is true
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
     And the event contains the following feature flags:
       | featureFlag | variant         |
       | config-flag | config-variant  |
       | current     | current-variant |
 
   # 9
-  Scenario: Stale JSON flag files next to flags.bin are deleted
+  Scenario: Stale JSON flag files next to featureflag.bin are deleted
     When I run "FeatureFlagsStaleJSONScenario"
     And I wait to receive an error
     And I discard the oldest error
@@ -215,10 +223,10 @@ Feature: Feature flag persistence
     And I run "FeatureFlagsStaleJSONScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the event "metaData.flagsDirBeforeStart.flagsBinExists" is true
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileExists" is true
     And the event "metaData.flagsDirBeforeStart.jsonFileCount" equals 2
     And the event "metaData.flagsDir.jsonFileCount" equals 0
-    And the event "metaData.flagsDir.flagsBinHasValidHeader" is true
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
     And the event contains the following feature flags:
       | featureFlag  | variant        |
       | config-flag  | config-variant |
@@ -226,26 +234,26 @@ Feature: Feature flag persistence
 
   # 9 (OOM)
   @skip_macos
-  Scenario: Flags are not reported in an OOM event when flags.bin and JSON files are found together, and the JSON files are deleted
+  Scenario: Flags are not reported in an OOM event when featureflag.bin and JSON files are found together, and the JSON files are deleted
     When I run "FeatureFlagsStaleJSONOOMScenario" and relaunch the crashed app
     And I configure Bugsnag for "FeatureFlagsStaleJSONOOMScenario"
     And I wait to receive an error
     Then the error is an OOM event
-    And the event "metaData.flagsDirBeforeStart.flagsBinExists" is true
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileExists" is true
     And the event "metaData.flagsDirBeforeStart.jsonFileCount" equals 2
     And the event "metaData.flagsDir.jsonFileCount" equals 0
-    And the event "metaData.flagsDir.flagsBinHasValidHeader" is true
-    # flags.bin and JSON files found together are both discarded
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
+    # featureflag.bin and JSON files found together are both discarded
     And the event has no feature flags
 
   # 10
-  Scenario Outline: A corrupt flags.bin does not prevent flags being reported
+  Scenario Outline: A corrupt featureflag.bin does not prevent flags being reported
     When I set the app to "<mode>" mode
     And I run "FeatureFlagsCorruptFileScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
-    And the event "metaData.flagsDirBeforeStart.flagsBinExists" is true
-    And the event "metaData.flagsDir.flagsBinHasValidHeader" is true
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileExists" is true
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
     And the event contains the following feature flags:
       | featureFlag | variant        |
       | config-flag | config-variant |
@@ -263,7 +271,7 @@ Feature: Feature flag persistence
 
   # 10 (OOM)
   @skip_macos
-  Scenario Outline: A corrupt flags.bin does not prevent flags being reported in an OOM event
+  Scenario Outline: A corrupt featureflag.bin does not prevent flags being reported in an OOM event
     When I set the app to "<mode>" mode
     And I run "FeatureFlagsCorruptFileOOMScenario" and relaunch the crashed app
     And I configure Bugsnag for "FeatureFlagsCorruptFileOOMScenario"
@@ -283,12 +291,12 @@ Feature: Feature flag persistence
       | truncated     |
 
   # 11
-  Scenario: A directory at the flags.bin path does not prevent flags being reported in a handled error
+  Scenario: A directory at the featureflag.bin path does not prevent flags being reported in a handled error
     When I run "FeatureFlagsDirectoryAtFilePathScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the event "unhandled" is false
-    And the event "metaData.flagsDirBeforeStart.flagsBinIsDirectory" is true
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileIsDirectory" is true
     And the event contains the following feature flags:
       | featureFlag | variant          |
       | config-flag | config-variant   |
@@ -297,14 +305,14 @@ Feature: Feature flag persistence
       | bulk-002    | bulk-002:v1      |
 
   # 11
-  Scenario: A directory at the flags.bin path does not prevent flags being reported in a crash report
+  Scenario: A directory at the featureflag.bin path does not prevent flags being reported in a crash report
     When I run "FeatureFlagsDirectoryAtFilePathCrashScenario" and relaunch the crashed app
     And I configure Bugsnag for "FeatureFlagsDirectoryAtFilePathCrashScenario"
     And I wait to receive an error
     Then the error is valid for the error reporting API
     And the event "unhandled" is true
     And the exception "message" equals "FeatureFlagsDirectoryAtFilePathCrashScenario"
-    And the event "metaData.flagsDirBeforeStart.flagsBinIsDirectory" is true
+    And the event "metaData.flagsDirBeforeStart.featureFlagFileIsDirectory" is true
     And the event contains the following feature flags:
       | featureFlag | variant          |
       | config-flag | config-variant   |

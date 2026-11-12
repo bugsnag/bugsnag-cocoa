@@ -19,7 +19,6 @@
 
 #import <fcntl.h>
 #import <limits.h>
-#import <mach/mach.h>
 #import <stdlib.h>
 #import <sys/param.h>
 #import <signal.h>
@@ -35,7 +34,7 @@
 #define BSGSkipIf(condition, ...) if (condition) { NSLog(__VA_ARGS__); return; }
 #endif
 
-// Layout of the file header; see BSGPersistentFeatureFlagStore.m
+// Layout of the file header; see BSGFeatureFlagFileFormat.h
 static const size_t StressHeaderSize = 32;
 static const size_t StressSlotCapacityOffset = 8;
 
@@ -61,7 +60,9 @@ static const size_t StressSlotCapacityOffset = 8;
 
 #pragma mark - Reference model
 
-/// A minimal model of the expected store behaviour: an overwritten flag moves to the end.
+/// A minimal model of the expected store behaviour, which matches BSGMemoryFeatureFlagStore: adding a
+/// name that is already present replaces its variant and keeps its position, and a cleared name that is
+/// added again goes at the end.
 @interface BSGFeatureFlagModel : NSObject
 @property (nonatomic, strong) NSMutableOrderedSet<NSString *> *names;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, id> *variants;
@@ -78,8 +79,9 @@ static const size_t StressSlotCapacityOffset = 8;
 }
 
 - (void)add:(NSString *)name variant:(NSString *)variant {
-    [self.names removeObject:name];
-    [self.names addObject:name];
+    if (![self.names containsObject:name]) {
+        [self.names addObject:name];
+    }
     self.variants[name] = variant ?: NSNull.null;
 }
 
@@ -114,7 +116,7 @@ static NSArray * StressFlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 /// The number of file descriptors open in this process that refer to a file in `directory`
-/// (e.g. flags.bin, a lock file, or a temporary file). Descriptors opened by anything else in the
+/// (e.g. featureflag.bin, featureflag.lock, or a temporary file). Descriptors opened by anything else in the
 /// process are ignored, so the count is not affected by other work going on in the test process.
 static NSUInteger FileDescriptorCountInDirectory(NSString *directory) {
     char resolved[PATH_MAX];
@@ -134,21 +136,12 @@ static NSUInteger FileDescriptorCountInDirectory(NSString *directory) {
     return count;
 }
 
-static uint64_t VirtualMemorySize(void) {
-    task_vm_info_data_t info;
-    mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
-    if (task_info(mach_task_self(), TASK_VM_INFO, (task_info_t)&info, &count) != KERN_SUCCESS) {
-        return 0;
-    }
-    return info.virtual_size;
-}
-
 static double MillisecondsSince(CFAbsoluteTime start) {
     return (CFAbsoluteTimeGetCurrent() - start) * 1000.0;
 }
 
-/// Decodes flags.bin independently of BSGPersistentFeatureFlagStore, replaying the log in the active
-/// slot (see the format description in BSGPersistentFeatureFlagStore.m). Returns nil if the file is
+/// Decodes featureflag.bin independently of BSGPersistentFeatureFlagStore, replaying the log in the active
+/// slot (see the format description in BSGFeatureFlagFileFormat.h). Returns nil if the file is
 /// missing or corrupt, otherwise an array of [name, variant or NSNull].
 static NSArray * DecodeFlagsFile(NSString *path) {
     NSData *data = [NSData dataWithContentsOfFile:path];
@@ -191,11 +184,15 @@ static NSArray * DecodeFlagsFile(NSString *path) {
         if (!name || (hasVariant && !variant)) {
             return nil;
         }
-        [names removeObject:name];
+        // As in the store, a record for a name that is present keeps its position, and a removed name
+        // that is added again goes at the end
         if (removed) {
+            [names removeObject:name];
             [variants removeObjectForKey:name];
         } else {
-            [names addObject:name];
+            if (![names containsObject:name]) {
+                [names addObject:name];
+            }
             variants[name] = variant ?: NSNull.null;
         }
     }
@@ -234,15 +231,21 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 }
 
 - (NSString *)filePath {
-    return [self.directory stringByAppendingPathComponent:@"flags.bin"];
+    return [self.directory stringByAppendingPathComponent:@"featureflag.bin"];
 }
 
-- (BSGPersistentFeatureFlagStore *)openStore {
+// Named new... so that ARC returns the store retained rather than autoreleased, and it is released (giving
+// up the lock on featureflag.lock if it took it) as soon as the caller no longer uses it.
+- (BSGPersistentFeatureFlagStore *)newStore {
     return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
 
+/// The flags a new store reads from the directory. The store is released before this returns.
 - (NSArray *)reopenedFlags {
-    return StressFlagsToArray([self openStore].allFlags);
+    @autoreleasepool {
+        BSGPersistentFeatureFlagStore *store = [self newStore];
+        return StressFlagsToArray(store.allFlags);
+    }
 }
 
 - (unsigned long long)fileSize {
@@ -267,9 +270,9 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 #pragma mark - File descriptor checks (always run)
 
 /// Quick checks, run on every CI run, that opening, using and closing stores does not leak
-/// descriptors for files in the featureFlags directory. The store may keep descriptors open for
-/// its lifetime (e.g. for flags.bin and a lock file), so these check that the number does not
-/// grow rather than expecting an exact number.
+/// descriptors for files in the featureFlags directory. A store that has saved flags keeps two
+/// descriptors open for its lifetime, for featureflag.bin and featureflag.lock, and closes both when it
+/// is deallocated.
 @interface BSGPersistentFeatureFlagStoreFileDescriptorTests : BSGPersistentFeatureFlagStoreStressTestCase
 @end
 
@@ -277,34 +280,31 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 
 - (void)testOpenCloseCyclesDoNotLeakFileDescriptors {
     @autoreleasepool {
-        BSGPersistentFeatureFlagStore *store = [self openStore];
+        BSGPersistentFeatureFlagStore *store = [self newStore];
         [store addFeatureFlag:@"a" withVariant:@"1"];
         [store addFeatureFlag:@"b" withVariant:nil];
     }
     // Every store has been closed, so this is the baseline for the directory
     const NSUInteger closedBaseline = self.openFileDescriptorCount;
 
-    // Check that descriptors for files in the directory are actually counted
+    // Check that descriptors for files in the directory are actually counted, using featureflag.bin itself
     const int fd = open(self.filePath.fileSystemRepresentation, O_RDONLY);
     XCTAssertNotEqual(fd, -1);
     XCTAssertEqual(self.openFileDescriptorCount, closedBaseline + 1);
     close(fd);
 
-    NSUInteger openBaseline = NSNotFound;
     for (NSUInteger i = 0; i < 20; i++) {
         @autoreleasepool {
-            BSGPersistentFeatureFlagStore *store = [self openStore];
+            BSGPersistentFeatureFlagStore *store = [self newStore];
             XCTAssertEqual(store.allFlags.count, 2);
             // Exercise the append, snapshot and growth paths before closing
             NSString *name = [NSString stringWithFormat:@"extra-%lu", (unsigned long)i];
             [store addFeatureFlag:name withVariant:nil];
             [store addFeatureFlag:@"a" withVariant:name];
             [store clear:name];
-            const NSUInteger open = self.openFileDescriptorCount;
-            if (openBaseline == NSNotFound) {
-                openBaseline = open;
-            }
-            XCTAssertEqual(open, openBaseline, @"Cycle %lu: an open store's descriptor count changed", (unsigned long)i);
+            // featureflag.bin and featureflag.lock
+            XCTAssertEqual(self.openFileDescriptorCount, closedBaseline + 2,
+                           @"Cycle %lu: an open store's descriptor count changed", (unsigned long)i);
         }
         XCTAssertEqual(self.openFileDescriptorCount, closedBaseline, @"Cycle %lu: descriptors leaked", (unsigned long)i);
     }
@@ -316,7 +316,9 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
         BSGStressCountingPersistentFeatureFlagStore *store =
         [[BSGStressCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
         [store addFeatureFlag:@"first" withVariant:nil];
+        // featureflag.bin and featureflag.lock
         const NSUInteger open = self.openFileDescriptorCount;
+        XCTAssertEqual(open, before + 2);
         for (NSUInteger i = 0; i < 5000; i++) {
             [store addFeatureFlag:[NSString stringWithFormat:@"fd-%lu", (unsigned long)i]
                       withVariant:@"a-reasonably-long-variant-to-force-several-growth-steps"];
@@ -347,8 +349,9 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 
 #pragma mark Volume
 
-- (void)test100000FlagsBatchAddAndReopen {
-    const NSUInteger count = 100000;
+- (void)test40000FlagsBatchAddAndReopen {
+    // About 1.2 MB of records, which is below the 2 MB that a slot can hold
+    const NSUInteger count = 40000;
     NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:count];
     BSGFeatureFlagModel *model = [BSGFeatureFlagModel new];
     for (NSUInteger i = 0; i < count; i++) {
@@ -358,7 +361,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
         [model add:name variant:variant];
     }
 
-    BSGPersistentFeatureFlagStore *store = [self openStore];
+    BSGPersistentFeatureFlagStore *store = [self newStore];
     CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
     [store addFeatureFlags:flags];
     const double addMs = MillisecondsSince(start);
@@ -366,7 +369,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     start = CFAbsoluteTimeGetCurrent();
     NSArray *reopened = [self reopenedFlags];
     const double reopenMs = MillisecondsSince(start);
-    NSLog(@"[STRESS] 100k batch add: add=%.1f ms, reopen=%.1f ms, file=%llu bytes, slotCapacity=%u",
+    NSLog(@"[STRESS] 40k batch add: add=%.1f ms, reopen=%.1f ms, file=%llu bytes, slotCapacity=%u",
           addMs, reopenMs, [self fileSize], [self slotCapacity]);
     XCTAssertEqual(reopened.count, count);
     XCTAssertEqualObjects(reopened, model.array);
@@ -382,8 +385,23 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     [store addFeatureFlag:@"after-bulk" withVariant:nil];
     [model add:@"after-bulk" variant:nil];
     const double appendMs = MillisecondsSince(start);
-    NSLog(@"[STRESS] 100k overwrite one=%.2f ms, append one=%.3f ms", overwriteMs, appendMs);
+    NSLog(@"[STRESS] 40k overwrite one=%.2f ms, append one=%.3f ms", overwriteMs, appendMs);
 
+    XCTAssertEqualObjects(StressFlagsToArray(store.allFlags), model.array);
+    XCTAssertEqualObjects([self reopenedFlags], model.array);
+
+    // A 1 MB variant takes the flags over the 2 MB a slot can hold: they stay in memory, but the log in the
+    // file is emptied rather than left holding flags that are no longer current
+    NSString *large = [@"" stringByPaddingToLength:1024 * 1024 withString:@"0123456789abcdef" startingAtIndex:0];
+    [store addFeatureFlag:@"over-the-cap" withVariant:large];
+    [model add:@"over-the-cap" variant:large];
+    XCTAssertEqualObjects(StressFlagsToArray(store.allFlags), model.array);
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"Flags over the size limit must not be persisted");
+    XCTAssertLessThanOrEqual([self slotCapacity], 2u * 1024 * 1024);
+
+    // Once they are small enough again, the next change saves all of them
+    [store clear:@"over-the-cap"];
+    [model clear:@"over-the-cap"];
     XCTAssertEqualObjects(StressFlagsToArray(store.allFlags), model.array);
     XCTAssertEqualObjects([self reopenedFlags], model.array);
 }
@@ -417,7 +435,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 - (void)testOneMegabyteVariant {
     NSString *large = [@"" stringByPaddingToLength:1024 * 1024 withString:@"0123456789abcdef" startingAtIndex:0];
     NSString *largeUnicode = [@"" stringByPaddingToLength:256 * 1024 withString:@"é🚩" startingAtIndex:0];
-    BSGPersistentFeatureFlagStore *store = [self openStore];
+    BSGPersistentFeatureFlagStore *store = [self newStore];
     BSGFeatureFlagModel *model = [BSGFeatureFlagModel new];
 
     [store addFeatureFlag:@"small" withVariant:@"1"];
@@ -490,7 +508,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     // Single threaded model check: after every operation the file must decode to exactly the model,
     // which is what an OOM-killed process would leave behind.
     srand48(20260101);
-    BSGPersistentFeatureFlagStore *store = [self openStore];
+    BSGPersistentFeatureFlagStore *store = [self newStore];
     BSGFeatureFlagModel *model = [BSGFeatureFlagModel new];
     for (NSUInteger op = 0; op < 3000; op++) {
         NSString *name = [NSString stringWithFormat:@"m-%ld", lrand48() % 200];
@@ -533,7 +551,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 #pragma mark Concurrency
 
 - (void)testEightThreadsMixedOperations {
-    BSGPersistentFeatureFlagStore *store = [self openStore];
+    BSGPersistentFeatureFlagStore *store = [self newStore];
     const NSTimeInterval duration = 4;
     const CFAbsoluteTime deadline = CFAbsoluteTimeGetCurrent() + duration;
     __block _Atomic(uint64_t) operations = 0;
@@ -645,7 +663,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     for (int round = 0; round < 8; round++) {
         NSString *directory = [self.directory stringByAppendingPathComponent:[NSString stringWithFormat:@"round-%d", round]];
         [NSFileManager.defaultManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
-        NSString *filePath = [directory stringByAppendingPathComponent:@"flags.bin"];
+        NSString *filePath = [directory stringByAppendingPathComponent:@"featureflag.bin"];
 
         NSMutableArray<NSString *> *environment = [NSMutableArray array];
         [NSProcessInfo.processInfo.environment enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *value, BOOL *stop) {
@@ -716,11 +734,10 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 
 #pragma mark Resource leaks
 
-- (void)testManyStoreInstancesDoNotLeakFileDescriptorsOrMappings {
-    // Make the file large enough that leaked mappings would be obvious in the virtual memory size
+- (void)testManyStoreInstancesDoNotLeakFileDescriptors {
     NSString *large = [@"" stringByPaddingToLength:1024 * 1024 withString:@"x" startingAtIndex:0];
     @autoreleasepool {
-        BSGPersistentFeatureFlagStore *store = [self openStore];
+        BSGPersistentFeatureFlagStore *store = [self newStore];
         [store addFeatureFlag:@"large" withVariant:large];
         [store addFeatureFlag:@"small" withVariant:nil];
     }
@@ -728,15 +745,14 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 
     // One more open/close cycle first, so that anything opened once per process is not counted
     @autoreleasepool {
-        XCTAssertEqual([self openStore].allFlags.count, 2);
+        XCTAssertEqual([self newStore].allFlags.count, 2);
     }
     const NSUInteger fdsBefore = self.openFileDescriptorCount;
-    const uint64_t vmBefore = VirtualMemorySize();
     const NSUInteger iterations = 500;
     CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
     for (NSUInteger i = 0; i < iterations; i++) {
         @autoreleasepool {
-            BSGPersistentFeatureFlagStore *store = [self openStore];
+            BSGPersistentFeatureFlagStore *store = [self newStore];
             XCTAssertEqual(store.allFlags.count, 2);
             if (i % 50 == 0) {
                 // Also exercise the write paths (append, snapshot, growth) before closing
@@ -747,16 +763,10 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     }
     const double totalMs = MillisecondsSince(start);
     const NSUInteger fdsAfter = self.openFileDescriptorCount;
-    const uint64_t vmAfter = VirtualMemorySize();
-    const int64_t vmDelta = (int64_t)vmAfter - (int64_t)vmBefore;
-    NSLog(@"[STRESS] %lu open/close cycles of a %llu byte file: total=%.1f ms (%.2f ms each), open fds in the directory %lu -> %lu, "
-          "virtual memory delta=%lld bytes",
-          (unsigned long)iterations, fileSize, totalMs, totalMs / iterations, (unsigned long)fdsBefore, (unsigned long)fdsAfter, vmDelta);
+    NSLog(@"[STRESS] %lu open/close cycles of a %llu byte file: total=%.1f ms (%.2f ms each), open fds in the directory %lu -> %lu",
+          (unsigned long)iterations, fileSize, totalMs, totalMs / iterations, (unsigned long)fdsBefore, (unsigned long)fdsAfter);
 
     XCTAssertEqual(fdsAfter, fdsBefore, @"File descriptors leaked");
-    // If every instance leaked its mapping the delta would be iterations * fileSize (> 2 GB). The limit is half
-    // of that because other allocations also change the virtual memory size, by hundreds of MB under Rosetta.
-    XCTAssertLessThan(vmDelta, (int64_t)(iterations * fileSize / 2), @"Mappings leaked");
     NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.filePath.stringByDeletingLastPathComponent error:nil];
     XCTAssertEqualObjects([files filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"pathExtension == 'tmp'"]], @[]);
 }

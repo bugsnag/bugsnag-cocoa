@@ -56,7 +56,7 @@ NSString *BSGFormatSeverity(BSGSeverity severity);
     return [[BugsnagClient alloc] initWithConfiguration:configuration];
 }
 
-- (void)testFeatureFlagsArePersistedInMappedFile {
+- (void)testFeatureFlagsArePersistedInBinaryFile {
     BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     BugsnagClient *client = [[BugsnagClient alloc] initWithConfiguration:configuration];
     XCTAssertEqualObjects([[client.featureFlagStore valueForKey:@"persistentStore"] class], [BSGPersistentFeatureFlagStore class]);

@@ -24,6 +24,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clear:(nullable NSString *)name;
 - (void)clear;
 
+@end
+
+/// A store whose flags can all be replaced at once. BSGCompositeFeatureFlagStore uses this to copy the
+/// memory store's flags to its other stores when Bugsnag starts (see -synchronizeFlagsWithMemoryStore).
+@protocol BSGReplaceableFeatureFlagStore <BSGFeatureFlagStore>
+
 /// Replaces all of the flags, applying the duplicate-name rule above to featureFlags.
 /// BSGPersistentFeatureFlagStore saves the new set in a single update and BSGAtomicFeatureFlagStore
 /// publishes the new list with a single pointer swap, so that neither a crash report nor a process

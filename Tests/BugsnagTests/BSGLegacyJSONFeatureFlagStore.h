@@ -3,7 +3,7 @@
 //  Bugsnag
 //
 //  Test-only copy of the legacy (one JSON file per flag) BSGPersistentFeatureFlagStore
-//  from master, renamed so it can be benchmarked against the memory-mapped store.
+//  from master, renamed so it can be benchmarked against the binary file store.
 //
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
@@ -15,7 +15,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BSGLegacyJSONFeatureFlagStore : NSObject <BSGFeatureFlagStore>
+@interface BSGLegacyJSONFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore>
 
 - (instancetype)initWithStorageDirectory:(NSString *)directory;
 

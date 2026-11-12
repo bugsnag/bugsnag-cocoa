@@ -331,9 +331,11 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     [store clear:@"B"];
     assertAgreement(@[@{@"featureFlag": @"A", @"variant": @"3"}, @{@"featureFlag": @"C"}]);
 
-    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"D" variant:@"1"],
-                             [BugsnagFeatureFlag flagWithName:@"E"],
-                             [BugsnagFeatureFlag flagWithName:@"D" variant:@"2"]]];
+    // As when Bugsnag starts: the memory store's flags are copied to the other stores
+    [memoryStore replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"D" variant:@"1"],
+                                   [BugsnagFeatureFlag flagWithName:@"E"],
+                                   [BugsnagFeatureFlag flagWithName:@"D" variant:@"2"]]];
+    [store synchronizeFlagsWithMemoryStore];
     assertAgreement(@[@{@"featureFlag": @"D", @"variant": @"2"}, @{@"featureFlag": @"E"}]);
 
     [memoryStore addFeatureFlag:@"F" withVariant:@"6"];

@@ -3,7 +3,7 @@
 //  Shared scenarios
 //
 //  Helpers for scenarios that exercise how feature flags are persisted to
-//  <storage>/featureFlags/flags.bin (and, in older SDKs, one JSON file per flag).
+//  <storage>/featureFlags/featureflag.bin (and, in older SDKs, one JSON file per flag).
 //
 
 #import "Scenario.h"
@@ -14,13 +14,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// The directory is created if it does not already exist.
 NSString * FeatureFlagsDirectoryPath(void);
 
-/// The path of the memory-mapped feature flag file.
-NSString * FeatureFlagsBinPath(void);
+/// The path of the binary feature flag file. The SDK creates it when it first has flags to save.
+NSString * FeatureFlagsFilePath(void);
 
 /// Writes a feature flag file in the format used by SDK versions that stored one JSON file per flag.
 void FeatureFlagsWriteLegacyFile(NSString *name, NSString *_Nullable variant, uint64_t index);
 
-/// Replaces flags.bin with invalid content. Modes: random, badSnapshot, truncated, empty, futureVersion.
+/// Replaces featureflag.bin with invalid content. Modes: random, badSnapshot, truncated, empty, futureVersion.
 void FeatureFlagsWriteCorruptFile(NSString *mode);
 
 /// Describes the contents of the featureFlags directory, for adding to an event's metadata.

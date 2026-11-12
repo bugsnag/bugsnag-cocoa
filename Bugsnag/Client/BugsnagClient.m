@@ -271,7 +271,7 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
                                                         discardProcessor:_discardProcessor];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
-        id<BSGFeatureFlagStore> persistentFeatureFlagsStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:fileLocations.featureFlags];
+        id<BSGReplaceableFeatureFlagStore> persistentFeatureFlagsStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:fileLocations.featureFlags];
         _featureFlagStore = [BSGCompositeFeatureFlagStore storeWithMemoryStore:[configuration.featureFlagStore copy]
                                                                persistentStore:persistentFeatureFlagsStore
                                                                    atomicStore:[BSGAtomicFeatureFlagStore store]];

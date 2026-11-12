@@ -19,9 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *persistedFlags;
 
 + (instancetype)storeWithMemoryStore:(id<BSGFeatureFlagStore, NSCopying>)memoryStore
-                     persistentStore:(id<BSGFeatureFlagStore>)persistenStore
-                         atomicStore:(id<BSGFeatureFlagStore>)atomicStore;
+                     persistentStore:(id<BSGReplaceableFeatureFlagStore>)persistenStore
+                         atomicStore:(id<BSGReplaceableFeatureFlagStore>)atomicStore;
 
+/// Replaces the flags in the persistent and atomic stores with the memory store's flags.
 - (void)synchronizeFlagsWithMemoryStore;
 
 @end

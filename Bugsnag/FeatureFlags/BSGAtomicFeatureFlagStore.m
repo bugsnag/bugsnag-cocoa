@@ -25,6 +25,10 @@ static _Atomic(struct bsg_feature_flag_list_item *) g_feature_flags_head;
 static _Atomic(struct bsg_feature_flag_list_item *) g_feature_flags_tail;
 static atomic_bool g_writing_crash_report;
 
+// The crash-time reader must not take locks, so these atomics must be lock-free on every platform.
+_Static_assert(ATOMIC_POINTER_LOCK_FREE == 2, "Feature flag list pointers must be lock-free");
+_Static_assert(ATOMIC_BOOL_LOCK_FREE == 2, "g_writing_crash_report must be lock-free");
+
 // The list above is global, so all instances share this lock and this index.
 static NSObject *g_lock;
 static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
@@ -34,6 +38,12 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
  * built item, and an item is only freed once no published pointer reaches it. The crash-time
  * reader, which takes no locks and allocates nothing, therefore always walks a complete list:
  * either the one from before an update or the one from after it.
+ *
+ * Freeing is safe because of the order of the sequentially consistent operations on each side. The
+ * reader sets g_writing_crash_report before it loads the head, and a writer makes an item
+ * unreachable before it checks g_writing_crash_report (in _awaitAtomicFeatureFlagsLockIfNeeded) and
+ * frees it. So either the writer sees the flag set and waits for the report to be written, or the
+ * reader starts after the item was unlinked and can never reach it.
  *
  * Duplicate names follow BSGMemoryFeatureFlagStore: adding a name that is already present replaces
  * its variant and keeps the flag in the position where the name was first added.

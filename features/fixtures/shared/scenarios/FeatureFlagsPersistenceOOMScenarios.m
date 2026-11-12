@@ -5,7 +5,7 @@
 //  Feature flag persistence scenarios that rely on Out Of Memory detection, which is only
 //  available on iOS / tvOS. The OOM is faked with SIGKILL, as in OOMSessionlessScenario.
 //
-//  The flags in an OOM event are read from flags.bin (or legacy JSON files) at next launch,
+//  The flags in an OOM event are read from featureflag.bin (or legacy JSON files) at next launch,
 //  unlike crash reports and handled errors, so these scenarios exercise the persisted format.
 //
 
@@ -15,11 +15,11 @@
 #import <signal.h>
 #import <unistd.h>
 
-/// Deletes the temporary files the SDK writes before replacing flags.bin (flags.bin.<UUID>.tmp).
+/// Deletes the temporary files the SDK writes before replacing featureflag.bin (featureflag.bin.<UUID>.tmp).
 static void FeatureFlagsRemoveTemporaryFiles(void) {
     NSString *directory = FeatureFlagsDirectoryPath();
     for (NSString *name in [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil]) {
-        if ([name hasPrefix:@"flags.bin."] && [name hasSuffix:@".tmp"]) {
+        if ([name hasPrefix:@"featureflag.bin."] && [name hasSuffix:@".tmp"]) {
             [NSFileManager.defaultManager removeItemAtPath:[directory stringByAppendingPathComponent:name] error:nil];
         }
     }
@@ -86,7 +86,7 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 #pragma mark - 8. Upgrade from an SDK that stored flags as JSON files
 
 /// Simulates an app that was OOM-killed while running an SDK that stored one JSON file per flag:
-/// after Bugsnag has started (so OOM detection state is in place), flags.bin is deleted and legacy
+/// after Bugsnag has started (so OOM detection state is in place), featureflag.bin is deleted and legacy
 /// JSON files are written in its place, then the app is killed. At next launch the OOM event should
 /// contain the flags from the JSON files, which should then be deleted.
 @interface FeatureFlagsLegacyUpgradeOOMScenario : FeatureFlagsPersistenceScenario
@@ -101,12 +101,12 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 }
 
 - (void)run {
-    // Only present in flags.bin, which is about to be deleted; must not be reported.
-    [Bugsnag addFeatureFlagWithName:@"mmap-only" variant:@"launch1"];
+    // Only present in featureflag.bin, which is about to be deleted; must not be reported.
+    [Bugsnag addFeatureFlagWithName:@"binary-file-only" variant:@"launch1"];
     // Allow time for state metadata to be flushed to disk (see OOMSessionlessScenario)
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        NSString *binPath = FeatureFlagsBinPath();
-        [NSFileManager.defaultManager removeItemAtPath:binPath error:nil];
+        NSString *filePath = FeatureFlagsFilePath();
+        [NSFileManager.defaultManager removeItemAtPath:filePath error:nil];
         FeatureFlagsRemoveTemporaryFiles();
         // Written out of index order; the old SDK reported flags sorted by index.
         FeatureFlagsWriteLegacyFile(@"legacy-b", @"variant-b", 2);
@@ -121,10 +121,10 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 @end
 
-#pragma mark - 9. Stale legacy JSON files alongside flags.bin (OOM)
+#pragma mark - 9. Stale legacy JSON files alongside featureflag.bin (OOM)
 
 /// As FeatureFlagsStaleJSONScenario, but launch 1 is OOM-killed so that the JSON files are
-/// planted before an OOM event is generated from the persisted flags. Because flags.bin and JSON
+/// planted before an OOM event is generated from the persisted flags. Because featureflag.bin and JSON
 /// files are found together, neither is used, and the OOM event has no flags.
 @interface FeatureFlagsStaleJSONOOMScenario : FeatureFlagsPersistenceScenario
 @end
@@ -139,7 +139,7 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 - (void)prepareFilesBeforeStart {
     BOOL isDirectory = NO;
-    if ([NSFileManager.defaultManager fileExistsAtPath:FeatureFlagsBinPath() isDirectory:&isDirectory] && !isDirectory) {
+    if ([NSFileManager.defaultManager fileExistsAtPath:FeatureFlagsFilePath() isDirectory:&isDirectory] && !isDirectory) {
         FeatureFlagsWriteLegacyFile(@"stale-flag", @"stale", 0);
         FeatureFlagsWriteLegacyFile(@"stale-flag-2", nil, 1);
     }
@@ -152,9 +152,9 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 @end
 
-#pragma mark - 10. Corrupt flags.bin (OOM)
+#pragma mark - 10. Corrupt featureflag.bin (OOM)
 
-/// flags.bin is corrupted before Bugsnag starts at launch 1; flags added afterwards must still be
+/// featureflag.bin is corrupted before Bugsnag starts at launch 1; flags added afterwards must still be
 /// persisted and reported in the OOM event at launch 2.
 @interface FeatureFlagsCorruptFileOOMScenario : FeatureFlagsPersistenceScenario
 @end

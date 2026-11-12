@@ -8,82 +8,47 @@
 
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BugsnagInternals.h"
-#import "BSGFilesystem.h"
-#import "BSGKeys.h"
-#import "BSGStoredFeatureFlag.h"
+#import "BSGFeatureFlagFileFormat.h"
+#import "BSGLegacyFeatureFlags.h"
 #import "BSGUtils.h"
 #import "BugsnagLogger.h"
 #import <Foundation/Foundation.h>
 
+#import <errno.h>
 #import <fcntl.h>
-#import <stdatomic.h>
 #import <stddef.h>
-#import <sys/mman.h>
+#import <sys/file.h>
 #import <sys/stat.h>
 #import <unistd.h>
 
 //
 // Feature flags are persisted so that they are accessible at next launch if an OOM
-// or thermal kill is detected.
+// or thermal kill is detected. They are stored in featureflag.bin, whose format is described in
+// BSGFeatureFlagFileFormat.h.
 //
-// They are stored in a single memory-mapped file containing two slots, each of which
-// can hold a log of changes to the flags:
+// The header records which slot holds the log and how long it is. It is updated with a single
+// 8-byte write after the bytes it refers to have been written, so the file always holds a complete
+// set of flags even if the process is killed during an update:
 //
-//   [header][slot 0][slot 1]
-//   log = record*
-//   record = [name length][variant length][name][variant]
-//
-// Lengths are uint32 values in native byte order (little-endian on every supported platform),
-// and records are packed with no alignment padding. The name and variant are UTF-8.
-//
-// The variant length is UINT32_MAX for a flag without a variant, and UINT32_MAX - 1 for a
-// record that removes the flag (which has no variant bytes). Replaying the log in order gives
-// the flags: a record for a flag that is already present replaces it and moves it to the end.
-//
-// The header records which slot holds the log and how long it is, and is updated with a
-// single atomic store after the bytes it refers to have been written, so the file always
-// holds a complete set of flags even if the process is killed during an update:
-//
-// - Adding, changing or clearing a flag appends a record after the end of the log, then
-//   publishes the longer length.
+// - Adding, changing or clearing a flag writes a record after the end of the log, then
+//   writes the longer length.
 // - Clearing all flags, or a log that has grown to more than twice the size of the flags it
 //   describes, writes a log of just the current flags into the other slot, then switches to it.
-// - A log that no longer fits is written to a new, larger file, which is mapped and then
-//   renamed over the current one. Large files are also replaced with smaller ones when most
-//   of the flags are cleared.
+// - A log that no longer fits is written to a new, larger file, which is renamed over the
+//   current one. Large files are also replaced with smaller ones when most of the flags are
+//   cleared.
 //
-// Because the file is mapped with MAP_SHARED, the kernel keeps what has been copied into
-// the mapping even if the process is killed immediately afterwards. The file is not
-// synchronised to disk (msync/fsync), so a power loss can lose recent changes. Changes are
-// copied into the mapping rather than written with pwrite so that they need no system call;
-// the file's blocks are allocated when it is created so that writing to it does not need
-// more disk space.
+// The file is read once, when the store is created, and changed with pwrite() through a file
+// descriptor that is kept open. Data written with pwrite() is kept by the kernel even if the
+// process is killed immediately afterwards. The file is not synchronised to disk (fsync), so a
+// power loss can lose recent changes. Every write error (e.g. a full disk) is an ordinary error:
+// the flags stay in memory, the log in the file is emptied so that it never holds stale flags, and
+// writing is tried again later.
 //
-// File format policy. Released versions of the SDK only read files whose version they know,
-// so once a format version has been released it must never change:
-//
-// - A change that older versions can ignore uses the reserved header fields, which are written
-//   as zero and ignored when read; a newer version must treat zero as "not set". They may only
-//   hold values that are fixed when the file is created (a file is always created whole and
-//   renamed into place), because an older version that appends to a newer version's file leaves
-//   them unchanged. Anything that describes the log needs a new version.
-// - Any other change (header layout, record layout, the meaning of a length or of the special
-//   variant lengths) needs a new version number. A version that writes format N+1 must still
-//   read every earlier version, so that flags survive an upgrade.
-// - A file with a different magic number or an unknown version is discarded, never misread. So
-//   when older and newer versions of the SDK replace each other (upgrade, downgrade, or two
-//   versions in the same container), only the flags from the previous launch can be lost.
-// - The JSON files written by SDK versions before this file existed (one file per flag) are
-//   imported and deleted at launch. That import must be kept as long as an upgrade from such a
-//   version is supported.
+// Only one store writes to a directory: the one that holds an exclusive lock on featureflag.lock (see
+// BSGPersistentFeatureFlagStore.h).
 //
 
-static const uint32_t BSGFeatureFlagFileMagic = 0x46465342; // "BSFF"
-static const uint32_t BSGFeatureFlagFileVersion = 1;
-static const uint32_t BSGFeatureFlagNoVariant = UINT32_MAX;
-static const uint32_t BSGFeatureFlagRemoved = UINT32_MAX - 1;
-// The largest slot capacity that is written; anything larger in a header means the file is corrupt.
-static const uint64_t BSGFeatureFlagMaxSlotCapacity = UINT32_MAX / 4;
 // A log is rewritten once the records it no longer needs take up more than this, or than the
 // records it needs, whichever is larger.
 static const uint64_t BSGFeatureFlagMinimumCompactionSize = 4096;
@@ -92,293 +57,71 @@ static const uint64_t BSGFeatureFlagMinimumShrinkableCapacity = 256 * 1024;
 // How long to wait before trying to write the file again after it could not be written.
 static const NSTimeInterval BSGFeatureFlagRetryInterval = 60;
 
-static NSString * const BSGFeatureFlagFileName = @"flags.bin";
+static NSString * const BSGFeatureFlagFileName = @"featureflag.bin";
+static NSString * const BSGFeatureFlagLockFileName = @"featureflag.lock";
+// The name used by pre-release builds of this format, whose files are deleted (with their temporary files)
+static NSString * const BSGFeatureFlagPrereleaseFileName = @"flags.bin";
 
-struct bsg_feature_flag_file_header {
-    uint32_t magic;
-    uint32_t version;
-    uint32_t slotCapacity; // Size of each of the two slots that follow the header
-    uint32_t reserved;
-    // The length of the log (high bits) and the slot it is in (low bit).
-    _Atomic(uint64_t) active;
-    uint64_t reserved2;
-};
-
-// The layout is part of the file format, so it must be the same on every architecture (e.g. arm64_32).
-_Static_assert(sizeof(struct bsg_feature_flag_file_header) == 32, "Feature flag file header size");
-_Static_assert(offsetof(struct bsg_feature_flag_file_header, active) == 16, "Feature flag file header layout");
-// The header is published with a single store, which must not be implemented with a lock.
-_Static_assert(ATOMIC_LLONG_LOCK_FREE == 2, "64-bit atomics must be lock-free");
-
-static uint64_t BSGFeatureFlagFileActiveValue(uint64_t length, uint32_t slot) {
-    return (length << 1) | slot;
-}
-
-// Calculated in 64 bits because it can overflow a 32-bit size_t (e.g. on arm64_32) for a corrupt header.
-static uint64_t BSGFeatureFlagFileSize(uint32_t slotCapacity) {
-    return sizeof(struct bsg_feature_flag_file_header) + 2 * (uint64_t)slotCapacity;
-}
-
-static NSData * BSGFeatureFlagRecord(NSData *nameData, uint32_t variantLength, NSData *variantData) {
-    const uint32_t lengths[2] = {(uint32_t)nameData.length, variantLength};
-    NSMutableData *record = [NSMutableData dataWithCapacity:sizeof(lengths) + nameData.length + variantData.length];
-    [record appendBytes:lengths length:sizeof(lengths)];
-    [record appendData:nameData];
-    if (variantData) {
-        [record appendData:variantData];
-    }
-    return record;
-}
-
-/// Returns the record for a flag, or nil if it cannot be encoded.
-static NSData * BSGFeatureFlagEncode(NSString *name, NSString *variant) {
-    NSData *nameData = [name dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *variantData = [variant dataUsingEncoding:NSUTF8StringEncoding];
-    if (!nameData || (variant && !variantData) ||
-        nameData.length >= BSGFeatureFlagRemoved || variantData.length >= BSGFeatureFlagRemoved) {
-        return nil;
-    }
-    return BSGFeatureFlagRecord(nameData, variantData ? (uint32_t)variantData.length : BSGFeatureFlagNoVariant, variantData);
-}
-
-/// Returns the record that removes a flag whose record was returned by BSGFeatureFlagEncode.
-static NSData * BSGFeatureFlagEncodeRemoval(NSString *name) {
-    NSData *nameData = [name dataUsingEncoding:NSUTF8StringEncoding];
-    return nameData ? BSGFeatureFlagRecord(nameData, BSGFeatureFlagRemoved, nil) : nil;
-}
-
-/// Decodes UTF-8 bytes, keeping a leading byte order mark, which Foundation would remove.
-static NSString * BSGFeatureFlagDecodeString(const uint8_t *bytes, uint32_t length) {
-    static const uint8_t byteOrderMark[] = {0xEF, 0xBB, 0xBF};
-    NSString *string = [[NSString alloc] initWithBytes:bytes length:length encoding:NSUTF8StringEncoding];
-    if (string && length >= sizeof(byteOrderMark) && memcmp(bytes, byteOrderMark, sizeof(byteOrderMark)) == 0 &&
-        [string lengthOfBytesUsingEncoding:NSUTF8StringEncoding] == length - sizeof(byteOrderMark)) {
-        string = [@"\uFEFF" stringByAppendingString:string];
-    }
-    return string;
-}
-
-/// Calls the block with each record in a log: the flag it adds and its encoded record, or the name of
-/// the flag it removes. Returns NO if the log is corrupt.
-static BOOL BSGFeatureFlagsDecode(const uint8_t *bytes, uint64_t length,
-                                  void (^ block)(NSString *name, NSString *variant, BOOL removed, NSData *record)) {
-    uint64_t offset = 0;
-    while (offset < length) {
-        const uint64_t start = offset;
-        uint32_t lengths[2];
-        if (length - offset < sizeof(lengths)) {
-            return NO;
-        }
-        memcpy(lengths, bytes + offset, sizeof(lengths));
-        offset += sizeof(lengths);
-        const uint32_t nameLength = lengths[0];
-        const BOOL hasVariant = lengths[1] != BSGFeatureFlagNoVariant && lengths[1] != BSGFeatureFlagRemoved;
-        const uint32_t variantLength = hasVariant ? lengths[1] : 0;
-        if (nameLength > length - offset || variantLength > length - offset - nameLength) {
-            return NO;
-        }
-        NSString *name = BSGFeatureFlagDecodeString(bytes + offset, nameLength);
-        offset += nameLength;
-        NSString *variant = nil;
-        if (hasVariant) {
-            variant = BSGFeatureFlagDecodeString(bytes + offset, variantLength);
-            offset += variantLength;
-            if (!variant) {
-                return NO;
-            }
-        }
-        if (!name) {
-            return NO;
-        }
-        block(name, variant, lengths[1] == BSGFeatureFlagRemoved,
-              [NSData dataWithBytes:bytes + start length:(NSUInteger)(offset - start)]);
-    }
-    return YES;
-}
-
-/// Maps a file into memory, returning NULL on failure.
-static struct bsg_feature_flag_file_header * BSGFeatureFlagFileMap(int fd, size_t size) {
-    void *ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_FILE | MAP_SHARED, fd, 0);
-    if (ptr == MAP_FAILED) {
-        const int error = errno;
-        bsg_log_warn(@"mmap failed: %d", error);
-        errno = error;
-        return NULL;
-    }
-    return ptr;
-}
-
-/// Allocates all of a new file's blocks and sets its size. Writing through a mapping into a sparse
-/// file can raise SIGBUS or silently lose data if the disk is full, rather than returning an error.
-/// (On APFS an overwrite can still need new blocks while the file is in a snapshot, so this reduces
-/// rather than removes that risk.)
-static BOOL BSGFeatureFlagFileAllocate(int fd, size_t size) {
-    fstore_t store = {.fst_flags = F_ALLOCATEALL, .fst_posmode = F_PEOFPOSMODE, .fst_length = (off_t)size};
-    if (fcntl(fd, F_PREALLOCATE, &store) == -1) {
-        // F_PREALLOCATE is not supported by every file system, so fall back to writing zeros
-        const uint8_t zeros[4096] = {0};
-        for (size_t offset = 0; offset < size;) {
-            const ssize_t written = pwrite(fd, zeros, MIN(sizeof(zeros), size - offset), (off_t)offset);
-            if (written <= 0) {
-                return NO;
-            }
-            offset += (size_t)written;
-        }
-    }
-    return ftruncate(fd, (off_t)size) == 0;
-}
-
-/// Mappings of a file with NSFileProtectionComplete become invalid 10 seconds after the device is
-/// locked. NSFileProtectionCompleteUnlessOpen only keeps a file accessible while it is open, and the
-/// descriptor is closed once the file is mapped, and NSFileProtectionCompleteWhenUserInactive makes
-/// a file inaccessible after a period of inactivity. So the file is given
-/// NSFileProtectionCompleteUntilFirstUserAuthentication, which keeps it accessible while the device
-/// is locked once it has been unlocked after starting up.
-static BOOL BSGFeatureFlagFileSetProtection(NSString *path) {
-    // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0 (see BSGDisableNSFileProtectionComplete)
-#if !TARGET_OS_OSX || defined(__MAC_11_0)
-    if (@available(macOS 11.0, *)) {
-        NSURL *url = [NSURL fileURLWithPath:path];
-        NSURLFileProtectionType protection = nil;
-        [url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil];
-        // Every other class (Complete, CompleteUnlessOpen, CompleteWhenUserInactive and any newer
-        // one) can make the file inaccessible while it is mapped
-        if (!protection || [protection isEqualToString:NSURLFileProtectionNone] ||
-            [protection isEqualToString:NSURLFileProtectionCompleteUntilFirstUserAuthentication]) {
-            return YES;
-        }
-        NSError *error = nil;
-        if (![url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
-                            forKey:NSURLFileProtectionKey error:&error]) {
-            bsg_log_warn(@"Could not set the file protection of %@: %@", path.lastPathComponent, error);
-            return NO;
-        }
-    }
-#else
-    (void)(path);
-#endif
-    return YES;
-}
-
-/// Opens a file for memory mapping, applying Bugsnag's backup policy and a file protection class that
-/// allows it to be mapped.
+/// Opens (or creates) a file that this store writes, with BSGOpenFileWithoutCompleteProtection, which applies
+/// Bugsnag's backup policy and the same file protection handling as BSGRunContext: NSFileProtectionComplete is
+/// changed to NSFileProtectionCompleteUnlessOpen and other classes are left unchanged. Because the descriptor is
+/// kept open for the store's lifetime, a CompleteUnlessOpen file stays writable while the device is locked. An
+/// existing CompleteUnlessOpen file cannot be opened again while the device is locked, so a launch while locked
+/// cannot read the previous launch's flags (or take the lock); that is acceptable, because OOM detection also
+/// depends on the run context, which has the same protection, and a launch before the first unlock follows a
+/// reboot, after which BSGRunContext does not report an OOM. A file created here (O_EXCL) is deleted if it
+/// cannot be set up.
 static int BSGFeatureFlagFileOpen(NSString *path, int flags) {
-    int fd = open(path.fileSystemRepresentation, flags, 0600);
-    if (fd == -1) {
-        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, errno);
-        return -1;
-    }
-    [BSGFilesystem applyFileBackupSupportToPath:path];
-    if (!BSGFeatureFlagFileSetProtection(path)) {
-        close(fd);
-        if (flags & O_EXCL) {
-            // The file was created here, so it must not be left behind
-            unlink(path.fileSystemRepresentation);
-        }
-        return -1;
-    }
-    return fd;
+    return BSGOpenFileWithoutCompleteProtection(path, flags);
 }
 
-#pragma mark - Legacy files
+#pragma mark -
 
-// Earlier versions of the SDK saved each flag in a separate JSON file in the same directory,
-// containing its name, variant and the order it was added in. They are read once, to import them.
-
-/// Returns whether a file's contents have the types expected by BSGStoredFeatureFlag. The SDK always
-/// wrote a name, so a file without one is not a feature flag file.
-static BOOL BSGIsValidStoredFeatureFlag(id content) {
-    if (![content isKindOfClass:[NSDictionary class]]) {
-        return NO;
-    }
-    id name = content[BSGKeyFeatureFlag];
-    id variant = content[BSGKeyVariant];
-    id index = content[@"index"];
-    return ([name isKindOfClass:[NSString class]] &&
-            (!variant || [variant isKindOfClass:[NSString class]]) &&
-            (!index || [index isKindOfClass:[NSNumber class]]));
-}
-
-static NSArray<NSString *> * BSGLegacyFeatureFlagFilePaths(NSString *directory) {
-    NSError *error = nil;
-    NSArray<NSString *> *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directory error:&error];
-    if (!files) {
-        bsg_log_err(@"Unable to get paths for feature flags: %@", error);
-        return @[];
-    }
-    NSMutableArray<NSString *> *paths = [NSMutableArray array];
-    for (NSString *file in files) {
-        // A flag with an empty name was saved as ".json", which pathExtension treats as having no extension
-        if ([file hasSuffix:@".json"]) {
-            [paths addObject:[directory stringByAppendingPathComponent:file]];
-        }
-    }
-    return paths;
-}
-
-/// The flags saved as JSON files in the directory, in the order they were added. Files that cannot be
-/// read or decoded are skipped.
-static NSArray<BugsnagFeatureFlag *> * BSGLegacyFeatureFlags(NSString *directory) {
-    NSMutableArray<BSGStoredFeatureFlag *> *storedFlags = [NSMutableArray array];
-    for (NSString *path in BSGLegacyFeatureFlagFilePaths(directory)) {
-        // A file can be deleted or become unreadable between listing and reading it
-        NSData *data = [NSData dataWithContentsOfFile:path];
-        id content = data ? [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil] : nil;
-        if (content && BSGIsValidStoredFeatureFlag(content)) {
-            [storedFlags addObject:[BSGStoredFeatureFlag fromJSON:content]];
-        } else {
-            bsg_log_err(@"Unable to decode feature flag in %@", path.lastPathComponent);
-        }
-    }
-    // A stable sort keeps files with the same index in the order they were listed
-    [storedFlags sortWithOptions:NSSortStable usingComparator:^NSComparisonResult(BSGStoredFeatureFlag * _Nonnull obj1, BSGStoredFeatureFlag * _Nonnull obj2) {
-        if (obj1.index == obj2.index) {
-            return NSOrderedSame;
-        }
-        return obj1.index < obj2.index ? NSOrderedAscending : NSOrderedDescending;
-    }];
-    NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:storedFlags.count];
-    for (BSGStoredFeatureFlag *storedFlag in storedFlags) {
-        [flags addObject:[BugsnagFeatureFlag flagWithName:storedFlag.name variant:storedFlag.variant]];
-    }
-    return flags;
-}
-
-static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
-    for (NSString *path in BSGLegacyFeatureFlagFilePaths(directory)) {
-        NSError *error = nil;
-        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error] &&
-            !([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
-            bsg_log_err(@"Unable to delete a feature flag file: %@", error);
-        }
-    }
-}
-
+typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
+    BSGFeatureFlagFileMissing,  // There is no featureflag.bin
+    BSGFeatureFlagFileUnusable, // featureflag.bin could not be opened, or its header is invalid
+    BSGFeatureFlagFileCorrupt,  // The header is valid but the log is not
+    BSGFeatureFlagFileLoaded,   // The flags were read from the log
+};
 
 @interface BSGPersistentFeatureFlagStore ()
 
 @property (nonatomic, strong) NSString *directoryPath;
 @property (nonatomic, strong) NSString *filePath;
 
-// The flags in the order they were last added, which is also the order of their records in a rewritten log
+// The names of the flags in the order BSGMemoryFeatureFlagStore keeps them (the order they were first
+// added since they were last cleared), which is also the order of their records in a rewritten log
 @property (nonatomic, strong) NSMutableOrderedSet<NSString *> *names;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, BugsnagFeatureFlag *> *flagsByName;
+// The encoded record of each flag that can be persisted
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSData *> *recordsByName;
+// Flags that cannot be encoded, which are kept in memory but not persisted
+@property (nonatomic, strong) NSMutableDictionary<NSString *, BugsnagFeatureFlag *> *unencodableFlags;
 // The total length of recordsByName, i.e. of a log holding just the current flags
 @property (nonatomic) uint64_t liveLength;
+// Set when a change cannot be appended to the log without changing the order of the flags when it
+// is replayed, so that a new log must be written instead
+@property (nonatomic) BOOL needsSnapshot;
 
-@property (nonatomic) struct bsg_feature_flag_file_header *header;
-@property (nonatomic) size_t mappedSize;
-// The capacity of each slot in the mapping. Offsets are calculated from this rather than from the
-// header, which another process using the same file could change.
+// The descriptor of featureflag.lock while this store holds the lock on it, otherwise -1. Only a store that
+// holds the lock writes to or deletes anything in the directory.
+@property (nonatomic) int lockFd;
+// The descriptor of featureflag.bin, or -1 if this store does not have it open for writing
+@property (nonatomic) int fd;
+// The file's slot capacity, and the active slot and log length, as last read or written by this store
 @property (nonatomic) uint64_t slotCapacity;
+@property (nonatomic) uint32_t activeSlot;
+@property (nonatomic) uint64_t activeLength;
 
 // Whether replaying the file's log gives exactly the encodable flags, so that records can be appended to it
 @property (nonatomic) BOOL fileIsCurrent;
+// Whether the flags were last too large to persist, so that this is only logged once
+@property (nonatomic) BOOL tooLargeToPersist;
 // The system uptime at which the file can next be replaced after a failure, to avoid repeating the
 // failure on every change. Uptime is used because it is not affected by changes to the clock.
 @property (nonatomic) NSTimeInterval retryTime;
 @property (nonatomic) NSTimeInterval retryInterval;
+// Whether a retry has been scheduled
+@property (nonatomic) BOOL retryScheduled;
 
 @end
 
@@ -390,49 +133,23 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
         _directoryPath = directory;
         _filePath = [directory stringByAppendingPathComponent:BSGFeatureFlagFileName];
         _retryInterval = BSGFeatureFlagRetryInterval;
-        [self removeTemporaryFiles];
         _names = [NSMutableOrderedSet orderedSet];
-        _flagsByName = [NSMutableDictionary dictionary];
         _recordsByName = [NSMutableDictionary dictionary];
-        if ([self mapExistingFile]) {
-            if (BSGLegacyFeatureFlagFilePaths(directory).count) {
-                // Both kinds of file are only left together when one of them could not be deleted after
-                // the SDK was downgraded and upgraded again. It is not known which of them is current, so
-                // neither is used.
-                bsg_log_info(@"Discarding persisted feature flags because both flags.bin and JSON files were found");
-                [self writeSnapshot];
-            } else {
-                // This file can be older than the previous launch: SDK versions before 6.31.0 never touch this
-                // directory, so it survives a downgrade to one of them and an upgrade again. Its flags are not
-                // reported for that launch, because an app upgrade changes the Mach-O UUID and BSGRunContext
-                // then does not report an OOM or thermal kill. They are replaced when Bugsnag starts.
-                [self loadActiveLog];
-            }
-        } else {
-            // Flags written as individual files by earlier versions of the SDK are imported so that they
-            // can be included in an OOM event. If a flags.bin file that could not be used is next to them, it
-            // is not known which is current, so they are discarded as above. (Something other than a
-            // file at the path, such as a directory, cannot hold flags.)
-            struct stat st;
-            if (stat(self.filePath.fileSystemRepresentation, &st) != 0 || !S_ISREG(st.st_mode)) {
-                for (BugsnagFeatureFlag *flag in BSGLegacyFeatureFlags(directory)) {
-                    [self setFlagNamed:flag.name variant:flag.variant];
-                }
-            } else if (BSGLegacyFeatureFlagFilePaths(directory).count) {
-                bsg_log_info(@"Discarding persisted feature flags because both flags.bin and JSON files were found");
-            }
-            [self writeSnapshot];
-        }
-        // The JSON files are deleted even if the flags could not be saved, because they would be stale
-        // if imported again at the next launch. The imported flags remain in memory.
-        BSGRemoveLegacyFeatureFlagFiles(directory);
+        _unencodableFlags = [NSMutableDictionary dictionary];
+        _fd = -1;
+        _lockFd = [self acquireLock];
+        [self loadFlags];
     }
     return self;
 }
 
 - (void)dealloc {
-    if (_header) {
-        munmap(_header, _mappedSize);
+    if (_fd != -1) {
+        close(_fd);
+    }
+    if (_lockFd != -1) {
+        // Closing the descriptor releases the lock
+        close(_lockFd);
     }
 }
 
@@ -442,7 +159,8 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
     @synchronized (self) {
         NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:self.names.count];
         for (NSString *name in self.names) {
-            BugsnagFeatureFlag *flag = self.flagsByName[name];
+            NSData *record = self.recordsByName[name];
+            BugsnagFeatureFlag *flag = record ? BSGFeatureFlagDecodeRecord(record) : self.unencodableFlags[name];
             if (flag) {
                 [flags addObject:flag];
             }
@@ -459,11 +177,7 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
 
 - (void)addFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
     @synchronized (self) {
-        if ([self isLastFlagNamed:name withVariant:variant]) {
-            // Adding the last flag again with the same variant changes nothing
-            return;
-        }
-        [self appendRecords:[self setFlagNamed:name variant:variant]];
+        [self saveChange:[self setFlagNamed:name variant:variant]];
     }
 }
 
@@ -473,7 +187,7 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
         for (BugsnagFeatureFlag *flag in featureFlags) {
             [records appendData:[self setFlagNamed:flag.name variant:flag.variant]];
         }
-        [self appendRecords:records];
+        [self saveChange:records];
     }
 }
 
@@ -483,6 +197,10 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
         for (BugsnagFeatureFlag *flag in featureFlags) {
             [self setFlagNamed:flag.name variant:flag.variant];
         }
+        self.needsSnapshot = NO;
+        // This is called when Bugsnag starts, so it is not delayed by an earlier failure (e.g. when the
+        // store was created). If it fails, a retry is scheduled.
+        self.retryTime = 0;
         // A single log is published so that the file never holds an empty or partial set
         [self writeSnapshot];
     }
@@ -497,7 +215,7 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
         if ([self.names containsObject:(NSString *_Nonnull)name]) {
             BOOL persisted = self.recordsByName[(NSString *_Nonnull)name] != nil;
             [self.names removeObject:(NSString *_Nonnull)name];
-            [self.flagsByName removeObjectForKey:(NSString *_Nonnull)name];
+            [self.unencodableFlags removeObjectForKey:(NSString *_Nonnull)name];
             [self setRecord:nil forName:(NSString *_Nonnull)name];
             if (persisted) {
                 [self appendRecords:BSGFeatureFlagEncodeRemoval((NSString *_Nonnull)name) ?: [NSData data]];
@@ -515,31 +233,178 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
 
 #pragma mark - Private methods
 
-/// A new path for a file that will replace flags.bin. Each replacement uses its own file, so that two
-/// stores using the same directory (two clients, or two instances of a macOS app) never write to,
-/// truncate or map each other's new file.
-- (NSString *)newTemporaryFilePath {
-    return [NSString stringWithFormat:@"%@.%@.tmp", self.filePath, NSUUID.UUID.UUIDString];
+/// Takes the lock that allows this store to write to the directory, returning its descriptor or -1.
+/// flock() locks belong to an open file description, so two stores in the same process conflict just as
+/// two processes (e.g. two instances of a macOS app) do. The lock is on a separate file because featureflag.bin
+/// is replaced by renaming another file over it.
+- (int)acquireLock {
+    NSString *path = [self.directoryPath stringByAppendingPathComponent:BSGFeatureFlagLockFileName];
+    int fd = BSGFeatureFlagFileOpen(path, O_RDONLY | O_CREAT);
+    if (fd == -1) {
+        return -1;
+    }
+    if (flock(fd, LOCK_EX | LOCK_NB) != 0) {
+        const int error = errno;
+        if (error == EWOULDBLOCK) {
+            bsg_log_info(@"Feature flags will not be persisted because another Bugsnag client is using %@",
+                         self.directoryPath.lastPathComponent);
+        } else {
+            bsg_log_warn(@"Could not lock %@: %d", path.lastPathComponent, error);
+        }
+        close(fd);
+        return -1;
+    }
+    return fd;
 }
 
-/// Deletes the temporary files left behind by processes that were killed while replacing flags.bin.
-/// A temporary file that another store is still writing may also be deleted. That store's mapping is
-/// unaffected, and replacing flags.bin with it fails and is retried later.
-- (void)removeTemporaryFiles {
-    NSString *prefix = [BSGFeatureFlagFileName stringByAppendingString:@"."];
-    for (NSString *file in [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directoryPath error:nil]) {
-        if ([file hasPrefix:prefix] && [file.pathExtension isEqualToString:@"tmp"]) {
-            unlink([self.directoryPath stringByAppendingPathComponent:file].fileSystemRepresentation);
+/// Whether this store holds the lock, and so can write to the directory.
+- (BOOL)canWrite {
+    return self.lockFd != -1;
+}
+
+/// Reads the flags saved by the previous launch, or imports them from JSON files, and makes the file
+/// match them (or removes it if it cannot). A store that does not hold the lock reads the flags but
+/// changes nothing in the directory.
+- (void)loadFlags {
+    // The directory is listed once
+    NSArray<NSString *> *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directoryPath error:nil];
+    NSString *temporaryFilePrefix = [BSGFeatureFlagFileName stringByAppendingString:@"."];
+    NSString *prereleaseTemporaryFilePrefix = [BSGFeatureFlagPrereleaseFileName stringByAppendingString:@"."];
+    NSMutableArray<NSString *> *legacyPaths = [NSMutableArray array];
+    BOOL fileExists = NO;
+    for (NSString *file in files) {
+        NSString *path = [self.directoryPath stringByAppendingPathComponent:file];
+        if ([file isEqualToString:BSGFeatureFlagFileName]) {
+            fileExists = YES;
+        } else if ([file hasPrefix:temporaryFilePrefix] && [file.pathExtension isEqualToString:@"tmp"]) {
+            // Left behind by a process that was killed while replacing featureflag.bin. Only the store that holds
+            // the lock writes these, so none of them is in use.
+            if (self.canWrite) {
+                unlink(path.fileSystemRepresentation);
+            }
+        } else if ([file isEqualToString:BSGFeatureFlagPrereleaseFileName] ||
+                   ([file hasPrefix:prereleaseTemporaryFilePrefix] && [file.pathExtension isEqualToString:@"tmp"])) {
+            // Written by pre-release builds, which used a different file name; the flags in it are not read
+            if (self.canWrite) {
+                unlink(path.fileSystemRepresentation);
+            }
+        } else if (BSGIsLegacyFeatureFlagFile(file)) {
+            [legacyPaths addObject:path];
         }
     }
+
+    const BSGFeatureFlagFileState state = fileExists ? [self readExistingFile] : BSGFeatureFlagFileMissing;
+    if (state == BSGFeatureFlagFileLoaded || state == BSGFeatureFlagFileCorrupt) {
+        if (legacyPaths.count) {
+            // Both kinds of file are only left together when one of them could not be deleted after
+            // the SDK was downgraded and upgraded again. It is not known which of them is current, so
+            // neither is used.
+            bsg_log_info(@"Discarding persisted feature flags because both featureflag.bin and JSON files were found");
+            [self removeAllFlagsFromMemory];
+            [self writeSnapshot];
+        } else if (state == BSGFeatureFlagFileCorrupt) {
+            bsg_log_err(@"Persisted feature flags are corrupt; discarding them");
+            [self removeAllFlagsFromMemory];
+            // Publish an empty log so that new records are not appended to the corrupt one
+            [self writeSnapshot];
+        } else {
+            // This file can be older than the previous launch: SDK versions before 6.31.0 never touch this
+            // directory, so it survives a downgrade to one of them and an upgrade again. Its flags are not
+            // reported for that launch, because an app upgrade changes the Mach-O UUID and BSGRunContext
+            // then does not report an OOM or thermal kill. They are replaced when Bugsnag starts.
+            self.fileIsCurrent = self.fd != -1;
+        }
+    } else {
+        // Flags written as individual files by earlier versions of the SDK are imported so that they
+        // can be included in an OOM event (see BSGLegacyFeatureFlags.h). If a featureflag.bin file that could not
+        // be used is next to them, it is not known which is current, so they are discarded as above.
+        // (Something other than a file at the path, such as a directory, cannot hold flags.)
+        struct stat st;
+        const BOOL isFile = fileExists && stat(self.filePath.fileSystemRepresentation, &st) == 0 && S_ISREG(st.st_mode);
+        if (!isFile) {
+            for (BugsnagFeatureFlag *flag in BSGLegacyFeatureFlags(legacyPaths)) {
+                [self setFlagNamed:flag.name variant:flag.variant];
+            }
+            self.needsSnapshot = NO;
+        } else if (legacyPaths.count) {
+            bsg_log_info(@"Discarding persisted feature flags because both featureflag.bin and JSON files were found");
+        }
+        if (self.liveLength > 0) {
+            // The file is created when there are flags to save
+            if (![self writeSnapshot] && isFile && self.canWrite) {
+                // The unusable file holds the flags of an earlier launch, which must not be reported later
+                unlink(self.filePath.fileSystemRepresentation);
+            }
+        } else if (isFile && self.canWrite) {
+            // There is nothing to save, so an unusable file is removed rather than replaced
+            unlink(self.filePath.fileSystemRepresentation);
+        }
+    }
+    if (self.canWrite) {
+        // The JSON files are deleted even if the flags could not be saved, because they would be stale
+        // if imported again at the next launch. The imported flags remain in memory.
+        BSGRemoveLegacyFeatureFlagFiles(legacyPaths);
+    }
 }
 
-- (BOOL)isLastFlagNamed:(NSString *)name withVariant:(nullable NSString *)variant {
-    if (![self.names.lastObject isEqualToString:name]) {
-        return NO;
+/// Reads the log in featureflag.bin into memory. A store that holds the lock keeps the file open for writing
+/// if its header is valid. Failing to open the file is logged separately from a corrupt file.
+- (BSGFeatureFlagFileState)readExistingFile {
+    int fd = -1;
+    if (self.canWrite) {
+        fd = BSGFeatureFlagFileOpen(self.filePath, O_RDWR);
+    } else if ((fd = open(self.filePath.fileSystemRepresentation, O_RDONLY | O_CLOEXEC)) == -1) {
+        bsg_log_warn(@"Could not open %@: %d", self.filePath.lastPathComponent, errno);
     }
-    NSString *current = self.flagsByName[name].variant;
-    return current == variant || [current isEqualToString:(NSString *_Nonnull)variant];
+    if (fd == -1) {
+        return BSGFeatureFlagFileUnusable;
+    }
+    struct stat st;
+    struct bsg_feature_flag_file_header header;
+    const BOOL valid = (fstat(fd, &st) == 0 &&
+                        BSGFeatureFlagFileRead(fd, &header, sizeof(header), 0) &&
+                        header.magic == BSGFeatureFlagFileMagic &&
+                        header.version == BSGFeatureFlagFileVersion &&
+                        header.slotCapacity > 0 &&
+                        header.slotCapacity <= BSGFeatureFlagMaxReadableSlotCapacity &&
+                        (uint64_t)st.st_size >= BSGFeatureFlagFileSize(header.slotCapacity));
+    if (!valid) {
+        bsg_log_err(@"Persisted feature flags are corrupt or in an unknown format; discarding them");
+        close(fd);
+        return BSGFeatureFlagFileUnusable;
+    }
+    const uint64_t length = header.active >> 1;
+    const uint32_t slot = header.active & 1;
+    // Only the active log is read; its length is limited by the slot capacity, which was checked above
+    NSMutableData *log = length <= header.slotCapacity ? [NSMutableData dataWithLength:(NSUInteger)length] : nil;
+    BOOL loaded = (log && BSGFeatureFlagFileRead(fd, log.mutableBytes, length, BSGFeatureFlagSlotOffset(header.slotCapacity, slot)) &&
+                   BSGFeatureFlagsDecode(log.bytes, length, ^(NSString *name, NSString *variant, BOOL removed, NSData *record) {
+        if (removed) {
+            [self.names removeObject:name];
+            [self setRecord:nil forName:name];
+        } else {
+            // As in BSGMemoryFeatureFlagStore, a flag that is already present keeps its position
+            if (!self.recordsByName[name]) {
+                [self.names addObject:name];
+            }
+            [self setRecord:record forName:name];
+        }
+        (void)variant;
+    }));
+    if (self.canWrite) {
+        self.fd = fd;
+        self.slotCapacity = header.slotCapacity;
+        self.activeSlot = slot;
+        self.activeLength = length;
+    } else {
+        close(fd);
+    }
+    return loaded ? BSGFeatureFlagFileLoaded : BSGFeatureFlagFileCorrupt;
+}
+
+/// A new path for a file that will replace featureflag.bin. Each replacement uses its own file.
+- (NSString *)newTemporaryFilePath {
+    return [NSString stringWithFormat:@"%@.%@.tmp", self.filePath, NSUUID.UUID.UUIDString];
 }
 
 - (void)setRecord:(nullable NSData *)record forName:(NSString *)name {
@@ -550,94 +415,66 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
 
 - (void)removeAllFlagsFromMemory {
     [self.names removeAllObjects];
-    [self.flagsByName removeAllObjects];
     [self.recordsByName removeAllObjects];
+    [self.unencodableFlags removeAllObjects];
     self.liveLength = 0;
 }
 
-/// Adds or replaces a flag, moving it to the end. Returns the records to append to the log.
+/// Adds a flag, or replaces the variant of a flag that is present, keeping its position (as
+/// BSGMemoryFeatureFlagStore does). Returns the records to append to the log, which are empty if
+/// nothing that is persisted changed.
 - (NSData *)setFlagNamed:(NSString *)name variant:(nullable NSString *)variant {
     // A mutable name changed by the caller would no longer match its entry in names
     name = [name copy];
-    const BOOL wasPersisted = self.recordsByName[name] != nil;
-    [self.names removeObject:name];
-    [self.names addObject:name];
-    self.flagsByName[name] = [BugsnagFeatureFlag flagWithName:name variant:variant];
+    NSData *previous = self.recordsByName[name];
+    BugsnagFeatureFlag *unencodable = self.unencodableFlags[name];
     NSData *record = BSGFeatureFlagEncode(name, variant);
-    [self setRecord:record forName:name];
     if (record) {
+        if ([previous isEqualToData:record]) {
+            return [NSData data];
+        }
+        if (unencodable) {
+            // The flag is present but has no record in the log, so a record appended to the log would
+            // add it at the end when replayed. Unless it is the last flag, the log must be rewritten.
+            [self.unencodableFlags removeObjectForKey:name];
+            if (![self.names.lastObject isEqualToString:name]) {
+                self.needsSnapshot = YES;
+            }
+        } else if (!previous) {
+            [self.names addObject:name];
+        }
+        [self setRecord:record forName:name];
         return record;
     }
     // A flag that cannot be encoded is kept in memory but not persisted, so the persisted
     // record for its previous variant must be removed.
-    return (wasPersisted ? BSGFeatureFlagEncodeRemoval(name) : nil) ?: [NSData data];
+    if (!previous && !unencodable) {
+        [self.names addObject:name];
+    }
+    self.unencodableFlags[name] = [BugsnagFeatureFlag flagWithName:name variant:variant];
+    [self setRecord:nil forName:name];
+    return (previous ? BSGFeatureFlagEncodeRemoval(name) : nil) ?: [NSData data];
 }
 
-/// Maps the file if it exists and has a valid header.
-- (BOOL)mapExistingFile {
-    if (access(self.filePath.fileSystemRepresentation, F_OK) != 0) {
-        return NO;
-    }
-    int fd = BSGFeatureFlagFileOpen(self.filePath, O_RDWR);
-    if (fd == -1) {
-        return NO;
-    }
-    struct stat st;
-    struct bsg_feature_flag_file_header header;
-    BOOL valid = (fstat(fd, &st) == 0 &&
-                  pread(fd, &header, sizeof(header), 0) == sizeof(header) &&
-                  header.magic == BSGFeatureFlagFileMagic &&
-                  header.version == BSGFeatureFlagFileVersion &&
-                  header.slotCapacity > 0 &&
-                  header.slotCapacity <= BSGFeatureFlagMaxSlotCapacity &&
-                  BSGFeatureFlagFileSize(header.slotCapacity) <= SIZE_MAX &&
-                  (uint64_t)st.st_size >= BSGFeatureFlagFileSize(header.slotCapacity));
-    const size_t size = valid ? (size_t)BSGFeatureFlagFileSize(header.slotCapacity) : 0;
-    struct bsg_feature_flag_file_header *mapping = valid ? BSGFeatureFlagFileMap(fd, size) : NULL;
-    close(fd);
-    if (!mapping) {
-        return NO;
-    }
-    [self useMapping:mapping size:size];
-    return YES;
-}
-
-- (void)useMapping:(struct bsg_feature_flag_file_header *)mapping size:(size_t)size {
-    if (self.header) {
-        munmap(self.header, self.mappedSize);
-    }
-    self.header = mapping;
-    self.mappedSize = size;
-    self.slotCapacity = (size - sizeof(struct bsg_feature_flag_file_header)) / 2;
-}
-
-- (uint8_t *)slotData:(uint32_t)slot {
-    return (uint8_t *)(self.header + 1) + (size_t)slot * (size_t)self.slotCapacity;
-}
-
-- (void)loadActiveLog {
-    const uint64_t active = atomic_load_explicit(&self.header->active, memory_order_acquire);
-    const uint64_t length = active >> 1;
-    BOOL valid = length <= self.slotCapacity &&
-    BSGFeatureFlagsDecode([self slotData:active & 1], length, ^(NSString *name, NSString *variant, BOOL removed, NSData *record) {
-        [self.names removeObject:name];
-        if (removed) {
-            [self.flagsByName removeObjectForKey:name];
-            [self setRecord:nil forName:name];
-        } else {
-            [self.names addObject:name];
-            self.flagsByName[name] = [BugsnagFeatureFlag flagWithName:name variant:variant];
-            [self setRecord:record forName:name];
-        }
-    });
-    if (!valid) {
-        bsg_log_err(@"Persisted feature flags are corrupt; discarding them");
-        [self removeAllFlagsFromMemory];
-        // Publish an empty log so that new records are not appended to the corrupt one
+/// Saves the changes made by setFlagNamed:variant:.
+- (void)saveChange:(NSData *)records {
+    if (self.needsSnapshot) {
+        self.needsSnapshot = NO;
         [self writeSnapshot];
-    } else {
-        self.fileIsCurrent = YES;
+    } else if (records.length) {
+        [self appendRecords:records];
     }
+}
+
+/// Writes the active slot and log length to the header.
+- (BOOL)writeActiveLength:(uint64_t)length slot:(uint32_t)slot {
+    const uint64_t active = BSGFeatureFlagFileActiveValue(length, slot);
+    if (!BSGFeatureFlagFileWrite(self.fd, &active, sizeof(active), offsetof(struct bsg_feature_flag_file_header, active))) {
+        return NO;
+    }
+    self.activeSlot = slot;
+    self.activeLength = length;
+    return YES;
 }
 
 /// Appends records to the end of the log, or rewrites it if they don't fit or it has grown too large.
@@ -645,19 +482,21 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
     if (records.length == 0) {
         return self.fileIsCurrent;
     }
-    if (!self.header || !self.fileIsCurrent) {
+    if (self.fd == -1 || !self.fileIsCurrent) {
         return [self writeSnapshot];
     }
-    const uint64_t active = atomic_load_explicit(&self.header->active, memory_order_relaxed);
-    const uint32_t slot = active & 1;
-    const uint64_t length = active >> 1;
+    const uint32_t slot = self.activeSlot;
+    const uint64_t length = self.activeLength;
     if (length + records.length > self.slotCapacity) {
         return [self writeSnapshot];
     }
-    memcpy([self slotData:slot] + length, records.bytes, records.length);
-    // The release ordering ensures the records are written before they become part of the log.
-    atomic_store_explicit(&self.header->active, BSGFeatureFlagFileActiveValue(length + records.length, slot),
-                          memory_order_release);
+    // The records are written before the length that makes them part of the log
+    if (!BSGFeatureFlagFileWrite(self.fd, records.bytes, records.length,
+                                 BSGFeatureFlagSlotOffset(self.slotCapacity, slot) + length) ||
+        ![self writeActiveLength:length + records.length slot:slot]) {
+        [self handleWriteFailure];
+        return NO;
+    }
     if (length + records.length > self.liveLength + MAX(self.liveLength, BSGFeatureFlagMinimumCompactionSize)) {
         // Rewriting the log only after it has doubled keeps the cost of each change constant on average
         return [self writeSnapshot];
@@ -669,10 +508,26 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
 /// with a larger one once the current flags take up more than half of a slot, so that the log can double
 /// before it is rewritten, and with a smaller one when they take up very little of a large slot.
 - (BOOL)writeSnapshot {
-    const uint64_t capacity = self.header ? self.slotCapacity : 0;
+    if (!self.canWrite) {
+        self.fileIsCurrent = NO;
+        return NO;
+    }
+    if (self.liveLength > BSGFeatureFlagMaxSlotCapacity) {
+        // The flags remain in memory, and are saved by a later change that makes them small enough
+        if (!self.tooLargeToPersist) {
+            bsg_log_err(@"Feature flags are too large to persist");
+            self.tooLargeToPersist = YES;
+        }
+        [self discardSnapshot];
+        self.fileIsCurrent = NO;
+        return NO;
+    }
+    self.tooLargeToPersist = NO;
+    const BOOL hasFile = self.fd != -1;
+    const uint64_t capacity = hasFile ? self.slotCapacity : 0;
     const BOOL canReplaceFile = NSProcessInfo.processInfo.systemUptime >= self.retryTime;
-    if (!canReplaceFile && (!self.header || self.liveLength > capacity)) {
-        // The flags remain in memory, and are saved by a later change once the file can be replaced
+    if (!canReplaceFile && (!hasFile || self.liveLength > capacity)) {
+        // The flags remain in memory, and are saved by a later change or by the scheduled retry
         [self discardSnapshot];
         self.fileIsCurrent = NO;
         return NO;
@@ -684,14 +539,13 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
             [snapshot appendData:record];
         }
     }
-    const BOOL fits = self.header && snapshot.length <= capacity;
-    const BOOL tooSmall = !self.header || (uint64_t)snapshot.length * 2 > capacity;
+    const BOOL fits = hasFile && snapshot.length <= capacity;
+    const BOOL tooSmall = !hasFile || ((uint64_t)snapshot.length * 2 > capacity && capacity < BSGFeatureFlagMaxSlotCapacity);
     // A file is only shrunk when both the new log and the one it replaces take up very little of it, so
     // that clearing flags and then adding them again does not replace it twice. After the flags are
     // cleared it is therefore shrunk by the next rewrite, which at the latest is when Bugsnag next starts.
-    const uint64_t currentLength = self.header ? atomic_load_explicit(&self.header->active, memory_order_relaxed) >> 1 : 0;
     const BOOL tooLarge = (capacity >= BSGFeatureFlagMinimumShrinkableCapacity &&
-                           (uint64_t)snapshot.length < capacity / 8 && currentLength < capacity / 8);
+                           (uint64_t)snapshot.length < capacity / 8 && self.activeLength < capacity / 8);
     // Failures to replace the file are file system errors (e.g. no space, or something other than a
     // file at the path) that are unlikely to resolve themselves immediately, so the file is not
     // replaced again until the retry interval has passed.
@@ -702,84 +556,129 @@ static void BSGRemoveLegacyFeatureFlagFiles(NSString *directory) {
             return YES;
         }
         self.retryTime = NSProcessInfo.processInfo.systemUptime + self.retryInterval;
+        [self scheduleRetry];
     }
     if (!fits) {
-        // The flags remain in memory, and are saved by a later change once the file can be replaced
+        // The flags remain in memory, and are saved by a later change or by the scheduled retry
         [self discardSnapshot];
         self.fileIsCurrent = NO;
         return NO;
     }
-    const uint64_t active = atomic_load_explicit(&self.header->active, memory_order_relaxed);
-    const uint32_t slot = (active & 1) ^ 1;
-    if (snapshot.length) {
-        memcpy([self slotData:slot], snapshot.bytes, snapshot.length);
+    // The log is written before the header that makes it active
+    const uint32_t slot = self.activeSlot ^ 1;
+    if ((snapshot.length &&
+         !BSGFeatureFlagFileWrite(self.fd, snapshot.bytes, snapshot.length, BSGFeatureFlagSlotOffset(self.slotCapacity, slot))) ||
+        ![self writeActiveLength:snapshot.length slot:slot]) {
+        [self handleWriteFailure];
+        return NO;
     }
-    // The release ordering ensures the log is written before it becomes active.
-    atomic_store_explicit(&self.header->active, BSGFeatureFlagFileActiveValue(snapshot.length, slot),
-                          memory_order_release);
     self.fileIsCurrent = YES;
     return YES;
 }
 
-/// Empties the log in the current file (if any) after the flags could not be written, so that
-/// it does not contain flags that have since been changed or cleared.
+/// Called when writing to the open file failed (e.g. because the disk is full). The log is emptied so
+/// that the file does not hold flags that have since changed, the file is closed, and it is replaced
+/// once the retry interval has passed.
+- (void)handleWriteFailure {
+    bsg_log_err(@"Unable to save feature flags: %d", errno);
+    [self discardSnapshot];
+    if (self.fd != -1) {
+        close(self.fd);
+        self.fd = -1;
+    }
+    self.fileIsCurrent = NO;
+    self.retryTime = NSProcessInfo.processInfo.systemUptime + self.retryInterval;
+    [self scheduleRetry];
+}
+
+/// Writes the flags again after the retry interval if they still have not been saved. Only one retry is
+/// scheduled at a time, and it does not keep the store alive.
+- (void)scheduleRetry {
+    if (self.retryScheduled || self.retryInterval <= 0 || !self.canWrite) {
+        return;
+    }
+    self.retryScheduled = YES;
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.retryInterval * NSEC_PER_SEC)),
+                   dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        @synchronized (strongSelf) {
+            strongSelf.retryScheduled = NO;
+            if (!strongSelf.fileIsCurrent) {
+                strongSelf.retryTime = 0;
+                [strongSelf writeSnapshot];
+            }
+        }
+    });
+}
+
+/// Empties the log in the file this store has open (if any) after the flags could not be written, so
+/// that it does not contain flags that have since been changed or cleared. A file this store has not
+/// opened is never deleted here.
 - (void)discardSnapshot {
-    if (self.header) {
-        const uint64_t active = atomic_load_explicit(&self.header->active, memory_order_relaxed);
-        atomic_store_explicit(&self.header->active, BSGFeatureFlagFileActiveValue(0, active & 1), memory_order_release);
-    } else {
-        // A file that exists but could not be mapped holds the flags of an earlier launch
+    if (self.fd == -1 || self.activeLength == 0) {
+        return;
+    }
+    if (![self writeActiveLength:0 slot:self.activeSlot]) {
+        // This store holds the lock and has the file open, so the file is its own. It is deleted rather
+        // than left holding stale flags.
+        bsg_log_err(@"Unable to discard persisted feature flags: %d", errno);
         unlink(self.filePath.fileSystemRepresentation);
+        close(self.fd);
+        self.fd = -1;
     }
 }
 
 /// Writes a new file with room for the log to grow and atomically replaces the current one. A file is
 /// shrunk to no less than a quarter of its size at a time, so that flags being cleared and then added
 /// again do not repeatedly replace it.
+///
+/// The file's blocks are not preallocated: with pwrite() a full disk is reported as an error and handled
+/// like any other failure, so preallocation would only use disk space for slots that may never be filled.
 - (BOOL)replaceFileWithSnapshot:(NSData *)snapshot {
+    const uint64_t headerSize = sizeof(struct bsg_feature_flag_file_header);
     const uint64_t pageSize = (uint64_t)getpagesize();
-    const uint64_t minimumCapacity = MAX(MAX((uint64_t)snapshot.length * 2,
-                                             (pageSize - sizeof(struct bsg_feature_flag_file_header)) / 2),
-                                         self.header ? self.slotCapacity / 4 : 0);
-    const uint64_t pageAlignedSize = (sizeof(struct bsg_feature_flag_file_header) + 2 * minimumCapacity + pageSize - 1) / pageSize * pageSize;
-    const uint64_t slotCapacity = (pageAlignedSize - sizeof(struct bsg_feature_flag_file_header)) / 2;
-    if (slotCapacity > BSGFeatureFlagMaxSlotCapacity || pageAlignedSize > SIZE_MAX) {
+    const uint64_t minimumCapacity = MAX(MAX((uint64_t)snapshot.length * 2, (pageSize - headerSize) / 2),
+                                         self.fd != -1 ? self.slotCapacity / 4 : 0);
+    const uint64_t pageAlignedSize = (headerSize + 2 * minimumCapacity + pageSize - 1) / pageSize * pageSize;
+    const uint64_t slotCapacity = MIN((pageAlignedSize - headerSize) / 2, BSGFeatureFlagMaxSlotCapacity);
+    if (snapshot.length > slotCapacity) {
         bsg_log_err(@"Feature flags are too large to persist");
         return NO;
     }
-    const size_t fileSize = (size_t)pageAlignedSize;
 
     struct bsg_feature_flag_file_header header = {
         .magic = BSGFeatureFlagFileMagic,
         .version = BSGFeatureFlagFileVersion,
         .slotCapacity = (uint32_t)slotCapacity,
+        .active = BSGFeatureFlagFileActiveValue(snapshot.length, 0),
     };
-    atomic_init(&header.active, BSGFeatureFlagFileActiveValue(snapshot.length, 0));
 
     NSString *tempPath = [self newTemporaryFilePath];
     int fd = BSGFeatureFlagFileOpen(tempPath, O_RDWR | O_CREAT | O_EXCL);
     if (fd == -1) {
         return NO;
     }
-    // The new file is mapped before it replaces the current one, so that the current mapping
-    // is only abandoned once the new one is in place.
-    struct bsg_feature_flag_file_header *mapping = NULL;
-    BOOL written = (BSGFeatureFlagFileAllocate(fd, fileSize) &&
-                    pwrite(fd, &header, sizeof(header), 0) == sizeof(header) &&
-                    (!snapshot.length || pwrite(fd, snapshot.bytes, snapshot.length, sizeof(header)) == (ssize_t)snapshot.length) &&
-                    (mapping = BSGFeatureFlagFileMap(fd, fileSize)) != NULL &&
-                    rename(tempPath.fileSystemRepresentation, self.filePath.fileSystemRepresentation) == 0);
-    const int error = errno;
-    close(fd);
+    const BOOL written = (ftruncate(fd, (off_t)BSGFeatureFlagFileSize(slotCapacity)) == 0 &&
+                          BSGFeatureFlagFileWrite(fd, &header, sizeof(header), 0) &&
+                          BSGFeatureFlagFileWrite(fd, snapshot.bytes, snapshot.length, headerSize) &&
+                          rename(tempPath.fileSystemRepresentation, self.filePath.fileSystemRepresentation) == 0);
     if (!written) {
-        bsg_log_err(@"Unable to save feature flags: %d", error);
-        if (mapping) {
-            munmap(mapping, fileSize);
-        }
+        bsg_log_err(@"Unable to save feature flags: %d", errno);
+        close(fd);
         unlink(tempPath.fileSystemRepresentation);
         return NO;
     }
-    [self useMapping:mapping size:fileSize];
+    if (self.fd != -1) {
+        close(self.fd);
+    }
+    self.fd = fd;
+    self.slotCapacity = slotCapacity;
+    self.activeSlot = 0;
+    self.activeLength = snapshot.length;
     return YES;
 }
 

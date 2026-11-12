@@ -28,6 +28,16 @@ char *_Nullable BSGCStringWithData(NSData *_Nullable data);
 /// and its descriptor kept open for as long as it is used; closing the descriptor, even while a mapping remains, gives up that guarantee.
 BOOL BSGDisableNSFileProtectionComplete(NSString *path);
 
+/// Opens (or, with O_CREAT, creates) a file whose descriptor is kept open while the file is used, returning -1 on error.
+///
+/// Applies Bugsnag's backup policy to the file and changes NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen
+/// (see BSGDisableNSFileProtectionComplete), then reopens the file, so that the descriptor returned was opened after the
+/// protection class was changed rather than under NSFileProtectionComplete. The file stays accessible while the device is
+/// locked for as long as that descriptor stays open. Descriptors are opened with O_CLOEXEC so that they do not leak into
+/// child processes, and new files are created with mode 0600. A file created here with O_EXCL is deleted if it cannot be
+/// set up.
+int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
+
 dispatch_queue_t BSGGetFileSystemQueue(void);
 
 #if TARGET_OS_IOS

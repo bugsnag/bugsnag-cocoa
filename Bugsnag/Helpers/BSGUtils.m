@@ -8,7 +8,11 @@
 
 #import "BSGUtils.h"
 
+#import "BSGFilesystem.h"
 #import "BugsnagLogger.h"
+
+#import <fcntl.h>
+#import <unistd.h>
 
 void bsg_safe_strncpy(char *dst, const char *src, size_t length) {
     if (length > 0) {
@@ -52,6 +56,34 @@ BOOL BSGDisableNSFileProtectionComplete(NSString *path) {
     (void)(path);
 #endif
     return YES;
+}
+
+int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
+    int fd = open(path.fileSystemRepresentation, flags | O_CLOEXEC, 0600);
+    if (fd == -1) {
+        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, errno);
+        return -1;
+    }
+    // Files opened with low-level APIs do not get Bugsnag's Apple backup policy from the JSON helpers
+    [BSGFilesystem applyFileBackupSupportToPath:path];
+
+    if (!BSGDisableNSFileProtectionComplete(path)) {
+        close(fd);
+        if (flags & O_EXCL) {
+            // The file was created here, so it must not be left behind
+            unlink(path.fileSystemRepresentation);
+        }
+        return -1;
+    }
+
+    // Reopen so that the descriptor that is kept open was opened after the protection class was changed. The file
+    // exists now, so it is not created or truncated again.
+    int reopened = open(path.fileSystemRepresentation, (flags & ~(O_CREAT | O_EXCL | O_TRUNC)) | O_CLOEXEC);
+    if (reopened != -1) {
+        close(fd);
+        fd = reopened;
+    }
+    return fd;
 }
 
 dispatch_queue_t BSGGetFileSystemQueue(void) {

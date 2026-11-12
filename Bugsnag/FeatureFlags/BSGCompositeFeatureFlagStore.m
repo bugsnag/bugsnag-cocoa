@@ -12,16 +12,16 @@
 @interface BSGCompositeFeatureFlagStore ()
 
 @property(nonatomic, strong) id<BSGFeatureFlagStore, NSCopying> memoryStore;
-@property(nonatomic, strong) id<BSGFeatureFlagStore> persistentStore;
-@property(nonatomic, strong) id<BSGFeatureFlagStore> atomicStore;
+@property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> persistentStore;
+@property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> atomicStore;
 
 @end
 
 @implementation BSGCompositeFeatureFlagStore
 
 + (instancetype)storeWithMemoryStore:(id<BSGFeatureFlagStore, NSCopying>)memoryStore
-                     persistentStore:(id<BSGFeatureFlagStore>)persistentStore
-                         atomicStore:(id<BSGFeatureFlagStore>)atomicStore {
+                     persistentStore:(id<BSGReplaceableFeatureFlagStore>)persistentStore
+                         atomicStore:(id<BSGReplaceableFeatureFlagStore>)atomicStore {
     BSGCompositeFeatureFlagStore *store = [self new];
     store.memoryStore = memoryStore;
     store.persistentStore = persistentStore;
@@ -76,13 +76,6 @@
     [self.atomicStore clear];
     [self.memoryStore clear];
     [self.persistentStore clear];
-}
-
-// Required by BSGFeatureFlagStore. The memory store is replaced first and its result is then copied
-// to the other stores, so that all three hold exactly the same flags in the same order.
-- (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
-    [self.memoryStore replaceAllFlags:featureFlags];
-    [self synchronizeFlagsWithMemoryStore];
 }
 
 @end

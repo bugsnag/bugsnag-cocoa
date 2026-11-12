@@ -2,7 +2,7 @@
 //  FeatureFlagsPersistenceScenario.m
 //  Shared scenarios
 //
-//  End-to-end scenarios for feature flag persistence (flags.bin, and the migration
+//  End-to-end scenarios for feature flag persistence (featureflag.bin, and the migration
 //  from / downgrade to the legacy format of one JSON file per flag).
 //
 //  Scenarios that rely on Out Of Memory detection are in FeatureFlagsPersistenceOOMScenarios.m
@@ -15,7 +15,7 @@
 #import <signal.h>
 #import <unistd.h>
 
-// Must match BSGPersistentFeatureFlagStore.m
+// Must match BSGFeatureFlagFileFormat.h
 static const uint32_t FeatureFlagFileMagic = 0x46465342; // "BSFF"
 static const uint32_t FeatureFlagFileVersion = 1;
 
@@ -49,12 +49,12 @@ NSString * FeatureFlagsDirectoryPath(void) {
     return path;
 }
 
-NSString * FeatureFlagsBinPath(void) {
-    return [FeatureFlagsDirectoryPath() stringByAppendingPathComponent:@"flags.bin"];
+NSString * FeatureFlagsFilePath(void) {
+    return [FeatureFlagsDirectoryPath() stringByAppendingPathComponent:@"featureflag.bin"];
 }
 
 void FeatureFlagsWriteLegacyFile(NSString *name, NSString *variant, uint64_t index) {
-    // Format and file naming used by BSGPersistentFeatureFlagStore before flags.bin was introduced.
+    // Format and file naming used by BSGPersistentFeatureFlagStore before featureflag.bin was introduced.
     NSMutableDictionary *json = [NSMutableDictionary dictionary];
     json[@"featureFlag"] = name;
     json[@"index"] = @(index);
@@ -72,7 +72,7 @@ void FeatureFlagsWriteLegacyFile(NSString *name, NSString *variant, uint64_t ind
 }
 
 void FeatureFlagsWriteCorruptFile(NSString *mode) {
-    NSString *path = FeatureFlagsBinPath();
+    NSString *path = FeatureFlagsFilePath();
     [NSFileManager.defaultManager removeItemAtPath:path error:nil];
 
     NSMutableData *data = nil;
@@ -127,12 +127,12 @@ NSDictionary<NSString *, id> * FeatureFlagsDirectorySummary(void) {
         }
     }
 
-    NSString *binPath = FeatureFlagsBinPath();
+    NSString *filePath = FeatureFlagsFilePath();
     BOOL isDirectory = NO;
-    BOOL exists = [fileManager fileExistsAtPath:binPath isDirectory:&isDirectory];
+    BOOL exists = [fileManager fileExistsAtPath:filePath isDirectory:&isDirectory];
     BOOL validHeader = NO;
     if (exists && !isDirectory) {
-        NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:binPath];
+        NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:filePath];
         NSData *data = [handle readDataOfLength:sizeof(struct feature_flag_file_header)];
         [handle closeFile];
         if (data.length == sizeof(struct feature_flag_file_header)) {
@@ -146,9 +146,9 @@ NSDictionary<NSString *, id> * FeatureFlagsDirectorySummary(void) {
         @"entries": entries,
         @"jsonFiles": jsonFiles,
         @"jsonFileCount": @(jsonFiles.count),
-        @"flagsBinExists": exists ? @YES : @NO,
-        @"flagsBinIsDirectory": (exists && isDirectory) ? @YES : @NO,
-        @"flagsBinHasValidHeader": validHeader ? @YES : @NO,
+        @"featureFlagFileExists": exists ? @YES : @NO,
+        @"featureFlagFileIsDirectory": (exists && isDirectory) ? @YES : @NO,
+        @"featureFlagFileHasValidHeader": validHeader ? @YES : @NO,
     };
 }
 
@@ -385,7 +385,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 #pragma mark - 8. Migration from legacy JSON files
 
-/// Plants legacy JSON flag files (and no flags.bin) before Bugsnag starts, as left by an older SDK.
+/// Plants legacy JSON flag files (and no featureflag.bin) before Bugsnag starts, as left by an older SDK.
 @interface FeatureFlagsLegacyMigrationScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -397,7 +397,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 }
 
 - (void)prepareFilesBeforeStart {
-    [NSFileManager.defaultManager removeItemAtPath:FeatureFlagsBinPath() error:nil];
+    [NSFileManager.defaultManager removeItemAtPath:FeatureFlagsFilePath() error:nil];
     FeatureFlagsWriteLegacyFile(@"legacy-a", @"variant-a", 0);
     FeatureFlagsWriteLegacyFile(@"legacy-b", nil, 1);
     FeatureFlagsWriteLegacyFile(@"legacy flag/ü 🚩", @"", 2);
@@ -410,10 +410,10 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 @end
 
-#pragma mark - 9. Stale legacy JSON files alongside flags.bin
+#pragma mark - 9. Stale legacy JSON files alongside featureflag.bin
 
-/// At launch 1, flags.bin does not exist and Bugsnag creates it.
-/// At subsequent launches, legacy JSON files are planted next to the existing flags.bin before
+/// At launch 1, featureflag.bin does not exist and Bugsnag creates it when it saves config-flag.
+/// At subsequent launches, legacy JSON files are planted next to the existing featureflag.bin before
 /// Bugsnag starts, as if a file could not be deleted after a downgrade to an SDK that stored one
 /// JSON file per flag. Both are discarded, and the JSON files are deleted.
 @interface FeatureFlagsStaleJSONScenario : FeatureFlagsPersistenceScenario
@@ -428,7 +428,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 - (void)prepareFilesBeforeStart {
     BOOL isDirectory = NO;
-    if ([NSFileManager.defaultManager fileExistsAtPath:FeatureFlagsBinPath() isDirectory:&isDirectory] && !isDirectory) {
+    if ([NSFileManager.defaultManager fileExistsAtPath:FeatureFlagsFilePath() isDirectory:&isDirectory] && !isDirectory) {
         FeatureFlagsWriteLegacyFile(@"stale-flag", @"stale", 0);
         FeatureFlagsWriteLegacyFile(@"stale-flag-2", nil, 1);
     }
@@ -447,9 +447,9 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 @end
 
-#pragma mark - 10. Corrupt flags.bin
+#pragma mark - 10. Corrupt featureflag.bin
 
-/// Replaces flags.bin with invalid content before Bugsnag starts at launch 1.
+/// Replaces featureflag.bin with invalid content before Bugsnag starts at launch 1.
 /// The scenario mode selects the kind of corruption; see FeatureFlagsWriteCorruptFile().
 @interface FeatureFlagsCorruptFileScenario : FeatureFlagsPersistenceScenario
 @end
@@ -477,9 +477,9 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 @end
 
-#pragma mark - 11. A directory where flags.bin should be
+#pragma mark - 11. A directory where featureflag.bin should be
 
-/// Creates a (non-empty) directory at the flags.bin path before Bugsnag starts.
+/// Creates a (non-empty) directory at the featureflag.bin path before Bugsnag starts.
 @interface FeatureFlagsDirectoryAtFilePathScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -491,7 +491,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 }
 
 - (void)prepareFilesBeforeStart {
-    NSString *path = FeatureFlagsBinPath();
+    NSString *path = FeatureFlagsFilePath();
     BOOL isDirectory = NO;
     if ([NSFileManager.defaultManager fileExistsAtPath:path isDirectory:&isDirectory] && isDirectory) {
         return;

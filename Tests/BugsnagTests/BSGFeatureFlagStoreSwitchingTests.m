@@ -41,7 +41,9 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [super tearDown];
 }
 
-- (BSGPersistentFeatureFlagStore *)openMappedStore {
+// Named new... so that ARC returns the store retained rather than autoreleased: each store must be released (giving up
+// the lock on featureflag.lock) before the next launch opens one.
+- (BSGPersistentFeatureFlagStore *)newStore {
     return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
 
@@ -49,8 +51,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     return [[BSGLegacyJSONFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
 
-- (BOOL)mappedFileExists {
-    return [NSFileManager.defaultManager fileExistsAtPath:[self.directory stringByAppendingPathComponent:@"flags.bin"]];
+- (BOOL)flagFileExists {
+    return [NSFileManager.defaultManager fileExistsAtPath:[self.directory stringByAppendingPathComponent:@"featureflag.bin"]];
 }
 
 - (NSUInteger)jsonFileCount {
@@ -59,7 +61,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 /// Simulates a launch: the previous launch's flags are read, then replaced with the current ones.
-- (NSArray *)launchWithStore:(id<BSGFeatureFlagStore>)store flags:(NSArray<BugsnagFeatureFlag *> *)flags {
+- (NSArray *)launchWithStore:(id<BSGReplaceableFeatureFlagStore>)store flags:(NSArray<BugsnagFeatureFlag *> *)flags {
     NSArray *previous = FlagsToArray(store.allFlags);
     [store replaceAllFlags:flags];
     return previous;
@@ -79,32 +81,32 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
                                            [BugsnagFeatureFlag flagWithName:@"b"]]];
     XCTAssertEqual([self jsonFileCount], 2);
 
-    XCTAssertEqualObjects([self launchWithStore:[self openMappedStore] flags:@[]], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
     XCTAssertEqual([self jsonFileCount], 0);
-    XCTAssertTrue([self mappedFileExists]);
+    XCTAssertTrue([self flagFileExists]);
 }
 
 - (void)testUpgradeDowngradeAndUpgradeNeverReportsStaleFlags {
-    [self launchWithStore:[self openMappedStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-1"]]];
+    [self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-1"]]];
     XCTAssertEqualObjects([self launchPreviousReleaseWithFlags:@[[BugsnagFeatureFlag flagWithName:@"old-1"]]], @[]);
-    XCTAssertEqualObjects([self launchWithStore:[self openMappedStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-2"]]],
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-2"]]],
                           (@[@[@"old-1", NSNull.null]]));
-    XCTAssertEqualObjects([self launchWithStore:[self openMappedStore] flags:@[]], (@[@[@"new-2", NSNull.null]]));
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"new-2", NSNull.null]]));
     XCTAssertEqual([self jsonFileCount], 0);
 }
 
 - (void)testDowngradeToPreviousReleaseAndUpgrade {
-    [self launchWithStore:[self openMappedStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-sdk"]]];
+    [self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-sdk"]]];
 
-    // The previous release's store cannot decode flags.bin, and deletes it when it clears its files at launch
+    // The previous release's store cannot decode featureflag.bin, and deletes it when it clears its files at launch
     BSGLegacyJSONFeatureFlagStore *previousRelease = [self openPreviousReleaseStore];
     XCTAssertEqualObjects(previousRelease.allFlags, @[]);
     [previousRelease clear];
     [previousRelease addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"old-sdk" variant:@"1"]]];
-    XCTAssertFalse([self mappedFileExists]);
+    XCTAssertFalse([self flagFileExists]);
     XCTAssertEqual([self jsonFileCount], 1);
 
-    XCTAssertEqualObjects([self launchWithStore:[self openMappedStore] flags:@[]], (@[@[@"old-sdk", @"1"]]));
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"old-sdk", @"1"]]));
     XCTAssertEqual([self jsonFileCount], 0);
 }
 
