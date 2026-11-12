@@ -4,6 +4,13 @@
 //
 //  Copyright © 2026 Bugsnag Inc. All rights reserved.
 //
+//  BSGPersistentFeatureFlagStoreStressTests contains long running volume, churn, concurrency,
+//  kill-during-write and resource tests. They take too long for every CI run, so they only run
+//  when the environment variable BSG_RUN_STRESS_TESTS is set, for example:
+//  TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test ...
+//
+//  BSGPersistentFeatureFlagStoreFileDescriptorTests contains quick checks that always run.
+//
 
 #import "BSGTestCase.h"
 
@@ -11,7 +18,10 @@
 #import "BugsnagFeatureFlag.h"
 
 #import <fcntl.h>
+#import <limits.h>
 #import <mach/mach.h>
+#import <stdlib.h>
+#import <sys/param.h>
 #import <signal.h>
 #import <spawn.h>
 #import <stdatomic.h>
@@ -103,11 +113,21 @@ static NSArray * StressFlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     return result;
 }
 
-static int OpenFileDescriptorCount(void) {
-    int count = 0;
+/// The number of file descriptors open in this process that refer to a file in `directory`
+/// (e.g. flags.bin, a lock file, or a temporary file). Descriptors opened by anything else in the
+/// process are ignored, so the count is not affected by other work going on in the test process.
+static NSUInteger FileDescriptorCountInDirectory(NSString *directory) {
+    char resolved[PATH_MAX];
+    if (!realpath(directory.fileSystemRepresentation, resolved)) {
+        return 0;
+    }
+    // F_GETPATH returns the resolved path (e.g. /private/var/... rather than /var/...)
+    NSString *prefix = [@(resolved) stringByAppendingString:@"/"];
+    NSUInteger count = 0;
     const int max = getdtablesize();
     for (int fd = 0; fd < max; fd++) {
-        if (fcntl(fd, F_GETFD) != -1) {
+        char path[MAXPATHLEN];
+        if (fcntl(fd, F_GETPATH, path) != -1 && [@(path) hasPrefix:prefix]) {
             count++;
         }
     }
@@ -190,15 +210,16 @@ static NSArray * DecodeFlagsFile(NSString *path) {
 static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRECTORY";
 #endif
 
-#pragma mark -
+#pragma mark - Shared setup
 
-@interface BSGPersistentFeatureFlagStoreStressTests : BSGTestCase
+/// Provides a temporary storage directory and helpers. Contains no tests itself.
+@interface BSGPersistentFeatureFlagStoreStressTestCase : BSGTestCase
 
 @property (nonatomic) NSString *directory;
 
 @end
 
-@implementation BSGPersistentFeatureFlagStoreStressTests
+@implementation BSGPersistentFeatureFlagStoreStressTestCase
 
 - (void)setUp {
     [super setUp];
@@ -235,6 +256,93 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
         [data getBytes:&slotCapacity range:NSMakeRange(StressSlotCapacityOffset, sizeof(slotCapacity))];
     }
     return slotCapacity;
+}
+
+- (NSUInteger)openFileDescriptorCount {
+    return FileDescriptorCountInDirectory(self.directory);
+}
+
+@end
+
+#pragma mark - File descriptor checks (always run)
+
+/// Quick checks, run on every CI run, that opening, using and closing stores does not leak
+/// descriptors for files in the featureFlags directory. The store may keep descriptors open for
+/// its lifetime (e.g. for flags.bin and a lock file), so these check that the number does not
+/// grow rather than expecting an exact number.
+@interface BSGPersistentFeatureFlagStoreFileDescriptorTests : BSGPersistentFeatureFlagStoreStressTestCase
+@end
+
+@implementation BSGPersistentFeatureFlagStoreFileDescriptorTests
+
+- (void)testOpenCloseCyclesDoNotLeakFileDescriptors {
+    @autoreleasepool {
+        BSGPersistentFeatureFlagStore *store = [self openStore];
+        [store addFeatureFlag:@"a" withVariant:@"1"];
+        [store addFeatureFlag:@"b" withVariant:nil];
+    }
+    // Every store has been closed, so this is the baseline for the directory
+    const NSUInteger closedBaseline = self.openFileDescriptorCount;
+
+    // Check that descriptors for files in the directory are actually counted
+    const int fd = open(self.filePath.fileSystemRepresentation, O_RDONLY);
+    XCTAssertNotEqual(fd, -1);
+    XCTAssertEqual(self.openFileDescriptorCount, closedBaseline + 1);
+    close(fd);
+
+    NSUInteger openBaseline = NSNotFound;
+    for (NSUInteger i = 0; i < 20; i++) {
+        @autoreleasepool {
+            BSGPersistentFeatureFlagStore *store = [self openStore];
+            XCTAssertEqual(store.allFlags.count, 2);
+            // Exercise the append, snapshot and growth paths before closing
+            NSString *name = [NSString stringWithFormat:@"extra-%lu", (unsigned long)i];
+            [store addFeatureFlag:name withVariant:nil];
+            [store addFeatureFlag:@"a" withVariant:name];
+            [store clear:name];
+            const NSUInteger open = self.openFileDescriptorCount;
+            if (openBaseline == NSNotFound) {
+                openBaseline = open;
+            }
+            XCTAssertEqual(open, openBaseline, @"Cycle %lu: an open store's descriptor count changed", (unsigned long)i);
+        }
+        XCTAssertEqual(self.openFileDescriptorCount, closedBaseline, @"Cycle %lu: descriptors leaked", (unsigned long)i);
+    }
+}
+
+- (void)testStoreGrowthDoesNotLeakFileDescriptors {
+    const NSUInteger before = self.openFileDescriptorCount;
+    @autoreleasepool {
+        BSGStressCountingPersistentFeatureFlagStore *store =
+        [[BSGStressCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
+        [store addFeatureFlag:@"first" withVariant:nil];
+        const NSUInteger open = self.openFileDescriptorCount;
+        for (NSUInteger i = 0; i < 5000; i++) {
+            [store addFeatureFlag:[NSString stringWithFormat:@"fd-%lu", (unsigned long)i]
+                      withVariant:@"a-reasonably-long-variant-to-force-several-growth-steps"];
+        }
+        XCTAssertGreaterThan(store.replaceFileCount, 3);
+        XCTAssertEqual(self.openFileDescriptorCount, open, @"Growing the file leaked descriptors");
+    }
+    XCTAssertEqual(self.openFileDescriptorCount, before, @"Closing the store leaked descriptors");
+}
+
+@end
+
+#pragma mark - Stress tests (only run when BSG_RUN_STRESS_TESTS is set)
+
+@interface BSGPersistentFeatureFlagStoreStressTests : BSGPersistentFeatureFlagStoreStressTestCase
+@end
+
+@implementation BSGPersistentFeatureFlagStoreStressTests
+
++ (XCTestSuite *)defaultTestSuite {
+    // An empty suite rather than XCTSkip, which is unavailable in the oldest versions of Xcode
+    // used to run the tests
+    if (!NSProcessInfo.processInfo.environment[@"BSG_RUN_STRESS_TESTS"]) {
+        return [XCTestSuite testSuiteWithName:NSStringFromClass(self)];
+    }
+    return [super defaultTestSuite];
 }
 
 #pragma mark Volume
@@ -618,7 +726,11 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     }
     const unsigned long long fileSize = [self fileSize];
 
-    const int fdsBefore = OpenFileDescriptorCount();
+    // One more open/close cycle first, so that anything opened once per process is not counted
+    @autoreleasepool {
+        XCTAssertEqual([self openStore].allFlags.count, 2);
+    }
+    const NSUInteger fdsBefore = self.openFileDescriptorCount;
     const uint64_t vmBefore = VirtualMemorySize();
     const NSUInteger iterations = 500;
     CFAbsoluteTime start = CFAbsoluteTimeGetCurrent();
@@ -634,12 +746,12 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
         }
     }
     const double totalMs = MillisecondsSince(start);
-    const int fdsAfter = OpenFileDescriptorCount();
+    const NSUInteger fdsAfter = self.openFileDescriptorCount;
     const uint64_t vmAfter = VirtualMemorySize();
     const int64_t vmDelta = (int64_t)vmAfter - (int64_t)vmBefore;
-    NSLog(@"[STRESS] %lu open/close cycles of a %llu byte file: total=%.1f ms (%.2f ms each), open fds %d -> %d, "
-          "virtual memory delta=%lld bytes (getdtablesize=%d)",
-          (unsigned long)iterations, fileSize, totalMs, totalMs / iterations, fdsBefore, fdsAfter, vmDelta, getdtablesize());
+    NSLog(@"[STRESS] %lu open/close cycles of a %llu byte file: total=%.1f ms (%.2f ms each), open fds in the directory %lu -> %lu, "
+          "virtual memory delta=%lld bytes",
+          (unsigned long)iterations, fileSize, totalMs, totalMs / iterations, (unsigned long)fdsBefore, (unsigned long)fdsAfter, vmDelta);
 
     XCTAssertEqual(fdsAfter, fdsBefore, @"File descriptors leaked");
     // If every instance leaked its mapping the delta would be iterations * fileSize (> 2 GB). The limit is half
@@ -647,21 +759,6 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     XCTAssertLessThan(vmDelta, (int64_t)(iterations * fileSize / 2), @"Mappings leaked");
     NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.filePath.stringByDeletingLastPathComponent error:nil];
     XCTAssertEqualObjects([files filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"pathExtension == 'tmp'"]], @[]);
-}
-
-- (void)testStoreGrowthDoesNotLeakFileDescriptors {
-    const int fdsBefore = OpenFileDescriptorCount();
-    @autoreleasepool {
-        BSGStressCountingPersistentFeatureFlagStore *store =
-        [[BSGStressCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-        for (NSUInteger i = 0; i < 5000; i++) {
-            [store addFeatureFlag:[NSString stringWithFormat:@"fd-%lu", (unsigned long)i]
-                      withVariant:@"a-reasonably-long-variant-to-force-several-growth-steps"];
-        }
-        XCTAssertGreaterThan(store.replaceFileCount, 3);
-        XCTAssertEqual(OpenFileDescriptorCount(), fdsBefore, @"An open store should not hold a file descriptor");
-    }
-    XCTAssertEqual(OpenFileDescriptorCount(), fdsBefore);
 }
 
 @end

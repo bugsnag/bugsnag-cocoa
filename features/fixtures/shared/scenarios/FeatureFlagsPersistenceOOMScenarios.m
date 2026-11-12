@@ -15,6 +15,16 @@
 #import <signal.h>
 #import <unistd.h>
 
+/// Deletes the temporary files the SDK writes before replacing flags.bin (flags.bin.<UUID>.tmp).
+static void FeatureFlagsRemoveTemporaryFiles(void) {
+    NSString *directory = FeatureFlagsDirectoryPath();
+    for (NSString *name in [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil]) {
+        if ([name hasPrefix:@"flags.bin."] && [name hasSuffix:@".tmp"]) {
+            [NSFileManager.defaultManager removeItemAtPath:[directory stringByAppendingPathComponent:name] error:nil];
+        }
+    }
+}
+
 #pragma mark - 7. OOM event contains the persisted flags
 
 /// Adds 500 flags in bulk, updates one, clears one, adds long / Unicode / empty-variant /
@@ -97,7 +107,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         NSString *binPath = FeatureFlagsBinPath();
         [NSFileManager.defaultManager removeItemAtPath:binPath error:nil];
-        [NSFileManager.defaultManager removeItemAtPath:[binPath stringByAppendingString:@".tmp"] error:nil];
+        FeatureFlagsRemoveTemporaryFiles();
         // Written out of index order; the old SDK reported flags sorted by index.
         FeatureFlagsWriteLegacyFile(@"legacy-b", @"variant-b", 2);
         FeatureFlagsWriteLegacyFile(@"legacy-a", nil, 1);

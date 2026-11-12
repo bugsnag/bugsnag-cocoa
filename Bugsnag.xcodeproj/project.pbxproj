@@ -3429,48 +3429,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		204B8A1C9C8A4723BB596EDD /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		47977C7693FA8FECC9DDB9F2 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		51AF0BA19B173B2F7AA4753C /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		554BA1677D8344AE00C2135F /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B759FA70DCEB12A6B4FDABDE /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C32BA73421ED3FAB54B9099B /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CBBDE8F3280067AB0070DCD3 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -3639,7 +3597,6 @@
 				00AD1C7724869B0E00A27979 /* Sources */,
 				00AD1C7824869B0E00A27979 /* Frameworks */,
 				00AD1C7924869B0E00A27979 /* Resources */,
-				47977C7693FA8FECC9DDB9F2 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3677,7 +3634,6 @@
 				00AD1CB124869C1200A27979 /* Sources */,
 				00AD1CB224869C1200A27979 /* Frameworks */,
 				00AD1CB324869C1200A27979 /* Resources */,
-				554BA1677D8344AE00C2135F /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3714,7 +3670,6 @@
 				00AD1CCD24869C2400A27979 /* Sources */,
 				00AD1CCE24869C2400A27979 /* Frameworks */,
 				00AD1CCF24869C2400A27979 /* Resources */,
-				51AF0BA19B173B2F7AA4753C /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3733,7 +3688,6 @@
 				00AD1CE024869C6C00A27979 /* Sources */,
 				00AD1CE124869C6C00A27979 /* Frameworks */,
 				00AD1CE224869C6C00A27979 /* CopyFiles */,
-				204B8A1C9C8A4723BB596EDD /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3752,7 +3706,6 @@
 				01A617682733CFEA00024A0B /* Frameworks */,
 				01A617692733CFEA00024A0B /* Resources */,
 				01A6178B2733D15C00024A0B /* Embed Frameworks */,
-				B759FA70DCEB12A6B4FDABDE /* Headers */,
 			);
 			buildRules = (
 			);
@@ -3789,7 +3742,6 @@
 				CBBDE8FD280067AB0070DCD3 /* Sources */,
 				CBBDE8FE280067AB0070DCD3 /* Frameworks */,
 				CBBDE8FF280067AB0070DCD3 /* Resources */,
-				C32BA73421ED3FAB54B9099B /* Headers */,
 			);
 			buildRules = (
 			);
