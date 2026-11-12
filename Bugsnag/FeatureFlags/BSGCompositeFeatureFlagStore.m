@@ -78,10 +78,11 @@
     [self.persistentStore clear];
 }
 
+// Required by BSGFeatureFlagStore. The memory store is replaced first and its result is then copied
+// to the other stores, so that all three hold exactly the same flags in the same order.
 - (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
-    [self.atomicStore replaceAllFlags:featureFlags];
     [self.memoryStore replaceAllFlags:featureFlags];
-    [self.persistentStore replaceAllFlags:featureFlags];
+    [self synchronizeFlagsWithMemoryStore];
 }
 
 @end

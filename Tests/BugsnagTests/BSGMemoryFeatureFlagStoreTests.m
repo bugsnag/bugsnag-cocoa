@@ -146,4 +146,24 @@
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
 }
 
+- (void)testAddFeatureFlagsWithDuplicateNamesKeepsFirstPositionAndLastVariant {
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"A" variant:@"1"],
+                             [BugsnagFeatureFlag flagWithName:@"B"],
+                             [BugsnagFeatureFlag flagWithName:@"A" variant:@"2"]]];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"A", @"variant": @"2"}, @{@"featureFlag": @"B"}]));
+
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"C" variant:@"3"],
+                             [BugsnagFeatureFlag flagWithName:@"A"]]];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"A"}, @{@"featureFlag": @"B"}, @{@"featureFlag": @"C", @"variant": @"3"}]));
+
+    // Clearing a name and adding it again puts it at the end
+    [store clear:@"A"];
+    [store addFeatureFlag:@"A" withVariant:@"4"];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"B"}, @{@"featureFlag": @"C", @"variant": @"3"}, @{@"featureFlag": @"A", @"variant": @"4"}]));
+}
+
 @end
