@@ -2,8 +2,10 @@ Feature: Feature flag persistence
 
   # Feature flags are persisted in <storage>/featureFlags/featureflag.bin so that they can be included in
   # Out Of Memory / thermal kill events at next launch. Older SDKs persisted one JSON file per flag.
-  # The file is created when there are first flags to save. Adding a flag that is already present
-  # replaces its variant and keeps its position, in memory and in the file.
+  # Nothing is created in the directory (neither featureflag.bin nor featureflag.lock) until there are
+  # flags to save, so an app that never has feature flags leaves it empty. When all flags are cleared,
+  # an existing file is emptied in place. Adding a flag that is already present replaces its variant
+  # and keeps its position, in memory and in the file.
   #
   # Handled errors use the in-memory flags and crash reports use the crash-safe atomic store, so only
   # OOM events (iOS only, tagged @skip_macos) report the flags read back from disk.
@@ -319,3 +321,24 @@ Feature: Feature flag persistence
       | after-start | current          |
       | bulk-000    | bulk-000:updated |
       | bulk-002    | bulk-002:v1      |
+
+  # 12
+  Scenario: Nothing is created in the feature flags directory when there are no flags
+    When I run "FeatureFlagsNoFlagsScenario"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the event has no feature flags
+    And the event "metaData.flagsDir.featureFlagFileExists" is false
+    And the event "metaData.flagsDir.lockFileExists" is false
+    And the event "metaData.flagsDir.jsonFileCount" equals 0
+
+  # 12
+  Scenario: Clearing all flags empties featureflag.bin
+    When I set the app to "add-clear" mode
+    And I run "FeatureFlagsNoFlagsScenario"
+    And I wait to receive an error
+    Then the error is valid for the error reporting API
+    And the event has no feature flags
+    And the event "metaData.flagsDir.featureFlagFileExists" is true
+    And the event "metaData.flagsDir.featureFlagFileHasValidHeader" is true
+    And the event "metaData.flagsDir.lockFileExists" is true

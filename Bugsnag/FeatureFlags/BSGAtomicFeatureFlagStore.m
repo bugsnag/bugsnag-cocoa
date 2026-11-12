@@ -23,11 +23,14 @@ struct bsg_feature_flag_list_item {
 
 static _Atomic(struct bsg_feature_flag_list_item *) g_feature_flags_head;
 static _Atomic(struct bsg_feature_flag_list_item *) g_feature_flags_tail;
-static atomic_bool g_writing_crash_report;
+// The number of crash-time readers walking the list. It is a count rather than a flag because several
+// reports can be written at the same time (e.g. a crash while an app hang report is being written), and
+// an item must not be freed until the last of them has finished.
+static atomic_int g_crash_report_readers;
 
 // The crash-time reader must not take locks, so these atomics must be lock-free on every platform.
 _Static_assert(ATOMIC_POINTER_LOCK_FREE == 2, "Feature flag list pointers must be lock-free");
-_Static_assert(ATOMIC_BOOL_LOCK_FREE == 2, "g_writing_crash_report must be lock-free");
+_Static_assert(ATOMIC_INT_LOCK_FREE == 2, "g_crash_report_readers must be lock-free");
 
 // The list above is global, so all instances share this lock and this index.
 static NSObject *g_lock;
@@ -39,11 +42,13 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
  * reader, which takes no locks and allocates nothing, therefore always walks a complete list:
  * either the one from before an update or the one from after it.
  *
- * Freeing is safe because of the order of the sequentially consistent operations on each side. The
- * reader sets g_writing_crash_report before it loads the head, and a writer makes an item
- * unreachable before it checks g_writing_crash_report (in _awaitAtomicFeatureFlagsLockIfNeeded) and
- * frees it. So either the writer sees the flag set and waits for the report to be written, or the
- * reader starts after the item was unlinked and can never reach it.
+ * Freeing is safe because of the order of the sequentially consistent operations on each side. A
+ * reader increments g_crash_report_readers before it loads the head and decrements it once it has
+ * finished with the list, and a writer makes an item unreachable before it checks that the count is
+ * zero (in _awaitAtomicFeatureFlagsLockIfNeeded) and frees it. So either the writer sees a reader that
+ * may still reach the item and waits until every reader has finished, or the reader starts after the
+ * item was unlinked and can never reach it. Because readers are counted, one reader finishing does not
+ * let a writer free an item that another reader is still walking.
  *
  * Duplicate names follow BSGMemoryFeatureFlagStore: adding a name that is already present replaces
  * its variant and keeps the flag in the position where the name was first added.
@@ -148,7 +153,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 #pragma mark - Private methods
 
 - (void)_awaitAtomicFeatureFlagsLockIfNeeded {
-    while (atomic_load(&g_writing_crash_report)) { continue; }
+    while (atomic_load(&g_crash_report_readers) > 0) { continue; }
 }
 
 - (struct bsg_feature_flag_list_item *)_newItemForFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant {
@@ -261,8 +266,8 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 
 void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
                                         bool __unused requiresAsyncSafety) {
-    atomic_store(&g_writing_crash_report, true);
-    
+    atomic_fetch_add(&g_crash_report_readers, 1);
+
     writer->beginArray(writer, "featureFlags");
     
     struct bsg_feature_flag_list_item *item = atomic_load(&g_feature_flags_head);
@@ -272,6 +277,6 @@ void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
     }
     
     writer->endContainer(writer);
-    
-    atomic_store(&g_writing_crash_report, false);
+
+    atomic_fetch_sub(&g_crash_report_readers, 1);
 }

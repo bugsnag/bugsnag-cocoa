@@ -28,14 +28,20 @@ char *_Nullable BSGCStringWithData(NSData *_Nullable data);
 /// and its descriptor kept open for as long as it is used; closing the descriptor, even while a mapping remains, gives up that guarantee.
 BOOL BSGDisableNSFileProtectionComplete(NSString *path);
 
+/// As BSGDisableNSFileProtectionComplete, and also reports in `changed` (if not NULL) whether the protection class was
+/// actually changed, i.e. whether the file had NSFileProtectionComplete. `changed` is NO when an error is returned.
+BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
+
 /// Opens (or, with O_CREAT, creates) a file whose descriptor is kept open while the file is used, returning -1 on error.
 ///
 /// Applies Bugsnag's backup policy to the file and changes NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen
-/// (see BSGDisableNSFileProtectionComplete), then reopens the file, so that the descriptor returned was opened after the
-/// protection class was changed rather than under NSFileProtectionComplete. The file stays accessible while the device is
-/// locked for as long as that descriptor stays open. Descriptors are opened with O_CLOEXEC so that they do not leak into
-/// child processes, and new files are created with mode 0600. A file created here with O_EXCL is deleted if it cannot be
-/// set up.
+/// (see BSGDisableNSFileProtectionComplete). If the protection class was changed, the file is reopened, so that the
+/// descriptor returned was opened after the change rather than under NSFileProtectionComplete; the reopened descriptor is
+/// only returned if it refers to the same file (device and inode) as the first one, and -1 is returned if the path was
+/// replaced in between. If the class was not changed, the first descriptor is returned without reopening the file. The
+/// file stays accessible while the device is locked for as long as the descriptor stays open. Descriptors are opened with
+/// O_CLOEXEC so that they do not leak into child processes, and with O_NOFOLLOW so that a symbolic link at the path is
+/// refused. New files are created with mode 0600. A file created here with O_EXCL is deleted if it cannot be set up.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
 dispatch_queue_t BSGGetFileSystemQueue(void);

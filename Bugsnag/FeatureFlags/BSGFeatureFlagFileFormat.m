@@ -88,7 +88,7 @@ static NSString * BSGFeatureFlagDecodeString(const uint8_t *bytes, uint32_t leng
     NSString *string = [[NSString alloc] initWithBytes:bytes length:length encoding:NSUTF8StringEncoding];
     if (string && length >= sizeof(byteOrderMark) && memcmp(bytes, byteOrderMark, sizeof(byteOrderMark)) == 0 &&
         [string lengthOfBytesUsingEncoding:NSUTF8StringEncoding] == length - sizeof(byteOrderMark)) {
-        string = [@"﻿" stringByAppendingString:string];
+        string = [@"\uFEFF" stringByAppendingString:string];
     }
     return string;
 }

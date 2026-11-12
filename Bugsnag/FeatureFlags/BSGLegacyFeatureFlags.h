@@ -32,8 +32,9 @@ BOOL BSGIsLegacyFeatureFlagFile(NSString *file);
 /// decoded are skipped.
 NSArray<BugsnagFeatureFlag *> * BSGLegacyFeatureFlags(NSArray<NSString *> *paths);
 
-/// Deletes the JSON files, logging any error other than a file that no longer exists.
-void BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths);
+/// Deletes the JSON files, logging any error other than a file that no longer exists. Returns the paths of the
+/// files that could not be deleted, so that deleting them can be tried again.
+NSArray<NSString *> * BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths);
 
 __END_DECLS
 

@@ -185,3 +185,109 @@
 }
 
 @end
+
+#pragma mark - Review findings
+
+@interface BSGUtilsReviewFindingTests : BSGTestCase
+@property (nonatomic) NSString *directory;
+@end
+
+@implementation BSGUtilsReviewFindingTests
+
+- (void)setUp {
+    [super setUp];
+    self.directory = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                      [NSString stringWithFormat:@"BSGUtilsReviewFindingTests-%@", NSUUID.UUID.UUIDString]];
+    [NSFileManager.defaultManager createDirectoryAtPath:self.directory withIntermediateDirectories:YES attributes:nil error:nil];
+}
+
+- (void)tearDown {
+    [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
+    [super tearDown];
+}
+
+/// The lowest descriptor number that is not in use, which is the one open() returns next.
+static int BSGLowestFreeDescriptor(void) {
+    int fd = dup(STDIN_FILENO);
+    if (fd != -1) {
+        close(fd);
+    }
+    return fd;
+}
+
+- (void)testFileIsNotReopenedWhenTheProtectionClassIsNotChanged {
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    XCTAssertTrue([NSData.data writeToFile:path atomically:NO]);
+    BOOL changed = YES;
+    XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+    XCTAssertFalse(changed, @"A file that does not have NSFileProtectionComplete is not changed");
+
+    // Reopening opens a second descriptor before closing the first, so the descriptor returned would not be
+    // the lowest free one. Other threads can open descriptors at the same time, so this is tried a few times.
+    BOOL reopened = YES;
+    for (int attempt = 0; attempt < 5 && reopened; attempt++) {
+        const int expected = BSGLowestFreeDescriptor();
+        const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+        XCTAssertNotEqual(fd, -1);
+        if (fd == -1) {
+            return;
+        }
+        reopened = fd != expected;
+        close(fd);
+    }
+    XCTAssertFalse(reopened, @"The file should not have been reopened");
+
+    // The same applies to a file created by the call
+    NSString *created = [self.directory stringByAppendingPathComponent:@"created"];
+    reopened = YES;
+    for (int attempt = 0; attempt < 5 && reopened; attempt++) {
+        unlink(created.fileSystemRepresentation);
+        const int expected = BSGLowestFreeDescriptor();
+        const int fd = BSGOpenFileWithoutCompleteProtection(created, O_RDWR | O_CREAT | O_EXCL);
+        XCTAssertNotEqual(fd, -1);
+        if (fd == -1) {
+            return;
+        }
+        reopened = fd != expected;
+        close(fd);
+    }
+    XCTAssertFalse(reopened, @"A created file should not have been reopened");
+}
+
+- (void)testDescriptorRefersToTheFileAtThePath {
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    struct stat byDescriptor, byPath;
+    XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &byPath), 0);
+    XCTAssertEqual(byDescriptor.st_dev, byPath.st_dev);
+    XCTAssertEqual(byDescriptor.st_ino, byPath.st_ino);
+    close(fd);
+}
+
+- (void)testSymbolicLinkAtThePathIsRefused {
+    NSString *target = [self.directory stringByAppendingPathComponent:@"target"];
+    NSString *link = [self.directory stringByAppendingPathComponent:@"link"];
+    XCTAssertTrue([[@"target" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:target atomically:NO]);
+    XCTAssertEqual(symlink(target.fileSystemRepresentation, link.fileSystemRepresentation), 0);
+
+    for (NSNumber *flags in @[@(O_RDONLY), @(O_RDWR), @(O_RDWR | O_CREAT)]) {
+        errno = 0;
+        XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(link, flags.intValue), -1);
+        XCTAssertEqual(errno, ELOOP);
+    }
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:target], [@"target" dataUsingEncoding:NSUTF8StringEncoding]);
+
+    // A dangling link is not followed to create a file elsewhere
+    NSString *missing = [self.directory stringByAppendingPathComponent:@"missing"];
+    NSString *danglingLink = [self.directory stringByAppendingPathComponent:@"dangling"];
+    XCTAssertEqual(symlink(missing.fileSystemRepresentation, danglingLink.fileSystemRepresentation), 0);
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(danglingLink, O_RDWR | O_CREAT), -1);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:missing]);
+}
+
+@end

@@ -149,6 +149,7 @@ NSDictionary<NSString *, id> * FeatureFlagsDirectorySummary(void) {
         @"featureFlagFileExists": exists ? @YES : @NO,
         @"featureFlagFileIsDirectory": (exists && isDirectory) ? @YES : @NO,
         @"featureFlagFileHasValidHeader": validHeader ? @YES : @NO,
+        @"lockFileExists": [entries containsObject:@"featureflag.lock"] ? @YES : @NO,
     };
 }
 
@@ -529,6 +530,26 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
     [self addFlags];
     @throw [NSException exceptionWithName:NSGenericException reason:@"FeatureFlagsDirectoryAtFilePathCrashScenario"
                                  userInfo:nil];
+}
+
+@end
+
+#pragma mark - 12. No files without flags
+
+/// Starts Bugsnag without any feature flags and sends a handled error. Nothing is created in the featureFlags
+/// directory, because there is never a flag to save. In "add-clear" mode a flag is added (which creates the
+/// files) and then cleared before the error is sent, so featureflag.bin exists but holds no flags.
+@interface FeatureFlagsNoFlagsScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsNoFlagsScenario
+
+- (void)run {
+    if ([self.args.firstObject isEqualToString:@"add-clear"]) {
+        [Bugsnag addFeatureFlagWithName:@"temporary" variant:@"1"];
+        [Bugsnag clearFeatureFlags];
+    }
+    [self notifyHandledError];
 }
 
 @end

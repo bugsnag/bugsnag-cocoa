@@ -22,6 +22,7 @@
 #define UIApplicationDidBecomeActiveNotification            @"UIApplicationDidBecomeActiveNotification"
 #define UIApplicationDidEnterBackgroundNotification         @"UIApplicationDidEnterBackgroundNotification"
 #define UIApplicationDidReceiveMemoryWarningNotification    @"UIApplicationDidReceiveMemoryWarningNotification"
+#define UIApplicationProtectedDataDidBecomeAvailable        @"UIApplicationProtectedDataDidBecomeAvailable"
 #define UIApplicationUserDidTakeScreenshotNotification      @"UIApplicationUserDidTakeScreenshotNotification"
 #define UIApplicationWillEnterForegroundNotification        @"UIApplicationWillEnterForegroundNotification"
 #define UIApplicationWillResignActiveNotification           @"UIApplicationWillResignActiveNotification"

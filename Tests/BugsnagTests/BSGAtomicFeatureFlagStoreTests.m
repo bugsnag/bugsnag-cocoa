@@ -483,3 +483,106 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
 }
 
 @end
+
+#pragma mark - Review findings
+
+// The original addJSONElement of the writer used by the readers in the test below
+static void (*g_originalAddJSONElement)(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement);
+
+/// Lets the test pause a crash-time reader while it is walking the list: signals the thread's
+/// "entered" semaphore and waits on its "proceed" semaphore before writing each element.
+static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement) {
+    NSMutableDictionary *threadDictionary = NSThread.currentThread.threadDictionary;
+    dispatch_semaphore_t entered = threadDictionary[@"BSGReaderEntered"];
+    dispatch_semaphore_t proceed = threadDictionary[@"BSGReaderProceed"];
+    if (entered && proceed) {
+        dispatch_semaphore_signal(entered);
+        dispatch_semaphore_wait(proceed, DISPATCH_TIME_FOREVER);
+    }
+    g_originalAddJSONElement(writer, name, jsonElement);
+}
+
+@interface BSGAtomicFeatureFlagStoreReviewFindingTests : BSGTestCase
+@end
+
+@implementation BSGAtomicFeatureFlagStoreReviewFindingTests
+
+- (void)setUp {
+    [super setUp];
+    [[BSGAtomicFeatureFlagStore store] clear];
+}
+
+- (void)tearDown {
+    [[BSGAtomicFeatureFlagStore store] clear];
+    [super tearDown];
+}
+
+/// Writes a crash report on a background thread, pausing before each element until proceed is signalled.
+static void BSGStartPausedReader(dispatch_group_t group, dispatch_semaphore_t entered, dispatch_semaphore_t proceed,
+                                 NSMutableArray *results) {
+    dispatch_group_async(group, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        NSMutableDictionary *threadDictionary = NSThread.currentThread.threadDictionary;
+        threadDictionary[@"BSGReaderEntered"] = entered;
+        threadDictionary[@"BSGReaderProceed"] = proceed;
+        NSDictionary *object = bsg_JSONObject(^(BSG_KSCrashReportWriter *writer) {
+            g_originalAddJSONElement = writer->addJSONElement;
+            BSG_KSCrashReportWriter pausingWriter = *writer;
+            pausingWriter.addJSONElement = BSGPausingAddJSONElement;
+            pausingWriter.beginObject(&pausingWriter, "");
+            BugsnagFeatureFlagsWriteCrashReport(&pausingWriter, true);
+            pausingWriter.endContainer(&pausingWriter);
+        });
+        [threadDictionary removeObjectForKey:@"BSGReaderEntered"];
+        [threadDictionary removeObjectForKey:@"BSGReaderProceed"];
+        @synchronized (results) {
+            [results addObject:object[@"featureFlags"] ?: @[]];
+        }
+    });
+}
+
+- (void)testWriterDoesNotFreeItemsWhileAnotherReaderIsStillReading {
+    BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
+    [store addFeatureFlag:@"first" withVariant:@"1"];
+    [store addFeatureFlag:@"second" withVariant:@"2"];
+
+    NSMutableArray *results = [NSMutableArray array];
+    dispatch_group_t readers = dispatch_group_create();
+    dispatch_semaphore_t enteredA = dispatch_semaphore_create(0), proceedA = dispatch_semaphore_create(0);
+    dispatch_semaphore_t enteredB = dispatch_semaphore_create(0), proceedB = dispatch_semaphore_create(0);
+
+    // Both readers stop on the first item, so both are walking the list at the same time
+    BSGStartPausedReader(readers, enteredA, proceedA, results);
+    XCTAssertEqual(dispatch_semaphore_wait(enteredA, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
+    BSGStartPausedReader(readers, enteredB, proceedB, results);
+    XCTAssertEqual(dispatch_semaphore_wait(enteredB, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
+
+    // Reader A finishes while reader B is still on the first item
+    dispatch_semaphore_signal(proceedA);
+    XCTAssertEqual(dispatch_semaphore_wait(enteredA, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
+    dispatch_semaphore_signal(proceedA);
+
+    // A writer that would free the items reader B is reading must wait for it
+    __block atomic_bool cleared = false;
+    dispatch_semaphore_t writerDone = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        [store clear];
+        atomic_store(&cleared, true);
+        dispatch_semaphore_signal(writerDone);
+    });
+    [NSThread sleepForTimeInterval:0.3];
+    XCTAssertFalse(atomic_load(&cleared), @"The items were freed while a reader was still walking them");
+
+    // Once reader B has finished, the writer frees the list
+    dispatch_semaphore_signal(proceedB);
+    XCTAssertEqual(dispatch_semaphore_wait(enteredB, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
+    dispatch_semaphore_signal(proceedB);
+    XCTAssertEqual(dispatch_group_wait(readers, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
+    XCTAssertEqual(dispatch_semaphore_wait(writerDone, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
+    XCTAssertTrue(atomic_load(&cleared));
+
+    NSArray *expected = @[@{@"featureFlag": @"first", @"variant": @"1"}, @{@"featureFlag": @"second", @"variant": @"2"}];
+    XCTAssertEqualObjects(results, (@[expected, expected]));
+    XCTAssertEqualObjects(AtomicStoreFlags(), @[]);
+}
+
+@end

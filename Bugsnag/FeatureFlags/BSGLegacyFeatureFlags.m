@@ -60,12 +60,15 @@ NSArray<BugsnagFeatureFlag *> * BSGLegacyFeatureFlags(NSArray<NSString *> *paths
     return flags;
 }
 
-void BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths) {
+NSArray<NSString *> * BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths) {
+    NSMutableArray<NSString *> *remaining = [NSMutableArray array];
     for (NSString *path in paths) {
         NSError *error = nil;
         if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error] &&
             !([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
             bsg_log_err(@"Unable to delete a feature flag file: %@", error);
+            [remaining addObject:path];
         }
     }
+    return remaining;
 }
