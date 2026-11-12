@@ -24,6 +24,8 @@ char *_Nullable BSGCStringWithData(NSData *_Nullable data);
 /// Files with NSFileProtectionComplete cannot be read from or written to while the device is locked or booting.
 ///
 /// Files with NSFileProtectionCompleteUnlessOpen can be created while the device is locked, but once closed, cannot be opened again until the device is unlocked.
+/// A file that must stay accessible while the device is locked (e.g. one that is memory mapped) must therefore be opened after calling this function
+/// and its descriptor kept open for as long as it is used; closing the descriptor, even while a mapping remains, gives up that guarantee.
 BOOL BSGDisableNSFileProtectionComplete(NSString *path);
 
 dispatch_queue_t BSGGetFileSystemQueue(void);
