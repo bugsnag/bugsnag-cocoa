@@ -76,6 +76,25 @@
 
 #endif
 
+- (void)testBSGStringFromThermalState {
+    XCTAssertEqualObjects(BSGStringFromThermalState(NSProcessInfoThermalStateNominal), @"nominal");
+    XCTAssertEqualObjects(BSGStringFromThermalState(NSProcessInfoThermalStateFair), @"fair");
+    XCTAssertEqualObjects(BSGStringFromThermalState(NSProcessInfoThermalStateSerious), @"serious");
+    XCTAssertEqualObjects(BSGStringFromThermalState(NSProcessInfoThermalStateCritical), @"critical");
+    XCTAssertNil(BSGStringFromThermalState((NSProcessInfoThermalState)99));
+}
+
+- (void)testCStringWithData {
+    char *string = BSGCStringWithData([@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+    XCTAssertTrue(string != NULL);
+    if (string) {
+        XCTAssertEqual(strcmp(string, "abc"), 0);
+        free(string);
+    }
+    XCTAssertTrue(BSGCStringWithData(nil) == NULL);
+    XCTAssertTrue(BSGCStringWithData(NSData.data) == NULL);
+}
+
 - (void)testOpenFileWithoutCompleteProtection {
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
 
@@ -112,6 +131,57 @@
 
     [NSFileManager.defaultManager removeItemAtPath:path error:nil];
     XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
+}
+
+- (void)testOpenFileWithoutCompleteProtectionKeepsTheFirstDescriptorIfItCannotReopen {
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+
+    // The first descriptor holds an exclusive lock, so reopening with O_EXLOCK | O_NONBLOCK fails and the
+    // descriptor that was opened first is returned instead
+    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK);
+    XCTAssertNotEqual(fd, -1);
+    if (fd != -1) {
+        XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
+        XCTAssertEqual(pwrite(fd, "abc", 3, 0), 3);
+        // The lock is still held by the returned descriptor
+        XCTAssertEqual(open(path.fileSystemRepresentation, O_RDONLY | O_EXLOCK | O_NONBLOCK), -1);
+        XCTAssertEqual(errno, EWOULDBLOCK);
+        close(fd);
+    }
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+}
+
+- (void)testOpenFileWithoutCompleteProtectionFailsIfTheProtectionCannotBeChanged {
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
+    if (@available(macOS 11.0, *)) {
+        NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+        XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+        NSURL *url = [NSURL fileURLWithPath:path];
+        NSURLFileProtectionType protection = nil;
+        if (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:nil] ||
+            ![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil] ||
+            ![protection isEqual:NSURLFileProtectionComplete]) {
+            [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+            XCTSkip(@"File protection is not supported here");
+        }
+        // An immutable file can be opened for reading, but its protection class cannot be changed
+        XCTAssertEqual(chflags(path.fileSystemRepresentation, UF_IMMUTABLE), 0);
+
+        XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
+        // A file that was not created by the call is not deleted
+        XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path]);
+        protection = nil;
+        [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+        XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+        XCTAssertEqualObjects(protection, NSURLFileProtectionComplete);
+
+        chflags(path.fileSystemRepresentation, 0);
+        [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+        return;
+    }
+#endif
+    XCTSkip(@"NSURLFileProtectionKey is unavailable");
 }
 
 @end

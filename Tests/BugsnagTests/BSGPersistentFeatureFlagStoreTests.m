@@ -13,8 +13,11 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BugsnagFeatureFlag.h"
 
+#import <errno.h>
 #import <fcntl.h>
+#import <signal.h>
 #import <sys/mman.h>
+#import <sys/resource.h>
 #import <sys/stat.h>
 
 // Layout of the file header; see BSGFeatureFlagFileFormat.h
@@ -37,6 +40,7 @@ static const size_t ActiveOffset = 16;
 - (BOOL)writeSnapshot;
 - (BOOL)appendRecords:(NSData *)records;
 - (BOOL)replaceFileWithSnapshot:(NSData *)snapshot;
+- (BOOL)writeActiveLength:(uint64_t)length slot:(uint32_t)slot;
 @property (nonatomic) NSTimeInterval retryInterval;
 @property (nonatomic) NSTimeInterval retryTime;
 @end
@@ -102,6 +106,46 @@ static const size_t ActiveOffset = 16;
 }
 
 @end
+
+/// Fails the next failHeaderWrites writes of the header's active value, as an I/O error would. Writes of the
+/// log itself are not affected, so this reaches the case where the records were written but the header was not.
+@interface BSGHeaderFailingPersistentFeatureFlagStore : BSGPersistentFeatureFlagStore
+@property (nonatomic) NSUInteger failHeaderWrites;
+@end
+
+@implementation BSGHeaderFailingPersistentFeatureFlagStore
+
+- (BOOL)writeActiveLength:(uint64_t)length slot:(uint32_t)slot {
+    if (self.failHeaderWrites > 0) {
+        self.failHeaderWrites--;
+        errno = EIO;
+        return NO;
+    }
+    return [super writeActiveLength:length slot:slot];
+}
+
+@end
+
+/// Runs the block with the process's file size limit (RLIMIT_FSIZE) set to `limit` bytes, so that writing or
+/// extending any file past that offset fails with EFBIG, as writes fail when the disk is full. A write that
+/// crosses the limit is cut short. SIGXFSZ, which would otherwise end the process, is ignored meanwhile.
+/// Returns NO if the limit could not be set.
+static BOOL BSGWithFileSizeLimit(rlim_t limit, void (^ block)(void)) {
+    struct rlimit original;
+    if (getrlimit(RLIMIT_FSIZE, &original) != 0 || limit > original.rlim_max) {
+        return NO;
+    }
+    void (*previousHandler)(int) = signal(SIGXFSZ, SIG_IGN);
+    const struct rlimit limited = {limit, original.rlim_max};
+    if (setrlimit(RLIMIT_FSIZE, &limited) != 0) {
+        signal(SIGXFSZ, previousHandler);
+        return NO;
+    }
+    block();
+    setrlimit(RLIMIT_FSIZE, &original);
+    signal(SIGXFSZ, previousHandler);
+    return YES;
+}
 
 static NSArray * FlagNames(NSArray<BugsnagFeatureFlag *> *flags) {
     return [flags valueForKey:@"name"];
@@ -1628,6 +1672,251 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [NSData.data writeToFile:[self.filePath stringByAppendingString:@".tmp"] atomically:NO];
     BSGGrowStore(store, @"after", 1000);
     XCTAssertEqual([self reopenedFlags].count, 1001);
+}
+
+#pragma mark Write errors
+
+- (void)testAppendFailureEmptiesTheLogAndIsRetried {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    store.retryInterval = 0.3;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    XCTAssertEqual([self activeValue], 10 << 1, @"One 10-byte record in slot 0");
+
+    // The record for "b" (10 bytes at offset 42) crosses the limit, so it is written in part and then fails
+    // with EFBIG, like a write to a full disk. The header is below the limit, so the log can be emptied.
+    XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + 10 + 4, ^{
+        [store addFeatureFlag:@"b" withVariant:@"2"];
+    }));
+    NSArray *expected = @[@[@"a", @"1"], @[@"b", @"2"]];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected, @"The flags stay in memory");
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The file must not hold flags that have since changed");
+    [self assertFileIsAValidEmptySnapshot];
+
+    // A change within the retry interval is not written, and the scheduled retry saves everything
+    [store addFeatureFlag:@"c" withVariant:nil];
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    expected = [expected arrayByAddingObject:@[@"c", NSNull.null]];
+    XCTAssertTrue([self waitForReopenedFlags:expected timeout:10]);
+    [store addFeatureFlag:@"d" withVariant:nil];
+    XCTAssertEqualObjects([self reopenedFlags], ([expected arrayByAddingObject:@[@"d", NSNull.null]]));
+}
+
+- (void)testSnapshotFailureEmptiesTheLogAndIsRetried {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    store.retryInterval = 0.3;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    [store addFeatureFlag:@"b" withVariant:@"2"];
+    XCTAssertEqual([self activeValue] & 1, 0);
+    const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
+
+    // The new log fits in the file, so it is written to slot 1, which is past the limit
+    XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + slotCapacity, ^{
+        [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"c" variant:@"3"]]];
+    }));
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"c", @"3"]]));
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The file must not hold the replaced flags");
+    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"c", @"3"]] timeout:10]));
+}
+
+- (void)testHeaderWriteFailureDeletesTheFile {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    store.retryInterval = 0.3;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+
+    // Neither the record nor the header (at offset 16) can be written, so the log cannot be emptied and
+    // the file, which this store owns, is deleted instead
+    XCTAssertTrue(BSGWithFileSizeLimit(ActiveOffset, ^{
+        [store addFeatureFlag:@"b" withVariant:@"2"];
+    }));
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqual(store.allFlags.count, 2);
+
+    // The retry creates a new file
+    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"], @[@"b", @"2"]] timeout:10]));
+}
+
+- (void)testClearFailureDeletesTheFile {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    store.retryInterval = 0;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+
+    // The empty log is only a header write, which fails
+    XCTAssertTrue(BSGWithFileSizeLimit(ActiveOffset, ^{
+        [store clear];
+    }));
+    XCTAssertTrue(store.isEmpty);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath],
+                   @"Flags that were cleared must not be reported later");
+
+    // The file is created again by the next change
+    [store addFeatureFlag:@"b" withVariant:nil];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"b", NSNull.null]]));
+}
+
+- (void)testHeaderWriteFailureAfterTheRecordsWereWritten {
+    BSGHeaderFailingPersistentFeatureFlagStore *store =
+    [[BSGHeaderFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
+    store.retryInterval = 0.3;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+
+    // The records are written but the length that makes them part of the log is not; the log is emptied
+    store.failHeaderWrites = 1;
+    [store addFeatureFlag:@"b" withVariant:@"2"];
+    XCTAssertEqual(store.failHeaderWrites, 0);
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"], @[@"b", @"2"]] timeout:10]));
+
+    // If the log cannot be emptied either, the file is deleted
+    store.retryInterval = 0;
+    store.failHeaderWrites = 2;
+    [store clear:@"a"];
+    XCTAssertEqual(store.failHeaderWrites, 0);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"b", @"2"]]));
+    [store addFeatureFlag:@"c" withVariant:nil];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"b", @"2"], @[@"c", NSNull.null]]));
+}
+
+- (void)testFileThatCannotBeExtendedIsNotCreated {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    store.retryInterval = 0.3;
+
+    // The temporary file cannot be extended to its full size (ftruncate fails with EFBIG)
+    XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize, ^{
+        [store addFeatureFlag:@"a" withVariant:@"1"];
+    }));
+    NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directory error:nil];
+    XCTAssertEqualObjects(files, @[@"featureflag.lock"], @"The temporary file must be deleted");
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"a", @"1"]]));
+
+    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"]] timeout:10]));
+    files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directory error:nil];
+    XCTAssertEqualObjects([files sortedArrayUsingSelector:@selector(compare:)], (@[@"featureflag.bin", @"featureflag.lock"]));
+}
+
+#pragma mark Lock and open errors
+
+- (void)testLockCannotBeCreatedInAnUnwritableDirectory {
+    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    [[self newStore] addFeatureFlag:@"previous" withVariant:@"1"];
+    NSString *lockPath = [self.directory stringByAppendingPathComponent:@"featureflag.lock"];
+    XCTAssertEqual(unlink(lockPath.fileSystemRepresentation), 0);
+    NSData *contents = [NSData dataWithContentsOfFile:self.filePath];
+    XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
+
+    // Without the lock the store reads the flags but changes nothing
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"previous", @"1"]]));
+    [store addFeatureFlag:@"a" withVariant:nil];
+    [store clear:@"previous"];
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"b"]]];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"b", NSNull.null]]));
+    XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:lockPath]);
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:self.filePath], contents);
+}
+
+- (void)testStoreWithoutTheLockThatCannotOpenTheFileChangesNothing {
+    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    BSGPersistentFeatureFlagStore *owner = [self newStore];
+    [owner addFeatureFlag:@"a" withVariant:@"1"];
+    XCTAssertEqual(chmod(self.filePath.fileSystemRepresentation, 0), 0);
+
+    BSGPersistentFeatureFlagStore *other = [self newStore];
+    XCTAssertTrue(other.isEmpty, @"The file cannot be read");
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath], @"A store without the lock deletes nothing");
+    other = nil;
+
+    // The store that holds the lock still writes through the descriptor it has open
+    [owner addFeatureFlag:@"b" withVariant:nil];
+    XCTAssertEqual(chmod(self.filePath.fileSystemRepresentation, 0600), 0);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
+}
+
+#pragma mark Size limit and decoding
+
+- (void)testSizeLimitAtTheExactBoundary {
+    // The limit applies to the encoded flags: each record is 8 bytes of lengths, then the name and variant
+    const NSUInteger maxSlotCapacity = 2 * 1024 * 1024 - 16;
+    NSString *(^variant)(NSUInteger) = ^(NSUInteger recordLength) {
+        return [@"" stringByPaddingToLength:recordLength - 8 - 1 withString:@"x" startingAtIndex:0];
+    };
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    store.retryInterval = 0;
+
+    [store addFeatureFlag:@"a" withVariant:variant(maxSlotCapacity)];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant(maxSlotCapacity)]]));
+    XCTAssertEqual([self headerFieldAtOffset:SlotCapacityOffset], maxSlotCapacity);
+    XCTAssertEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize],
+                   HeaderSize + 2 * maxSlotCapacity, @"The largest file is 4 MB");
+
+    // One byte more is kept in memory but not persisted
+    [store addFeatureFlag:@"a" withVariant:variant(maxSlotCapacity + 1)];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"a", variant(maxSlotCapacity + 1)]]));
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+
+    // Back at the limit, the flags are persisted again in the same file
+    [store addFeatureFlag:@"a" withVariant:variant(maxSlotCapacity)];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant(maxSlotCapacity)]]));
+    XCTAssertEqual([self activeValue] & 1, 1);
+
+    // Two flags that just fit, then just don't
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"a" variant:variant(maxSlotCapacity / 2)],
+                             [BugsnagFeatureFlag flagWithName:@"b" variant:variant(maxSlotCapacity / 2)]]];
+    XCTAssertEqual([self reopenedFlags].count, 2);
+    [store addFeatureFlag:@"c" withVariant:nil];
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqual(store.allFlags.count, 3);
+}
+
+- (void)testRecordCutShortAtTheEndOfTheLog {
+    [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
+    // The log ends 3 bytes into what would be the next record's lengths (the slot is zero-filled)
+    const uint64_t active = (10 + 3) << 1;
+    [self replaceFileBytesAtOffset:ActiveOffset withBytes:&active length:sizeof(active)];
+
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    [self assertFileIsAValidEmptySnapshot];
+}
+
+#pragma mark Legacy file errors
+
+- (void)testLegacyFilesThatCannotBeReadOrDeleted {
+    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    [self writeLegacyFlag:@"valid" variant:@"v" index:1];
+    // A file that cannot be read
+    [self writeLegacyJSON:@"{\"featureFlag\": \"unreadable\", \"index\": 0}" toFile:@"unreadable.json"];
+    NSString *unreadable = [self.directory stringByAppendingPathComponent:@"unreadable.json"];
+    XCTAssertEqual(chmod(unreadable.fileSystemRepresentation, 0), 0);
+    // Something that cannot be read as a file or deleted
+    NSString *stuck = [self.directory stringByAppendingPathComponent:@"stuck.json"];
+    XCTAssertTrue([NSFileManager.defaultManager createDirectoryAtPath:stuck withIntermediateDirectories:NO attributes:nil error:nil]);
+    XCTAssertTrue([NSData.data writeToFile:[stuck stringByAppendingPathComponent:@"file"] atomically:NO]);
+    XCTAssertEqual(chmod(stuck.fileSystemRepresentation, 0500), 0);
+
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    XCTAssertEqual(chmod(stuck.fileSystemRepresentation, 0700), 0);
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"valid", @"v"]]));
+    XCTAssertEqualObjects([self jsonFiles], @[@"stuck.json"], @"The unreadable file is deleted, the directory is not");
+}
+
+- (void)testLegacyFilesWithTheSameIndexAreAllImported {
+    [self writeLegacyFlag:@"same-1" variant:nil index:4];
+    [self writeLegacyFlag:@"first" variant:@"1" index:0];
+    [self writeLegacyFlag:@"same-2" variant:@"2" index:4];
+    [self writeLegacyFlag:@"last" variant:nil index:9];
+
+    NSArray *flags = FlagsToArray([self newStore].allFlags);
+    XCTAssertEqual(flags.count, 4);
+    XCTAssertEqualObjects(flags.firstObject, (@[@"first", @"1"]));
+    XCTAssertEqualObjects(flags.lastObject, (@[@"last", NSNull.null]));
+    // Files with the same index keep the order in which the directory was listed
+    NSSet *middle = [NSSet setWithArray:[flags subarrayWithRange:NSMakeRange(1, 2)]];
+    XCTAssertEqualObjects(middle, ([NSSet setWithArray:@[@[@"same-1", NSNull.null], @[@"same-2", @"2"]]]));
+    XCTAssertEqualObjects([self reopenedFlags], flags);
 }
 
 @end

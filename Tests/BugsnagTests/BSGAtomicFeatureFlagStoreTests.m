@@ -431,4 +431,55 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
     XCTAssertFalse(HasDuplicateNames(flags));
 }
 
+#pragma mark - Other behaviour
+
+- (void)testAllFlagsIsAlwaysEmpty {
+    // The flags are only read by BugsnagFeatureFlagsWriteCrashReport; allFlags is never used
+    BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
+    XCTAssertEqualObjects(store.allFlags, @[]);
+    [store addFeatureFlag:@"A" withVariant:@"1"];
+    XCTAssertFalse(store.isEmpty);
+    XCTAssertEqualObjects(store.allFlags, @[]);
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"A", @"variant": @"1"}]));
+}
+
+- (void)testFlagsThatCannotBeSerializedAreSkipped {
+    // A lone surrogate cannot be converted to UTF-8, so the flag cannot be serialized as JSON
+    const unichar loneSurrogate = 0xD800;
+    NSString *unencodable = [NSString stringWithCharacters:&loneSurrogate length:1];
+    BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
+
+    [store addFeatureFlag:unencodable withVariant:nil];
+    XCTAssertTrue(store.isEmpty);
+
+    [store addFeatureFlag:@"A" withVariant:@"1"];
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"B" variant:unencodable],
+                             [BugsnagFeatureFlag flagWithName:@"C"]]];
+    // An update that cannot be serialized leaves the flag as it was
+    [store addFeatureFlag:@"A" withVariant:unencodable];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"A", @"variant": @"1"},
+                                                 @{@"featureFlag": @"C"}]));
+
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:unencodable],
+                             [BugsnagFeatureFlag flagWithName:@"D" variant:@"4"],
+                             [BugsnagFeatureFlag flagWithName:@"E" variant:unencodable]]];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"D", @"variant": @"4"}]));
+
+    // Only flags that cannot be serialized gives an empty list
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:unencodable]]];
+    XCTAssertTrue(store.isEmpty);
+    XCTAssertEqualObjects(AtomicStoreFlags(), @[]);
+    [store clear:unencodable];
+    XCTAssertTrue(store.isEmpty);
+}
+
+- (void)testClearingAMissingNameDoesNothing {
+    BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
+    [store clear:@"missing"];
+    XCTAssertTrue(store.isEmpty);
+    [store addFeatureFlag:@"A" withVariant:nil];
+    [store clear:@"missing"];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"A"}]));
+}
+
 @end
