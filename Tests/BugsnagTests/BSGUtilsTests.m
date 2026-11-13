@@ -11,6 +11,7 @@
 #import "BSGUtils.h"
 
 #import <fcntl.h>
+#import <sys/param.h>
 #import <sys/stat.h>
 #import <unistd.h>
 
@@ -285,6 +286,16 @@ static NSArray<NSNumber *> * DescriptorsForFile(dev_t dev, ino_t ino) {
     return descriptors;
 }
 
+/// The paths of the descriptors, for failure messages.
+static NSArray<NSString *> * PathsOfDescriptors(NSArray<NSNumber *> *descriptors) {
+    NSMutableArray<NSString *> *paths = [NSMutableArray array];
+    for (NSNumber *fd in descriptors) {
+        char path[MAXPATHLEN] = {0};
+        [paths addObject:fcntl(fd.intValue, F_GETPATH, path) == 0 ? @(path) : @"?"];
+    }
+    return paths;
+}
+
 /// Sets O_NONBLOCK on the open file description of every descriptor that refers to the file at the path. A
 /// descriptor returned by a later open() of the path has its own description, without the flag, so this tells a
 /// descriptor that was opened first apart from one that was reopened.
@@ -449,7 +460,14 @@ static BOOL IsMarked(int fd) {
     [self simulateProtection];
     gSetProtectionError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteNoPermissionError userInfo:nil];
     __block struct stat opened = {0};
-    gWillGetProtection = ^(NSString *p) { lstat(p.fileSystemRepresentation, &opened); };
+    // Other code in the test process can read a protection class while these functions are replaced, so only this
+    // test's files are recorded
+    NSString *directory = self.directory;
+    gWillGetProtection = ^(NSString *p) {
+        if ([p hasPrefix:directory]) {
+            lstat(p.fileSystemRepresentation, &opened);
+        }
+    };
 
     // A file created by the call is deleted, and its descriptor closed
     NSString *created = [self.directory stringByAppendingPathComponent:@"created"];
@@ -458,7 +476,8 @@ static BOOL IsMarked(int fd) {
     XCTAssertEqual(gSetProtectionCalls.count, 1);
     XCTAssertNotEqual(opened.st_ino, 0);
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:created]);
-    XCTAssertEqualObjects(DescriptorsForFile(opened.st_dev, opened.st_ino), @[]);
+    NSArray<NSNumber *> *leftOpen = DescriptorsForFile(opened.st_dev, opened.st_ino);
+    XCTAssertEqualObjects(leftOpen, @[], @"%@", PathsOfDescriptors(leftOpen));
 
     // A file that already existed is left as it was, and its descriptor closed
     NSString *existing = [self.directory stringByAppendingPathComponent:@"existing"];
@@ -468,7 +487,8 @@ static BOOL IsMarked(int fd) {
         opened = (struct stat){0};
         XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(existing, flags.intValue), -1);
         XCTAssertNotEqual(opened.st_ino, 0);
-        XCTAssertEqualObjects(DescriptorsForFile(opened.st_dev, opened.st_ino), @[]);
+        leftOpen = DescriptorsForFile(opened.st_dev, opened.st_ino);
+        XCTAssertEqualObjects(leftOpen, @[], @"%@", PathsOfDescriptors(leftOpen));
     }
     XCTAssertEqualObjects([NSData dataWithContentsOfFile:existing], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
     XCTAssertEqualObjects(gSimulatedProtection[existing], NSURLFileProtectionComplete);
@@ -608,6 +628,65 @@ static int BSGLowestFreeDescriptor(void) {
     XCTAssertEqual(symlink(missing.fileSystemRepresentation, danglingLink.fileSystemRepresentation), 0);
     XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(danglingLink, O_RDWR | O_CREAT), -1);
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:missing]);
+}
+
+- (void)testDefaultProtectionFunctionsReadAndChangeARealFile {
+    // The tests above stand in for the file system, so this checks the functions they replace against a real file.
+    // NSFileProtectionCompleteUntilFirstUserAuthentication and NSFileProtectionCompleteUnlessOpen, unlike
+    // NSFileProtectionComplete, can be set while the screen is locked, so this runs on a locked or headless host
+    // too. Only reading NSFileProtectionComplete itself is left to the tests that set it on a real file.
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
+    if (@available(macOS 11.0, *)) {
+        // Passing no functions keeps the defaults and returns them
+        const BSGFileProtectionFunctions defaults = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
+        XCTAssertTrue(defaults.getProtection != NULL && defaults.setProtection != NULL);
+        if (!defaults.getProtection || !defaults.setProtection) {
+            return;
+        }
+        NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+        XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+        NSURL *url = [NSURL fileURLWithPath:path];
+        NSError *error = nil;
+        if (![url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
+                            forKey:NSURLFileProtectionKey error:&error] ||
+            ![defaults.getProtection(path) isEqual:NSURLFileProtectionCompleteUntilFirstUserAuthentication]) {
+            NSString *reason = [NSString stringWithFormat:@"the file has %@ (%@ %ld)", defaults.getProtection(path),
+                                error.domain, (long)error.code];
+            if (BSGFileProtectionTestsAreRequired()) {
+                XCTFail(@"Protection classes are not supported on this host: %@", reason);
+                return;
+            }
+            XCTSkip(@"Protection classes are not supported on this host: %@", reason);
+        }
+
+        // A class other than NSFileProtectionComplete is read as it is and left alone
+        BOOL changed = YES;
+        XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+        XCTAssertFalse(changed);
+        XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUntilFirstUserAuthentication);
+
+        // The class that BSGChangeNSFileProtectionComplete sets is written to the file, and read back
+        error = nil;
+        XCTAssertTrue(defaults.setProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error), @"%@", error);
+        XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUnlessOpen);
+        NSURLFileProtectionType protection = nil;
+        [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+        XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+        XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
+
+        // A failure is reported with an error, and the class is not changed
+        XCTAssertTrue([url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
+                                     forKey:NSURLFileProtectionKey error:nil]);
+        XCTAssertEqual(chflags(path.fileSystemRepresentation, UF_IMMUTABLE), 0);
+        error = nil;
+        XCTAssertFalse(defaults.setProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error));
+        XCTAssertNotNil(error);
+        XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUntilFirstUserAuthentication);
+        chflags(path.fileSystemRepresentation, 0);
+        return;
+    }
+#endif
+    XCTSkip(@"NSURLFileProtectionKey is unavailable");
 }
 
 @end

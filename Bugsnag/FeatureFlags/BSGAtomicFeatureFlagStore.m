@@ -172,6 +172,10 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 - (void)_setFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
     struct bsg_feature_flag_list_item *newItem = [self _newItemForFeatureFlagWithName:name variant:variant];
     if (!newItem) {
+        // The new value cannot be serialized. Remove any earlier value so that a crash report leaves the flag
+        // out rather than reporting a variant the app has replaced. This matches replaceAllFlags: and the
+        // persistent store. The removal unlinks the item and waits for crash-time readers before freeing it.
+        [self _removeFeatureFlagWithName:name];
         return;
     }
     struct bsg_feature_flag_list_item *oldItem = [nameToFlag[name] pointerValue];

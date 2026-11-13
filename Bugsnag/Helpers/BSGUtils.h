@@ -36,10 +36,14 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 ///
 /// Applies Bugsnag's backup policy to the file and changes NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen
 /// (see BSGDisableNSFileProtectionComplete). If the protection class was changed, the file is reopened, so that the
-/// descriptor returned was opened after the change rather than under NSFileProtectionComplete; the reopened descriptor is
-/// only returned if it refers to the same file (device and inode) as the first one, and -1 is returned if the path was
-/// replaced in between. If the class was not changed, the first descriptor is returned without reopening the file. The
-/// file stays accessible while the device is locked for as long as the descriptor stays open. Descriptors are opened with
+/// descriptor returned is normally one opened after the change rather than under NSFileProtectionComplete; the reopened
+/// descriptor is only returned if it refers to the same file (device and inode) as the first one, and -1 is returned if
+/// the path was replaced in between. If the file cannot be reopened (for example because the device locked between the
+/// two opens), the first descriptor is returned instead: it was opened under NSFileProtectionComplete, so reads and
+/// writes through it can start failing once the device is locked. Callers must therefore handle a later read or write
+/// failure; BSGPersistentFeatureFlagStore does so by closing the descriptor and retrying through its usual retry. If
+/// the class was not changed, the first descriptor is returned without reopening the file. Otherwise the file stays
+/// accessible while the device is locked for as long as the descriptor stays open. Descriptors are opened with
 /// O_CLOEXEC so that they do not leak into child processes, and with O_NOFOLLOW so that a symbolic link at the path is
 /// refused. New files are created with mode 0600. A file created here with O_EXCL is deleted if it cannot be set up.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);

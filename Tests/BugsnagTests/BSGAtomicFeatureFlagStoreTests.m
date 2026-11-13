@@ -12,6 +12,7 @@
 #import "BugsnagFeatureFlag.h"
 #import "BSGCompositeFeatureFlagStore.h"
 #import "BSGMemoryFeatureFlagStore.h"
+#import "BSGPersistentFeatureFlagStore.h"
 
 #import <stdatomic.h>
 
@@ -23,6 +24,20 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     });
     return object[@"featureFlags"];
 }
+
+/// A memory store that stands in for the persistent store, which must implement replaceAllFlags:.
+/// The SDK's memory store does not implement it because nothing calls it.
+@interface BSGAtomicTestsReplaceableStore : BSGMemoryFeatureFlagStore <BSGReplaceableFeatureFlagStore>
+@end
+
+@implementation BSGAtomicTestsReplaceableStore
+
+- (void)replaceAllFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    [self clear];
+    [self addFeatureFlags:featureFlags];
+}
+
+@end
 
 @interface BSGAtomicFeatureFlagStoreTests : BSGTestCase
 
@@ -298,7 +313,8 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     XCTAssertEqualObjects(AtomicStoreFlags(), BSGFeatureFlagStoreToJSON(memoryStore));
 
     [atomicStore replaceAllFlags:[input reverseObjectEnumerator].allObjects];
-    [memoryStore replaceAllFlags:[input reverseObjectEnumerator].allObjects];
+    [memoryStore clear];
+    [memoryStore addFeatureFlags:[input reverseObjectEnumerator].allObjects];
     XCTAssertEqualObjects(AtomicStoreFlags(), BSGFeatureFlagStoreToJSON(memoryStore));
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"B"},
                                                  @{@"featureFlag": @"C", @"variant": @"3"},
@@ -307,9 +323,46 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
 
 #pragma mark - Composite store
 
+- (void)testVariantThatCannotBeSerializedRemovesTheFlagFromCrashAndPersistedReports {
+    // A lone surrogate, as left by truncating a string in the middle of an emoji, cannot be converted to UTF-8
+    const unichar loneSurrogate = 0xD800;
+    NSString *unencodable = [NSString stringWithCharacters:&loneSurrogate length:1];
+    NSString *directory = [NSTemporaryDirectory() stringByAppendingPathComponent:
+                           [NSString stringWithFormat:@"BSGAtomicFeatureFlagStoreTests-%@", NSUUID.UUID.UUIDString]];
+    [NSFileManager.defaultManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+
+    @autoreleasepool {
+        BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
+        BSGPersistentFeatureFlagStore *persistentStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+        BSGCompositeFeatureFlagStore *store = [BSGCompositeFeatureFlagStore storeWithMemoryStore:memoryStore
+                                                                                 persistentStore:persistentStore
+                                                                                     atomicStore:[BSGAtomicFeatureFlagStore store]];
+        [store addFeatureFlag:@"other" withVariant:@"1"];
+        [store addFeatureFlag:@"exp" withVariant:@"control"];
+        [store addFeatureFlag:@"exp" withVariant:unencodable];
+
+        // Crash reports (atomic store) and OOM and thermal kill events (persistent store) both leave the flag out
+        // rather than report "control", a variant that the app has replaced
+        NSArray *withoutExp = @[@{@"featureFlag": @"other", @"variant": @"1"}];
+        XCTAssertEqualObjects(AtomicStoreFlags(), withoutExp);
+        BSGPersistentFeatureFlagStore *reopened = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+        XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(reopened), withoutExp);
+        reopened = nil;
+
+        // The stores differ here on purpose. The memory store is the source for handled events and keeps every
+        // flag as the app set it, so it still holds exp with the new variant; it does not serialize flags itself.
+        NSArray<BugsnagFeatureFlag *> *memoryFlags = memoryStore.allFlags;
+        XCTAssertEqualObjects([memoryFlags valueForKey:@"name"], (@[@"other", @"exp"]));
+        XCTAssertEqualObjects(memoryFlags.lastObject.variant, unencodable);
+        XCTAssertEqualObjects([store.allFlags valueForKey:@"name"], (@[@"other", @"exp"]));
+    }
+
+    [NSFileManager.defaultManager removeItemAtPath:directory error:nil];
+}
+
 - (void)testCompositeStoreKeepsSubStoresInAgreement {
     BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
-    BSGMemoryFeatureFlagStore *persistentStore = [BSGMemoryFeatureFlagStore new];
+    BSGAtomicTestsReplaceableStore *persistentStore = [BSGAtomicTestsReplaceableStore new];
     BSGCompositeFeatureFlagStore *store = [BSGCompositeFeatureFlagStore storeWithMemoryStore:memoryStore
                                                                              persistentStore:persistentStore
                                                                                  atomicStore:[BSGAtomicFeatureFlagStore store]];
@@ -332,7 +385,8 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     assertAgreement(@[@{@"featureFlag": @"A", @"variant": @"3"}, @{@"featureFlag": @"C"}]);
 
     // As when Bugsnag starts: the memory store's flags are copied to the other stores
-    [memoryStore replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"D" variant:@"1"],
+    [memoryStore clear];
+    [memoryStore addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"D" variant:@"1"],
                                    [BugsnagFeatureFlag flagWithName:@"E"],
                                    [BugsnagFeatureFlag flagWithName:@"D" variant:@"2"]]];
     [store synchronizeFlagsWithMemoryStore];
@@ -455,10 +509,17 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
     [store addFeatureFlag:@"A" withVariant:@"1"];
     [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"B" variant:unencodable],
                              [BugsnagFeatureFlag flagWithName:@"C"]]];
-    // An update that cannot be serialized leaves the flag as it was
+    // An update that cannot be serialized removes the flag, so a crash report never shows a replaced variant
     [store addFeatureFlag:@"A" withVariant:unencodable];
-    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"A", @"variant": @"1"},
-                                                 @{@"featureFlag": @"C"}]));
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"C"}]));
+    // The same applies to an update that is part of a batch
+    [store addFeatureFlag:@"F" withVariant:@"6"];
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"F" variant:unencodable]]];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"C"}]));
+    // The flag can be added again afterwards, at the end of the list
+    [store addFeatureFlag:@"A" withVariant:@"2"];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"C"},
+                                                 @{@"featureFlag": @"A", @"variant": @"2"}]));
 
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:unencodable],
                              [BugsnagFeatureFlag flagWithName:@"D" variant:@"4"],

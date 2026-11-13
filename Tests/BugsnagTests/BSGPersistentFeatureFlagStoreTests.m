@@ -21,13 +21,6 @@
 #import <sys/stat.h>
 
 // Layout of the file header; see BSGFeatureFlagFileFormat.h
-// XCTSkipIf is not available in the oldest versions of Xcode used to run the tests
-#ifdef XCTSkipIf
-#define BSGSkipIf(condition, ...) XCTSkipIf(condition, __VA_ARGS__)
-#else
-#define BSGSkipIf(condition, ...) if (condition) { NSLog(__VA_ARGS__); return; }
-#endif
-
 static const size_t HeaderSize = 32;
 static const size_t MagicOffset = 0;
 static const size_t VersionOffset = 4;
@@ -253,6 +246,20 @@ static NSArray * FlagNames(NSArray<BugsnagFeatureFlag *> *flags) {
 
 - (void)replaceAllFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
     [self.calls addObject:@[@"replaceAllFlags:", FlagNames(featureFlags)]];
+}
+
+@end
+
+/// A memory store that can stand in for the persistent store, or act as the reference that a persistent store's
+/// order is checked against. The SDK's memory store does not implement replaceAllFlags: because nothing calls it.
+@interface BSGReplaceableMemoryFeatureFlagStore : BSGMemoryFeatureFlagStore <BSGReplaceableFeatureFlagStore>
+@end
+
+@implementation BSGReplaceableMemoryFeatureFlagStore
+
+- (void)replaceAllFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
+    [self clear];
+    [self addFeatureFlags:featureFlags];
 }
 
 @end
@@ -850,7 +857,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testCompositeStoreSynchronizesOtherPersistentStores {
-    BSGMemoryFeatureFlagStore *persistentStore = [BSGMemoryFeatureFlagStore new];
+    BSGReplaceableMemoryFeatureFlagStore *persistentStore = [BSGReplaceableMemoryFeatureFlagStore new];
     [persistentStore addFeatureFlag:@"previous" withVariant:nil];
     BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
     [memoryStore addFeatureFlag:@"config" withVariant:@"1"];
@@ -885,7 +892,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self reopenedFlags], expected);
 
     // As when Bugsnag starts: the memory store's flags replace the persisted ones
-    [memoryStore replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"d" variant:@"4"]]];
+    [memoryStore clear];
+    [memoryStore addFeatureFlag:@"d" withVariant:@"4"];
     [store synchronizeFlagsWithMemoryStore];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"d", @"4"]]));
     XCTAssertEqualObjects(FlagsToArray(store.persistedFlags), (@[@[@"d", @"4"]]));
@@ -918,7 +926,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 /// Applies operations to a memory store and a persistent store, checking after each that both hold the
 /// same flags in the same order, also after the persistent store is reloaded.
 - (void)assertOperationsMatchTheMemoryStore:(NSArray<void (^)(id<BSGReplaceableFeatureFlagStore> store)> *)operations {
-    BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
+    BSGReplaceableMemoryFeatureFlagStore *memoryStore = [BSGReplaceableMemoryFeatureFlagStore new];
     BSGPersistentFeatureFlagStore *store = [self newStore];
     NSUInteger index = 0;
     for (void (^ operation)(id<BSGReplaceableFeatureFlagStore>) in operations) {
@@ -1124,7 +1132,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testFailureWhenCreatedIsRetriedWhenBugsnagStarts {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     // The lock file is created before the directory becomes read-only
     int fd = open([self.directory stringByAppendingPathComponent:@"featureflag.lock"].fileSystemRepresentation, O_RDONLY | O_CREAT, 0600);
@@ -1505,7 +1513,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testUnwritableDirectoryAfterTheFileIsCreated {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
@@ -1523,7 +1531,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testWritingIsRetriedAfterTheRetryInterval {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
@@ -1545,7 +1553,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testUnreadableFileIsDeletedWhenItCannotBeReplaced {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [[self newStore] addFeatureFlag:@"previous-launch" withVariant:@"1"];
     // The file cannot be opened, and a new file cannot be written
     XCTAssertEqual(chmod(self.filePath.fileSystemRepresentation, 0), 0);
@@ -1889,7 +1897,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 #pragma mark Lock and open errors
 
 - (void)testLockCannotBeCreatedInAnUnwritableDirectory {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [[self newStore] addFeatureFlag:@"previous" withVariant:@"1"];
     NSString *lockPath = [self.directory stringByAppendingPathComponent:@"featureflag.lock"];
     XCTAssertEqual(unlink(lockPath.fileSystemRepresentation), 0);
@@ -1909,7 +1917,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 }
 
 - (void)testStoreWithoutTheLockThatCannotOpenTheFileChangesNothing {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     BSGPersistentFeatureFlagStore *owner = [self newStore];
     [owner addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(chmod(self.filePath.fileSystemRepresentation, 0), 0);
@@ -1974,7 +1982,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 #pragma mark Legacy file errors
 
 - (void)testLegacyFilesThatCannotBeReadOrDeleted {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [self writeLegacyFlag:@"valid" variant:@"v" index:1];
     // A file that cannot be read
     [self writeLegacyJSON:@"{\"featureFlag\": \"unreadable\", \"index\": 0}" toFile:@"unreadable.json"];
@@ -2479,7 +2487,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 #pragma mark JSON files that could not be deleted
 
 - (void)testLegacyFilesThatCouldNotBeDeletedAreDeletedByTheNextWrite {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     int fd = open([self.directory stringByAppendingPathComponent:@"featureflag.lock"].fileSystemRepresentation, O_RDONLY | O_CREAT, 0600);
     XCTAssertNotEqual(fd, -1);
@@ -2502,7 +2510,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testLegacyFilesThatCouldNotBeDeletedAreDeletedWhenTheFlagsAreCleared {
-    BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
+    XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     int fd = open([self.directory stringByAppendingPathComponent:@"featureflag.lock"].fileSystemRepresentation, O_RDONLY | O_CREAT, 0600);
     XCTAssertNotEqual(fd, -1);

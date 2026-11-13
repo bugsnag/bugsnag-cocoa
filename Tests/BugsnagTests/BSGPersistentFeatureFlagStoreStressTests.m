@@ -5,9 +5,22 @@
 //  Copyright © 2026 Bugsnag Inc. All rights reserved.
 //
 //  BSGPersistentFeatureFlagStoreStressTests contains long running volume, churn, concurrency,
-//  kill-during-write and resource tests. They take too long for every CI run, so they only run
-//  when the environment variable BSG_RUN_STRESS_TESTS is set, for example:
-//  TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test ...
+//  kill-during-write and resource tests. They take too long for every CI run, so CI does not run
+//  them: they only run when the environment variable BSG_RUN_STRESS_TESTS is set. Run them by hand
+//  before a release (see TESTING.md), on macOS and in an iOS simulator:
+//
+//  TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-macOS \
+//      -destination 'platform=macOS' -only-testing:Bugsnag-macOSTests/BSGPersistentFeatureFlagStoreStressTests
+//
+//  TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
+//      -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGPersistentFeatureFlagStoreStressTests
+//
+//  Run the file protection tests in BSGUtilsTests and BSGRunContextTests at the same time, with the
+//  screen unlocked, so that they fail rather than skip if NSFileProtectionComplete cannot be set:
+//
+//  TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
+//      -destination 'platform=iOS Simulator,name=iPhone 17' \
+//      -only-testing:Bugsnag-iOSTests/BSGUtilsTests -only-testing:Bugsnag-iOSTests/BSGRunContextTests
 //
 //  BSGPersistentFeatureFlagStoreFileDescriptorTests contains quick checks that always run.
 //
@@ -26,13 +39,6 @@
 #import <stdatomic.h>
 #import <sys/wait.h>
 #import <unistd.h>
-
-// XCTSkipIf is not available in the oldest versions of Xcode used to run the tests
-#ifdef XCTSkipIf
-#define BSGSkipIf(condition, ...) XCTSkipIf(condition, __VA_ARGS__)
-#else
-#define BSGSkipIf(condition, ...) if (condition) { NSLog(__VA_ARGS__); return; }
-#endif
 
 // Layout of the file header; see BSGFeatureFlagFileFormat.h
 static const size_t StressHeaderSize = 32;
@@ -339,8 +345,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 @implementation BSGPersistentFeatureFlagStoreStressTests
 
 + (XCTestSuite *)defaultTestSuite {
-    // An empty suite rather than XCTSkip, which is unavailable in the oldest versions of Xcode
-    // used to run the tests
+    // An empty suite rather than a skip in every test, so that a normal run does not list dozens of skipped tests
     if (!NSProcessInfo.processInfo.environment[@"BSG_RUN_STRESS_TESTS"]) {
         return [XCTestSuite testSuiteWithName:NSStringFromClass(self)];
     }
@@ -653,9 +658,9 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 - (void)testFileIsConsistentAfterBeingKilledDuringWrites {
     NSString *xctest = NSProcessInfo.processInfo.arguments.firstObject;
     NSString *bundlePath = [NSBundle bundleForClass:[self class]].bundlePath;
-    BSGSkipIf(![xctest.lastPathComponent isEqualToString:@"xctest"],
+    XCTSkipIf(![xctest.lastPathComponent isEqualToString:@"xctest"],
               @"The child process needs the tests to run in xctest, not %@", xctest);
-    BSGSkipIf(NSProcessInfo.processInfo.environment[@"DYLD_INSERT_LIBRARIES"] != nil,
+    XCTSkipIf(NSProcessInfo.processInfo.environment[@"DYLD_INSERT_LIBRARIES"] != nil,
               @"The child process cannot load a test bundle built with a sanitizer");
     NSString *testName = [NSString stringWithFormat:@"%@/testChildProcessChangesFlagsUntilKilled", NSStringFromClass([self class])];
     srand48(20261030);

@@ -23,7 +23,7 @@
 #import "BugsnagNotifier.h"
 #import "FeatureFlags/BSGFeatureFlagStore.h"
 
-@interface BSGMemoryFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore, NSCopying>
+@interface BSGMemoryFeatureFlagStore : NSObject <BSGFeatureFlagStore, NSCopying>
 @end
 
 @interface BSGPersistentFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore>

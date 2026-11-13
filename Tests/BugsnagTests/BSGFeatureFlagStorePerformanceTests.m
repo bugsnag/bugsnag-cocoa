@@ -13,9 +13,12 @@
 //  split into a "JSON" and a "Binary" test with an identical workload.
 //  testPrintComparisonTable logs a markdown table of p50 / p95 timings.
 //
-//  The benchmarks take several minutes, so they only run when the environment
-//  variable BSG_RUN_PERFORMANCE_TESTS is set, for example:
-//  TEST_RUNNER_BSG_RUN_PERFORMANCE_TESTS=1 xcodebuild test ...
+//  The benchmarks take several minutes, so CI does not run them: they only run
+//  when the environment variable BSG_RUN_PERFORMANCE_TESTS is set. Run them by
+//  hand before a release (see TESTING.md):
+//
+//  TEST_RUNNER_BSG_RUN_PERFORMANCE_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-macOS \
+//      -destination 'platform=macOS' -only-testing:Bugsnag-macOSTests/BSGFeatureFlagStorePerformanceTests
 //
 
 #import "BSGTestCase.h"
@@ -25,13 +28,6 @@
 #import "BugsnagFeatureFlag.h"
 
 #import <mach/mach_time.h>
-
-// XCTMeasureOptions and XCTMetric are not available in the oldest versions of Xcode used to run the tests
-#if __has_include(<XCTest/XCTMeasureOptions.h>)
-#define BSG_HAS_XCTMETRIC 1
-#else
-#define BSG_HAS_XCTMETRIC 0
-#endif
 
 typedef NS_ENUM(NSUInteger, BSGFeatureFlagStoreKind) {
     BSGFeatureFlagStoreKindJSON,
@@ -73,8 +69,7 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
 @implementation BSGFeatureFlagStorePerformanceTests
 
 + (XCTestSuite *)defaultTestSuite {
-    // An empty suite rather than XCTSkip, which is unavailable in the oldest versions of Xcode
-    // used to run the tests
+    // An empty suite rather than a skip in every test, so that a normal run does not list dozens of skipped tests
     if (!NSProcessInfo.processInfo.environment[@"BSG_RUN_PERFORMANCE_TESTS"]) {
         return [XCTestSuite testSuiteWithName:NSStringFromClass(self)];
     }
@@ -133,7 +128,6 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
 /// Wall-clock measurement with manual start/stop. Uses a reduced iteration count where
 /// XCTMeasureOptions is available, because the JSON store takes many seconds for 10,000 flags.
 - (void)measureWithIterations:(NSUInteger)iterations block:(void (^)(void))block {
-#if BSG_HAS_XCTMETRIC
     if (@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 8.0, *)) {
         XCTMeasureOptions *options = [XCTMeasureOptions defaultOptions];
         options.invocationOptions = XCTMeasurementInvocationManuallyStart | XCTMeasurementInvocationManuallyStop;
@@ -141,9 +135,7 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
         [self measureWithMetrics:@[[[XCTClockMetric alloc] init]] options:options block:block];
         return;
     }
-#else
-    (void)iterations;
-#endif
+    // Older OS versions: the default iteration count, measured with the older API
     [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:block];
 }
 
@@ -232,7 +224,6 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
 #pragma mark - Disk writes
 
 - (void)measureDiskWritesForBatchAdd:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind {
-#if BSG_HAS_XCTMETRIC
     if (@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 8.0, *)) {
         NSArray<BugsnagFeatureFlag *> *flags = BSGMakeFlags(0, count);
         XCTMeasureOptions *options = [XCTMeasureOptions defaultOptions];
@@ -250,11 +241,7 @@ static NSUInteger BSGIterationsForFlagCount(NSUInteger count) {
         }];
         return;
     }
-#else
-    (void)count;
-    (void)kind;
-#endif
-    NSLog(@"XCTStorageMetric is not available; skipping");
+    XCTSkip(@"XCTStorageMetric is not available on this OS version");
 }
 
 - (void)testDiskWritesBatchAdd1000JSON { [self measureDiskWritesForBatchAdd:1000 kind:BSGFeatureFlagStoreKindJSON]; }

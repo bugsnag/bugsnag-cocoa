@@ -83,6 +83,10 @@ Or to test on tvOS:
 
     make PLATFORM=tvOS test
 
+Some feature flag tests (stress tests, benchmarks and the tests that need
+`NSFileProtectionComplete`) are not run by CI. Run them by hand before a
+release - see [TESTING.md](TESTING.md#tests-that-are-run-by-hand-before-a-release).
+
 Run the integration tests - see [TESTING.md](TESTING.md#end-to-end-tests).
 
 ## Releasing
@@ -116,6 +120,7 @@ Run the integration tests - see [TESTING.md](TESTING.md#end-to-end-tests).
   - [ ] Are there pull requests for new features/behavior on the 
         [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
   - [ ] Run pre-release checks - see [instructions](./Tests/prerelease/README.md)
+  - [ ] Run the tests that CI does not run - see [TESTING.md](TESTING.md#tests-that-are-run-by-hand-before-a-release)
   
 * Consider the following, additional checks based on changes in the release:
   
