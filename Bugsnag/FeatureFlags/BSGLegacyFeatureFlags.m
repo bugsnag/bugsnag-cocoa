@@ -12,6 +12,41 @@
 #import "BugsnagFeatureFlag.h"
 #import "BugsnagLogger.h"
 
+#import <fcntl.h>
+#import <sys/stat.h>
+#import <unistd.h>
+
+// Each file holds one flag; this only stops an unexpectedly large file being read into memory
+static const off_t BSGLegacyFeatureFlagMaxFileSize = 16 * 1024 * 1024;
+
+/// Reads a JSON file, returning nil if it cannot be read. As with featureflag.bin, a symbolic link at the path is
+/// not followed (O_NOFOLLOW), and only regular files are read.
+static NSData *_Nullable BSGReadLegacyFeatureFlagFile(NSString *path) {
+    const int fd = open(path.fileSystemRepresentation, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+    if (fd == -1) {
+        return nil;
+    }
+    NSMutableData *data = nil;
+    struct stat st;
+    if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size <= BSGLegacyFeatureFlagMaxFileSize) {
+        data = [NSMutableData dataWithLength:(NSUInteger)st.st_size];
+        size_t offset = 0;
+        while (data && offset < data.length) {
+            const ssize_t count = read(fd, (uint8_t *)data.mutableBytes + offset, data.length - offset);
+            if (count > 0) {
+                offset += (size_t)count;
+            } else if (count == 0) {
+                // The file was shortened after fstat()
+                data.length = offset;
+            } else if (errno != EINTR) {
+                data = nil;
+            }
+        }
+    }
+    close(fd);
+    return data;
+}
+
 /// Returns whether a file's contents have the types expected by BSGStoredFeatureFlag. The SDK always
 /// wrote a name, so a file without one is not a feature flag file.
 static BOOL BSGIsValidStoredFeatureFlag(id content) {
@@ -38,7 +73,7 @@ NSArray<BugsnagFeatureFlag *> * BSGLegacyFeatureFlags(NSArray<NSString *> *paths
     NSMutableArray<BSGStoredFeatureFlag *> *storedFlags = [NSMutableArray array];
     for (NSString *path in paths) {
         // A file can be deleted or become unreadable between listing and reading it
-        NSData *data = [NSData dataWithContentsOfFile:path];
+        NSData *data = BSGReadLegacyFeatureFlagFile(path);
         id content = data ? [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil] : nil;
         if (content && BSGIsValidStoredFeatureFlag(content)) {
             [storedFlags addObject:[BSGStoredFeatureFlag fromJSON:content]];

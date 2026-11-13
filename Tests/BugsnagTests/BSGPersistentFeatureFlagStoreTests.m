@@ -43,6 +43,68 @@ static const size_t ActiveOffset = 16;
 - (BOOL)writeActiveLength:(uint64_t)length slot:(uint32_t)slot;
 @property (nonatomic) NSTimeInterval retryInterval;
 @property (nonatomic) NSTimeInterval retryTime;
+@property (nonatomic) BOOL fileIsCurrent;
+@property (nonatomic) int lockFd;
+@end
+
+/// Waits until the store holds the lock and has saved its current flags, as a retry that runs in the background
+/// does. Unlike reading the file from another store, this does not take the lock, so it never competes with the
+/// retry it is waiting for.
+static BOOL BSGWaitUntilStoreHasSaved(BSGPersistentFeatureFlagStore *store, NSTimeInterval timeout) {
+    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
+    while (YES) {
+        @synchronized (store) {
+            if (store.lockFd != -1 && store.fileIsCurrent) {
+                return YES;
+            }
+        }
+        if (deadline.timeIntervalSinceNow < 0) {
+            return NO;
+        }
+        [NSThread sleepForTimeInterval:0.01];
+    }
+}
+
+/// Records the retries that stores schedule instead of running them after their delay, so that a test decides when
+/// they run and does not depend on timing. It does not retain the stores: the retries hold them weakly.
+@interface BSGManualRetryScheduler : NSObject
+/// The delay of each retry scheduled so far, in order.
+@property (nonatomic, readonly) NSMutableArray<NSNumber *> *delays;
+@property (nonatomic, readonly) NSMutableArray<dispatch_block_t> *pendingRetries;
+- (void)attachToStore:(BSGPersistentFeatureFlagStore *)store;
+/// Runs the retries scheduled so far, in order, and returns how many were run. Only the most recently scheduled
+/// one does anything. Retries that they schedule are left pending.
+- (NSUInteger)runPendingRetries;
+@end
+
+@implementation BSGManualRetryScheduler
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _delays = [NSMutableArray array];
+        _pendingRetries = [NSMutableArray array];
+    }
+    return self;
+}
+
+- (void)attachToStore:(BSGPersistentFeatureFlagStore *)store {
+    __weak typeof(self) weakSelf = self;
+    store.retryScheduler = ^(NSTimeInterval delay, dispatch_block_t retry) {
+        typeof(self) strongSelf = weakSelf;
+        [strongSelf.delays addObject:@(delay)];
+        [strongSelf.pendingRetries addObject:retry];
+    };
+}
+
+- (NSUInteger)runPendingRetries {
+    NSArray<dispatch_block_t> *retries = [self.pendingRetries copy];
+    [self.pendingRetries removeAllObjects];
+    for (dispatch_block_t retry in retries) {
+        retry();
+    }
+    return retries.count;
+}
+
 @end
 
 /// Counts calls to the store's private methods.
@@ -971,63 +1033,79 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 #pragma mark Retrying
 
-/// Waits for the flags read from the file to be the expected ones.
-- (BOOL)waitForReopenedFlags:(NSArray *)expected timeout:(NSTimeInterval)timeout {
-    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
-    while (![[self reopenedFlags] isEqual:expected]) {
-        if (deadline.timeIntervalSinceNow < 0) {
-            return NO;
-        }
-        [NSThread sleepForTimeInterval:0.05];
-    }
-    return YES;
-}
-
 - (void)testFailedWriteIsRetriedAfterTheRetryInterval {
     // As when Bugsnag starts: flags set only at start must be saved even though nothing changes them later
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    store.retryInterval = 0.5;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    // Long enough that the changes below are always within it, however slowly the test runs
+    store.retryInterval = 3600;
     store.failReplaceFile = YES;
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"a" variant:@"1"], [BugsnagFeatureFlag flagWithName:@"b"]]];
+    XCTAssertEqual(scheduler.delays.count, 1);
+    XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, 3600, 60);
     // Changes within the retry interval neither write the file nor schedule more retries
     [store addFeatureFlag:@"c" withVariant:nil];
     [store addFeatureFlag:@"d" withVariant:nil];
     XCTAssertEqual(store.replaceFileCount, 1);
+    XCTAssertEqual(scheduler.delays.count, 1, @"Only one retry should have been scheduled");
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     store.failReplaceFile = NO;
 
+    // The retry saves the flags, including the changes made since the failure
+    XCTAssertEqual([scheduler runPendingRetries], 1);
     NSArray *expected = @[@[@"a", @"1"], @[@"b", NSNull.null], @[@"c", NSNull.null], @[@"d", NSNull.null]];
-    XCTAssertTrue([self waitForReopenedFlags:expected timeout:10]);
-    [NSThread sleepForTimeInterval:1];
-    XCTAssertEqual(store.replaceFileCount, 2, @"Only one retry should have been scheduled");
+    XCTAssertEqual(store.replaceFileCount, 2);
     XCTAssertEqualObjects([self reopenedFlags], expected);
+    XCTAssertEqual(scheduler.pendingRetries.count, 0, @"Nothing more should be scheduled after a success");
+}
+
+- (void)testFailedWriteIsRetriedByTheTimer {
+    // The same with the real timer (dispatch_after), waiting for as long as a slow machine could need
+    BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
+    store.retryInterval = 0.2;
+    store.failReplaceFile = YES;
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"a" variant:@"1"]]];
+    @synchronized (store) {
+        store.failReplaceFile = NO;
+    }
+    XCTAssertTrue(BSGWaitUntilStoreHasSaved(store, 30));
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
 }
 
 - (void)testFailedRetryIsRetriedAgain {
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    store.retryInterval = 0.2;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
     store.failReplaceFile = YES;
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:10];
-    while (store.replaceFileCount < 3 && deadline.timeIntervalSinceNow > 0) {
-        [NSThread sleepForTimeInterval:0.05];
-    }
-    XCTAssertGreaterThanOrEqual(store.replaceFileCount, 3);
+    XCTAssertEqual(store.replaceFileCount, 1);
+    // Each retry that fails schedules another
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqual(store.replaceFileCount, 2);
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqual(store.replaceFileCount, 3);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
     store.failReplaceFile = NO;
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"]] timeout:10]));
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
+    XCTAssertEqual(scheduler.pendingRetries.count, 0);
 }
 
 - (void)testScheduledRetryDoesNotKeepTheStoreAlive {
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     __weak BSGFailingPersistentFeatureFlagStore *weakStore = nil;
     @autoreleasepool {
         BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-        store.retryInterval = 0.2;
+        [scheduler attachToStore:store];
         store.failReplaceFile = YES;
         [store addFeatureFlag:@"a" withVariant:@"1"];
         weakStore = store;
     }
+    XCTAssertEqual(scheduler.pendingRetries.count, 1);
     XCTAssertNil(weakStore);
-    [NSThread sleepForTimeInterval:0.5];
+    // The retry does nothing once the store has gone
+    XCTAssertEqual([scheduler runPendingRetries], 1);
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
 }
 
@@ -1679,7 +1757,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
 - (void)testAppendFailureEmptiesTheLogAndIsRetried {
     BSGPersistentFeatureFlagStore *store = [self newStore];
-    store.retryInterval = 0.3;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual([self activeValue], 10 << 1, @"One 10-byte record in slot 0");
 
@@ -1698,14 +1777,16 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [store addFeatureFlag:@"c" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     expected = [expected arrayByAddingObject:@[@"c", NSNull.null]];
-    XCTAssertTrue([self waitForReopenedFlags:expected timeout:10]);
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], expected);
     [store addFeatureFlag:@"d" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], ([expected arrayByAddingObject:@[@"d", NSNull.null]]));
 }
 
 - (void)testSnapshotFailureEmptiesTheLogAndIsRetried {
     BSGPersistentFeatureFlagStore *store = [self newStore];
-    store.retryInterval = 0.3;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     [store addFeatureFlag:@"b" withVariant:@"2"];
     XCTAssertEqual([self activeValue] & 1, 0);
@@ -1717,12 +1798,14 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     }));
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"c", @"3"]]));
     XCTAssertEqualObjects([self reopenedFlags], @[], @"The file must not hold the replaced flags");
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"c", @"3"]] timeout:10]));
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"c", @"3"]]));
 }
 
 - (void)testHeaderWriteFailureDeletesTheFile {
     BSGPersistentFeatureFlagStore *store = [self newStore];
-    store.retryInterval = 0.3;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
     [store addFeatureFlag:@"a" withVariant:@"1"];
 
     // Neither the record nor the header (at offset 16) can be written, so the log cannot be emptied and
@@ -1735,7 +1818,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqual(store.allFlags.count, 2);
 
     // The retry creates a new file
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"], @[@"b", @"2"]] timeout:10]));
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", @"2"]]));
 }
 
 - (void)testClearFailureDeletesTheFile {
@@ -1759,7 +1843,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 - (void)testHeaderWriteFailureAfterTheRecordsWereWritten {
     BSGHeaderFailingPersistentFeatureFlagStore *store =
     [[BSGHeaderFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    store.retryInterval = 0.3;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
     [store addFeatureFlag:@"a" withVariant:@"1"];
 
     // The records are written but the length that makes them part of the log is not; the log is emptied
@@ -1768,7 +1853,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqual(store.failHeaderWrites, 0);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"], @[@"b", @"2"]] timeout:10]));
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", @"2"]]));
 
     // If the log cannot be emptied either, the file is deleted
     store.retryInterval = 0;
@@ -1783,7 +1869,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
 - (void)testFileThatCannotBeExtendedIsNotCreated {
     BSGPersistentFeatureFlagStore *store = [self newStore];
-    store.retryInterval = 0.3;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
 
     // The temporary file cannot be extended to its full size (ftruncate fails with EFBIG)
     XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize, ^{
@@ -1793,7 +1880,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects(files, @[@"featureflag.lock"], @"The temporary file must be deleted");
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"a", @"1"]]));
 
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"]] timeout:10]));
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
     files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directory error:nil];
     XCTAssertEqualObjects([files sortedArrayUsingSelector:@selector(compare:)], (@[@"featureflag.bin", @"featureflag.lock"]));
 }
@@ -1922,27 +2010,39 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
 @end
 
-#pragma mark - Review findings
+#pragma mark - Lock, backoff and files created
 
-@interface BSGPersistentFeatureFlagStore (ReviewFinding)
+@interface BSGPersistentFeatureFlagStore (RetryState)
 @property (nonatomic) NSTimeInterval maximumRetryInterval;
 @property (nonatomic) NSTimeInterval retryDelay;
 @end
 
-@interface BSGPersistentFeatureFlagStoreReviewFindingTests : BSGTestCase
+@interface BSGPersistentFeatureFlagStoreLockAndRetryTests : BSGTestCase
 @property (nonatomic) NSString *directory;
 @end
 
-@implementation BSGPersistentFeatureFlagStoreReviewFindingTests
+// The error that SimulatedLockFailure fails with, and how many times it has been called
+static int gLockErrno;
+static NSUInteger gLockCallCount;
+
+/// Stands in for flock(), failing with gLockErrno.
+static int SimulatedLockFailure(__unused int fd, __unused int operation) {
+    gLockCallCount++;
+    errno = gLockErrno;
+    return -1;
+}
+
+@implementation BSGPersistentFeatureFlagStoreLockAndRetryTests
 
 - (void)setUp {
     [super setUp];
     self.directory = [NSTemporaryDirectory() stringByAppendingPathComponent:
-                      [NSString stringWithFormat:@"BSGPersistentFeatureFlagStoreReviewFindingTests-%@", NSUUID.UUID.UUIDString]];
+                      [NSString stringWithFormat:@"BSGPersistentFeatureFlagStoreLockAndRetryTests-%@", NSUUID.UUID.UUIDString]];
     [NSFileManager.defaultManager createDirectoryAtPath:self.directory withIntermediateDirectories:YES attributes:nil error:nil];
 }
 
 - (void)tearDown {
+    BSGSetFeatureFlagLockFunction(NULL);
     chmod(self.directory.fileSystemRepresentation, 0700);
     [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
     [super tearDown];
@@ -1950,6 +2050,13 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
 - (NSString *)filePath {
     return [self.directory stringByAppendingPathComponent:@"featureflag.bin"];
+}
+
+/// Makes flock() fail with `error` for featureflag.lock.
+- (void)simulateLockFailure:(int)error {
+    gLockErrno = error;
+    gLockCallCount = 0;
+    BSGSetFeatureFlagLockFunction(SimulatedLockFailure);
 }
 
 /// Named "new" so that ARC returns it retained: a store keeps the directory's lock until it is deallocated.
@@ -1982,17 +2089,6 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     return result;
 }
 
-- (BOOL)waitForReopenedFlags:(NSArray *)expected timeout:(NSTimeInterval)timeout {
-    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
-    while (![[self reopenedFlags] isEqual:expected]) {
-        if (deadline.timeIntervalSinceNow < 0) {
-            return NO;
-        }
-        [NSThread sleepForTimeInterval:0.05];
-    }
-    return YES;
-}
-
 - (void)writeLegacyFlag:(NSString *)name variant:(NSString *)variant index:(uint64_t)index {
     NSMutableDictionary *json = [NSMutableDictionary dictionary];
     json[@"featureFlag"] = name;
@@ -2004,21 +2100,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [[NSJSONSerialization dataWithJSONObject:json options:0 error:nil] writeToFile:path atomically:YES];
 }
 
-/// Waits until the store's replaceFileCount reaches count, returning the store's retry delay at that point.
-static NSTimeInterval BSGWaitForReplaceCount(BSGCountingPersistentFeatureFlagStore *store, NSUInteger count) {
-    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:10];
-    while (deadline.timeIntervalSinceNow > 0) {
-        @synchronized (store) {
-            if (store.replaceFileCount >= count) {
-                return store.retryDelay;
-            }
-        }
-        [NSThread sleepForTimeInterval:0.01];
-    }
-    return -1;
-}
-
-#pragma mark N1: nothing is created without flags
+#pragma mark Nothing is created without flags
 
 - (void)testReplaceAllFlagsWithNoFlagsCreatesNoFiles {
     // As when Bugsnag starts with no flags in its configuration
@@ -2087,80 +2169,99 @@ static NSTimeInterval BSGWaitForReplaceCount(BSGCountingPersistentFeatureFlagSto
     XCTAssertEqualObjects(BSGFlagsArray(first.allFlags), (@[@[@"first-replaced", NSNull.null]]));
 }
 
-#pragma mark N2: backoff
+#pragma mark Backoff
 
 - (void)testRetryDelayDoublesUpToTheMaximum {
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    store.retryInterval = 0.1;
-    store.maximumRetryInterval = 0.4;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    store.retryInterval = 60;
+    store.maximumRetryInterval = 240;
     store.failReplaceFile = YES;
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    XCTAssertEqualWithAccuracy(BSGWaitForReplaceCount(store, 1), 0.1, 0.001);
-    XCTAssertEqualWithAccuracy(BSGWaitForReplaceCount(store, 2), 0.2, 0.001);
-    XCTAssertEqualWithAccuracy(BSGWaitForReplaceCount(store, 3), 0.4, 0.001);
-    XCTAssertEqualWithAccuracy(BSGWaitForReplaceCount(store, 4), 0.4, 0.001, @"The delay is capped");
-    XCTAssertEqualWithAccuracy(BSGWaitForReplaceCount(store, 5), 0.4, 0.001);
-    @synchronized (store) {
-        store.failReplaceFile = NO;
+    XCTAssertEqual(store.retryDelay, 60);
+    NSArray<NSNumber *> *expectedDelays = @[@120, @240, @240, @240];
+    for (NSNumber *expected in expectedDelays) {
+        XCTAssertEqual([scheduler runPendingRetries], 1);
+        XCTAssertEqual(store.retryDelay, expected.doubleValue, @"The delay doubles and is capped");
     }
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"]] timeout:10]));
-    @synchronized (store) {
-        XCTAssertEqual(store.retryDelay, 0, @"Success resets the delay");
-        store.failReplaceFile = YES;
-    }
+    XCTAssertEqual(store.replaceFileCount, 1 + expectedDelays.count);
+    // The retries are scheduled with those delays
+    XCTAssertEqual(scheduler.delays.count, 1 + expectedDelays.count);
+    XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, 60, 30);
+    XCTAssertEqualWithAccuracy(scheduler.delays.lastObject.doubleValue, 240, 30);
+
+    store.failReplaceFile = NO;
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
+    XCTAssertEqual(store.retryDelay, 0, @"Success resets the delay");
+    XCTAssertEqual(scheduler.pendingRetries.count, 0);
+
     // The next failure waits for the retry interval again
+    store.failReplaceFile = YES;
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    @synchronized (store) {
-        XCTAssertEqualWithAccuracy(store.retryDelay, 0.1, 0.001);
-    }
+    XCTAssertEqual(store.retryDelay, 60);
 }
 
 - (void)testPermanentFailureIsRetriedLessOften {
     // Something other than a file at the path is a failure that never clears
     XCTAssertTrue([NSFileManager.defaultManager createDirectoryAtPath:self.filePath withIntermediateDirectories:NO attributes:nil error:nil]);
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    store.retryInterval = 0.05;
-    store.maximumRetryInterval = 60;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    store.retryInterval = 60;
+    store.maximumRetryInterval = 3600;
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    [NSThread sleepForTimeInterval:1.0];
-    NSUInteger count;
-    @synchronized (store) {
-        count = store.replaceFileCount;
+    XCTAssertEqual(store.replaceFileCount, 1);
+    // Each attempt fails and schedules the next after twice the delay, up to an hour, rather than every minute
+    NSArray<NSNumber *> *expectedDelays = @[@120, @240, @480, @960, @1920, @3600, @3600];
+    for (NSNumber *expected in expectedDelays) {
+        XCTAssertEqual([scheduler runPendingRetries], 1);
+        XCTAssertEqual(store.retryDelay, expected.doubleValue);
+        XCTAssertEqualWithAccuracy(scheduler.delays.lastObject.doubleValue, expected.doubleValue, 30);
     }
-    // 0.05 + 0.1 + 0.2 + 0.4 = 0.75 s, so about 5 attempts in a second rather than 20 without the backoff
-    XCTAssertGreaterThanOrEqual(count, 3);
-    XCTAssertLessThanOrEqual(count, 7);
+    XCTAssertEqual(store.replaceFileCount, 1 + expectedDelays.count);
     NSArray *temporaryFiles = [[self files] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"pathExtension == 'tmp'"]];
     XCTAssertEqualObjects(temporaryFiles, @[]);
 }
 
 - (void)testAFlagChangeResetsTheDelay {
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    store.retryInterval = 0.2;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    store.retryInterval = 60;
     store.failReplaceFile = YES;
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    @synchronized (store) {
-        // As after many failures, with the next retry a long way off
-        store.retryDelay = 3600;
-        store.retryTime = NSProcessInfo.processInfo.systemUptime + 3600;
-        store.failReplaceFile = NO;
-    }
+    XCTAssertEqual(scheduler.pendingRetries.count, 1);
+    // As after many failures, with the next retry a long way off
+    store.retryDelay = 3600;
+    store.retryTime = NSProcessInfo.processInfo.systemUptime + 3600;
+    store.failReplaceFile = NO;
+
     // Adding the same flag again is not a change
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    @synchronized (store) {
-        XCTAssertEqual(store.retryDelay, 3600);
-    }
+    XCTAssertEqual(store.retryDelay, 3600);
+    XCTAssertEqual(scheduler.pendingRetries.count, 1);
+
     [store addFeatureFlag:@"b" withVariant:@"2"];
-    @synchronized (store) {
-        XCTAssertEqual(store.retryDelay, 0);
-        XCTAssertLessThanOrEqual(store.retryTime, NSProcessInfo.processInfo.systemUptime + 0.2);
-    }
-    // The flags are saved by a retry after the retry interval rather than in an hour
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"a", @"1"], @[@"b", @"2"]] timeout:10]));
+    XCTAssertEqual(store.retryDelay, 0);
+    XCTAssertLessThanOrEqual(store.retryTime, NSProcessInfo.processInfo.systemUptime + 60);
+    // A retry is scheduled after the retry interval rather than in an hour
+    XCTAssertEqual(scheduler.pendingRetries.count, 2);
+    XCTAssertLessThanOrEqual(scheduler.delays.lastObject.doubleValue, 60);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+
+    // The earlier retry has been superseded and does nothing; the new one saves the flags
+    dispatch_block_t superseded = scheduler.pendingRetries.firstObject;
+    [scheduler.pendingRetries removeObjectAtIndex:0];
+    superseded();
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", @"2"]]));
 }
 
-#pragma mark N3: the lock is tried again
+#pragma mark The lock is tried again
 
 - (void)testStoreThatTakesTheLockLaterKeepsThePreviousFlagsAndPersistsItsOwn {
     BSGPersistentFeatureFlagStore *first = [self newStore];
@@ -2191,13 +2292,16 @@ static NSTimeInterval BSGWaitForReplaceCount(BSGCountingPersistentFeatureFlagSto
     BSGPersistentFeatureFlagStore *first = [self newStore];
     [first addFeatureFlag:@"first" withVariant:@"1"];
     BSGPersistentFeatureFlagStore *second = [self newStore];
-    second.retryInterval = 0.1;
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:second];
     second.retryTime = 0;
     // As when Bugsnag starts: nothing changes the flags later, so only the retry saves them
     [second replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start" variant:@"2"]]];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"first", @"1"]]));
+    XCTAssertEqual(scheduler.pendingRetries.count, 1);
     first = nil;
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"start", @"2"]] timeout:10]));
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"start", @"2"]]));
 }
 
 - (void)testStoreThatTakesTheLockLaterEmptiesTheFileWhenItHasNoFlags {
@@ -2236,14 +2340,143 @@ static NSTimeInterval BSGWaitForReplaceCount(BSGCountingPersistentFeatureFlagSto
     [second replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"second" variant:@"2"]]];
     first = nil;
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"first", @"1"]]));
-    // The retry interval has not passed, but the device being unlocked is a reason to try again
+    // The retry interval has not passed, but the device being unlocked is a reason to try again. The save runs in
+    // the background, so the test waits for the store itself rather than opening the directory meanwhile.
     [NSNotificationCenter.defaultCenter postNotificationName:@"UIApplicationProtectedDataDidBecomeAvailable" object:nil];
-    XCTAssertTrue(([self waitForReopenedFlags:@[@[@"second", @"2"]] timeout:10]));
+    XCTAssertTrue(BSGWaitUntilStoreHasSaved(second, 30));
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"second", @"2"]]));
     (void)second;
 }
 #endif
 
-#pragma mark N8: JSON files that could not be deleted
+#pragma mark File systems without flock()
+
+- (void)testFlagsArePersistedWhenTheFileSystemDoesNotSupportLocking {
+    for (NSNumber *error in @[@(ENOTSUP), @(EOPNOTSUPP)]) {
+        [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
+        [NSFileManager.defaultManager createDirectoryAtPath:self.directory withIntermediateDirectories:YES attributes:nil error:nil];
+        [self simulateLockFailure:error.intValue];
+        BSGPersistentFeatureFlagStore *store = [self newStore];
+        BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+        [scheduler attachToStore:store];
+        [store addFeatureFlag:@"a" withVariant:@"1"];
+        [store addFeatureFlag:@"b" withVariant:nil];
+        [store clear:@"a"];
+        // The store proceeds as the only writer: it writes without retrying, and only tries to lock once
+        XCTAssertEqual(gLockCallCount, 1, @"errno %@", error);
+        XCTAssertEqual(scheduler.pendingRetries.count, 0, @"errno %@", error);
+        XCTAssertEqualObjects([self files], (@[@"featureflag.bin", @"featureflag.lock"]));
+        store = nil;
+        // The next launch reads them, and also writes without the lock
+        store = [self newStore];
+        XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"b", NSNull.null]]), @"errno %@", error);
+        [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start"]]];
+        store = nil;
+        XCTAssertEqualObjects([self reopenedFlags], (@[@[@"start", NSNull.null]]), @"errno %@", error);
+    }
+}
+
+- (void)testFlagsAreNotPersistedWhileAnotherStoreHoldsTheLock {
+    // Unlike ENOTSUP, EWOULDBLOCK means that another store writes to the directory, so this one must not
+    for (NSNumber *error in @[@(EWOULDBLOCK), @(EIO)]) {
+        [self simulateLockFailure:error.intValue];
+        BSGPersistentFeatureFlagStore *store = [self newStore];
+        BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+        [scheduler attachToStore:store];
+        [store addFeatureFlag:@"a" withVariant:@"1"];
+        XCTAssertEqual(gLockCallCount, 1);
+        XCTAssertEqualObjects([self files], (@[@"featureflag.lock"]), @"errno %@", error);
+        XCTAssertEqual(scheduler.pendingRetries.count, 1, @"The lock should be tried again later");
+        XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"a", @"1"]]));
+
+        // Once the lock can be taken, the retry saves the flags
+        BSGSetFeatureFlagLockFunction(NULL);
+        XCTAssertEqual([scheduler runPendingRetries], 1);
+        store = nil;
+        XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"errno %@", error);
+        [NSFileManager.defaultManager removeItemAtPath:self.filePath error:nil];
+    }
+}
+
+#pragma mark Symbolic links
+
+/// Creates a featureflag.bin holding flag "elsewhere" in another directory, and a symbolic link to it named
+/// featureflag.bin in the store's directory. Returns the file's contents.
+- (NSData *)linkToFileElsewhere {
+    NSString *elsewhere = [self.directory stringByAppendingPathComponent:@"elsewhere"];
+    [NSFileManager.defaultManager createDirectoryAtPath:elsewhere withIntermediateDirectories:NO attributes:nil error:nil];
+    BSGPersistentFeatureFlagStore *store = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:elsewhere];
+    [store addFeatureFlag:@"elsewhere" withVariant:@"1"];
+    store = nil;
+    NSString *target = [elsewhere stringByAppendingPathComponent:@"featureflag.bin"];
+    XCTAssertEqual(symlink(target.fileSystemRepresentation, self.filePath.fileSystemRepresentation), 0);
+    NSData *contents = [NSData dataWithContentsOfFile:target];
+    XCTAssertGreaterThan(contents.length, 0);
+    return contents;
+}
+
+- (NSData *)contentsOfFileElsewhere {
+    return [NSData dataWithContentsOfFile:[self.directory stringByAppendingPathComponent:@"elsewhere/featureflag.bin"]];
+}
+
+- (void)testSymbolicLinkIsNotFollowedByTheStoreThatHoldsTheLock {
+    NSData *contents = [self linkToFileElsewhere];
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    XCTAssertTrue(store.isEmpty, @"The flags of the file the link points to must not be read");
+    [store addFeatureFlag:@"a" withVariant:nil];
+    XCTAssertEqualObjects([self contentsOfFileElsewhere], contents, @"The file the link points to must not be changed");
+    // The link is replaced by a file of this store's own
+    struct stat st;
+    XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &st), 0);
+    XCTAssertTrue(S_ISREG(st.st_mode));
+    store = nil;
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", NSNull.null]]));
+}
+
+- (void)testSymbolicLinkIsNotFollowedByAStoreWithoutTheLock {
+    BSGPersistentFeatureFlagStore *owner = [self newStore];
+    [owner addFeatureFlag:@"owner" withVariant:nil];
+    XCTAssertEqual(unlink(self.filePath.fileSystemRepresentation), 0);
+    NSData *contents = [self linkToFileElsewhere];
+
+    BSGPersistentFeatureFlagStore *other = [self newStore];
+    XCTAssertTrue(other.isEmpty, @"The flags of the file the link points to must not be read");
+    [other addFeatureFlag:@"other" withVariant:nil];
+    other = nil;
+    XCTAssertEqualObjects([self contentsOfFileElsewhere], contents);
+    struct stat st;
+    XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &st), 0);
+    XCTAssertTrue(S_ISLNK(st.st_mode), @"A store without the lock changes nothing");
+}
+
+- (void)testSymbolicLinkIsNotTreatedAsAFileNextToJSONFiles {
+    // A link at the path cannot hold flags, so the JSON files next to it are imported rather than discarded as
+    // though both kinds of file had been found
+    NSData *contents = [self linkToFileElsewhere];
+    [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"legacy", @"1"]]));
+    store = nil;
+    XCTAssertEqualObjects([self contentsOfFileElsewhere], contents);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"]]));
+}
+
+- (void)testSymbolicLinkToAJSONFileIsNotFollowed {
+    NSString *elsewhere = [self.directory stringByAppendingPathComponent:@"elsewhere"];
+    [NSFileManager.defaultManager createDirectoryAtPath:elsewhere withIntermediateDirectories:NO attributes:nil error:nil];
+    NSString *target = [elsewhere stringByAppendingPathComponent:@"linked.json"];
+    XCTAssertTrue([[@"{\"featureFlag\":\"linked\",\"index\":0}" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:target atomically:NO]);
+    XCTAssertEqual(symlink(target.fileSystemRepresentation, [self.directory stringByAppendingPathComponent:@"linked.json"].fileSystemRepresentation), 0);
+    [self writeLegacyFlag:@"legacy" variant:@"1" index:1];
+
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"legacy", @"1"]]));
+    // The link is deleted with the other JSON files, but not the file it points to
+    XCTAssertEqualObjects([self jsonFiles], @[]);
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:target]);
+}
+
+#pragma mark JSON files that could not be deleted
 
 - (void)testLegacyFilesThatCouldNotBeDeletedAreDeletedByTheNextWrite {
     BSGSkipIf(geteuid() == 0, @"File permissions are not enforced for root");

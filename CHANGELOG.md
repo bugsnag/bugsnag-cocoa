@@ -7,7 +7,15 @@ Changelog
 
 * Feature flags for OOM and thermal kill events are now persisted in a single binary file (`featureflag.bin`) instead of one file
   per flag, which makes adding and clearing flags, and starting Bugsnag, faster when many flags are used. Each update is atomic, so
-  the app being terminated part way through an update never leaves a partial set of flags. Up to 2 MB of flags are persisted.
+  the app being terminated part way through an update never leaves a partial set of flags. If the flags take up more than 2 MB, none
+  of them are persisted: they remain in memory and are still included in handled events and crash reports, but not in OOM or thermal
+  kill events.
+  [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
+
+### Bug Fixes
+
+* A feature flag that is added again now keeps its original position in crash reports instead of moving to the end, and a name that
+  is repeated in a call to `addFeatureFlags:` no longer appears twice in crash reports.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ## 6.39.0 (2026-11-05)

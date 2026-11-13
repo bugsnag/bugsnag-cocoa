@@ -484,7 +484,7 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
 
 @end
 
-#pragma mark - Review findings
+#pragma mark - Several crash-time readers at once
 
 // The original addJSONElement of the writer used by the readers in the test below
 static void (*g_originalAddJSONElement)(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement);
@@ -502,10 +502,10 @@ static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, cons
     g_originalAddJSONElement(writer, name, jsonElement);
 }
 
-@interface BSGAtomicFeatureFlagStoreReviewFindingTests : BSGTestCase
+@interface BSGAtomicFeatureFlagStoreConcurrentReaderTests : BSGTestCase
 @end
 
-@implementation BSGAtomicFeatureFlagStoreReviewFindingTests
+@implementation BSGAtomicFeatureFlagStoreConcurrentReaderTests
 
 - (void)setUp {
     [super setUp];

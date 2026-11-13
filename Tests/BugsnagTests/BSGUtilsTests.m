@@ -14,6 +14,48 @@
 #import <sys/stat.h>
 #import <unistd.h>
 
+#pragma mark - Real file protection classes
+
+/// Whether the tests that set NSFileProtectionComplete on real files must run rather than be skipped. Set
+/// BSG_REQUIRE_FILE_PROTECTION_TESTS=1 (TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 with xcodebuild) on a host
+/// whose screen is unlocked, so that those tests fail instead of silently skipping.
+static BOOL BSGFileProtectionTestsAreRequired(void) {
+    return [NSProcessInfo.processInfo.environment[@"BSG_REQUIRE_FILE_PROTECTION_TESTS"] isEqualToString:@"1"];
+}
+
+/// Sets NSFileProtectionComplete on a real file, returning nil on success or why it could not be set. On Apple
+/// silicon Macs (and so in the simulator) and on devices, class A can only be set while the screen is unlocked;
+/// otherwise setting it fails with NSCocoaErrorDomain 513 (EPERM).
+static NSString *_Nullable BSGSetRealFileProtectionComplete(NSString *path) {
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSError *error = nil;
+    if (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:&error]) {
+        return [NSString stringWithFormat:@"setting it failed with %@ %ld (%@); is the screen locked?",
+                error.domain, (long)error.code, error.localizedDescription];
+    }
+    NSURLFileProtectionType protection = nil;
+    [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+    if (![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:&error]) {
+        return [NSString stringWithFormat:@"reading it failed with %@ %ld (%@)",
+                error.domain, (long)error.code, error.localizedDescription];
+    }
+    if (![protection isEqual:NSURLFileProtectionComplete]) {
+        return [NSString stringWithFormat:@"the file has %@ after setting it", protection];
+    }
+    return nil;
+}
+
+/// Skips the test, or fails it if BSG_REQUIRE_FILE_PROTECTION_TESTS=1, when NSFileProtectionComplete could not be set.
+#define BSGSkipUnlessFileProtectionComplete(reason, path) \
+    if (reason) { \
+        [NSFileManager.defaultManager removeItemAtPath:(path) error:nil]; \
+        if (BSGFileProtectionTestsAreRequired()) { \
+            XCTFail(@"NSFileProtectionComplete could not be set: %@", reason); \
+            return; \
+        } \
+        XCTSkip(@"NSFileProtectionComplete could not be set: %@", reason); \
+    }
+
 @interface BSGUtilsTests : BSGTestCase
 @end
 
@@ -133,22 +175,29 @@
     XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
 }
 
-- (void)testOpenFileWithoutCompleteProtectionKeepsTheFirstDescriptorIfItCannotReopen {
+- (void)testOpenFileWithoutCompleteProtectionChangesARealCompleteFile {
+    // The same as testCompleteFileIsReopenedAfterItsProtectionIsChanged, with a real protection class
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    NSString *reason = BSGSetRealFileProtectionComplete(path);
+    BSGSkipUnlessFileProtectionComplete(reason, path);
 
-    // The first descriptor holds an exclusive lock, so reopening with O_EXLOCK | O_NONBLOCK fails and the
-    // descriptor that was opened first is returned instead
-    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK);
+    const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
     XCTAssertNotEqual(fd, -1);
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSURLFileProtectionType protection = nil;
+    XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+    XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
     if (fd != -1) {
-        XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
-        XCTAssertEqual(pwrite(fd, "abc", 3, 0), 3);
-        // The lock is still held by the returned descriptor
-        XCTAssertEqual(open(path.fileSystemRepresentation, O_RDONLY | O_EXLOCK | O_NONBLOCK), -1);
-        XCTAssertEqual(errno, EWOULDBLOCK);
+        struct stat byDescriptor, byPath;
+        XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+        XCTAssertEqual(lstat(path.fileSystemRepresentation, &byPath), 0);
+        XCTAssertEqual(byDescriptor.st_ino, byPath.st_ino);
+        char buffer[3] = {0};
+        XCTAssertEqual(pread(fd, buffer, 3, 0), 3);
+        XCTAssertEqual(memcmp(buffer, "abc", 3), 0);
         close(fd);
     }
-    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
     [NSFileManager.defaultManager removeItemAtPath:path error:nil];
 }
 
@@ -159,12 +208,8 @@
         XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
         NSURL *url = [NSURL fileURLWithPath:path];
         NSURLFileProtectionType protection = nil;
-        if (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:nil] ||
-            ![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil] ||
-            ![protection isEqual:NSURLFileProtectionComplete]) {
-            [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-            XCTSkip(@"File protection is not supported here");
-        }
+        NSString *reason = BSGSetRealFileProtectionComplete(path);
+        BSGSkipUnlessFileProtectionComplete(reason, path);
         // An immutable file can be opened for reading, but its protection class cannot be changed
         XCTAssertEqual(chflags(path.fileSystemRepresentation, UF_IMMUTABLE), 0);
 
@@ -186,25 +231,300 @@
 
 @end
 
-#pragma mark - Review findings
+#pragma mark - Reopening files whose protection class is changed
 
-@interface BSGUtilsReviewFindingTests : BSGTestCase
+/// These tests stand in for the file system's protection classes (see BSGSetFileProtectionFunctions), so that the
+/// handling of NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator.
+@interface BSGOpenFileWithoutCompleteProtectionTests : BSGTestCase
 @property (nonatomic) NSString *directory;
 @end
 
-@implementation BSGUtilsReviewFindingTests
+// The simulated protection class of each path; a path that is not present has none
+static NSMutableDictionary<NSString *, NSString *> *gSimulatedProtection;
+// The paths and classes passed to SimulatedSetProtection
+static NSMutableArray<NSArray<NSString *> *> *gSetProtectionCalls;
+// If set, SimulatedSetProtection fails with this error
+static NSError *gSetProtectionError;
+// Called by SimulatedGetProtection and SimulatedSetProtection with the path, before they do anything else
+static void (^gWillGetProtection)(NSString *path);
+static void (^gWillSetProtection)(NSString *path);
+static BSGFileProtectionFunctions gPreviousProtectionFunctions;
+
+static NSString *_Nullable SimulatedGetProtection(NSString *path) {
+    if (gWillGetProtection) {
+        gWillGetProtection(path);
+    }
+    return gSimulatedProtection[path];
+}
+
+static BOOL SimulatedSetProtection(NSString *path, NSString *protection, NSError **error) {
+    [gSetProtectionCalls addObject:@[path, protection]];
+    if (gWillSetProtection) {
+        gWillSetProtection(path);
+    }
+    if (gSetProtectionError) {
+        if (error) {
+            *error = gSetProtectionError;
+        }
+        return NO;
+    }
+    gSimulatedProtection[path] = protection;
+    return YES;
+}
+
+/// The descriptors in this process that refer to the file with this device and inode.
+static NSArray<NSNumber *> * DescriptorsForFile(dev_t dev, ino_t ino) {
+    NSMutableArray<NSNumber *> *descriptors = [NSMutableArray array];
+    const int maxFd = getdtablesize();
+    for (int fd = 0; fd < maxFd; fd++) {
+        struct stat st;
+        if (fstat(fd, &st) == 0 && st.st_dev == dev && st.st_ino == ino) {
+            [descriptors addObject:@(fd)];
+        }
+    }
+    return descriptors;
+}
+
+/// Sets O_NONBLOCK on the open file description of every descriptor that refers to the file at the path. A
+/// descriptor returned by a later open() of the path has its own description, without the flag, so this tells a
+/// descriptor that was opened first apart from one that was reopened.
+static void MarkOpenDescriptors(NSString *path) {
+    struct stat st;
+    if (lstat(path.fileSystemRepresentation, &st) == 0) {
+        for (NSNumber *fd in DescriptorsForFile(st.st_dev, st.st_ino)) {
+            fcntl(fd.intValue, F_SETFL, fcntl(fd.intValue, F_GETFL) | O_NONBLOCK);
+        }
+    }
+}
+
+static BOOL IsMarked(int fd) {
+    return (fcntl(fd, F_GETFL) & O_NONBLOCK) != 0;
+}
+
+@implementation BSGOpenFileWithoutCompleteProtectionTests
 
 - (void)setUp {
     [super setUp];
     self.directory = [NSTemporaryDirectory() stringByAppendingPathComponent:
-                      [NSString stringWithFormat:@"BSGUtilsReviewFindingTests-%@", NSUUID.UUID.UUIDString]];
+                      [NSString stringWithFormat:@"BSGOpenFileWithoutCompleteProtectionTests-%@", NSUUID.UUID.UUIDString]];
     [NSFileManager.defaultManager createDirectoryAtPath:self.directory withIntermediateDirectories:YES attributes:nil error:nil];
 }
 
 - (void)tearDown {
+    [self stopSimulatingProtection];
     [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
     [super tearDown];
 }
+
+- (void)simulateProtection {
+    gSimulatedProtection = [NSMutableDictionary dictionary];
+    gSetProtectionCalls = [NSMutableArray array];
+    gSetProtectionError = nil;
+    gWillGetProtection = nil;
+    gWillSetProtection = nil;
+    gPreviousProtectionFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
+        .getProtection = SimulatedGetProtection,
+        .setProtection = SimulatedSetProtection,
+    });
+}
+
+- (void)stopSimulatingProtection {
+    if (gSimulatedProtection) {
+        BSGSetFileProtectionFunctions(gPreviousProtectionFunctions);
+    }
+    gSimulatedProtection = nil;
+    gSetProtectionCalls = nil;
+    gSetProtectionError = nil;
+    gWillGetProtection = nil;
+    gWillSetProtection = nil;
+}
+
+#pragma mark Simulated protection classes
+
+- (void)testOnlyCompleteIsChanged {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    BOOL changed = NO;
+    XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+    XCTAssertTrue(changed);
+    XCTAssertEqualObjects(gSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]));
+    XCTAssertEqualObjects(gSimulatedProtection[path], NSURLFileProtectionCompleteUnlessOpen);
+
+    // Once changed, it is not changed again
+    XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+    XCTAssertFalse(changed);
+    XCTAssertEqual(gSetProtectionCalls.count, 1);
+
+    // Other classes, and no class, are left alone
+    for (NSString *protection in @[NSURLFileProtectionNone, NSURLFileProtectionCompleteUntilFirstUserAuthentication]) {
+        gSimulatedProtection[path] = protection;
+        changed = YES;
+        XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+        XCTAssertFalse(changed);
+        XCTAssertEqualObjects(gSimulatedProtection[path], protection);
+    }
+    [gSimulatedProtection removeObjectForKey:path];
+    changed = YES;
+    XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+    XCTAssertFalse(changed);
+    XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
+    XCTAssertEqual(gSetProtectionCalls.count, 1);
+
+    // A failure to change it is reported, and changed is NO
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    gSetProtectionError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteNoPermissionError userInfo:nil];
+    changed = YES;
+    XCTAssertFalse(BSGChangeNSFileProtectionComplete(path, &changed));
+    XCTAssertFalse(changed);
+    XCTAssertFalse(BSGDisableNSFileProtectionComplete(path));
+    XCTAssertEqualObjects(gSimulatedProtection[path], NSURLFileProtectionComplete);
+}
+
+- (void)testCompleteFileIsReopenedAfterItsProtectionIsChanged {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    // The descriptor opened before the change is marked
+    gWillGetProtection = ^(NSString *p) { MarkOpenDescriptors(p); };
+
+    const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    XCTAssertEqualObjects(gSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]));
+    XCTAssertFalse(IsMarked(fd), @"The descriptor returned should have been opened after the change");
+    XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
+    struct stat byDescriptor, byPath;
+    XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &byPath), 0);
+    XCTAssertEqual(byDescriptor.st_dev, byPath.st_dev);
+    XCTAssertEqual(byDescriptor.st_ino, byPath.st_ino);
+    XCTAssertEqualObjects(DescriptorsForFile(byPath.st_dev, byPath.st_ino), @[@(fd)], @"The first descriptor should be closed");
+    // It was opened with the same access mode, and the file was not truncated
+    char buffer[3] = {0};
+    XCTAssertEqual(pread(fd, buffer, 3, 0), 3);
+    XCTAssertEqual(memcmp(buffer, "abc", 3), 0);
+    XCTAssertEqual(pwrite(fd, "xyz", 3, 0), 3);
+    close(fd);
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"xyz" dataUsingEncoding:NSUTF8StringEncoding]);
+
+    // The same applies to a file created by the call in a directory whose files get NSFileProtectionComplete
+    NSString *created = [self.directory stringByAppendingPathComponent:@"created"];
+    gSimulatedProtection[created] = NSURLFileProtectionComplete;
+    const int createdFd = BSGOpenFileWithoutCompleteProtection(created, O_RDWR | O_CREAT | O_EXCL);
+    XCTAssertNotEqual(createdFd, -1);
+    if (createdFd != -1) {
+        XCTAssertFalse(IsMarked(createdFd));
+        XCTAssertEqual(fstat(createdFd, &byDescriptor), 0);
+        XCTAssertEqual(byDescriptor.st_mode & 0777, 0600);
+        XCTAssertEqualObjects(DescriptorsForFile(byDescriptor.st_dev, byDescriptor.st_ino), @[@(createdFd)]);
+        close(createdFd);
+    }
+    XCTAssertEqualObjects(gSimulatedProtection[created], NSURLFileProtectionCompleteUnlessOpen);
+}
+
+- (void)testFileWithAnotherProtectionClassIsNotReopened {
+    [self simulateProtection];
+    gWillGetProtection = ^(NSString *p) { MarkOpenDescriptors(p); };
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    XCTAssertTrue([NSData.data writeToFile:path atomically:NO]);
+    for (NSString *protection in @[NSURLFileProtectionCompleteUntilFirstUserAuthentication,
+                                   NSURLFileProtectionCompleteUnlessOpen, NSURLFileProtectionNone, @""]) {
+        gSimulatedProtection[path] = protection.length ? protection : nil;
+        const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+        XCTAssertNotEqual(fd, -1);
+        if (fd != -1) {
+            XCTAssertTrue(IsMarked(fd), @"The first descriptor should be returned for %@", protection);
+            close(fd);
+        }
+    }
+    XCTAssertEqualObjects(gSetProtectionCalls, @[]);
+}
+
+- (void)testFailureToChangeTheProtectionClass {
+    [self simulateProtection];
+    gSetProtectionError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteNoPermissionError userInfo:nil];
+    __block struct stat opened = {0};
+    gWillGetProtection = ^(NSString *p) { lstat(p.fileSystemRepresentation, &opened); };
+
+    // A file created by the call is deleted, and its descriptor closed
+    NSString *created = [self.directory stringByAppendingPathComponent:@"created"];
+    gSimulatedProtection[created] = NSURLFileProtectionComplete;
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(created, O_RDWR | O_CREAT | O_EXCL), -1);
+    XCTAssertEqual(gSetProtectionCalls.count, 1);
+    XCTAssertNotEqual(opened.st_ino, 0);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:created]);
+    XCTAssertEqualObjects(DescriptorsForFile(opened.st_dev, opened.st_ino), @[]);
+
+    // A file that already existed is left as it was, and its descriptor closed
+    NSString *existing = [self.directory stringByAppendingPathComponent:@"existing"];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:existing atomically:NO]);
+    gSimulatedProtection[existing] = NSURLFileProtectionComplete;
+    for (NSNumber *flags in @[@(O_RDONLY), @(O_RDWR), @(O_RDWR | O_CREAT)]) {
+        opened = (struct stat){0};
+        XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(existing, flags.intValue), -1);
+        XCTAssertNotEqual(opened.st_ino, 0);
+        XCTAssertEqualObjects(DescriptorsForFile(opened.st_dev, opened.st_ino), @[]);
+    }
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:existing], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+    XCTAssertEqualObjects(gSimulatedProtection[existing], NSURLFileProtectionComplete);
+}
+
+- (void)testFirstDescriptorIsKeptIfTheFileCannotBeReopened {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+
+    // The first descriptor holds an exclusive lock, so reopening with O_EXLOCK | O_NONBLOCK fails (EWOULDBLOCK) and
+    // the descriptor that was opened first, whose file now has the changed class, is returned instead
+    const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    XCTAssertEqualObjects(gSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]),
+                          @"The class must have been changed, so that the file was reopened");
+    XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
+    XCTAssertEqual(pwrite(fd, "abc", 3, 0), 3);
+    // The lock is still held by the returned descriptor
+    errno = 0;
+    XCTAssertEqual(open(path.fileSystemRepresentation, O_RDONLY | O_EXLOCK | O_NONBLOCK), -1);
+    XCTAssertEqual(errno, EWOULDBLOCK);
+    struct stat st;
+    XCTAssertEqual(fstat(fd, &st), 0);
+    XCTAssertEqualObjects(DescriptorsForFile(st.st_dev, st.st_ino), @[@(fd)], @"Nothing else should be left open");
+    close(fd);
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)testFileReplacedBeforeItIsReopenedIsRefused {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    NSString *replacement = [self.directory stringByAppendingPathComponent:@"replacement"];
+    XCTAssertTrue([[@"original" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    XCTAssertTrue([[@"replacement" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:replacement atomically:NO]);
+    struct stat original, replaced;
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &original), 0);
+    XCTAssertEqual(lstat(replacement.fileSystemRepresentation, &replaced), 0);
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    // Another file is renamed over the path between the two opens
+    gWillSetProtection = ^(NSString *p) {
+        rename(replacement.fileSystemRepresentation, p.fileSystemRepresentation);
+    };
+
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR), -1);
+    XCTAssertEqual(gSetProtectionCalls.count, 1);
+    XCTAssertEqualObjects(DescriptorsForFile(original.st_dev, original.st_ino), @[], @"The first descriptor should be closed");
+    XCTAssertEqualObjects(DescriptorsForFile(replaced.st_dev, replaced.st_ino), @[], @"The second descriptor should be closed");
+    // The file at the path, which was not created by the call, is not deleted
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"replacement" dataUsingEncoding:NSUTF8StringEncoding]);
+}
+
+#pragma mark Real files
 
 /// The lowest descriptor number that is not in use, which is the one open() returns next.
 static int BSGLowestFreeDescriptor(void) {

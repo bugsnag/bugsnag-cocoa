@@ -35,6 +35,48 @@ BOOL BSGDisableNSFileProtectionComplete(NSString *path) {
     return BSGChangeNSFileProtectionComplete(path, NULL);
 }
 
+#pragma mark - File protection
+
+// The protection class is read and changed through these functions so that unit tests can stand in for the file
+// system: NSFileProtectionComplete can only be set while the device (or the Mac's console) is unlocked, so the
+// code that handles it could not otherwise be tested on a locked or headless host or in the simulator.
+
+static NSString *_Nullable BSGGetFileProtection(NSString *path) {
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
+    if (@available(macOS 11.0, *)) {
+        NSURLFileProtectionType protection = nil;
+        [[NSURL fileURLWithPath:path] getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil];
+        return protection;
+    }
+#endif
+    (void)path;
+    return nil;
+}
+
+static BOOL BSGSetFileProtection(NSString *path, NSString *protection, NSError **error) {
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
+    if (@available(macOS 11.0, *)) {
+        return [[NSURL fileURLWithPath:path] setResourceValue:protection forKey:NSURLFileProtectionKey error:error];
+    }
+#endif
+    (void)path;
+    (void)protection;
+    (void)error;
+    return YES;
+}
+
+static BSGFileProtectionFunctions bsg_fileProtectionFunctions = {
+    .getProtection = BSGGetFileProtection,
+    .setProtection = BSGSetFileProtection,
+};
+
+BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions) {
+    const BSGFileProtectionFunctions previous = bsg_fileProtectionFunctions;
+    bsg_fileProtectionFunctions.getProtection = functions.getProtection ?: BSGGetFileProtection;
+    bsg_fileProtectionFunctions.setProtection = functions.setProtection ?: BSGSetFileProtection;
+    return previous;
+}
+
 BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     if (changed) {
         *changed = NO;
@@ -43,18 +85,13 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0
 #if !TARGET_OS_OSX || defined(__MAC_11_0)
     if (@available(macOS 11.0, *)) {
-        NSURL *url = [NSURL fileURLWithPath:path];
-        
-        NSURLFileProtectionType protection = nil;
-        [url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil];
-        
-        if (protection != NSURLFileProtectionComplete) {
+        NSString *protection = bsg_fileProtectionFunctions.getProtection(path);
+        if (![protection isEqualToString:NSURLFileProtectionComplete]) {
             return YES;
         }
         
         NSError *error = nil;
-        if (![url setResourceValue:NSURLFileProtectionCompleteUnlessOpen
-                            forKey:NSURLFileProtectionKey error:&error]) {
+        if (!bsg_fileProtectionFunctions.setProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error)) {
             bsg_log_warn(@"BSGDisableFileProtection: %@", error);
             return NO;
         }

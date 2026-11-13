@@ -15,6 +15,7 @@
 #import <fcntl.h>
 #import <sys/mman.h>
 #import <sys/param.h>
+#import <sys/stat.h>
 #import <unistd.h>
 
 @interface BSGRunContextTests : BSGTestCase
@@ -102,6 +103,154 @@ static int CountOpenDescriptorsForPath(NSString *path) {
     XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
 }
 
+/// Sets O_NONBLOCK on the open file description of each descriptor that refers to the file at `path`, so that a
+/// descriptor opened before this was called can be told apart from one opened afterwards (which has its own
+/// description, without the flag). Returns the descriptors that were marked.
+static NSArray<NSNumber *> * MarkDescriptorsForPath(NSString *path) {
+    NSMutableArray<NSNumber *> *marked = [NSMutableArray array];
+    struct stat byPath;
+    if (lstat(path.fileSystemRepresentation, &byPath) != 0) {
+        return marked;
+    }
+    const int maxFd = getdtablesize();
+    for (int fd = 0; fd < maxFd; fd++) {
+        struct stat st;
+        if (fstat(fd, &st) == 0 && st.st_dev == byPath.st_dev && st.st_ino == byPath.st_ino) {
+            fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+            [marked addObject:@(fd)];
+        }
+    }
+    return marked;
+}
+
+/// The descriptors that refer to `path` and whether each is marked by MarkDescriptorsForPath.
+static NSDictionary<NSNumber *, NSNumber *> * DescriptorsForPath(NSString *path) {
+    NSMutableDictionary<NSNumber *, NSNumber *> *descriptors = [NSMutableDictionary dictionary];
+    struct stat byPath;
+    if (lstat(path.fileSystemRepresentation, &byPath) != 0) {
+        return descriptors;
+    }
+    const int maxFd = getdtablesize();
+    for (int fd = 0; fd < maxFd; fd++) {
+        struct stat st;
+        if (fstat(fd, &st) == 0 && st.st_dev == byPath.st_dev && st.st_ino == byPath.st_ino) {
+            descriptors[@(fd)] = @((fcntl(fd, F_GETFL) & O_NONBLOCK) != 0);
+        }
+    }
+    return descriptors;
+}
+
+// Simulated protection classes (see BSGSetFileProtectionFunctions), so that the run context's handling of
+// NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator
+static NSString *gRunContextPath;
+static NSString *gRunContextProtection;
+static NSMutableArray<NSArray<NSString *> *> *gRunContextSetProtectionCalls;
+static BOOL gRunContextSetProtectionFails;
+static NSArray<NSNumber *> *gRunContextMarkedDescriptors;
+static BSGFileProtectionFunctions gRunContextPreviousFunctions;
+
+static NSString *_Nullable RunContextGetProtection(NSString *path) {
+    if (![path isEqualToString:gRunContextPath]) {
+        return gRunContextPreviousFunctions.getProtection(path);
+    }
+    // Called after the file has been opened for the first time
+    gRunContextMarkedDescriptors = MarkDescriptorsForPath(path);
+    return gRunContextProtection;
+}
+
+static BOOL RunContextSetProtection(NSString *path, NSString *protection, NSError **error) {
+    if (![path isEqualToString:gRunContextPath]) {
+        return gRunContextPreviousFunctions.setProtection(path, protection, error);
+    }
+    [gRunContextSetProtectionCalls addObject:@[path, protection]];
+    if (gRunContextSetProtectionFails) {
+        if (error) {
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteNoPermissionError userInfo:nil];
+        }
+        return NO;
+    }
+    gRunContextProtection = protection;
+    return YES;
+}
+
+/// Calls BSGRunContextInit with the run context file's protection class simulated as `protection`.
+static void InitRunContextWithSimulatedProtection(NSString *path, NSString *protection, BOOL setProtectionFails) {
+    gRunContextPath = path;
+    gRunContextProtection = protection;
+    gRunContextSetProtectionCalls = [NSMutableArray array];
+    gRunContextSetProtectionFails = setProtectionFails;
+    gRunContextMarkedDescriptors = nil;
+    gRunContextPreviousFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
+        .getProtection = RunContextGetProtection,
+        .setProtection = RunContextSetProtection,
+    });
+    BSGRunContextInit(path);
+    BSGSetFileProtectionFunctions(gRunContextPreviousFunctions);
+    gRunContextPath = nil;
+}
+
+- (void)testRunContextFileWithCompleteProtectionIsReopenedAfterTheChange {
+    NSString *path = BSGFileLocations.current.runContext;
+    InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, NO);
+
+    XCTAssertEqualObjects(gRunContextSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]));
+    XCTAssertGreaterThan(gRunContextMarkedDescriptors.count, 0, @"The file should have been opened before its class was read");
+    // The descriptor kept open while the file is mapped is the one opened after the change; the first one, opened
+    // under NSFileProtectionComplete, and the one used before reinitialising, are closed
+    NSDictionary *descriptors = DescriptorsForPath(path);
+    XCTAssertEqual(descriptors.count, 1);
+    XCTAssertEqualObjects(descriptors.allValues.firstObject, @NO, @"The descriptor kept open should have been reopened");
+    XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
+
+    // The file is mapped through it
+    bsg_runContext->unhandledCount = 0xC1A55;
+    XCTAssertEqual(msync(bsg_runContext, sizeof(struct BSGRunContext), MS_SYNC), 0);
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    XCTAssertEqual(data.length, sizeof(struct BSGRunContext));
+    XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xC1A55UL);
+
+    BSGRunContextInit(path);
+}
+
+- (void)testRunContextFileWithAnotherProtectionClassIsNotReopened {
+    NSString *path = BSGFileLocations.current.runContext;
+    InitRunContextWithSimulatedProtection(path, NSURLFileProtectionCompleteUntilFirstUserAuthentication, NO);
+
+    XCTAssertEqualObjects(gRunContextSetProtectionCalls, @[]);
+    NSDictionary *descriptors = DescriptorsForPath(path);
+    XCTAssertEqual(descriptors.count, 1);
+    XCTAssertEqualObjects(descriptors.allValues.firstObject, @YES, @"The first descriptor should have been kept");
+
+    BSGRunContextInit(path);
+}
+
+- (void)testRunContextIsNotRemappedIfTheProtectionCannotBeChanged {
+    NSString *path = BSGFileLocations.current.runContext;
+    BSGRunContextInit(path);
+    struct BSGRunContext *const mapped = bsg_runContext;
+    XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
+
+    InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, YES);
+
+    XCTAssertEqual(gRunContextSetProtectionCalls.count, 1);
+    // A file that would not stay accessible while the device is locked is not mapped; the previous mapping, and its
+    // descriptor, are kept, and the descriptor opened for the failed attempt is closed
+    XCTAssertEqual(bsg_runContext, mapped);
+    XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path], @"The run context file must not be deleted");
+
+    BSGRunContextInit(path);
+}
+
+#pragma mark Real protection classes
+
+/// Whether the tests that set NSFileProtectionComplete on real files must run rather than be skipped. Set
+/// BSG_REQUIRE_FILE_PROTECTION_TESTS=1 (TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 with xcodebuild) on a host
+/// whose screen is unlocked, so that this test fails instead of silently skipping.
+static BOOL FileProtectionTestsAreRequired(void) {
+    return [NSProcessInfo.processInfo.environment[@"BSG_REQUIRE_FILE_PROTECTION_TESTS"] isEqualToString:@"1"];
+}
+
 - (void)testDisableNSFileProtectionComplete {
 #if !TARGET_OS_OSX || defined(__MAC_11_0)
     if (@available(macOS 11.0, *)) {
@@ -109,15 +258,22 @@ static int CountOpenDescriptorsForPath(NSString *path) {
         XCTAssertTrue([NSData.data writeToFile:path atomically:NO]);
         NSURL *url = [NSURL fileURLWithPath:path];
 
+        // On Apple silicon Macs (and so in the simulator) and on devices, NSFileProtectionComplete can only be set
+        // while the screen is unlocked; otherwise this fails with NSCocoaErrorDomain 513 (EPERM)
         NSError *error = nil;
         NSURLFileProtectionType protection = nil;
         if (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:&error] ||
-            ![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil] ||
+            ![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:&error] ||
             ![protection isEqual:NSURLFileProtectionComplete]) {
             [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-            XCTSkip(@"File protection is not supported here: %@ %@", protection, error);
+            NSString *reason = [NSString stringWithFormat:@"the file has %@ (%@ %ld: %@); is the screen locked?",
+                                protection, error.domain, (long)error.code, error.localizedDescription];
+            if (FileProtectionTestsAreRequired()) {
+                XCTFail(@"NSFileProtectionComplete could not be set: %@", reason);
+                return;
+            }
+            XCTSkip(@"NSFileProtectionComplete could not be set: %@", reason);
         }
-
         XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
         protection = nil;
         [url removeCachedResourceValueForKey:NSURLFileProtectionKey];

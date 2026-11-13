@@ -44,6 +44,20 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 /// refused. New files are created with mode 0600. A file created here with O_EXCL is deleted if it cannot be set up.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
+/// The functions that BSGChangeNSFileProtectionComplete (and so BSGOpenFileWithoutCompleteProtection) uses to read and
+/// change a file's protection class (an NSURLFileProtectionType). For unit tests only: they replace them to simulate
+/// protection classes that cannot be set on the host, e.g. NSFileProtectionComplete while the device is locked.
+typedef struct {
+    /// Returns the file's protection class, or nil if it has none or it cannot be read.
+    NSString *_Nullable (*_Nullable getProtection)(NSString *path);
+    /// Sets the file's protection class, returning NO and setting `error` on failure.
+    BOOL (*_Nullable setProtection)(NSString *path, NSString *protection, NSError *_Nullable *_Nullable error);
+} BSGFileProtectionFunctions;
+
+/// Replaces the functions used to read and change protection classes and returns the ones that were in use. A NULL
+/// member restores the default for that function. For unit tests only; not thread safe.
+BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions);
+
 dispatch_queue_t BSGGetFileSystemQueue(void);
 
 #if TARGET_OS_IOS
