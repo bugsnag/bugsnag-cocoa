@@ -20,18 +20,35 @@
 
 @interface BSGRunContextTests : BSGTestCase
 
+/// A run context file in a directory of its own, so that tests which map, replace or reopen it don't depend on the
+/// SDK's storage folder, which other tests in the same process may delete.
+@property (nonatomic) NSString *runContextPath;
+
 @end
 
 @implementation BSGRunContextTests
 
 - (void)setUp {
     [super setUp];
+    NSString *directory = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+    [NSFileManager.defaultManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    self.runContextPath = [directory stringByAppendingPathComponent:@"run_context"];
     // bsg_runContext is never NULL: before BSGRunContextInit() is called it points to a zeroed fallback, whose
     // structVersion is not set. It is initialised here when this test case runs on its own; in the full suite
     // an earlier test (e.g. one that starts Bugsnag) may already have done it.
     if (bsg_runContext->structVersion != BSGRUNCONTEXT_VERSION) {
         BSGRunContextInit(BSGFileLocations.current.runContext);
     }
+}
+
+- (void)tearDown {
+    // Map the SDK's own run context file again, as the other tests in this process expect
+    NSString *path = BSGFileLocations.current.runContext;
+    [NSFileManager.defaultManager createDirectoryAtPath:path.stringByDeletingLastPathComponent
+                            withIntermediateDirectories:YES attributes:nil error:nil];
+    BSGRunContextInit(path);
+    [NSFileManager.defaultManager removeItemAtPath:self.runContextPath.stringByDeletingLastPathComponent error:nil];
+    [super tearDown];
 }
 
 - (void)testMemory {
@@ -84,7 +101,7 @@ static int CountOpenDescriptorsForPath(NSString *path) {
 }
 
 - (void)testRunContextFileStaysOpenWhileMapped {
-    NSString *path = BSGFileLocations.current.runContext;
+    NSString *path = self.runContextPath;
 
     BSGRunContextInit(path);
     // The descriptor must stay open so that NSFileProtectionCompleteUnlessOpen
@@ -96,6 +113,9 @@ static int CountOpenDescriptorsForPath(NSString *path) {
     XCTAssertEqual(msync(bsg_runContext, sizeof(struct BSGRunContext), MS_SYNC), 0);
     NSData *data = [NSData dataWithContentsOfFile:path];
     XCTAssertEqual(data.length, sizeof(struct BSGRunContext));
+    if (data.length < sizeof(struct BSGRunContext)) {
+        return;
+    }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0x5EEDUL);
 
     // Reinitialising replaces the descriptor rather than leaking it.
@@ -196,7 +216,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
 }
 
 - (void)testRunContextFileWithCompleteProtectionIsReopenedAfterTheChange {
-    NSString *path = BSGFileLocations.current.runContext;
+    NSString *path = self.runContextPath;
     InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, NO);
 
     XCTAssertEqualObjects(gRunContextSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]));
@@ -213,13 +233,16 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertEqual(msync(bsg_runContext, sizeof(struct BSGRunContext), MS_SYNC), 0);
     NSData *data = [NSData dataWithContentsOfFile:path];
     XCTAssertEqual(data.length, sizeof(struct BSGRunContext));
+    if (data.length < sizeof(struct BSGRunContext)) {
+        return;
+    }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xC1A55UL);
 
     BSGRunContextInit(path);
 }
 
 - (void)testRunContextFileWithAnotherProtectionClassIsNotReopened {
-    NSString *path = BSGFileLocations.current.runContext;
+    NSString *path = self.runContextPath;
     InitRunContextWithSimulatedProtection(path, NSURLFileProtectionCompleteUntilFirstUserAuthentication, NO);
 
     XCTAssertEqualObjects(gRunContextSetProtectionCalls, @[]);
@@ -231,7 +254,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
 }
 
 - (void)testRunContextIsNotRemappedIfTheProtectionCannotBeChanged {
-    NSString *path = BSGFileLocations.current.runContext;
+    NSString *path = self.runContextPath;
     BSGRunContextInit(path);
     struct BSGRunContext *const mapped = bsg_runContext;
     XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
@@ -249,7 +272,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
 }
 
 - (void)testRunContextFileReplacedWhileItIsOpenedIsOpenedAgain {
-    NSString *path = BSGFileLocations.current.runContext;
+    NSString *path = self.runContextPath;
     BSGRunContextInit(path);
     NSString *replacement = [path stringByAppendingString:@".replacement"];
     XCTAssertTrue([NSData.data writeToFile:replacement atomically:NO]);
@@ -271,6 +294,9 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertEqual(current.st_ino, replaced.st_ino);
     NSData *data = [NSData dataWithContentsOfFile:path];
     XCTAssertEqual(data.length, sizeof(struct BSGRunContext));
+    if (data.length < sizeof(struct BSGRunContext)) {
+        return;
+    }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xA6A1UL);
 
     BSGRunContextInit(path);
