@@ -11,6 +11,7 @@
 #import "BSGCompositeFeatureFlagStore.h"
 #import "BSGMemoryFeatureFlagStore.h"
 #import "BSGPersistentFeatureFlagStore.h"
+#import "BSGUtils.h"
 #import "BugsnagFeatureFlag.h"
 
 #import <errno.h>
@@ -998,20 +999,20 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 #pragma mark Size limit
 
 - (void)testFlagsLargerThanTheLimitAreKeptInMemoryButNotPersisted {
-    // The limit is 2 MB per slot (a 4 MB file)
+    // The limit is just under 2 MB of flags, in slots of up to 4 MB (an 8 MB file)
     NSString *large = [@"" stringByPaddingToLength:1200 * 1024 withString:@"x" startingAtIndex:0];
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     [store addFeatureFlag:@"small" withVariant:@"1"];
     [store addFeatureFlag:@"large-1" withVariant:large];
     NSArray *persisted = @[@[@"small", @"1"], @[@"large-1", large]];
     XCTAssertEqualObjects([self reopenedFlags], persisted);
-    XCTAssertLessThanOrEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize], 4 * 1024 * 1024ULL);
+    XCTAssertLessThanOrEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize], 8 * 1024 * 1024ULL);
 
     // Crossing the limit empties the persisted log, and the flags stay in memory
     [store addFeatureFlag:@"large-2" withVariant:large];
     XCTAssertEqual(store.allFlags.count, 3);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
-    XCTAssertLessThanOrEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize], 4 * 1024 * 1024ULL);
+    XCTAssertLessThanOrEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize], 8 * 1024 * 1024ULL);
     const NSUInteger replacements = store.replaceFileCount;
     [store addFeatureFlag:@"another" withVariant:nil];
     [store addFeatureFlag:@"small" withVariant:@"2"];
@@ -1288,7 +1289,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     uint32_t oldCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
     uint64_t active = [self activeValue];
     NSData *log = [data subdataWithRange:NSMakeRange(HeaderSize + (active & 1) * oldCapacity, (NSUInteger)(active >> 1))];
-    const uint32_t slotCapacity = 4 * 1024 * 1024;
+    const uint32_t slotCapacity = 8 * 1024 * 1024;
     NSMutableData *file = [NSMutableData dataWithLength:HeaderSize + 2 * (NSUInteger)slotCapacity];
     [file replaceBytesInRange:NSMakeRange(0, HeaderSize) withBytes:data.bytes];
     [file replaceBytesInRange:NSMakeRange(SlotCapacityOffset, sizeof(slotCapacity)) withBytes:&slotCapacity];
@@ -1496,12 +1497,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     store.failReplaceFile = YES;
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    // The file must never hold a stale or partial set of flags
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    // The file is intact, so it keeps the flags as they were when they last fitted, never a partial set
+    NSArray *earlier = @[@[@"a", @"1"], @[@"b", @"2"]];
+    XCTAssertEqualObjects([self reopenedFlags], earlier);
     [store addFeatureFlag:@"c" withVariant:nil];
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], earlier);
     [store clear:@"a"];
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], earlier, @"Nothing is appended to the earlier log");
 
     NSArray *expected = @[@[@"b", @"2"], @[@"large", large], @[@"c", NSNull.null]];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
@@ -1524,7 +1526,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store clear:@"a"];
     XCTAssertEqual(store.replaceFileCount, 2, @"Growing the file should not be retried");
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"large", large], @[@"b", NSNull.null]]));
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"The flags that last fitted are kept");
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:[self.filePath stringByAppendingString:@".tmp"]]);
 
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
@@ -1537,13 +1539,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"The flags that last fitted are kept");
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
 
     // Within the retry interval the file is not written
     [store addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqual(store.replaceFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
 
     // Once it has passed, the next change writes all of the flags
     store.retryTime = 0;
@@ -1580,7 +1582,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
     XCTAssertEqual(store.replaceFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], @[], @"The file must not keep stale flags");
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"The file keeps the flags that last fitted");
 
     // Within the retry interval the file is not replaced on later changes, even though they would now fit
     store.replacementSnapshot = nil;
@@ -1588,7 +1590,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlag:@"b" withVariant:nil];
     [store addFeatureFlag:@"large" withVariant:[large stringByAppendingString:@"y"]];
     XCTAssertEqual(store.replaceFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
     XCTAssertEqual(store.allFlags.count, 3);
 }
 
@@ -1938,6 +1940,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 - (void)testSizeLimitAtTheExactBoundary {
     // The limit applies to the encoded flags: each record is 8 bytes of lengths, then the name and variant
     const NSUInteger maxSlotCapacity = 2 * 1024 * 1024 - 16;
+    // The largest slot is twice as large, so that a log of flags at the limit can still double
+    const NSUInteger largestSlotCapacity = 4 * 1024 * 1024 - 16;
     NSString *(^variant)(NSUInteger) = ^(NSUInteger recordLength) {
         return [@"" stringByPaddingToLength:recordLength - 8 - 1 withString:@"x" startingAtIndex:0];
     };
@@ -1946,9 +1950,10 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
     [store addFeatureFlag:@"a" withVariant:variant(maxSlotCapacity)];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant(maxSlotCapacity)]]));
-    XCTAssertEqual([self headerFieldAtOffset:SlotCapacityOffset], maxSlotCapacity);
+    XCTAssertEqual([self headerFieldAtOffset:SlotCapacityOffset], largestSlotCapacity);
     XCTAssertEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize],
-                   HeaderSize + 2 * maxSlotCapacity, @"The largest file is 4 MB");
+                   HeaderSize + 2 * largestSlotCapacity, @"The largest file is 8 MB");
+    XCTAssertEqual(HeaderSize + 2 * largestSlotCapacity, 8 * 1024 * 1024);
 
     // One byte more is kept in memory but not persisted
     [store addFeatureFlag:@"a" withVariant:variant(maxSlotCapacity + 1)];
@@ -2014,6 +2019,234 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     NSSet *middle = [NSSet setWithArray:[flags subarrayWithRange:NSMakeRange(1, 2)]];
     XCTAssertEqualObjects(middle, ([NSSet setWithArray:@[@[@"same-1", NSNull.null], @[@"same-2", @"2"]]]));
     XCTAssertEqualObjects([self reopenedFlags], flags);
+}
+
+#pragma mark Growing the file while the device is locked
+
+// How many times SimulatedLockedCreateFile has been called
+static NSUInteger gLockedCreateFileCount;
+
+/// Stands in for creating a file while the device is locked for an app whose default protection class is
+/// NSFileProtectionComplete, which open() refuses with EPERM.
+static BOOL SimulatedLockedCreateFile(__unused NSString *path) {
+    gLockedCreateFileCount++;
+    errno = EPERM;
+    return NO;
+}
+
+/// Makes creating files fail as they do while the device is locked, until the test ends or the returned block is called.
+- (dispatch_block_t)simulateLockedDevice {
+    gLockedCreateFileCount = 0;
+    const BSGFileProtectionFunctions previous = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
+        .createFile = SimulatedLockedCreateFile,
+    });
+    __block BOOL restored = NO;
+    dispatch_block_t unlock = ^{
+        if (!restored) {
+            restored = YES;
+            BSGSetFileProtectionFunctions(previous);
+        }
+    };
+    [self addTeardownBlock:unlock];
+    return unlock;
+}
+
+- (NSArray<NSString *> *)temporaryFiles {
+    NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directory error:nil];
+    return [files filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self ENDSWITH '.tmp'"]];
+}
+
+- (void)testGrowthWhileTheDeviceIsLockedKeepsTheExistingLogAndIsRetried {
+    BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    // Long enough that the changes below are always within it, however slowly the test runs
+    store.retryInterval = 3600;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    [store addFeatureFlag:@"b" withVariant:@"2"];
+    NSArray *earlier = @[@[@"a", @"1"], @[@"b", @"2"]];
+    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
+    struct stat before;
+    XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &before), 0);
+
+    // The device locks. Records still fit in the open file, which stays writable...
+    dispatch_block_t unlock = [self simulateLockedDevice];
+    [store addFeatureFlag:@"b" withVariant:@"3"];
+    earlier = @[@[@"a", @"1"], @[@"b", @"3"]];
+    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    XCTAssertEqual(gLockedCreateFileCount, 0);
+
+    // ...but a flag that needs a larger file cannot be saved, because the new file cannot be created
+    NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
+    [store addFeatureFlag:@"large" withVariant:large];
+    XCTAssertEqual(gLockedCreateFileCount, 1);
+    XCTAssertEqualObjects([self reopenedFlags], earlier, @"The log must not be emptied");
+    XCTAssertEqual(scheduler.delays.count, 1, @"A retry should have been scheduled");
+    XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, 3600, 60);
+    XCTAssertEqualObjects([self temporaryFiles], @[]);
+    struct stat after;
+    XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &after), 0);
+    XCTAssertEqual(after.st_ino, before.st_ino, @"The file should not have been replaced");
+
+    // Changes within the retry interval neither empty the log nor are appended to it
+    [store addFeatureFlag:@"c" withVariant:nil];
+    [store clear:@"a"];
+    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    XCTAssertEqual(gLockedCreateFileCount, 1);
+
+    // A retry while the device is still locked keeps the log too, and schedules another
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    XCTAssertEqual(gLockedCreateFileCount, 2);
+    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    XCTAssertEqual(scheduler.pendingRetries.count, 1);
+
+    // Once the device is unlocked, the retry creates the larger file with the current flags
+    unlock();
+    XCTAssertEqual([scheduler runPendingRetries], 1);
+    NSArray *expected = @[@[@"b", @"3"], @[@"large", large], @[@"c", NSNull.null]];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
+    XCTAssertEqualObjects([self reopenedFlags], expected);
+    XCTAssertGreaterThan([self headerFieldAtOffset:SlotCapacityOffset], slotCapacity);
+    XCTAssertEqual(scheduler.pendingRetries.count, 0, @"Nothing more should be scheduled after a success");
+    XCTAssertEqualObjects([self temporaryFiles], @[]);
+
+    // And records are appended to the new file again
+    [store addFeatureFlag:@"d" withVariant:@"4"];
+    XCTAssertEqualObjects([self reopenedFlags], ([expected arrayByAddingObject:@[@"d", @"4"]]));
+}
+
+- (void)testFlagsThatShrinkWhileTheDeviceIsLockedAreWrittenInPlace {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    store.retryInterval = 3600;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
+
+    [self simulateLockedDevice];
+    NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
+    [store addFeatureFlag:@"large" withVariant:large];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
+
+    // Flags that fit in the file again are written to it, without waiting for the retry or the unlock
+    [store clear:@"large"];
+    [store addFeatureFlag:@"b" withVariant:nil];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
+    [store addFeatureFlag:@"large" withVariant:large];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
+    // Clearing all of the flags empties the kept log
+    [store clear];
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqual(gLockedCreateFileCount, 1, @"The file is not replaced again within the retry interval");
+}
+
+- (void)testAnotherStoresLogIsNotKeptWhenTheFileCannotBeGrown {
+    BSGPersistentFeatureFlagStore *first = [self newStore];
+    [first addFeatureFlag:@"previous" withVariant:@"1"];
+    const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
+    BSGPersistentFeatureFlagStore *second = [self newStore];
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:second];
+    first = nil;
+
+    // The second store takes the lock and the first store's file, but cannot grow it. The flags in the file were
+    // never this store's own, so they are not kept in place of its flags.
+    [self simulateLockedDevice];
+    second.retryTime = 0;
+    NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
+    [second addFeatureFlag:@"large" withVariant:large];
+    XCTAssertEqual(gLockedCreateFileCount, 1);
+    XCTAssertEqualObjects(FlagsToArray(second.allFlags), (@[@[@"previous", @"1"], @[@"large", large]]));
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    XCTAssertEqual(scheduler.pendingRetries.count, 1);
+}
+
+#pragma mark Flags near the size limit
+
+/// Every slot switch or file replacement that a change caused, as seen in the file. The log is rewritten whole
+/// (into the other slot, or into a new file) exactly when one of these happens.
+- (NSUInteger)countRewritesDuring:(void (^)(void))changes
+                    maximumFileSize:(uint64_t)maximumFileSize
+                            changes:(NSUInteger)count {
+    NSUInteger rewrites = 0;
+    struct stat st;
+    XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &st), 0);
+    ino_t inode = st.st_ino;
+    uint64_t slot = [self activeValue] & 1;
+    for (NSUInteger i = 0; i < count; i++) {
+        changes();
+        XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &st), 0);
+        XCTAssertLessThanOrEqual((uint64_t)st.st_size, maximumFileSize);
+        const uint64_t activeSlot = [self activeValue] & 1;
+        if (st.st_ino != inode || activeSlot != slot) {
+            rewrites++;
+        }
+        inode = st.st_ino;
+        slot = activeSlot;
+    }
+    return rewrites;
+}
+
+- (void)testSmallChangesToFlagsAtTheLimitDoNotRewriteThem {
+    // Flags exactly at the limit (just under 2 MB), so that a file whose slots were no larger than that would
+    // have no room left to append to, and every change would rewrite all of the flags
+    const uint64_t limit = 2 * 1024 * 1024 - 16;
+    const uint64_t maximumFileSize = 8 * 1024 * 1024;
+    const NSUInteger smallRecordLength = 8 + 5 + 4; // "small" and a 4-character variant
+    NSString *big = [@"" stringByPaddingToLength:(NSUInteger)(limit - smallRecordLength - 8 - 3) withString:@"x" startingAtIndex:0];
+    BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"big" variant:big],
+                             [BugsnagFeatureFlag flagWithName:@"small" variant:@"0000"]]];
+    XCTAssertEqual([self activeValue] >> 1, limit, @"The flags should be exactly at the limit");
+    XCTAssertEqual([self headerFieldAtOffset:SlotCapacityOffset], 4 * 1024 * 1024 - 16);
+    const NSUInteger snapshots = store.snapshotCount;
+    const NSUInteger replacements = store.replaceFileCount;
+
+    __block NSUInteger i = 0;
+    const NSUInteger changes = 1000;
+    const NSUInteger rewrites = [self countRewritesDuring:^{
+        [store addFeatureFlag:@"small" withVariant:[NSString stringWithFormat:@"%04lu", (unsigned long)(++i % 10000)]];
+    } maximumFileSize:maximumFileSize changes:changes];
+    // 1000 records of 17 bytes fit in the room left after the flags, so nothing is rewritten
+    XCTAssertEqual(rewrites, 0);
+    XCTAssertEqual(store.snapshotCount, snapshots);
+    XCTAssertEqual(store.replaceFileCount, replacements);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"big", big], @[@"small", [NSString stringWithFormat:@"%04lu", (unsigned long)changes]]]));
+}
+
+- (void)testLargeChangesToFlagsNearTheLimitAreRewrittenOnlyWhenTheLogDoubles {
+    // 19 flags of 100 KB, which take up just under 2 MB
+    const uint64_t maximumFileSize = 8 * 1024 * 1024;
+    const NSUInteger variantLength = 100 * 1024;
+    NSString *(^variant)(NSUInteger) = ^(NSUInteger n) {
+        return [@"" stringByPaddingToLength:variantLength withString:[NSString stringWithFormat:@"%lu", (unsigned long)(n % 10)] startingAtIndex:0];
+    };
+    NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray array];
+    for (NSUInteger i = 0; i < 19; i++) {
+        [flags addObject:[BugsnagFeatureFlag flagWithName:[NSString stringWithFormat:@"large-%02lu", (unsigned long)i] variant:variant(0)]];
+    }
+    BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
+    [store replaceAllFlags:flags];
+    const uint64_t liveLength = [self activeValue] >> 1;
+    XCTAssertGreaterThan(liveLength, 1900 * 1024);
+    XCTAssertLessThanOrEqual(liveLength, 2 * 1024 * 1024 - 16);
+    const NSUInteger replacements = store.replaceFileCount;
+
+    // Each change appends 100 KB. 40 of them append about twice the size of the flags, so the log should be
+    // rewritten about twice; with no room to grow it would be rewritten by nearly every change.
+    __block NSUInteger i = 0;
+    const NSUInteger changes = 40;
+    const NSUInteger rewrites = [self countRewritesDuring:^{
+        i++;
+        // Never variant(0), so that every change is written
+        [store addFeatureFlag:[NSString stringWithFormat:@"large-%02lu", (unsigned long)(i % 19)] withVariant:variant(i % 9 + 1)];
+    } maximumFileSize:maximumFileSize changes:changes];
+    XCTAssertGreaterThan(rewrites, 0, @"The log should still be compacted");
+    XCTAssertLessThanOrEqual(rewrites, 3);
+    XCTAssertEqual(store.replaceFileCount, replacements, @"The file already has room for the log to double");
+    XCTAssertEqualObjects([self reopenedFlags], FlagsToArray(store.allFlags));
 }
 
 @end

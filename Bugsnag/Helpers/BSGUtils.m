@@ -65,15 +65,36 @@ static BOOL BSGSetFileProtection(NSString *path, NSString *protection, NSError *
     return YES;
 }
 
+static BOOL BSGCreateFile(NSString *path) {
+    // NSDataWritingWithoutOverwriting creates the file with O_CREAT | O_EXCL, so it fails if anything (including a
+    // symbolic link, even a dangling one) is at the path.
+    NSDataWritingOptions options = NSDataWritingWithoutOverwriting;
+#if TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
+    // The class is given when the file is created, so the file never has the app's default class: if that is
+    // NSFileProtectionComplete, a file could not be created at all while the device is locked. (open_dprotected_np
+    // would do the same, but the protection class constants it takes are not in the public headers.)
+    options |= NSDataWritingFileProtectionCompleteUnlessOpen;
+#endif
+    NSError *error = nil;
+    if ([NSData.data writeToFile:path options:options error:&error]) {
+        return YES;
+    }
+    NSError *underlying = error.userInfo[NSUnderlyingErrorKey];
+    errno = [underlying.domain isEqualToString:NSPOSIXErrorDomain] ? (int)underlying.code : EIO;
+    return NO;
+}
+
 static BSGFileProtectionFunctions bsg_fileProtectionFunctions = {
     .getProtection = BSGGetFileProtection,
     .setProtection = BSGSetFileProtection,
+    .createFile = BSGCreateFile,
 };
 
 BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions) {
     const BSGFileProtectionFunctions previous = bsg_fileProtectionFunctions;
     bsg_fileProtectionFunctions.getProtection = functions.getProtection ?: BSGGetFileProtection;
     bsg_fileProtectionFunctions.setProtection = functions.setProtection ?: BSGSetFileProtection;
+    bsg_fileProtectionFunctions.createFile = functions.createFile ?: BSGCreateFile;
     return previous;
 }
 
@@ -152,6 +173,57 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
     }
     close(fd);
     return reopened;
+}
+
+int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
+    const char *fileSystemPath = path.fileSystemRepresentation;
+    if (!bsg_fileProtectionFunctions.createFile(path)) {
+        const int error = errno;
+        bsg_log_warn(@"Could not create %@: %d", path.lastPathComponent, error);
+        errno = error;
+        return -1;
+    }
+    struct stat created;
+    if (lstat(fileSystemPath, &created) != 0) {
+        const int error = errno;
+        unlink(fileSystemPath);
+        errno = error;
+        return -1;
+    }
+    // The file exists now, so it is opened without O_CREAT; O_NOFOLLOW refuses a symbolic link put in its place
+    const int fd = BSGOpenFileWithoutCompleteProtection(path, flags & ~(O_CREAT | O_EXCL | O_TRUNC));
+    if (fd == -1) {
+        const int error = errno;
+        unlink(fileSystemPath);
+        errno = error;
+        return -1;
+    }
+    // As in BSGOpenFileWithoutCompleteProtection, the descriptor is only used if it refers to the file that was
+    // created. NSData creates files with mode 0666 less the umask, so the mode is set as open() would have set it.
+    struct stat opened;
+    if (fstat(fd, &opened) != 0 || opened.st_dev != created.st_dev || opened.st_ino != created.st_ino) {
+        // Whatever is at the path now was not created here, so it is left alone
+        bsg_log_warn(@"Could not create %@: the file was replaced while it was being opened", path.lastPathComponent);
+        close(fd);
+        errno = EEXIST;
+        return -1;
+    }
+    if (!S_ISREG(opened.st_mode) || opened.st_nlink != 1 || opened.st_size != 0) {
+        bsg_log_warn(@"Could not create %@: the file was changed while it was being opened", path.lastPathComponent);
+        close(fd);
+        unlink(fileSystemPath);
+        errno = EEXIST;
+        return -1;
+    }
+    if (fchmod(fd, 0600) != 0) {
+        const int error = errno;
+        bsg_log_warn(@"Could not create %@: %d", path.lastPathComponent, error);
+        close(fd);
+        unlink(fileSystemPath);
+        errno = error;
+        return -1;
+    }
+    return fd;
 }
 
 dispatch_queue_t BSGGetFileSystemQueue(void) {

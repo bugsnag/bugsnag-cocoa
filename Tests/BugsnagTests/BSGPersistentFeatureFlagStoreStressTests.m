@@ -355,7 +355,7 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
 #pragma mark Volume
 
 - (void)test40000FlagsBatchAddAndReopen {
-    // About 1.2 MB of records, which is below the 2 MB that a slot can hold
+    // About 1.2 MB of records, which is below the 2 MB limit on the flags that are persisted
     const NSUInteger count = 40000;
     NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:count];
     BSGFeatureFlagModel *model = [BSGFeatureFlagModel new];
@@ -395,14 +395,16 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     XCTAssertEqualObjects(StressFlagsToArray(store.allFlags), model.array);
     XCTAssertEqualObjects([self reopenedFlags], model.array);
 
-    // A 1 MB variant takes the flags over the 2 MB a slot can hold: they stay in memory, but the log in the
-    // file is emptied rather than left holding flags that are no longer current
+    // A 1 MB variant takes the flags over the 2 MB limit: they stay in memory, but the log in the file is
+    // emptied rather than left holding flags that are no longer current
     NSString *large = [@"" stringByPaddingToLength:1024 * 1024 withString:@"0123456789abcdef" startingAtIndex:0];
     [store addFeatureFlag:@"over-the-cap" withVariant:large];
     [model add:@"over-the-cap" variant:large];
     XCTAssertEqualObjects(StressFlagsToArray(store.allFlags), model.array);
     XCTAssertEqualObjects([self reopenedFlags], @[], @"Flags over the size limit must not be persisted");
-    XCTAssertLessThanOrEqual([self slotCapacity], 2u * 1024 * 1024);
+    // Slots are at most 4 MB (an 8 MB file), twice the limit, so that a log at the limit can double
+    XCTAssertLessThanOrEqual([self slotCapacity], 4u * 1024 * 1024);
+    XCTAssertLessThanOrEqual([self fileSize], 8ull * 1024 * 1024);
 
     // Once they are small enough again, the next change saves all of them
     [store clear:@"over-the-cap"];

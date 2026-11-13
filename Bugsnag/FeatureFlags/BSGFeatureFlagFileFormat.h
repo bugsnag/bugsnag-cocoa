@@ -60,9 +60,15 @@ static const uint32_t BSGFeatureFlagFileMagic = 0x46465342; // "BSFF"
 static const uint32_t BSGFeatureFlagFileVersion = 1;
 static const uint32_t BSGFeatureFlagNoVariant = UINT32_MAX;
 static const uint32_t BSGFeatureFlagRemoved = UINT32_MAX - 1;
-// The largest slot capacity that is written, which makes the largest file 4 MB. Flags that take up
-// more than this are kept in memory but not persisted.
-#define BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY (2ULL * 1024 * 1024 - 16)
+// The most flags that are persisted: flags whose records take up more than this (just under 2 MB) are
+// kept in memory but not persisted.
+#define BSG_FEATURE_FLAG_MAX_PERSISTED_LENGTH (2ULL * 1024 * 1024 - 16)
+static const uint64_t BSGFeatureFlagMaxPersistedLength = BSG_FEATURE_FLAG_MAX_PERSISTED_LENGTH;
+// The largest slot capacity that is written, which makes the largest file 8 MB. It is at least twice
+// the most flags that are persisted, so that a log of flags at that limit can still double before it is
+// rewritten; otherwise nearly every change to such flags would rewrite all of them. Files are not
+// preallocated, so the disk space used is only that of the parts of the slots that have been written.
+#define BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY (4ULL * 1024 * 1024 - 16)
 static const uint64_t BSGFeatureFlagMaxSlotCapacity = BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY;
 // The largest slot capacity that is read; anything larger in a header means the file is corrupt.
 // It is larger than the capacity that is written so that a later version can raise that limit
@@ -87,6 +93,9 @@ _Static_assert(offsetof(struct bsg_feature_flag_file_header, active) == 16, "Fea
 // The macros are used because older compilers don't treat static const variables as constant
 // expressions in C.
 _Static_assert(BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY <= BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY, "Files that are written must be readable");
+_Static_assert(BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY <= UINT32_MAX, "Slot capacities must fit in the header");
+_Static_assert(2 * BSG_FEATURE_FLAG_MAX_PERSISTED_LENGTH <= BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY,
+               "The largest slot must have room for a log of the most flags that are persisted to double");
 
 static inline uint64_t BSGFeatureFlagFileActiveValue(uint64_t length, uint32_t slot) {
     return (length << 1) | slot;

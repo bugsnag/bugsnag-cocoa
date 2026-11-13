@@ -609,6 +609,110 @@ static int BSGLowestFreeDescriptor(void) {
     close(fd);
 }
 
+#pragma mark Creating files
+
+// The error that FailingCreateFile fails with
+static int gCreateFileErrno;
+
+static BOOL FailingCreateFile(__unused NSString *path) {
+    errno = gCreateFileErrno;
+    return NO;
+}
+
+- (void)testCreateFileWithoutCompleteProtection {
+    NSString *path = [self.directory stringByAppendingPathComponent:@"created"];
+    int fd = BSGCreateFileWithoutCompleteProtection(path, O_RDWR);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
+    struct stat byDescriptor, byPath;
+    XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &byPath), 0);
+    XCTAssertEqual(byDescriptor.st_ino, byPath.st_ino);
+    XCTAssertTrue(S_ISREG(byDescriptor.st_mode));
+    XCTAssertEqual(byDescriptor.st_mode & 0777, 0600);
+    XCTAssertEqual(byDescriptor.st_size, 0);
+    XCTAssertEqual(pwrite(fd, "abc", 3, 0), 3);
+    char buffer[3] = {0};
+    XCTAssertEqual(pread(fd, buffer, 3, 0), 3);
+    XCTAssertEqual(memcmp(buffer, "abc", 3), 0);
+    close(fd);
+#if TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST && !TARGET_OS_SIMULATOR
+    // The protection class is set when the file is created. (The simulator ignores a class requested when a file is
+    // created, by NSData or NSFileManager alike, and gives it NSFileProtectionCompleteUntilFirstUserAuthentication.)
+    NSURLFileProtectionType protection = nil;
+    [[NSURL fileURLWithPath:path] getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil];
+    if (protection) {
+        XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
+    }
+#endif
+
+    // A file that exists is neither opened nor changed
+    errno = 0;
+    XCTAssertEqual(BSGCreateFileWithoutCompleteProtection(path, O_RDWR), -1);
+    XCTAssertEqual(errno, EEXIST);
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)testCreateFileRefusesSymbolicLinks {
+    NSString *target = [self.directory stringByAppendingPathComponent:@"target"];
+    NSString *link = [self.directory stringByAppendingPathComponent:@"link"];
+    XCTAssertTrue([[@"target" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:target atomically:NO]);
+    XCTAssertEqual(symlink(target.fileSystemRepresentation, link.fileSystemRepresentation), 0);
+    XCTAssertEqual(BSGCreateFileWithoutCompleteProtection(link, O_RDWR), -1);
+    XCTAssertEqualObjects([NSData dataWithContentsOfFile:target], [@"target" dataUsingEncoding:NSUTF8StringEncoding]);
+
+    // A dangling link is not followed to create a file elsewhere
+    NSString *missing = [self.directory stringByAppendingPathComponent:@"missing"];
+    NSString *danglingLink = [self.directory stringByAppendingPathComponent:@"dangling"];
+    XCTAssertEqual(symlink(missing.fileSystemRepresentation, danglingLink.fileSystemRepresentation), 0);
+    XCTAssertEqual(BSGCreateFileWithoutCompleteProtection(danglingLink, O_RDWR), -1);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:missing]);
+}
+
+- (void)testCreateFileFailsWhenTheFileCannotBeCreated {
+    // As when the device is locked and the file would have NSFileProtectionComplete
+    gCreateFileErrno = EPERM;
+    const BSGFileProtectionFunctions previous = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
+        .createFile = FailingCreateFile,
+    });
+    NSString *path = [self.directory stringByAppendingPathComponent:@"created"];
+    errno = 0;
+    const int fd = BSGCreateFileWithoutCompleteProtection(path, O_RDWR);
+    const int error = errno;
+    BSGSetFileProtectionFunctions(previous);
+    XCTAssertEqual(fd, -1);
+    XCTAssertEqual(error, EPERM);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:path]);
+}
+
+- (void)testCreatedFileWithCompleteProtectionIsChanged {
+    // If the class could not be set when the file was created (e.g. on macOS), Complete is changed as for any file
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"created"];
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    const int fd = BSGCreateFileWithoutCompleteProtection(path, O_RDWR);
+    XCTAssertNotEqual(fd, -1);
+    XCTAssertEqualObjects(gSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]));
+    if (fd != -1) {
+        struct stat byDescriptor, byPath;
+        XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+        XCTAssertEqual(lstat(path.fileSystemRepresentation, &byPath), 0);
+        XCTAssertEqual(byDescriptor.st_ino, byPath.st_ino);
+        XCTAssertEqual(byDescriptor.st_mode & 0777, 0600);
+        close(fd);
+    }
+
+    // If the class cannot be changed, the file that was created is deleted
+    NSString *other = [self.directory stringByAppendingPathComponent:@"other"];
+    gSimulatedProtection[other] = NSURLFileProtectionComplete;
+    gSetProtectionError = [NSError errorWithDomain:NSPOSIXErrorDomain code:EPERM userInfo:nil];
+    XCTAssertEqual(BSGCreateFileWithoutCompleteProtection(other, O_RDWR), -1);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:other]);
+}
+
 - (void)testSymbolicLinkAtThePathIsRefused {
     NSString *target = [self.directory stringByAppendingPathComponent:@"target"];
     NSString *link = [self.directory stringByAppendingPathComponent:@"link"];

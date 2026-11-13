@@ -48,17 +48,36 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 /// refused. New files are created with mode 0600. A file created here with O_EXCL is deleted if it cannot be set up.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
+/// Creates a new, empty file and opens it as BSGOpenFileWithoutCompleteProtection does, returning -1 on error (with errno
+/// set). Fails if anything, including a symbolic link, is already at the path.
+///
+/// On iOS, tvOS, watchOS and visionOS the file is created with NSFileProtectionCompleteUnlessOpen, so that it never has
+/// NSFileProtectionComplete, even briefly. A file created with open() takes the app's default protection class, and if
+/// that is NSFileProtectionComplete it cannot be created at all while the device is locked; a file created with
+/// NSFileProtectionCompleteUnlessOpen can be. On macOS the file is created with the default class, which
+/// BSGOpenFileWithoutCompleteProtection then changes if it is NSFileProtectionComplete.
+///
+/// `flags` are the flags to open the file with once it has been created (e.g. O_RDWR); O_CREAT, O_EXCL and O_TRUNC are
+/// implied and ignored. The descriptor is only returned if it refers to the file that was created (same device and
+/// inode, empty, with one link). The file has mode 0600, and it is deleted if it cannot be opened or set up.
+int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags);
+
 /// The functions that BSGChangeNSFileProtectionComplete (and so BSGOpenFileWithoutCompleteProtection) uses to read and
-/// change a file's protection class (an NSURLFileProtectionType). For unit tests only: they replace them to simulate
-/// protection classes that cannot be set on the host, e.g. NSFileProtectionComplete while the device is locked.
+/// change a file's protection class (an NSURLFileProtectionType), and that BSGCreateFileWithoutCompleteProtection uses to
+/// create a file. For unit tests only: they replace them to simulate protection classes that cannot be set on the host,
+/// e.g. NSFileProtectionComplete while the device is locked, or a file that cannot be created while it is locked.
 typedef struct {
     /// Returns the file's protection class, or nil if it has none or it cannot be read.
     NSString *_Nullable (*_Nullable getProtection)(NSString *path);
     /// Sets the file's protection class, returning NO and setting `error` on failure.
     BOOL (*_Nullable setProtection)(NSString *path, NSString *protection, NSError *_Nullable *_Nullable error);
+    /// Creates a new, empty file with NSFileProtectionCompleteUnlessOpen where the platform supports setting it at
+    /// creation (see BSGCreateFileWithoutCompleteProtection), failing if anything is at the path. Returns NO and sets
+    /// errno on failure, e.g. EPERM when a file cannot be created because the device is locked.
+    BOOL (*_Nullable createFile)(NSString *path);
 } BSGFileProtectionFunctions;
 
-/// Replaces the functions used to read and change protection classes and returns the ones that were in use. A NULL
+/// Replaces the functions used to read and change protection classes (and to create files) and returns the ones that were in use. A NULL
 /// member restores the default for that function. For unit tests only; not thread safe.
 BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions);
 
