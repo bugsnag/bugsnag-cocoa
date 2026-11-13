@@ -47,7 +47,7 @@
             bsg_log_err(@"Unable to decode feature flag: %@", error);
         }
     }
-    
+
     [storedFlags sortUsingComparator:^NSComparisonResult(BSGStoredFeatureFlag *  _Nonnull obj1, BSGStoredFeatureFlag *  _Nonnull obj2) {
         if (obj1.index == obj2.index) {
             return NSOrderedSame;

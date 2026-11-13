@@ -21,8 +21,14 @@ struct bsg_feature_flag_list_item {
     char jsonData[]; // MUST be null terminated
 };
 
-static _Atomic(struct bsg_feature_flag_list_item *) g_feature_flags_head;
-static _Atomic(struct bsg_feature_flag_list_item *) g_feature_flags_tail;
+// A doubly linked list of items. Only the global list (g_list) is ever visible to the crash-time reader;
+// replaceAllFlags: builds a new list off to the side before publishing it.
+struct bsg_feature_flag_list {
+    _Atomic(struct bsg_feature_flag_list_item *) head;
+    _Atomic(struct bsg_feature_flag_list_item *) tail;
+};
+
+static struct bsg_feature_flag_list g_list;
 // The number of crash-time readers walking the list. It is a count rather than a flag because several
 // reports can be written at the same time (e.g. a crash while an app hang report is being written), and
 // an item must not be freed until the last of them has finished.
@@ -42,17 +48,113 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
  * reader, which takes no locks and allocates nothing, therefore always walks a complete list:
  * either the one from before an update or the one from after it.
  *
- * Freeing is safe because of the order of the sequentially consistent operations on each side. A
- * reader increments g_crash_report_readers before it loads the head and decrements it once it has
- * finished with the list, and a writer makes an item unreachable before it checks that the count is
- * zero (in _awaitAtomicFeatureFlagsLockIfNeeded) and frees it. So either the writer sees a reader that
- * may still reach the item and waits until every reader has finished, or the reader starts after the
- * item was unlinked and can never reach it. Because readers are counted, one reader finishing does not
- * let a writer free an item that another reader is still walking.
+ * Publishing needs no wait. An item is fully built (including its next pointer) before the single
+ * atomic store that makes it reachable, so a reader that loads the pointer before that store sees the
+ * old list and one that loads it afterwards sees the new item; both are complete lists, and nothing the
+ * reader can reach has been freed. A reader on an item that is being unlinked keeps following that
+ * item's next pointer, which is not changed, so it also stays on a complete list.
+ *
+ * Freeing is the only step that waits, and it is safe because of the order of the sequentially consistent
+ * operations on each side. A reader increments g_crash_report_readers before it loads the head and
+ * decrements it once it has finished with the list, and a writer makes an item unreachable before it
+ * checks that the count is zero (in BSGAwaitCrashReportReaders) and frees it. So either the writer sees a
+ * reader that may still reach the item and waits until every reader has finished, or the reader's
+ * increment comes after the writer's check in the total order, so all of its loads come after the store
+ * that unlinked the item and it can never reach it. Because readers are counted, one reader finishing does
+ * not let a writer free an item that another reader is still walking.
  *
  * Duplicate names follow BSGMemoryFeatureFlagStore: adding a name that is already present replaces
- * its variant and keeps the flag in the position where the name was first added.
+ * its variant and keeps the flag in the position where the name was first added. That rule is applied in
+ * one place, BSGListSetItem, which every method (including replaceAllFlags:, which builds its new list with
+ * it) uses, because any of them can be passed duplicate names: addFeatureFlags: is passed the app's array.
  */
+
+/// Waits until no crash-time reader is walking the list. Called between unlinking items and freeing them.
+static void BSGAwaitCrashReportReaders(void) {
+    while (atomic_load(&g_crash_report_readers) > 0) { continue; }
+}
+
+/// Frees an item that has been unlinked. If the list is published, crash-time readers may still be on it.
+static void BSGFreeUnlinkedItem(struct bsg_feature_flag_list_item *item, BOOL published) {
+    if (published) {
+        BSGAwaitCrashReportReaders();
+    }
+    free(item);
+}
+
+/// Unlinks an item from a list, without freeing it.
+static void BSGListUnlink(struct bsg_feature_flag_list *list, struct bsg_feature_flag_list_item *item) {
+    struct bsg_feature_flag_list_item *previous = item->previous;
+    struct bsg_feature_flag_list_item *next = atomic_load(&item->next);
+    if (previous) {
+        atomic_store(&previous->next, next);
+    } else {
+        atomic_store(&list->head, next);
+    }
+    if (next) {
+        next->previous = previous;
+    } else {
+        atomic_store(&list->tail, previous);
+    }
+}
+
+/// Adds a new item to a list, or swaps it into the position of the item with the same name.
+static void BSGListSetItem(struct bsg_feature_flag_list *list, NSMutableDictionary<NSString *, NSValue *> *index,
+                           NSString *name, struct bsg_feature_flag_list_item *newItem, BOOL published) {
+    struct bsg_feature_flag_list_item *oldItem = [index[name] pointerValue];
+    if (oldItem) {
+        // The new item is fully linked before the single store that makes it reachable, and the old item
+        // becomes unreachable in that same store.
+        struct bsg_feature_flag_list_item *previous = oldItem->previous;
+        struct bsg_feature_flag_list_item *next = atomic_load(&oldItem->next);
+        newItem->previous = previous;
+        atomic_store(&newItem->next, next);
+        if (previous) {
+            atomic_store(&previous->next, newItem);
+        } else {
+            atomic_store(&list->head, newItem);
+        }
+        if (next) {
+            next->previous = newItem;
+        } else {
+            atomic_store(&list->tail, newItem);
+        }
+        BSGFreeUnlinkedItem(oldItem, published);
+    } else {
+        struct bsg_feature_flag_list_item *tail = atomic_load(&list->tail);
+        newItem->previous = tail;
+        if (tail) {
+            atomic_store(&tail->next, newItem);
+        } else {
+            atomic_store(&list->head, newItem);
+        }
+        atomic_store(&list->tail, newItem);
+    }
+    index[name] = [NSValue valueWithPointer:newItem];
+}
+
+/// Removes the item with a name from a list, if there is one, and frees it.
+static void BSGListRemove(struct bsg_feature_flag_list *list, NSMutableDictionary<NSString *, NSValue *> *index,
+                          NSString *name, BOOL published) {
+    struct bsg_feature_flag_list_item *item = [index[name] pointerValue];
+    if (item) {
+        BSGListUnlink(list, item);
+        BSGFreeUnlinkedItem(item, published);
+        index[name] = nil;
+    }
+}
+
+/// Frees a list of items that is no longer reachable from a published pointer, after waiting for any
+/// crash-time readers that may still be walking it.
+static void BSGFreeList(struct bsg_feature_flag_list_item *item) {
+    BSGAwaitCrashReportReaders();
+    while (item) {
+        struct bsg_feature_flag_list_item *next = atomic_load(&item->next);
+        free(item);
+        item = next;
+    }
+}
+
 @implementation BSGAtomicFeatureFlagStore
 
 + (void)initialize {
@@ -74,20 +176,20 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 
 - (BOOL)isEmpty {
     @synchronized (g_lock) {
-        return atomic_load(&g_feature_flags_head) == NULL;
+        return atomic_load(&g_list.head) == NULL;
     }
 }
 
 - (void)addFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
     @synchronized (g_lock) {
-        [self _setFeatureFlag:name withVariant:variant];
+        [self _setFeatureFlag:name withVariant:variant inList:&g_list index:nameToFlag published:YES];
     }
 }
 
 - (void)addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
     @synchronized (g_lock) {
         for (BugsnagFeatureFlag *flag in featureFlags) {
-            [self _setFeatureFlag:flag.name withVariant:flag.variant];
+            [self _setFeatureFlag:flag.name withVariant:flag.variant inList:&g_list index:nameToFlag published:YES];
         }
     }
 }
@@ -95,7 +197,7 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 - (void)clear:(nullable NSString *)name {
     @synchronized (g_lock) {
         if (name != nil) {
-            [self _removeFeatureFlagWithName:name];
+            BSGListRemove(&g_list, nameToFlag, (NSString *_Nonnull)name, YES);
         } else {
             [self _clearAll];
         }
@@ -110,51 +212,23 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 
 - (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
     @synchronized (g_lock) {
-        // Apply the duplicate-name rule first so that the new list holds each name once.
-        NSMutableArray<NSString *> *names = [NSMutableArray arrayWithCapacity:featureFlags.count];
-        NSMutableDictionary<NSString *, id> *variants = [NSMutableDictionary dictionaryWithCapacity:featureFlags.count];
+        // Build the new list off to the side, where the crash-time reader cannot see it, applying the
+        // duplicate-name rule as addFeatureFlags: does, so that the new list holds each name once.
+        struct bsg_feature_flag_list newList = {NULL, NULL};
+        NSMutableDictionary<NSString *, NSValue *> *newNameToFlag = [NSMutableDictionary dictionaryWithCapacity:featureFlags.count];
         for (BugsnagFeatureFlag *flag in featureFlags) {
-            if (!variants[flag.name]) {
-                [names addObject:flag.name];
-            }
-            variants[flag.name] = flag.variant ?: [NSNull null];
-        }
-
-        // Build the new list off to the side, where the crash-time reader cannot see it.
-        struct bsg_feature_flag_list_item *newHead = NULL;
-        struct bsg_feature_flag_list_item *newTail = NULL;
-        NSMutableDictionary<NSString *, NSValue *> *newNameToFlag = [NSMutableDictionary dictionaryWithCapacity:names.count];
-        for (NSString *name in names) {
-            id variant = variants[name];
-            struct bsg_feature_flag_list_item *item =
-            [self _newItemForFeatureFlagWithName:name variant:variant == [NSNull null] ? nil : variant];
-            if (!item) {
-                continue;
-            }
-            item->previous = newTail;
-            if (newTail) {
-                atomic_store(&newTail->next, item);
-            } else {
-                newHead = item;
-            }
-            newTail = item;
-            newNameToFlag[name] = [NSValue valueWithPointer:item];
+            [self _setFeatureFlag:flag.name withVariant:flag.variant inList:&newList index:newNameToFlag published:NO];
         }
 
         // Publish the new list with a single pointer swap, then free the old one, which is no longer reachable.
-        [self _awaitAtomicFeatureFlagsLockIfNeeded];
-        struct bsg_feature_flag_list_item *oldHead = atomic_exchange(&g_feature_flags_head, newHead);
-        atomic_store(&g_feature_flags_tail, newTail);
+        struct bsg_feature_flag_list_item *oldHead = atomic_exchange(&g_list.head, atomic_load(&newList.head));
+        atomic_store(&g_list.tail, atomic_load(&newList.tail));
         nameToFlag = newNameToFlag;
-        [self _freeList:oldHead];
+        BSGFreeList(oldHead);
     }
 }
 
 #pragma mark - Private methods
-
-- (void)_awaitAtomicFeatureFlagsLockIfNeeded {
-    while (atomic_load(&g_crash_report_readers) > 0) { continue; }
-}
 
 - (struct bsg_feature_flag_list_item *)_newItemForFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant {
     NSData *data = [self _dataForFeatureFlagWithName:name variant:variant];
@@ -169,48 +243,18 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
     return item;
 }
 
-- (void)_setFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
+- (void)_setFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant
+                 inList:(struct bsg_feature_flag_list *)list
+                  index:(NSMutableDictionary<NSString *, NSValue *> *)index
+              published:(BOOL)published {
     struct bsg_feature_flag_list_item *newItem = [self _newItemForFeatureFlagWithName:name variant:variant];
     if (!newItem) {
         // The new value cannot be serialized. Remove any earlier value so that a crash report leaves the flag
-        // out rather than reporting a variant the app has replaced. This matches replaceAllFlags: and the
-        // persistent store. The removal unlinks the item and waits for crash-time readers before freeing it.
-        [self _removeFeatureFlagWithName:name];
+        // out rather than reporting a variant the app has replaced. This matches the persistent store.
+        BSGListRemove(list, index, name, published);
         return;
     }
-    struct bsg_feature_flag_list_item *oldItem = [nameToFlag[name] pointerValue];
-    if (oldItem) {
-        // Swap the new item into the old item's position. The new item is fully linked before the
-        // single store that makes it reachable, and the old item becomes unreachable in that same store.
-        struct bsg_feature_flag_list_item *previous = oldItem->previous;
-        struct bsg_feature_flag_list_item *next = atomic_load(&oldItem->next);
-        newItem->previous = previous;
-        atomic_store(&newItem->next, next);
-        [self _awaitAtomicFeatureFlagsLockIfNeeded];
-        if (previous) {
-            atomic_store(&previous->next, newItem);
-        } else {
-            atomic_store(&g_feature_flags_head, newItem);
-        }
-        if (next) {
-            next->previous = newItem;
-        } else {
-            atomic_store(&g_feature_flags_tail, newItem);
-        }
-        [self _awaitAtomicFeatureFlagsLockIfNeeded];
-        free(oldItem);
-    } else {
-        struct bsg_feature_flag_list_item *tail = atomic_load(&g_feature_flags_tail);
-        newItem->previous = tail;
-        [self _awaitAtomicFeatureFlagsLockIfNeeded];
-        if (tail) {
-            atomic_store(&tail->next, newItem);
-        } else {
-            atomic_store(&g_feature_flags_head, newItem);
-        }
-        atomic_store(&g_feature_flags_tail, newItem);
-    }
-    nameToFlag[name] = [NSValue valueWithPointer:newItem];
+    BSGListSetItem(list, index, name, newItem, published);
 }
 
 - (NSData *)_dataForFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant {
@@ -227,43 +271,11 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
     return data;
 }
 
-- (void)_removeFeatureFlagWithName:(NSString *)name {
-    struct bsg_feature_flag_list_item *flag = [nameToFlag[name] pointerValue];
-    if (flag) {
-        struct bsg_feature_flag_list_item *previous = flag->previous;
-        struct bsg_feature_flag_list_item *next = atomic_load(&flag->next);
-        [self _awaitAtomicFeatureFlagsLockIfNeeded];
-        if (previous) {
-            atomic_store(&previous->next, next);
-        } else {
-            atomic_store(&g_feature_flags_head, next);
-        }
-        if (next) {
-            next->previous = previous;
-        } else {
-            atomic_store(&g_feature_flags_tail, previous);
-        }
-        [self _awaitAtomicFeatureFlagsLockIfNeeded];
-        free(flag);
-        nameToFlag[name] = nil;
-    }
-}
-
 - (void)_clearAll {
-    [self _awaitAtomicFeatureFlagsLockIfNeeded];
-    struct bsg_feature_flag_list_item *item = atomic_exchange(&g_feature_flags_head, NULL);
-    atomic_store(&g_feature_flags_tail, NULL);
+    struct bsg_feature_flag_list_item *item = atomic_exchange(&g_list.head, NULL);
+    atomic_store(&g_list.tail, NULL);
     nameToFlag = [NSMutableDictionary dictionary];
-    [self _freeList:item];
-}
-
-- (void)_freeList:(struct bsg_feature_flag_list_item *)item {
-    [self _awaitAtomicFeatureFlagsLockIfNeeded];
-    while (item) {
-        struct bsg_feature_flag_list_item *next = atomic_load(&item->next);
-        free(item);
-        item = next;
-    }
+    BSGFreeList(item);
 }
 
 @end
@@ -274,7 +286,7 @@ void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter *writer,
 
     writer->beginArray(writer, "featureFlags");
     
-    struct bsg_feature_flag_list_item *item = atomic_load(&g_feature_flags_head);
+    struct bsg_feature_flag_list_item *item = atomic_load(&g_list.head);
     while (item) {
         writer->addJSONElement(writer, NULL, item->jsonData);
         item = atomic_load(&item->next);

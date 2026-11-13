@@ -148,6 +148,8 @@ static NSMutableArray<NSArray<NSString *> *> *gRunContextSetProtectionCalls;
 static BOOL gRunContextSetProtectionFails;
 static NSArray<NSNumber *> *gRunContextMarkedDescriptors;
 static BSGFileProtectionFunctions gRunContextPreviousFunctions;
+// If set, this file is renamed over the run context file when its protection class is first changed
+static NSString *gRunContextReplacement;
 
 static NSString *_Nullable RunContextGetProtection(NSString *path) {
     if (![path isEqualToString:gRunContextPath]) {
@@ -163,6 +165,10 @@ static BOOL RunContextSetProtection(NSString *path, NSString *protection, NSErro
         return gRunContextPreviousFunctions.setProtection(path, protection, error);
     }
     [gRunContextSetProtectionCalls addObject:@[path, protection]];
+    if (gRunContextReplacement) {
+        rename(gRunContextReplacement.fileSystemRepresentation, path.fileSystemRepresentation);
+        gRunContextReplacement = nil;
+    }
     if (gRunContextSetProtectionFails) {
         if (error) {
             *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteNoPermissionError userInfo:nil];
@@ -238,6 +244,34 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertEqual(bsg_runContext, mapped);
     XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path], @"The run context file must not be deleted");
+
+    BSGRunContextInit(path);
+}
+
+- (void)testRunContextFileReplacedWhileItIsOpenedIsOpenedAgain {
+    NSString *path = BSGFileLocations.current.runContext;
+    BSGRunContextInit(path);
+    NSString *replacement = [path stringByAppendingString:@".replacement"];
+    XCTAssertTrue([NSData.data writeToFile:replacement atomically:NO]);
+    struct stat replaced;
+    XCTAssertEqual(lstat(replacement.fileSystemRepresentation, &replaced), 0);
+    // The file is replaced between the two opens of the first attempt, which therefore fails; the second succeeds
+    gRunContextReplacement = replacement;
+    InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, NO);
+    gRunContextReplacement = nil;
+
+    XCTAssertEqual(gRunContextSetProtectionCalls.count, 1);
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:replacement]);
+    XCTAssertEqual(CountOpenDescriptorsForPath(path), 1);
+    // The file mapped is the one now at the path
+    bsg_runContext->unhandledCount = 0xA6A1;
+    XCTAssertEqual(msync(bsg_runContext, sizeof(struct BSGRunContext), MS_SYNC), 0);
+    struct stat current;
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &current), 0);
+    XCTAssertEqual(current.st_ino, replaced.st_ino);
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    XCTAssertEqual(data.length, sizeof(struct BSGRunContext));
+    XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xA6A1UL);
 
     BSGRunContextInit(path);
 }

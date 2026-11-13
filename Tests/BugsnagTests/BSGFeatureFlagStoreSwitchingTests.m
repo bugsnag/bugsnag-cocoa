@@ -83,7 +83,15 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
     XCTAssertEqual([self jsonFileCount], 0);
+    // The imported flags are not written when the store is created, and the launch has no flags, so no file is needed
+    XCTAssertFalse([self flagFileExists]);
+
+    [self launchPreviousReleaseWithFlags:@[[BugsnagFeatureFlag flagWithName:@"c" variant:@"3"]]];
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"d"]]],
+                          (@[@[@"c", @"3"]]));
+    XCTAssertEqual([self jsonFileCount], 0);
     XCTAssertTrue([self flagFileExists]);
+    XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"d", NSNull.null]]));
 }
 
 - (void)testUpgradeDowngradeAndUpgradeNeverReportsStaleFlags {

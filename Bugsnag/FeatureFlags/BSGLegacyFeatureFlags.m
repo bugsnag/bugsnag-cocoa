@@ -7,9 +7,11 @@
 
 #import "BSGLegacyFeatureFlags.h"
 
+#import "BSGFeatureFlagFileFormat.h"
 #import "BSGKeys.h"
 #import "BSGStoredFeatureFlag.h"
 #import "BugsnagFeatureFlag.h"
+#import "BSGUtils.h"
 #import "BugsnagLogger.h"
 
 #import <fcntl.h>
@@ -20,27 +22,20 @@
 static const off_t BSGLegacyFeatureFlagMaxFileSize = 16 * 1024 * 1024;
 
 /// Reads a JSON file, returning nil if it cannot be read. As with featureflag.bin, a symbolic link at the path is
-/// not followed (O_NOFOLLOW), and only regular files are read.
+/// not followed, and only regular files are read: anything else, such as a FIFO, is refused without blocking (see
+/// BSGOpenRegularFile).
 static NSData *_Nullable BSGReadLegacyFeatureFlagFile(NSString *path) {
-    const int fd = open(path.fileSystemRepresentation, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+    const int fd = BSGOpenRegularFile(path, O_RDONLY);
     if (fd == -1) {
         return nil;
     }
     NSMutableData *data = nil;
     struct stat st;
-    if (fstat(fd, &st) == 0 && S_ISREG(st.st_mode) && st.st_size <= BSGLegacyFeatureFlagMaxFileSize) {
+    if (fstat(fd, &st) == 0 && st.st_size <= BSGLegacyFeatureFlagMaxFileSize) {
         data = [NSMutableData dataWithLength:(NSUInteger)st.st_size];
-        size_t offset = 0;
-        while (data && offset < data.length) {
-            const ssize_t count = read(fd, (uint8_t *)data.mutableBytes + offset, data.length - offset);
-            if (count > 0) {
-                offset += (size_t)count;
-            } else if (count == 0) {
-                // The file was shortened after fstat()
-                data.length = offset;
-            } else if (errno != EINTR) {
-                data = nil;
-            }
+        // A file that was shortened after fstat() cannot be read whole, and is skipped like any unreadable file
+        if (data && !BSGFeatureFlagFileRead(fd, data.mutableBytes, data.length, 0)) {
+            data = nil;
         }
     }
     close(fd);

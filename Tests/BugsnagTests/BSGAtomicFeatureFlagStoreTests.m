@@ -239,22 +239,22 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
 
     [store addFeatureFlag:@"featureFlagA" withVariant:@"testingA"];
     [store addFeatureFlag:@"featureFlagB" withVariant:@"testingB"];
-    
+
     [store replaceAllFlags:@[
         [BugsnagFeatureFlag flagWithName:@"featureFlagC" variant:@"testingC"],
         [BugsnagFeatureFlag flagWithName:@"featureFlagA"]
     ]];
-    
+
     NSDictionary<NSString *, id> *object = bsg_JSONObject(^(BSG_KSCrashReportWriter *writer) {
         writer->beginObject(writer, "");
         BugsnagFeatureFlagsWriteCrashReport(writer, true);
         writer->endContainer(writer);
     });
-    
+
     NSArray<NSDictionary *> *featureFlags = object[@"featureFlags"];
     XCTAssertEqualObjects(featureFlags, (@[@{@"featureFlag": @"featureFlagC", @"variant": @"testingC"},
                                            @{@"featureFlag": @"featureFlagA"}]));
-    
+
     [store replaceAllFlags:@[]];
     XCTAssertTrue([store isEmpty]);
 }

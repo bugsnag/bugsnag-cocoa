@@ -27,10 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// deallocated. flock() locks belong to an open file description, so a second store using the same
 /// directory, in this process or another (e.g. a second instance of a macOS app), does not get the lock
 /// while the first holds it. It still reads the flags saved by the previous launch when it is created and
-/// keeps its flags in memory without changing anything in the directory. A store that could not take the
-/// lock (because another store held it, or because the device was locked) tries again on later writes, at
-/// most once per retry interval, and on iOS and tvOS when protected data becomes available. Once it has the
-/// lock it examines the directory again and writes its current flags.
+/// keeps its flags in memory without changing anything in the directory. Because the first store keeps the lock
+/// for its lifetime, a store that finds the lock held by another (EWOULDBLOCK) logs that once and never tries again.
+/// A store that could not take the lock for a reason that can clear (e.g. featureflag.lock could not be opened while
+/// the device was locked) tries again on later writes, at most once per retry interval, and on iOS, tvOS and visionOS
+/// when protected data becomes available. Once it has the lock it examines the directory again and writes its
+/// current flags.
 ///
 /// Only EWOULDBLOCK from flock() means that another store holds the lock. On a file system that does not support
 /// flock() (ENOTSUP or EOPNOTSUPP, e.g. an NFS volume without a lock daemon) the store logs that once and proceeds
@@ -65,6 +67,14 @@ typedef int (*BSGFeatureFlagLockFunction)(int fd, int operation);
 /// that was in use, so that tests can simulate errors such as ENOTSUP. Not thread safe.
 __BEGIN_DECLS
 BSGFeatureFlagLockFunction BSGSetFeatureFlagLockFunction(BSGFeatureFlagLockFunction _Nullable function);
+
+/// A function called between reading the header and reading the log of featureflag.bin.
+typedef void (*BSGFeatureFlagReadHook)(void);
+
+/// For unit tests only: sets a function that is called between reading the header and reading the log of
+/// featureflag.bin (NULL, the default, calls nothing), and returns the one that was set, so that tests can widen the
+/// window in which another store rewrites the log. Not thread safe.
+BSGFeatureFlagReadHook _Nullable BSGSetFeatureFlagReadHook(BSGFeatureFlagReadHook _Nullable hook);
 __END_DECLS
 
 NS_ASSUME_NONNULL_END

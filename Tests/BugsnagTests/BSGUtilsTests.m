@@ -536,7 +536,9 @@ static BOOL IsMarked(int fd) {
         rename(replacement.fileSystemRepresentation, p.fileSystemRepresentation);
     };
 
+    errno = 0;
     XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR), -1);
+    XCTAssertEqual(errno, EAGAIN, @"The caller can tell that the file was replaced, and try again");
     XCTAssertEqual(gSetProtectionCalls.count, 1);
     XCTAssertEqualObjects(DescriptorsForFile(original.st_dev, original.st_ino), @[], @"The first descriptor should be closed");
     XCTAssertEqualObjects(DescriptorsForFile(replaced.st_dev, replaced.st_ino), @[], @"The second descriptor should be closed");
@@ -711,6 +713,81 @@ static BOOL FailingCreateFile(__unused NSString *path) {
     gSetProtectionError = [NSError errorWithDomain:NSPOSIXErrorDomain code:EPERM userInfo:nil];
     XCTAssertEqual(BSGCreateFileWithoutCompleteProtection(other, O_RDWR), -1);
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:other]);
+}
+
+- (void)testFIFOsAreRefusedWithoutBlocking {
+    NSString *fifo = [self.directory stringByAppendingPathComponent:@"fifo"];
+    XCTAssertEqual(mkfifo(fifo.fileSystemRepresentation, 0600), 0);
+    NSArray<int (^)(void)> *calls = @[
+        ^{ return BSGOpenRegularFile(fifo, O_RDONLY); },
+        ^{ return BSGOpenRegularFile(fifo, O_WRONLY); },
+        ^{ return BSGOpenFileWithoutCompleteProtection(fifo, O_RDONLY); },
+        ^{ return BSGOpenFileWithoutCompleteProtection(fifo, O_RDWR | O_CREAT); },
+        ^{ return BSGCreateFileWithoutCompleteProtection(fifo, O_RDWR); },
+    ];
+    // The result and errno of each call. Opening a FIFO for writing with O_NONBLOCK fails with ENXIO when nothing
+    // has it open for reading; the others are refused once they are open, because the file is not regular.
+    NSArray<NSNumber *> *expectedErrors = @[@(EFTYPE), @(ENXIO), @(EFTYPE), @(EFTYPE), @(EEXIST)];
+    NSMutableArray<NSArray<NSNumber *> *> *results = [NSMutableArray array];
+    dispatch_semaphore_t done = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        for (int (^ call)(void) in calls) {
+            errno = 0;
+            const int fd = call();
+            const int error = errno;
+            @synchronized (results) {
+                [results addObject:@[@(fd), @(error)]];
+            }
+        }
+        dispatch_semaphore_signal(done);
+    });
+    const BOOL finished = dispatch_semaphore_wait(done, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)) == 0;
+    if (!finished) {
+        // Unblock a read-only open() so that the thread can finish
+        const int writer = open(fifo.fileSystemRepresentation, O_WRONLY | O_NONBLOCK);
+        if (writer != -1) {
+            close(writer);
+        }
+        dispatch_semaphore_wait(done, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC));
+    }
+    XCTAssertTrue(finished, @"Opening a FIFO must not block");
+    @synchronized (results) {
+        XCTAssertEqual(results.count, calls.count);
+        for (NSUInteger i = 0; i < results.count; i++) {
+            const int fd = results[i][0].intValue;
+            XCTAssertEqual(fd, -1, @"call %lu", (unsigned long)i);
+            if (fd != -1) {
+                close(fd);
+            }
+            XCTAssertEqualObjects(results[i][1], expectedErrors[i], @"call %lu", (unsigned long)i);
+        }
+    }
+    struct stat st;
+    XCTAssertEqual(lstat(fifo.fileSystemRepresentation, &st), 0);
+    XCTAssertTrue(S_ISFIFO(st.st_mode), @"The FIFO must not be removed");
+}
+
+- (void)testRegularFileIsOpenedWithoutONonblock {
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    const int fd = BSGOpenRegularFile(path, O_RDWR | O_CREAT);
+    XCTAssertNotEqual(fd, -1);
+    if (fd == -1) {
+        return;
+    }
+    XCTAssertEqual(fcntl(fd, F_GETFL) & O_NONBLOCK, 0);
+    XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
+    struct stat st;
+    XCTAssertEqual(fstat(fd, &st), 0);
+    XCTAssertEqual(st.st_mode & 0777, 0600);
+    close(fd);
+
+    // O_NONBLOCK is kept if it was asked for
+    const int nonblocking = BSGOpenRegularFile(path, O_RDONLY | O_NONBLOCK);
+    XCTAssertNotEqual(nonblocking, -1);
+    if (nonblocking != -1) {
+        XCTAssertNotEqual(fcntl(nonblocking, F_GETFL) & O_NONBLOCK, 0);
+        close(nonblocking);
+    }
 }
 
 - (void)testSymbolicLinkAtThePathIsRefused {

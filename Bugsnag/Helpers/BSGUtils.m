@@ -127,26 +127,41 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     return YES;
 }
 
-int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
-    // O_NOFOLLOW: a symbolic link at the path is refused rather than followed, so the descriptor always refers
-    // to the file at the path itself.
-    int fd = open(path.fileSystemRepresentation, flags | O_CLOEXEC | O_NOFOLLOW, 0600);
+int BSGOpenRegularFile(NSString *path, int flags) {
+    // O_NONBLOCK: opening a FIFO (or a device) at the path would otherwise block until another process opened its
+    // other end, so the type of file is only checked once it is open without waiting. O_NOFOLLOW: a symbolic link
+    // at the path is refused rather than followed, so the descriptor always refers to the file at the path itself.
+    const int fd = open(path.fileSystemRepresentation, flags | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK, 0600);
     if (fd == -1) {
-        const int error = errno;
-        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, error);
+        return -1;
+    }
+    struct stat st;
+    const int error = fstat(fd, &st) != 0 ? errno : !S_ISREG(st.st_mode) ? EFTYPE : 0;
+    if (error) {
+        close(fd);
         errno = error;
         return -1;
     }
-    // Files opened with low-level APIs do not get Bugsnag's Apple backup policy from the JSON helpers
-    [BSGFilesystem applyFileBackupSupportToPath:path];
+    if (!(flags & O_NONBLOCK) && fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK) == -1) {
+        const int fcntlError = errno;
+        close(fd);
+        errno = fcntlError;
+        return -1;
+    }
+    return fd;
+}
 
+/// Changes NSFileProtectionComplete as BSGChangeNSFileProtectionComplete does, then returns a descriptor for the file
+/// opened after the change if it was made (see BSGOpenFileWithoutCompleteProtection). Takes ownership of `fd`.
+static int BSGReopenWithoutCompleteProtection(NSString *path, int fd, int flags, BOOL created) {
     BOOL changed = NO;
     if (!BSGChangeNSFileProtectionComplete(path, &changed)) {
         close(fd);
-        if (flags & O_EXCL) {
+        if (created) {
             // The file was created here, so it must not be left behind
             unlink(path.fileSystemRepresentation);
         }
+        errno = EPERM;
         return -1;
     }
     if (!changed) {
@@ -158,7 +173,7 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
     // exists now, so it is not created or truncated again. The path is opened again, so the new descriptor is only
     // used if it refers to the same file as the first one (the path could have been replaced in between); otherwise
     // the open fails rather than returning a descriptor for a file whose protection class was not changed.
-    int reopened = open(path.fileSystemRepresentation, (flags & ~(O_CREAT | O_EXCL | O_TRUNC)) | O_CLOEXEC | O_NOFOLLOW);
+    const int reopened = BSGOpenRegularFile(path, flags & ~(O_CREAT | O_EXCL | O_TRUNC));
     if (reopened == -1) {
         // The first descriptor still refers to the file, whose protection class has been changed
         return fd;
@@ -169,10 +184,24 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
         bsg_log_warn(@"Could not open %@: the file was replaced while it was being opened", path.lastPathComponent);
         close(reopened);
         close(fd);
+        errno = EAGAIN;
         return -1;
     }
     close(fd);
     return reopened;
+}
+
+int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
+    const int fd = BSGOpenRegularFile(path, flags);
+    if (fd == -1) {
+        const int error = errno;
+        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, error);
+        errno = error;
+        return -1;
+    }
+    // Files opened with low-level APIs do not get Bugsnag's Apple backup policy from the JSON helpers
+    [BSGFilesystem applyFileBackupSupportToPath:path];
+    return BSGReopenWithoutCompleteProtection(path, fd, flags, (flags & O_EXCL) != 0);
 }
 
 int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
@@ -190,10 +219,13 @@ int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
         errno = error;
         return -1;
     }
-    // The file exists now, so it is opened without O_CREAT; O_NOFOLLOW refuses a symbolic link put in its place
-    const int fd = BSGOpenFileWithoutCompleteProtection(path, flags & ~(O_CREAT | O_EXCL | O_TRUNC));
+    // The file exists now, so it is opened without O_CREAT; O_NOFOLLOW refuses a symbolic link put in its place,
+    // and anything else that is not a regular file is refused without blocking
+    flags &= ~(O_CREAT | O_EXCL | O_TRUNC);
+    int fd = BSGOpenRegularFile(path, flags);
     if (fd == -1) {
         const int error = errno;
+        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, error);
         unlink(fileSystemPath);
         errno = error;
         return -1;
@@ -208,7 +240,7 @@ int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
         errno = EEXIST;
         return -1;
     }
-    if (!S_ISREG(opened.st_mode) || opened.st_nlink != 1 || opened.st_size != 0) {
+    if (opened.st_nlink != 1 || opened.st_size != 0) {
         bsg_log_warn(@"Could not create %@: the file was changed while it was being opened", path.lastPathComponent);
         close(fd);
         unlink(fileSystemPath);
@@ -222,6 +254,16 @@ int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
         unlink(fileSystemPath);
         errno = error;
         return -1;
+    }
+    // The backup policy and the protection class are set once, here: they are attributes of the file, which
+    // rename() keeps, so a file created here and renamed into place does not need them set again when it is
+    // opened later. (On iOS, tvOS, watchOS and visionOS the class was set when the file was created, so this only
+    // reads it; on macOS the file has the default class, which is changed if it is NSFileProtectionComplete.)
+    [BSGFilesystem applyFileBackupSupportToPath:path];
+    fd = BSGReopenWithoutCompleteProtection(path, fd, flags, YES);
+    if (fd == -1 && errno == EAGAIN) {
+        // Whatever is at the path now was not created here, so it is left alone
+        errno = EEXIST;
     }
     return fd;
 }

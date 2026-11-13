@@ -553,8 +553,22 @@ const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 /// which only keeps the file accessible while the device is locked for as
 /// long as it stays open, so the descriptor returned here must be kept open
 /// for as long as the file is mapped (see ResizeAndMapFile.)
+///
+/// A symbolic link at the path is refused, as is anything other than a
+/// regular file. If the file is replaced while it is being opened (EAGAIN, see
+/// BSGOpenFileWithoutCompleteProtection) it is opened once more. If it still
+/// cannot be opened, that is logged, because OOM and thermal kill detection
+/// then does not work for this launch.
 static int OpenFile(NSString *_Nonnull path) {
-    return BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    if (fd == -1 && errno == EAGAIN) {
+        fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    }
+    if (fd == -1) {
+        bsg_log_warn(@"Could not open the run context file (errno %d); OOM and thermal kill detection is disabled "
+                     "for this launch", errno);
+    }
+    return fd;
 }
 
 /// Loads the contents of the state file into memory and sets the

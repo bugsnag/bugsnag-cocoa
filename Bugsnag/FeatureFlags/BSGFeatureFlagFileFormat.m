@@ -93,10 +93,10 @@ static NSString * BSGFeatureFlagDecodeString(const uint8_t *bytes, uint32_t leng
     return string;
 }
 
-/// Calls the block with each record in a log: the flag it adds and its encoded record, or the name of
-/// the flag it removes. Returns NO if the log is corrupt.
-BOOL BSGFeatureFlagsDecode(const uint8_t *bytes, uint64_t length,
-                                  void (^ block)(NSString *name, NSString *variant, BOOL removed, NSData *record)) {
+/// Calls the block with each record in the bytes of a log, giving the range of the record. Returns NO if the log is
+/// corrupt.
+static BOOL BSGFeatureFlagsDecodeBytes(const uint8_t *bytes, uint64_t length,
+                                       void (^ block)(NSString *name, NSString *variant, BOOL removed, NSRange range)) {
     uint64_t offset = 0;
     while (offset < length) {
         const uint64_t start = offset;
@@ -125,16 +125,31 @@ BOOL BSGFeatureFlagsDecode(const uint8_t *bytes, uint64_t length,
         if (!name) {
             return NO;
         }
-        block(name, variant, lengths[1] == BSGFeatureFlagRemoved,
-              [NSData dataWithBytes:bytes + start length:(NSUInteger)(offset - start)]);
+        block(name, variant, lengths[1] == BSGFeatureFlagRemoved, NSMakeRange((NSUInteger)start, (NSUInteger)(offset - start)));
     }
     return YES;
+}
+
+/// Calls the block with each record in a log: the flag it adds and its encoded record, or the name of
+/// the flag it removes. Returns NO if the log is corrupt.
+BOOL BSGFeatureFlagsDecode(NSData *log,
+                           void (^ block)(NSString *name, NSString *variant, BOOL removed, NSData *record)) {
+    const uint8_t *bytes = log.bytes;
+    return BSGFeatureFlagsDecodeBytes(bytes, log.length, ^(NSString *name, NSString *variant, BOOL removed, NSRange range) {
+        // The record refers to the log's bytes rather than copying them; the log stays allocated for as long as
+        // any record does.
+        NSData *record = [[NSData alloc] initWithBytesNoCopy:(void *)(uintptr_t)(bytes + range.location) length:range.length
+                                                 deallocator:^(__unused void *recordBytes, __unused NSUInteger recordLength) {
+            (void)log;
+        }];
+        block(name, variant, removed, record);
+    });
 }
 
 /// Decodes a record returned by BSGFeatureFlagEncode.
 BugsnagFeatureFlag * BSGFeatureFlagDecodeRecord(NSData *record) {
     __block BugsnagFeatureFlag *flag = nil;
-    BSGFeatureFlagsDecode(record.bytes, record.length, ^(NSString *name, NSString *variant, BOOL removed, __unused NSData *data) {
+    BSGFeatureFlagsDecodeBytes(record.bytes, record.length, ^(NSString *name, NSString *variant, BOOL removed, __unused NSRange range) {
         if (!removed) {
             flag = [BugsnagFeatureFlag flagWithName:name variant:variant];
         }
