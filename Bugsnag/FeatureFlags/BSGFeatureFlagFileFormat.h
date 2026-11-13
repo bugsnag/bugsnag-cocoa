@@ -62,12 +62,14 @@ static const uint32_t BSGFeatureFlagNoVariant = UINT32_MAX;
 static const uint32_t BSGFeatureFlagRemoved = UINT32_MAX - 1;
 // The largest slot capacity that is written, which makes the largest file 4 MB. Flags that take up
 // more than this are kept in memory but not persisted.
-static const uint64_t BSGFeatureFlagMaxSlotCapacity = 2 * 1024 * 1024 - 16;
+#define BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY (2ULL * 1024 * 1024 - 16)
+static const uint64_t BSGFeatureFlagMaxSlotCapacity = BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY;
 // The largest slot capacity that is read; anything larger in a header means the file is corrupt.
 // It is larger than the capacity that is written so that a later version can raise that limit
 // without its files being discarded by this one, and small enough that a corrupt header cannot
 // make the store read or allocate much memory (only the active log is read).
-static const uint64_t BSGFeatureFlagMaxReadableSlotCapacity = 16 * 1024 * 1024;
+#define BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY (16ULL * 1024 * 1024)
+static const uint64_t BSGFeatureFlagMaxReadableSlotCapacity = BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY;
 
 struct bsg_feature_flag_file_header {
     uint32_t magic;
@@ -82,7 +84,9 @@ struct bsg_feature_flag_file_header {
 // The layout is part of the file format, so it must be the same on every architecture (e.g. arm64_32).
 _Static_assert(sizeof(struct bsg_feature_flag_file_header) == 32, "Feature flag file header size");
 _Static_assert(offsetof(struct bsg_feature_flag_file_header, active) == 16, "Feature flag file header layout");
-_Static_assert(BSGFeatureFlagMaxSlotCapacity <= BSGFeatureFlagMaxReadableSlotCapacity, "Files that are written must be readable");
+// The macros are used because older compilers don't treat static const variables as constant
+// expressions in C.
+_Static_assert(BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY <= BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY, "Files that are written must be readable");
 
 static inline uint64_t BSGFeatureFlagFileActiveValue(uint64_t length, uint32_t slot) {
     return (length << 1) | slot;
