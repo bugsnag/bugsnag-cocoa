@@ -22,10 +22,9 @@
 static const off_t BSGLegacyFeatureFlagMaxFileSize = 16 * 1024 * 1024;
 
 /// Reads a JSON file, returning nil if it cannot be read. As with featureflag.bin, a symbolic link at the path is
-/// not followed, and only regular files are read: anything else, such as a FIFO, is refused without blocking (see
-/// BSGOpenRegularFile).
+/// not followed (see BSGOpenFileWithoutFollowingLinks).
 static NSData *_Nullable BSGReadLegacyFeatureFlagFile(NSString *path) {
-    const int fd = BSGOpenRegularFile(path, O_RDONLY);
+    const int fd = BSGOpenFileWithoutFollowingLinks(path, O_RDONLY);
     if (fd == -1) {
         return nil;
     }

@@ -13,7 +13,7 @@
 
 @property(nonatomic, strong) id<BSGFeatureFlagStore, NSCopying> memoryStore;
 @property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> persistentStore;
-@property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> atomicStore;
+@property(nonatomic, strong) id<BSGFeatureFlagStore> atomicStore;
 
 @end
 
@@ -21,7 +21,7 @@
 
 + (instancetype)storeWithMemoryStore:(id<BSGFeatureFlagStore, NSCopying>)memoryStore
                      persistentStore:(id<BSGReplaceableFeatureFlagStore>)persistentStore
-                         atomicStore:(id<BSGReplaceableFeatureFlagStore>)atomicStore {
+                         atomicStore:(id<BSGFeatureFlagStore>)atomicStore {
     BSGCompositeFeatureFlagStore *store = [self new];
     store.memoryStore = memoryStore;
     store.persistentStore = persistentStore;
@@ -39,7 +39,8 @@
 
 - (void)synchronizeFlagsWithMemoryStore {
     NSArray<BugsnagFeatureFlag *> *featureFlags = [self.memoryStore allFlags];
-    [self.atomicStore replaceAllFlags:featureFlags];
+    [self.atomicStore clear];
+    [self.atomicStore addFeatureFlags:featureFlags];
     // Replaced in one update so that a kill during startup cannot leave an empty set persisted
     [self.persistentStore replaceAllFlags:featureFlags];
 }

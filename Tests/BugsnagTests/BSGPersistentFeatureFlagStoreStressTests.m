@@ -15,12 +15,11 @@
 //  TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
 //      -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGPersistentFeatureFlagStoreStressTests
 //
-//  Run the file protection tests in BSGUtilsTests and BSGRunContextTests at the same time, with the
-//  screen unlocked, so that they fail rather than skip if NSFileProtectionComplete cannot be set:
+//  Run the file protection tests in BSGUtilsTests at the same time, with the screen unlocked, so
+//  that they fail rather than skip if NSFileProtectionComplete cannot be set:
 //
 //  TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
-//      -destination 'platform=iOS Simulator,name=iPhone 17' \
-//      -only-testing:Bugsnag-iOSTests/BSGUtilsTests -only-testing:Bugsnag-iOSTests/BSGRunContextTests
+//      -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGUtilsTests
 //
 //  BSGPersistentFeatureFlagStoreFileDescriptorTests contains quick checks that always run.
 //
@@ -48,6 +47,7 @@ static const size_t StressSlotCapacityOffset = 8;
 
 @interface BSGPersistentFeatureFlagStore (StressPrivate)
 - (BOOL)replaceFileWithSnapshot:(NSData *)snapshot;
+@property (nonatomic) int lockFd;
 @end
 
 /// Counts how many times the file is replaced (i.e. grown or created).
@@ -246,10 +246,15 @@ static NSString * const KillTestDirectoryKey = @"BSG_FEATURE_FLAG_KILL_TEST_DIRE
     return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
 
-/// The flags a new store reads from the directory. The store is released before this returns.
+/// The flags a new store reads from the directory, or, while another store holds the lock (so that a new store reports
+/// no persisted flags), the flags decoded from featureflag.bin. The store is released before this returns.
 - (NSArray *)reopenedFlags {
     @autoreleasepool {
         BSGPersistentFeatureFlagStore *store = [self newStore];
+        if (store.lockFd == -1 && [NSFileManager.defaultManager fileExistsAtPath:
+                                   [self.directory stringByAppendingPathComponent:@"featureflag.lock"]]) {
+            return DecodeFlagsFile(self.filePath) ?: @[];
+        }
         return StressFlagsToArray(store.allFlags);
     }
 }

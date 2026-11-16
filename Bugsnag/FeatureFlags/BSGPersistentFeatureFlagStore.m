@@ -9,6 +9,7 @@
 #import "BSGPersistentFeatureFlagStore.h"
 #import "BugsnagInternals.h"
 #import "BSGFeatureFlagFileFormat.h"
+#import "BSGFilesystem.h"
 #import "BSGLegacyFeatureFlags.h"
 #import "BSGUtils.h"
 #import "BugsnagLogger.h"
@@ -55,37 +56,37 @@
 // Only one store writes to a directory: the one that holds an exclusive lock on featureflag.lock (see
 // BSGPersistentFeatureFlagStore.h). Nothing is created in the directory until there are flags to save.
 //
-// featureflag.bin is opened with BSGOpenRegularFile, which makes no NSURL calls: the files that become featureflag.bin
-// are created by BSGCreateFileWithoutCompleteProtection, which sets the backup policy and the protection class once,
-// and rename() keeps them. They are created with NSFileProtectionCompleteUnlessOpen, so they can be created while the
-// device is locked even if the app's default class is Complete, and the descriptors kept open stay usable while it is
-// locked. featureflag.lock is opened the same way, and created with BSGOpenFileWithoutCompleteProtection. A launch
-// while the device is locked (before the first unlock, or in the background for an app whose default class is
-// Complete) may not be able to open the existing files: it then neither reads the previous launch's flags nor takes the
-// lock, and the file is kept (see "Files that cannot be opened" below). Symbolic links at the paths are never followed,
-// and anything other than a regular file (e.g. a FIFO) is refused without blocking.
+// featureflag.bin is opened with BSGOpenFileWithoutFollowingLinks, which makes no NSURL calls: the files that become
+// featureflag.bin are created by BSGCreateFileWithoutCompleteProtection, which sets the backup policy and the protection
+// class once, and rename() keeps them. Only NSFileProtectionComplete is avoided: in a directory whose class is
+// NSFileProtectionComplete (an app whose default class is Complete) the files are created with
+// NSFileProtectionCompleteUnlessOpen, so that the descriptors kept open stay usable while the device is locked. Such a
+// file cannot be created while the device is locked, though: it is closed once created and cannot be opened again
+// until the unlock (see BSGCreateFileWithoutCompleteProtection). While the device is locked, flags keep being written
+// to a file that is already open; a new file (the first one, or one with larger slots) waits for the unlock, with any
+// earlier log kept meanwhile (see writeSnapshot), and UIApplicationProtectedDataDidBecomeAvailable tries again. In any
+// other directory the files keep the class they inherit, normally the default
+// NSFileProtectionCompleteUntilFirstUserAuthentication, so that a launch in the background while the device is locked
+// (after the first unlock) can still open them. featureflag.lock is opened the same way, and created with
+// BSGOpenFileWithoutCompleteProtection. A launch while the device is locked (before the first unlock, or in the
+// background for an app whose default class is Complete) may not be able to open the existing files: it then neither
+// reads the previous launch's flags nor takes the lock, and the file is kept (see "Files that cannot be opened" below).
+// Symbolic links at the paths are never followed.
 //
-// Files that cannot be opened. Only a file whose header was read and is invalid, or something that is not a regular
-// file, is ever deleted. A file that cannot be opened (EMFILE, ENFILE, EINTR, EAGAIN, or EACCES or EPERM while
-// protected data is unavailable) may hold good flags, so it is kept, and a retry is scheduled to open it again. Its
-// flags are not available for an OOM or thermal kill report of the previous launch. If this launch has flags to
-// save, a new file is renamed over it as usual; if it has none, it is emptied in place once it can be opened. If that
-// never happens during this launch, the next launch can read the flags of the launch before this one. That is
-// accepted: the usual cause is that protected data stays unavailable, and then BSGRunContext cannot open its file
-// either, so this launch's run context is not saved and no OOM or thermal kill is reported for it; the other causes
-// (running out of descriptors, or an interrupted open) clear quickly, so the retry succeeds.
+// Files that cannot be opened. Only a file whose header was read and is invalid is ever deleted (something other than a
+// regular file at the path is replaced when the flags are next saved). A file that cannot be opened (EMFILE, ENFILE, EINTR, EAGAIN, or EACCES or EPERM while protected data is unavailable) may hold good flags, so
+// it is kept, and a retry is scheduled to open it again. Its flags are not available for an OOM or thermal kill report
+// of the previous launch. If this launch has flags to save, a new file is renamed over it as usual; if it has none, it
+// is emptied in place once it can be opened. If that never happens during this launch, the next launch can read the
+// flags of the launch before this one. That is accepted: the usual cause is that protected data stays unavailable, and
+// then BSGRunContext cannot open its file either, so this launch's run context is not saved and no OOM or thermal kill
+// is reported for it; the other causes (running out of descriptors, or an interrupted open) clear quickly, so the retry
+// succeeds.
 //
-// Reading without the lock. A store that does not hold the lock reads the file while the store that holds it may be
-// writing to it. Records are only ever written past the end of the active log or into the inactive slot, and the
-// header that makes them part of a log is written after them, but between reading the header and reading the log the
-// writer can rewrite the slot (switching to the other slot and back, possibly to the same length). So the log is read
-// as follows, at most BSGFeatureFlagMaxConsistentReadAttempts times: the file's size and modification time are noted,
-// the header is read, then the log, then the header again; if it changed the attempt is abandoned. Otherwise the log is
-// decoded, read again, and compared byte for byte with the first read, and the size and modification time are
-// checked again. A byte inside the active log can only change while the header does not include it, so a log that is
-// accepted was either not written to at all while it was read, or was rewritten with exactly the same bytes, and in
-// both cases it is the log that the header named. If no attempt succeeds, the flags are treated as unavailable for this
-// launch: they are not reported as corrupt and nothing is deleted.
+// A store without the lock. A store that does not hold the lock when it is created reports no persisted flags and never
+// reads featureflag.bin or the JSON files: another store may be writing to them, and reading them consistently while
+// they change is not worth its cost for a rare case (two live clients using one directory, such as two instances of a
+// macOS app). It never writes or deletes anything in the directory either.
 //
 // State. The main fields, what they mean, and how they change:
 //
@@ -93,8 +94,8 @@
 //                      takeLockIfPossible (when the store is created if there are files to read or delete, otherwise
 //                      before the first write); closed only in dealloc.
 //   lockGivenUp        Set when the lock will never be taken: another live store holds it (EWOULDBLOCK), or
-//                      featureflag.lock cannot be opened for a reason that does not clear (e.g. it is a symbolic link).
-//                      Never cleared. Logged once, when it is set.
+//                      featureflag.lock cannot be opened for a reason that does not clear (e.g. it is a symbolic link,
+//                      or the directory is missing and cannot be created). Never cleared. Logged once, when it is set.
 //   fd                 -1, or the descriptor of featureflag.bin open for writing (only while holding the lock). Set
 //                      when the file is read or opened after taking the lock (openExistingFile) or replaced
 //                      (replaceFileWithSnapshot); cleared by a write failure, or a failure to empty the log.
@@ -108,11 +109,11 @@
 //                      flags no longer fit and a larger file could not be created yet. Cleared by the next write that
 //                      succeeds, or when the log is emptied.
 //   staleFileMayExist  A file that this store does not have open may be at the path and hold flags that are not
-//                      current (e.g. the previous launch's, read by a store without the lock, or a file that could not
-//                      be opened). Cleared once it has been opened, replaced or removed.
-//   pendingLegacyPaths JSON files whose flags were imported (or discarded) but which have not been deleted yet. They
-//                      are deleted by the first write after the flags are imported, which is normally when Bugsnag
-//                      starts, so that featureflag.bin and JSON files are not both kept.
+//                      current (e.g. the previous launch's, left unread by a store without the lock, or a file that
+//                      could not be opened). Cleared once it has been opened, replaced or removed.
+//   pendingLegacyPaths JSON files whose flags were imported, discarded, or (by a store without the lock) not read, but
+//                      which have not been deleted yet. They are deleted by the first write that holds the lock, which
+//                      is normally when Bugsnag starts, so that featureflag.bin and JSON files are not both kept.
 //   tooLargeToPersist  The flags were last over BSGFeatureFlagMaxPersistedLength (so that is only logged once).
 //   retryTime,         After a failure, the uptime before which the file is not replaced, the lock not tried and a
 //   retryDelay,        file that could not be opened not opened again; the delay used (doubling up to the maximum);
@@ -133,8 +134,6 @@ static const uint64_t BSGFeatureFlagMinimumShrinkableCapacity = 256 * 1024;
 // clears (e.g. a directory at the file's path, or a read-only volume) is not repeated every minute.
 static const NSTimeInterval BSGFeatureFlagRetryInterval = 60;
 static const NSTimeInterval BSGFeatureFlagMaximumRetryInterval = 60 * 60;
-// How many times a store without the lock reads the log before giving up because it kept changing
-static const NSUInteger BSGFeatureFlagMaxConsistentReadAttempts = 8;
 
 static NSString * const BSGFeatureFlagFileName = @"featureflag.bin";
 static NSString * const BSGFeatureFlagLockFileName = @"featureflag.lock";
@@ -143,6 +142,7 @@ static NSString * const BSGFeatureFlagLockFileName = @"featureflag.lock";
 // its handling in isObsoleteFile:, can be removed one release after featureflag.bin is first released.
 static NSString * const BSGFeatureFlagPrereleaseFileName = @"flags.bin";
 
+#if defined(DEBUG) && DEBUG
 // flock(), unless a unit test replaces it (see BSGSetFeatureFlagLockFunction)
 static BSGFeatureFlagLockFunction bsg_featureFlagLockFunction = flock;
 
@@ -152,14 +152,14 @@ BSGFeatureFlagLockFunction BSGSetFeatureFlagLockFunction(BSGFeatureFlagLockFunct
     return previous;
 }
 
-// Called between reading the header and the log, if a unit test sets it (see BSGSetFeatureFlagReadHook)
-static BSGFeatureFlagReadHook bsg_featureFlagReadHook;
-
-BSGFeatureFlagReadHook BSGSetFeatureFlagReadHook(BSGFeatureFlagReadHook _Nullable hook) {
-    const BSGFeatureFlagReadHook previous = bsg_featureFlagReadHook;
-    bsg_featureFlagReadHook = hook;
-    return previous;
+static int BSGFeatureFlagLock(int fd, int operation) {
+    return bsg_featureFlagLockFunction(fd, operation);
 }
+#else
+static int BSGFeatureFlagLock(int fd, int operation) {
+    return flock(fd, operation);
+}
+#endif
 
 /// Reads the header of an open featureflag.bin, returning whether it is valid and the file is large enough for it.
 static BOOL BSGFeatureFlagFileReadHeader(int fd, struct bsg_feature_flag_file_header *header) {
@@ -183,13 +183,6 @@ static NSData * BSGFeatureFlagFileReadData(int fd, uint64_t length, uint64_t off
     return [NSData dataWithBytesNoCopy:bytes length:(NSUInteger)length freeWhenDone:YES];
 }
 
-/// Whether the file is the same, and has not been written to, as far as fstat() can tell.
-static BOOL BSGFeatureFlagFileIsUnchanged(const struct stat *before, const struct stat *after) {
-    return (before->st_dev == after->st_dev && before->st_ino == after->st_ino && before->st_size == after->st_size &&
-            before->st_mtimespec.tv_sec == after->st_mtimespec.tv_sec &&
-            before->st_mtimespec.tv_nsec == after->st_mtimespec.tv_nsec);
-}
-
 typedef NS_ENUM(NSInteger, BSGFeatureFlagPathType) {
     BSGFeatureFlagPathMissing,  // Nothing is at the path
     BSGFeatureFlagPathFile,     // A regular file is at the path (or it could not be examined, so it may be)
@@ -207,11 +200,12 @@ static BSGFeatureFlagPathType BSGFeatureFlagPathTypeAt(NSString *path) {
 
 /// Whether opening (or creating) featureflag.lock failed for a reason that can clear during this launch, such as
 /// protected data being unavailable (EACCES, EPERM), too many open files, or a full disk. Other errors (e.g. ELOOP
-/// for a symbolic link, EFTYPE for a FIFO, or a read-only volume) do not clear, so the lock is not tried again.
+/// for a symbolic link, a read-only volume, or ENOENT for a directory that could not be created) do not clear, so the
+/// lock is not tried again.
 static BOOL BSGFeatureFlagIsTransientOpenError(int error) {
     switch (error) {
         case EACCES: case EPERM: case EMFILE: case ENFILE: case EINTR: case EAGAIN:
-        case ENOSPC: case EDQUOT: case ENOMEM: case EIO: case ENOENT:
+        case ENOSPC: case EDQUOT: case ENOMEM: case EIO:
             return YES;
         default:
             return NO;
@@ -223,7 +217,7 @@ static BOOL BSGFeatureFlagIsTransientOpenError(int error) {
 typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     BSGFeatureFlagFileMissing,     // There is no featureflag.bin
     BSGFeatureFlagFileNotAFile,    // Something other than a regular file is at the path
-    BSGFeatureFlagFileUnavailable, // featureflag.bin could not be opened, or (without the lock) read consistently, now
+    BSGFeatureFlagFileUnavailable, // featureflag.bin could not be opened now
     BSGFeatureFlagFileInvalid,     // Its header is invalid
     BSGFeatureFlagFileCorrupt,     // The header is valid but the log is not
     BSGFeatureFlagFileLoaded,      // The flags were read from the log
@@ -415,13 +409,16 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// cannot tell two stores apart, so this store proceeds as the only writer, as the JSON files written by earlier
 /// versions of the SDK did, rather than never saving the flags. That is logged once, and the descriptor is kept as
 /// though it held the lock.
+///
+/// If featureflag.lock is removed or renamed away while it is being created (EAGAIN, see
+/// BSGOpenFileWithoutCompleteProtection), or opening it is interrupted (EINTR), it is opened once more straight away,
+/// so that the lock is never taken on a file that is no longer at the path, and a failure that clears at once does not
+/// stop the store reading the previous launch's flags when it is created (see loadFlags).
 - (int)acquireLock {
     NSString *path = [self.directoryPath stringByAppendingPathComponent:BSGFeatureFlagLockFileName];
-    // An existing lock file is opened without NSURL calls; one is only created (with the backup policy and protection
-    // class applied) when it is missing
-    int fd = BSGOpenRegularFile(path, O_RDONLY);
-    if (fd == -1 && errno == ENOENT) {
-        fd = BSGOpenFileWithoutCompleteProtection(path, O_RDONLY | O_CREAT);
+    int fd = [self openLockFile:path];
+    if (fd == -1 && (errno == EAGAIN || errno == EINTR)) {
+        fd = [self openLockFile:path];
     }
     if (fd == -1) {
         const int error = errno;
@@ -435,7 +432,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         }
         return -1;
     }
-    if (bsg_featureFlagLockFunction(fd, LOCK_EX | LOCK_NB) != 0) {
+    if (BSGFeatureFlagLock(fd, LOCK_EX | LOCK_NB) != 0) {
         const int error = errno;
         if (error == ENOTSUP || error == EOPNOTSUPP) {
             bsg_log_warn(@"%@ cannot be locked on this volume (%d); persisting feature flags without a lock",
@@ -454,6 +451,35 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         return -1;
     }
     return fd;
+}
+
+/// Opens featureflag.lock, creating it (and the directory) if it is missing. Returns -1 on error, with errno set.
+- (int)openLockFile:(NSString *)path {
+    // An existing lock file is opened without NSURL calls; one is only created (with the backup policy and protection
+    // class applied) when it is missing
+    int fd = BSGOpenFileWithoutFollowingLinks(path, O_RDONLY);
+    if (fd == -1 && errno == ENOENT) {
+        fd = BSGOpenFileWithoutCompleteProtection(path, O_RDONLY | O_CREAT);
+        if (fd == -1 && errno == ENOENT && [self createDirectory]) {
+            fd = BSGOpenFileWithoutCompleteProtection(path, O_RDONLY | O_CREAT);
+        }
+    }
+    return fd;
+}
+
+/// Creates the directory, which is missing, so that featureflag.lock can be created in it. BSGFileLocations creates it
+/// when Bugsnag starts, but it can be removed while the app runs (or a store can be given a directory that does not
+/// exist yet). A missing directory does not reappear by itself, so rather than trying to open featureflag.lock again
+/// later, the directory is created here, as BSGFileLocations would create it, and featureflag.lock is opened once more.
+/// If that fails, ENOENT is treated as a failure that does not clear.
+- (BOOL)createDirectory {
+    NSError *error = [BSGFilesystem ensurePathExists:self.directoryPath];
+    if (error) {
+        bsg_log_warn(@"Could not create the feature flag directory: %@", error);
+        errno = ENOENT;
+        return NO;
+    }
+    return YES;
 }
 
 /// Whether this store holds the lock, and so can write to the directory.
@@ -515,10 +541,10 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         self.staleFileMayExist = NO;
         return;
     }
-    const int fd = BSGOpenRegularFile(self.filePath, O_RDWR);
+    const int fd = BSGOpenFileWithoutFollowingLinks(self.filePath, O_RDWR);
     if (fd == -1) {
         const int error = errno;
-        if (error == ENOENT || error == ELOOP || error == EFTYPE) {
+        if (error == ENOENT || error == ELOOP || error == EISDIR) {
             // It was removed, or replaced with something other than a regular file, after lstat()
             self.staleFileMayExist = NO;
             return;
@@ -625,7 +651,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 
 /// Reads the flags saved by the previous launch, or imports them from JSON files. Nothing is written: the flags are
 /// written by the next change, normally replaceAllFlags when Bugsnag starts. Files that hold no flags that can be
-/// used are removed. A store that does not hold the lock reads the flags but changes nothing in the directory.
+/// used are removed. A store that does not hold the lock reads nothing and changes nothing in the directory (see "A
+/// store without the lock" at the top of this file).
 - (void)loadFlags {
     const BOOL fileExists = BSGFeatureFlagPathTypeAt(self.filePath) != BSGFeatureFlagPathMissing;
     NSArray<NSString *> *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directoryPath error:nil];
@@ -645,13 +672,15 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         // write, so that nothing is created in the directory of an app that never has flags to save.
         [self takeLockIfPossible];
     }
-    if (self.canWrite) {
-        for (NSString *path in obsoletePaths) {
-            unlink(path.fileSystemRepresentation);
-        }
-    } else if (fileExists) {
-        // The file holds the previous launch's flags, which this store may later need to replace
-        self.staleFileMayExist = YES;
+    if (!self.canWrite) {
+        // The files hold the previous launch's flags, which are not reported, and which this store needs to replace
+        // or delete if it takes the lock later
+        self.staleFileMayExist = fileExists;
+        self.pendingLegacyPaths = legacyPaths;
+        return;
+    }
+    for (NSString *path in obsoletePaths) {
+        unlink(path.fileSystemRepresentation);
     }
 
     const BSGFeatureFlagFileState state = fileExists ? [self readExistingFile] : BSGFeatureFlagFileMissing;
@@ -686,16 +715,14 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         case BSGFeatureFlagFileInvalid:
             // No flags can be read from it, and it is removed rather than replaced: it holds the flags of an earlier
             // launch, which must not be reported later
-            if (self.canWrite && unlink(self.filePath.fileSystemRepresentation) != 0 && errno != ENOENT) {
+            if (unlink(self.filePath.fileSystemRepresentation) != 0 && errno != ENOENT) {
                 self.staleFileMayExist = YES;
             }
             break;
         case BSGFeatureFlagFileUnavailable:
             // Kept, because it may hold good flags (see "Files that cannot be opened" at the top of this file)
             self.staleFileMayExist = YES;
-            if (self.canWrite) {
-                [self retryLater];
-            }
+            [self retryLater];
             break;
         case BSGFeatureFlagFileMissing:
         case BSGFeatureFlagFileNotAFile:
@@ -709,28 +736,29 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
             self.needsSnapshot = NO;
             break;
     }
-    // Files that cannot be deleted now (or by a store that does not hold the lock yet) are deleted by a later write
+    // Files that cannot be deleted now are deleted by a later write
     self.pendingLegacyPaths = legacyPaths;
     if (!imported) {
         [self removePendingLegacyFiles];
     }
 }
 
-/// Reads the log in featureflag.bin into memory. A store that holds the lock keeps the file open for writing
-/// if its header is valid. Failing to open the file is logged separately from a corrupt file.
+/// Reads the log in featureflag.bin into memory, keeping the file open for writing if its header is valid. Only called
+/// while holding the lock. Failing to open the file is logged separately from a corrupt file.
 - (BSGFeatureFlagFileState)readExistingFile {
     switch (BSGFeatureFlagPathTypeAt(self.filePath)) {
         case BSGFeatureFlagPathMissing: return BSGFeatureFlagFileMissing;
         case BSGFeatureFlagPathNotAFile: return BSGFeatureFlagFileNotAFile;
         case BSGFeatureFlagPathFile: break;
     }
-    const int fd = BSGOpenRegularFile(self.filePath, self.canWrite ? O_RDWR : O_RDONLY);
+    const int fd = BSGOpenFileWithoutFollowingLinks(self.filePath, O_RDWR);
     if (fd == -1) {
         const int error = errno;
         if (error == ENOENT) {
             return BSGFeatureFlagFileMissing;
         }
-        if (error == ELOOP || error == EFTYPE) {
+        if (error == ELOOP || error == EISDIR) {
+            // Replaced with something other than a regular file after lstat()
             return BSGFeatureFlagFileNotAFile;
         }
         bsg_log_warn(@"Could not open %@ (%d); the persisted feature flags are not available for this launch",
@@ -742,11 +770,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     const BSGFeatureFlagFileState state = [self readLogInFile:fd header:&header];
     if (state == BSGFeatureFlagFileInvalid) {
         bsg_log_err(@"Persisted feature flags are corrupt or in an unknown format; discarding them");
-    } else if (state == BSGFeatureFlagFileUnavailable) {
-        bsg_log_info(@"Persisted feature flags are not available for this launch because another Bugsnag client "
-                     "kept changing them while they were being read");
     }
-    if (self.canWrite && (state == BSGFeatureFlagFileLoaded || state == BSGFeatureFlagFileCorrupt)) {
+    if (state == BSGFeatureFlagFileLoaded || state == BSGFeatureFlagFileCorrupt) {
         self.fd = fd;
         self.slotCapacity = header.slotCapacity;
         self.activeSlot = header.active & 1;
@@ -757,81 +782,51 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     return state;
 }
 
-/// Reads and decodes the active log, and on success replaces the flags in memory with its flags. A store that does
-/// not hold the lock checks that the log did not change while it was read (see "Reading without the lock" at the
-/// top of this file), and returns BSGFeatureFlagFileUnavailable if it kept changing.
+/// Reads and decodes the active log, and on success replaces the flags in memory with its flags.
 - (BSGFeatureFlagFileState)readLogInFile:(int)fd header:(struct bsg_feature_flag_file_header *)header {
-    const BOOL verify = !self.canWrite;
-    const NSUInteger attempts = verify ? BSGFeatureFlagMaxConsistentReadAttempts : 1;
-    for (NSUInteger attempt = 0; attempt < attempts; attempt++) {
-        struct stat before;
-        if (verify && fstat(fd, &before) != 0) {
-            return BSGFeatureFlagFileUnavailable;
-        }
-        if (!BSGFeatureFlagFileReadHeader(fd, header)) {
-            return BSGFeatureFlagFileInvalid;
-        }
-        const uint64_t length = header->active >> 1;
-        const uint64_t offset = BSGFeatureFlagSlotOffset(header->slotCapacity, header->active & 1);
-        if (length > header->slotCapacity) {
-            // The header is written with a single write, so this is not a value read part way through a change
-            return BSGFeatureFlagFileCorrupt;
-        }
-        if (bsg_featureFlagReadHook) {
-            bsg_featureFlagReadHook();
-        }
-        // Only the active log is read; its length is limited by the slot capacity, which was checked above
-        NSData *log = BSGFeatureFlagFileReadData(fd, length, offset);
-        if (verify) {
-            struct bsg_feature_flag_file_header again;
-            if (!log || !BSGFeatureFlagFileReadHeader(fd, &again) || again.active != header->active) {
-                continue;
-            }
-        }
-        NSMutableOrderedSet<NSString *> *names = [NSMutableOrderedSet orderedSet];
-        NSMutableDictionary<NSString *, NSData *> *records = [NSMutableDictionary dictionary];
-        const BOOL decoded = log && BSGFeatureFlagsDecode(log, ^(NSString *name, __unused NSString *variant, BOOL removed, NSData *record) {
-            if (removed) {
-                [names removeObject:name];
-                records[name] = nil;
-            } else {
-                // As in BSGMemoryFeatureFlagStore, a flag that is already present keeps its position
-                if (!records[name]) {
-                    [names addObject:name];
-                }
-                records[name] = record;
-            }
-        });
-        if (verify) {
-            @autoreleasepool {
-                NSData *second = BSGFeatureFlagFileReadData(fd, length, offset);
-                struct stat after;
-                if (!second || ![second isEqualToData:log] || fstat(fd, &after) != 0 ||
-                    !BSGFeatureFlagFileIsUnchanged(&before, &after)) {
-                    continue;
-                }
-            }
-        }
-        if (!decoded) {
-            return BSGFeatureFlagFileCorrupt;
-        }
-        uint64_t liveLength = 0;
-        for (NSString *name in names) {
-            liveLength += records[name].length;
-        }
-        if (log.length > 2 * liveLength) {
-            // The records refer to the log's bytes, so most of the log would stay allocated for nothing; they are
-            // copied instead, and the log is freed
-            for (NSString *name in names) {
-                records[name] = [NSData dataWithBytes:records[name].bytes length:records[name].length];
-            }
-        }
-        self.names = names;
-        self.recordsByName = records;
-        self.liveLength = liveLength;
-        return BSGFeatureFlagFileLoaded;
+    if (!BSGFeatureFlagFileReadHeader(fd, header)) {
+        return BSGFeatureFlagFileInvalid;
     }
-    return BSGFeatureFlagFileUnavailable;
+    const uint64_t length = header->active >> 1;
+    const uint64_t offset = BSGFeatureFlagSlotOffset(header->slotCapacity, header->active & 1);
+    if (length > header->slotCapacity) {
+        // The header is written with a single write, so this is not a value read part way through a change
+        return BSGFeatureFlagFileCorrupt;
+    }
+    // Only the active log is read; its length is limited by the slot capacity, which was checked above
+    NSData *log = BSGFeatureFlagFileReadData(fd, length, offset);
+    NSMutableOrderedSet<NSString *> *names = [NSMutableOrderedSet orderedSet];
+    NSMutableDictionary<NSString *, NSData *> *records = [NSMutableDictionary dictionary];
+    const BOOL decoded = log && BSGFeatureFlagsDecode(log, ^(NSString *name, __unused NSString *variant, BOOL removed, NSData *record) {
+        if (removed) {
+            [names removeObject:name];
+            records[name] = nil;
+        } else {
+            // As in BSGMemoryFeatureFlagStore, a flag that is already present keeps its position
+            if (!records[name]) {
+                [names addObject:name];
+            }
+            records[name] = record;
+        }
+    });
+    if (!decoded) {
+        return BSGFeatureFlagFileCorrupt;
+    }
+    uint64_t liveLength = 0;
+    for (NSString *name in names) {
+        liveLength += records[name].length;
+    }
+    if (log.length > 2 * liveLength) {
+        // The records refer to the log's bytes, so most of the log would stay allocated for nothing; they are
+        // copied instead, and the log is freed
+        for (NSString *name in names) {
+            records[name] = [NSData dataWithBytes:records[name].bytes length:records[name].length];
+        }
+    }
+    self.names = names;
+    self.recordsByName = records;
+    self.liveLength = liveLength;
+    return BSGFeatureFlagFileLoaded;
 }
 
 /// A new path for a file that will replace featureflag.bin. Each replacement uses its own file.
@@ -1179,11 +1174,13 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
             }
         }
     };
+#if defined(DEBUG) && DEBUG
     BSGFeatureFlagRetryScheduler scheduler = self.retryScheduler;
     if (scheduler) {
         scheduler(delay, retry);
         return;
     }
+#endif
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)),
                    dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), retry);
 }
@@ -1234,11 +1231,16 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     };
 
     NSString *tempPath = [self newTemporaryFilePath];
-    // Created with NSFileProtectionCompleteUnlessOpen, so that it can be created while the device is locked, and
-    // with the backup policy; rename() keeps both, so they are not set again when featureflag.bin is opened later
+    // Created without NSFileProtectionComplete, so that the descriptor kept open stays usable while the device is
+    // locked even if the app's default class is Complete, and with the backup policy; rename() keeps both, so they are
+    // not set again when featureflag.bin is opened later. For such an app it cannot be created while the device is
+    // locked (see BSGCreateFileWithoutCompleteProtection); that is a failure like any other, retried after the unlock.
     int fd = BSGCreateFileWithoutCompleteProtection(tempPath, O_RDWR);
     if (fd == -1) {
-        [self recordFailure:errno];
+        const int error = errno;
+        bsg_log_warn(@"Could not create %@ (%d); saving feature flags will be tried again later",
+                     tempPath.lastPathComponent, error);
+        [self recordFailure:error];
         return NO;
     }
     const BOOL written = (ftruncate(fd, (off_t)BSGFeatureFlagFileSize(slotCapacity)) == 0 &&

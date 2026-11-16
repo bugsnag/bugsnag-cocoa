@@ -14,8 +14,8 @@ Changelog
 
 ### Bug Fixes
 
-* A feature flag that is added again now keeps its original position in crash reports and in Out Of Memory and thermal kill events
-  instead of moving to the end, and a name that is repeated in a call to `addFeatureFlags:` no longer appears twice in crash reports.
+* A feature flag that is added again now keeps its original position in Out Of Memory and thermal kill events instead of moving to
+  the end, as it already did in handled events.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ## 6.39.0 (2026-11-05)

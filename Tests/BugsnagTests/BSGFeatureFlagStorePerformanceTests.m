@@ -329,6 +329,125 @@ static NSUInteger BSGTableIterations(NSUInteger count) {
     return count >= 10000 ? 5 : 10;
 }
 
+#pragma mark - Slowest single call
+
+/// `count` flags whose records (8 bytes of lengths, a 10-byte name and the variant) take up just under the 2 MB limit.
+static NSArray<BugsnagFeatureFlag *> * BSGFlagsNearTheLimit(NSUInteger variantLength, NSString *prefix) {
+    const NSUInteger recordLength = 8 + 10 + variantLength;
+    const NSUInteger count = (2 * 1024 * 1024 - 16) / recordLength;
+    NSMutableArray<BugsnagFeatureFlag *> *flags = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = 0; i < count; i++) {
+        NSString *name = [NSString stringWithFormat:@"%@-%05lu", prefix, (unsigned long)i];
+        NSString *variant = [[NSString stringWithFormat:@"%@-", name] stringByPaddingToLength:variantLength
+                                                                                withString:@"v" startingAtIndex:0];
+        [flags addObject:[BugsnagFeatureFlag flagWithName:name variant:variant]];
+    }
+    return flags;
+}
+
+/// Times one call on the calling thread, in milliseconds.
+static double BSGTimeCall(dispatch_block_t block) {
+    const uint64_t start = mach_absolute_time();
+    block();
+    return BSGMillisecondsSince(start);
+}
+
+static NSString * BSGDescribeSamples(NSArray<NSNumber *> *samples) {
+    return [NSString stringWithFormat:@"max %.2f ms, p50 %.3f ms, p99 %.3f ms over %lu", BSGPercentile(samples, 100),
+            BSGPercentile(samples, 50), BSGPercentile(samples, 99), (unsigned long)samples.count];
+}
+
+/// Measures the slowest single call that runs on the caller's thread (normally the main thread): adding flags one at a
+/// time up to the 2 MB limit (which grows the file several times), clearing them and shrinking the file, and
+/// replaceAllFlags: at start with about 2 MB of flags. Logs the results; it asserts nothing.
+- (void)testSlowestSingleCallOnTheCallersThread {
+    NSMutableString *report = [NSMutableString stringWithString:@"\n"];
+    const NSUInteger rounds = 5;
+    for (NSNumber *variantLength in @[@1000, @100]) {
+        NSArray<BugsnagFeatureFlag *> *flags = BSGFlagsNearTheLimit(variantLength.unsignedIntegerValue, @"flag");
+        NSArray<BugsnagFeatureFlag *> *otherFlags = BSGFlagsNearTheLimit(variantLength.unsignedIntegerValue, @"next");
+        NSArray<BugsnagFeatureFlag *> *fewFlags = [flags subarrayWithRange:NSMakeRange(0, 10)];
+        NSMutableArray<NSNumber *> *addMaxima = [NSMutableArray array], *addAll = [NSMutableArray array];
+        NSMutableArray<NSNumber *> *clearAll = [NSMutableArray array], *shrink = [NSMutableArray array];
+        NSMutableArray<NSNumber *> *startNew = [NSMutableArray array], *startSame = [NSMutableArray array];
+        NSMutableArray<NSNumber *> *startOther = [NSMutableArray array], *coldLoad = [NSMutableArray array];
+        NSUInteger slowestIndex = 0;
+        double slowest = 0;
+        for (NSUInteger round = 0; round < rounds; round++) {
+            @autoreleasepool {
+                // Growing to the limit, one flag at a time
+                NSString *directory = [self makeTemporaryDirectory];
+                __block BSGPersistentFeatureFlagStore *store = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+                double roundMax = 0;
+                for (NSUInteger i = 0; i < flags.count; i++) {
+                    BugsnagFeatureFlag *flag = flags[i];
+                    const double ms = BSGTimeCall(^{ [store addFeatureFlag:flag.name withVariant:flag.variant]; });
+                    [addAll addObject:@(ms)];
+                    roundMax = MAX(roundMax, ms);
+                    if (ms > slowest) {
+                        slowest = ms;
+                        slowestIndex = i;
+                    }
+                }
+                [addMaxima addObject:@(roundMax)];
+                XCTAssertEqual(store.allFlags.count, flags.count);
+
+                // Clearing them, then replacing them with a few flags, which replaces the large file with a small one
+                [clearAll addObject:@(BSGTimeCall(^{ [store clear]; }))];
+                const unsigned long long sizeBefore = [[NSFileManager.defaultManager attributesOfItemAtPath:
+                                                        [directory stringByAppendingPathComponent:@"featureflag.bin"] error:nil] fileSize];
+                [shrink addObject:@(BSGTimeCall(^{ [store replaceAllFlags:fewFlags]; }))];
+                const unsigned long long sizeAfter = [[NSFileManager.defaultManager attributesOfItemAtPath:
+                                                       [directory stringByAppendingPathComponent:@"featureflag.bin"] error:nil] fileSize];
+                XCTAssertLessThan(sizeAfter, sizeBefore, @"The file should have been shrunk");
+                store = nil;
+                [self removeDirectory:directory];
+
+                // replaceAllFlags: when Bugsnag starts, with about 2 MB of flags: with no file, with a file that holds
+                // the same flags (the usual case), and with a file that holds other flags
+                // Each store is released (giving up the lock) in its own pool before the next one is created, or the
+                // next one would not get the lock and would read and write nothing
+                directory = [self makeTemporaryDirectory];
+                @autoreleasepool {
+                    BSGPersistentFeatureFlagStore *first = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+                    [startNew addObject:@(BSGTimeCall(^{ [first replaceAllFlags:flags]; }))];
+                }
+                @autoreleasepool {
+                    __block BSGPersistentFeatureFlagStore *reopened = nil;
+                    [coldLoad addObject:@(BSGTimeCall(^{
+                        reopened = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+                    }))];
+                    XCTAssertEqual(reopened.allFlags.count, flags.count);
+                    [startSame addObject:@(BSGTimeCall(^{ [reopened replaceAllFlags:flags]; }))];
+                }
+                @autoreleasepool {
+                    BSGPersistentFeatureFlagStore *reopened = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+                    XCTAssertEqual(reopened.allFlags.count, flags.count);
+                    [startOther addObject:@(BSGTimeCall(^{ [reopened replaceAllFlags:otherFlags]; }))];
+                }
+                @autoreleasepool {
+                    BSGPersistentFeatureFlagStore *last = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
+                    XCTAssertEqual(last.allFlags.count, otherFlags.count, @"The other flags should have been saved");
+                }
+                [self removeDirectory:directory];
+            }
+        }
+        [report appendFormat:@"[M5] %lu flags with %@-byte variants (%lu bytes of records), %lu rounds\n",
+         (unsigned long)flags.count, variantLength, (unsigned long)(flags.count * (18 + variantLength.unsignedIntegerValue)),
+         (unsigned long)rounds];
+        [report appendFormat:@"[M5]   addFeatureFlag, each call: %@ (slowest was call %lu)\n", BSGDescribeSamples(addAll),
+         (unsigned long)slowestIndex];
+        [report appendFormat:@"[M5]   addFeatureFlag, slowest call per round: %@\n", BSGDescribeSamples(addMaxima)];
+        [report appendFormat:@"[M5]   clear (all flags at the limit): %@\n", BSGDescribeSamples(clearAll)];
+        [report appendFormat:@"[M5]   replaceAllFlags: with 10 flags after clear (shrinks the file): %@\n", BSGDescribeSamples(shrink)];
+        [report appendFormat:@"[M5]   replaceAllFlags: at start, no file: %@\n", BSGDescribeSamples(startNew)];
+        [report appendFormat:@"[M5]   store created (reads 2 MB): %@\n", BSGDescribeSamples(coldLoad)];
+        [report appendFormat:@"[M5]   replaceAllFlags: at start, same flags as the file: %@\n", BSGDescribeSamples(startSame)];
+        [report appendFormat:@"[M5]   replaceAllFlags: at start, other flags than the file: %@\n", BSGDescribeSamples(startOther)];
+    }
+    NSLog(@"Slowest single calls:%@", report);
+}
+
 - (void)testPrintComparisonTable {
     NSArray<NSNumber *> *counts = @[@100, @1000, @10000];
 

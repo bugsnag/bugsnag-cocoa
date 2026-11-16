@@ -29,7 +29,7 @@
 @interface BSGPersistentFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore>
 @end
 
-@interface BSGAtomicFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore>
+@interface BSGAtomicFeatureFlagStore : NSObject <BSGFeatureFlagStore>
 @end
 
 NS_ASSUME_NONNULL_BEGIN

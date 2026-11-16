@@ -37,10 +37,6 @@ BOOL BSGDisableNSFileProtectionComplete(NSString *path) {
 
 #pragma mark - File protection
 
-// The protection class is read and changed through these functions so that unit tests can stand in for the file
-// system: NSFileProtectionComplete can only be set while the device (or the Mac's console) is unlocked, so the
-// code that handles it could not otherwise be tested on a locked or headless host or in the simulator.
-
 static NSString *_Nullable BSGGetFileProtection(NSString *path) {
 #if !TARGET_OS_OSX || defined(__MAC_11_0)
     if (@available(macOS 11.0, *)) {
@@ -70,10 +66,15 @@ static BOOL BSGCreateFile(NSString *path) {
     // symbolic link, even a dangling one) is at the path.
     NSDataWritingOptions options = NSDataWritingWithoutOverwriting;
 #if TARGET_OS_IPHONE && !TARGET_OS_MACCATALYST
-    // The class is given when the file is created, so the file never has the app's default class: if that is
-    // NSFileProtectionComplete, a file could not be created at all while the device is locked. (open_dprotected_np
-    // would do the same, but the protection class constants it takes are not in the public headers.)
-    options |= NSDataWritingFileProtectionCompleteUnlessOpen;
+    // In a directory whose class is NSFileProtectionComplete, the class is given when the file is created, so the file
+    // never has NSFileProtectionComplete, even briefly. (The file is closed once it has been written, so while the
+    // device is locked BSGCreateFileWithoutCompleteProtection cannot open it again; see BSGUtils.h.) In any other
+    // directory the file keeps the class it inherits, because NSFileProtectionCompleteUnlessOpen is stricter than the
+    // default class. (open_dprotected_np would create and open the file in one call, but the protection class constants
+    // it takes are not in the public headers.)
+    if (BSGProtectionClassForNewFileInDirectory(path.stringByDeletingLastPathComponent)) {
+        options |= NSDataWritingFileProtectionCompleteUnlessOpen;
+    }
 #endif
     NSError *error = nil;
     if ([NSData.data writeToFile:path options:options error:&error]) {
@@ -84,6 +85,11 @@ static BOOL BSGCreateFile(NSString *path) {
     return NO;
 }
 
+#if defined(DEBUG) && DEBUG
+// In debug builds the protection class is read and changed, and files created, through these functions so that unit
+// tests can stand in for the file system: NSFileProtectionComplete can only be set while the device (or the Mac's
+// console) is unlocked, and the simulator ignores the class given when a file is created, so the code that handles them
+// could not otherwise be tested on a locked or headless host or in the simulator.
 static BSGFileProtectionFunctions bsg_fileProtectionFunctions = {
     .getProtection = BSGGetFileProtection,
     .setProtection = BSGSetFileProtection,
@@ -98,6 +104,42 @@ BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFuncti
     return previous;
 }
 
+static NSString *_Nullable BSGGetProtection(NSString *path) {
+    return bsg_fileProtectionFunctions.getProtection(path);
+}
+
+static BOOL BSGSetProtection(NSString *path, NSString *protection, NSError **error) {
+    return bsg_fileProtectionFunctions.setProtection(path, protection, error);
+}
+
+static BOOL BSGCreateNewFile(NSString *path) {
+    return bsg_fileProtectionFunctions.createFile(path);
+}
+#else
+static NSString *_Nullable BSGGetProtection(NSString *path) {
+    return BSGGetFileProtection(path);
+}
+
+static BOOL BSGSetProtection(NSString *path, NSString *protection, NSError **error) {
+    return BSGSetFileProtection(path, protection, error);
+}
+
+static BOOL BSGCreateNewFile(NSString *path) {
+    return BSGCreateFile(path);
+}
+#endif
+
+NSString *_Nullable BSGProtectionClassForNewFileInDirectory(NSString *directory) {
+#if !TARGET_OS_OSX || defined(__MAC_11_0)
+    if (@available(macOS 11.0, *)) {
+        NSString *protection = BSGGetProtection(directory);
+        return [protection isEqualToString:NSURLFileProtectionComplete] ? NSURLFileProtectionCompleteUnlessOpen : nil;
+    }
+#endif
+    (void)directory;
+    return nil;
+}
+
 BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     if (changed) {
         *changed = NO;
@@ -106,13 +148,13 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     // NSURLFileProtectionKey is unavailable in macOS SDKs prior to 11.0
 #if !TARGET_OS_OSX || defined(__MAC_11_0)
     if (@available(macOS 11.0, *)) {
-        NSString *protection = bsg_fileProtectionFunctions.getProtection(path);
+        NSString *protection = BSGGetProtection(path);
         if (![protection isEqualToString:NSURLFileProtectionComplete]) {
             return YES;
         }
         
         NSError *error = nil;
-        if (!bsg_fileProtectionFunctions.setProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error)) {
+        if (!BSGSetProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error)) {
             bsg_log_warn(@"BSGDisableFileProtection: %@", error);
             return NO;
         }
@@ -127,28 +169,10 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     return YES;
 }
 
-int BSGOpenRegularFile(NSString *path, int flags) {
-    // O_NONBLOCK: opening a FIFO (or a device) at the path would otherwise block until another process opened its
-    // other end, so the type of file is only checked once it is open without waiting. O_NOFOLLOW: a symbolic link
-    // at the path is refused rather than followed, so the descriptor always refers to the file at the path itself.
-    const int fd = open(path.fileSystemRepresentation, flags | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK, 0600);
-    if (fd == -1) {
-        return -1;
-    }
-    struct stat st;
-    const int error = fstat(fd, &st) != 0 ? errno : !S_ISREG(st.st_mode) ? EFTYPE : 0;
-    if (error) {
-        close(fd);
-        errno = error;
-        return -1;
-    }
-    if (!(flags & O_NONBLOCK) && fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK) == -1) {
-        const int fcntlError = errno;
-        close(fd);
-        errno = fcntlError;
-        return -1;
-    }
-    return fd;
+int BSGOpenFileWithoutFollowingLinks(NSString *path, int flags) {
+    // O_NOFOLLOW: a symbolic link at the path is refused rather than followed, so the descriptor always refers to the
+    // file at the path itself
+    return open(path.fileSystemRepresentation, flags | O_CLOEXEC | O_NOFOLLOW, 0600);
 }
 
 /// Changes NSFileProtectionComplete as BSGChangeNSFileProtectionComplete does, then returns a descriptor for the file
@@ -168,35 +192,27 @@ static int BSGReopenWithoutCompleteProtection(NSString *path, int fd, int flags,
         // The descriptor was not opened under NSFileProtectionComplete, so it is kept as it is
         return fd;
     }
-
     // Reopen so that the descriptor that is kept open was opened after the protection class was changed. The file
-    // exists now, so it is not created or truncated again. The path is opened again, so the new descriptor is only
-    // used if it refers to the same file as the first one (the path could have been replaced in between); otherwise
-    // the open fails rather than returning a descriptor for a file whose protection class was not changed.
-    const int reopened = BSGOpenRegularFile(path, flags & ~(O_CREAT | O_EXCL | O_TRUNC));
+    // exists now, so it is not created or truncated again.
+    const int reopened = BSGOpenFileWithoutFollowingLinks(path, flags & ~(O_CREAT | O_EXCL | O_TRUNC));
     if (reopened == -1) {
+        if (errno == ENOENT) {
+            // The file was removed (or renamed away) after it was opened, so the first descriptor refers to a file that
+            // is no longer at the path; the caller can try again. A file created here is already gone.
+            close(fd);
+            errno = EAGAIN;
+            return -1;
+        }
         // The first descriptor still refers to the file, whose protection class has been changed
         return fd;
-    }
-    struct stat original, current;
-    if (fstat(fd, &original) != 0 || fstat(reopened, &current) != 0 ||
-        original.st_dev != current.st_dev || original.st_ino != current.st_ino) {
-        bsg_log_warn(@"Could not open %@: the file was replaced while it was being opened", path.lastPathComponent);
-        close(reopened);
-        close(fd);
-        errno = EAGAIN;
-        return -1;
     }
     close(fd);
     return reopened;
 }
 
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
-    const int fd = BSGOpenRegularFile(path, flags);
+    const int fd = BSGOpenFileWithoutFollowingLinks(path, flags);
     if (fd == -1) {
-        const int error = errno;
-        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, error);
-        errno = error;
         return -1;
     }
     // Files opened with low-level APIs do not get Bugsnag's Apple backup policy from the JSON helpers
@@ -206,50 +222,22 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
 
 int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
     const char *fileSystemPath = path.fileSystemRepresentation;
-    if (!bsg_fileProtectionFunctions.createFile(path)) {
-        const int error = errno;
-        bsg_log_warn(@"Could not create %@: %d", path.lastPathComponent, error);
-        errno = error;
+    if (!BSGCreateNewFile(path)) {
         return -1;
     }
-    struct stat created;
-    if (lstat(fileSystemPath, &created) != 0) {
-        const int error = errno;
-        unlink(fileSystemPath);
-        errno = error;
-        return -1;
-    }
-    // The file exists now, so it is opened without O_CREAT; O_NOFOLLOW refuses a symbolic link put in its place,
-    // and anything else that is not a regular file is refused without blocking
+    // The file exists now, so it is opened without O_CREAT; O_NOFOLLOW refuses a symbolic link put in its place
     flags &= ~(O_CREAT | O_EXCL | O_TRUNC);
-    int fd = BSGOpenRegularFile(path, flags);
+    const int fd = BSGOpenFileWithoutFollowingLinks(path, flags);
     if (fd == -1) {
-        const int error = errno;
-        bsg_log_warn(@"Could not open %@: %d", path.lastPathComponent, error);
+        // ENOENT: the file was removed (or renamed away) since it was created, so the caller can try again
+        const int error = errno == ENOENT ? EAGAIN : errno;
         unlink(fileSystemPath);
         errno = error;
         return -1;
     }
-    // As in BSGOpenFileWithoutCompleteProtection, the descriptor is only used if it refers to the file that was
-    // created. NSData creates files with mode 0666 less the umask, so the mode is set as open() would have set it.
-    struct stat opened;
-    if (fstat(fd, &opened) != 0 || opened.st_dev != created.st_dev || opened.st_ino != created.st_ino) {
-        // Whatever is at the path now was not created here, so it is left alone
-        bsg_log_warn(@"Could not create %@: the file was replaced while it was being opened", path.lastPathComponent);
-        close(fd);
-        errno = EEXIST;
-        return -1;
-    }
-    if (opened.st_nlink != 1 || opened.st_size != 0) {
-        bsg_log_warn(@"Could not create %@: the file was changed while it was being opened", path.lastPathComponent);
-        close(fd);
-        unlink(fileSystemPath);
-        errno = EEXIST;
-        return -1;
-    }
+    // NSData creates files with mode 0666 less the umask, so the mode is set as open() would have set it
     if (fchmod(fd, 0600) != 0) {
         const int error = errno;
-        bsg_log_warn(@"Could not create %@: %d", path.lastPathComponent, error);
         close(fd);
         unlink(fileSystemPath);
         errno = error;
@@ -257,15 +245,10 @@ int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags) {
     }
     // The backup policy and the protection class are set once, here: they are attributes of the file, which
     // rename() keeps, so a file created here and renamed into place does not need them set again when it is
-    // opened later. (On iOS, tvOS, watchOS and visionOS the class was set when the file was created, so this only
+    // opened later. (On iOS, tvOS, watchOS and visionOS the class was chosen when the file was created, so this only
     // reads it; on macOS the file has the default class, which is changed if it is NSFileProtectionComplete.)
     [BSGFilesystem applyFileBackupSupportToPath:path];
-    fd = BSGReopenWithoutCompleteProtection(path, fd, flags, YES);
-    if (fd == -1 && errno == EAGAIN) {
-        // Whatever is at the path now was not created here, so it is left alone
-        errno = EEXIST;
-    }
-    return fd;
+    return BSGReopenWithoutCompleteProtection(path, fd, flags, YES);
 }
 
 dispatch_queue_t BSGGetFileSystemQueue(void) {

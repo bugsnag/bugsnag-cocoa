@@ -28,17 +28,19 @@ The stress tests (`BSGPersistentFeatureFlagStoreStressTests`), on macOS and in a
     TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
         -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGPersistentFeatureFlagStoreStressTests
 
-The benchmarks comparing the binary store with the earlier JSON files (`BSGFeatureFlagStorePerformanceTests`):
+The benchmarks comparing the binary store with the earlier JSON files, and measuring the slowest single call near the
+2 MB limit (`BSGFeatureFlagStorePerformanceTests`):
 
     TEST_RUNNER_BSG_RUN_PERFORMANCE_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-macOS \
         -destination 'platform=macOS' -only-testing:Bugsnag-macOSTests/BSGFeatureFlagStorePerformanceTests
 
 The tests that set `NSFileProtectionComplete` on real files skip when the host cannot set it, for example
-while the screen is locked. With the screen unlocked, run them so that they fail instead of skipping:
+while the screen is locked, or cannot change it to `NSFileProtectionCompleteUnlessOpen` (some macOS versions refuse
+that change with error 513 even while the screen is unlocked, so run them in an iOS simulator). With the screen
+unlocked, run them so that they fail instead of skipping:
 
     TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
-        -destination 'platform=iOS Simulator,name=iPhone 17' \
-        -only-testing:Bugsnag-iOSTests/BSGUtilsTests -only-testing:Bugsnag-iOSTests/BSGRunContextTests
+        -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGUtilsTests
 
 ## End-to-end tests
 
