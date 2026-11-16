@@ -681,8 +681,11 @@
 		01B79DAE267CC4A000C8CC5E /* BSGUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B79DA8267CC4A000C8CC5E /* BSGUtils.m */; };
 		01B79DAF267CC4A000C8CC5E /* BSGUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B79DA8267CC4A000C8CC5E /* BSGUtils.m */; };
 		01BDB1F525DEBFB200A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */; };
+		5E2ADE88B272206E152C7EF3 /* BSGEventUploadOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8518A4B243C5CD8DE2011ABA /* BSGEventUploadOperationTests.m */; };
 		01BDB1FD25DEBFB300A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */; };
+		79BC9EE033D569AA1F3E2340 /* BSGEventUploadOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8518A4B243C5CD8DE2011ABA /* BSGEventUploadOperationTests.m */; };
 		01BDB20525DEBFB300A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */; };
+		C52DF3E879AA2AC62B22AB1E /* BSGEventUploadOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8518A4B243C5CD8DE2011ABA /* BSGEventUploadOperationTests.m */; };
 		01BDB21525DEC02900A91FAF /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 01BDB21425DEC02900A91FAF /* Data */; };
 		01BDB21625DEC02900A91FAF /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 01BDB21425DEC02900A91FAF /* Data */; };
 		01BDB21725DEC02900A91FAF /* Data in Resources */ = {isa = PBXBuildFile; fileRef = 01BDB21425DEC02900A91FAF /* Data */; };
@@ -1193,6 +1196,7 @@
 		CB28F0B328294DD0003AB200 /* BSGClientObserverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 008966BD2486D43500DC48C2 /* BSGClientObserverTests.m */; };
 		CB28F0B428294DE1003AB200 /* BSGJSONSerializationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBCF77AA250142E0004AF22A /* BSGJSONSerializationTests.m */; };
 		CB28F0B528294DE1003AB200 /* BSGEventUploadKSCrashReportOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */; };
+		0E47D52D0B5970AB7A1027F4 /* BSGEventUploadOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8518A4B243C5CD8DE2011ABA /* BSGEventUploadOperationTests.m */; };
 		CB28F0B628294DE1003AB200 /* BSGInternalErrorReporterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */; };
 		CB28F0B728294DE1003AB200 /* BSGMemoryFeatureFlagStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 010993A3273D188B00128BBE /* BSGMemoryFeatureFlagStoreTests.m */; };
 		CB28F0B828294DE1003AB200 /* BSGConfigurationBuilderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00896A3F2486DBDD00DC48C2 /* BSGConfigurationBuilderTests.m */; };
@@ -1909,6 +1913,7 @@
 		01B79DA7267CC4A000C8CC5E /* BSGUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGUtils.h; sourceTree = "<group>"; };
 		01B79DA8267CC4A000C8CC5E /* BSGUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGUtils.m; sourceTree = "<group>"; };
 		01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploadKSCrashReportOperationTests.m; sourceTree = "<group>"; };
+		8518A4B243C5CD8DE2011ABA /* BSGEventUploadOperationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGEventUploadOperationTests.m; sourceTree = "<group>"; };
 		01BDB21425DEC02900A91FAF /* Data */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Data; sourceTree = "<group>"; };
 		01C17AE62542ED7F00C102C9 /* KSCrashReportWriterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCrashReportWriterTests.m; sourceTree = "<group>"; };
 		01C2769B2601F44D006901EA /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
@@ -2428,6 +2433,7 @@
 				008966C62486D43600DC48C2 /* BSGConnectivityTest.m */,
 				010F80C128645B4200D6569E /* BSGDefinesTests.m */,
 				01BDB1CE25DEBF4600A91FAF /* BSGEventUploadKSCrashReportOperationTests.m */,
+				8518A4B243C5CD8DE2011ABA /* BSGEventUploadOperationTests.m */,
 				96828BB22F33D7580020821F /* BSGHashDiscardIntegrationTests.m */,
 				01847DAB26441A5E00ADA4C7 /* BSGInternalErrorReporterTests.m */,
 				96828B112F0AA34B0020821F /* BSGJsonCollectionPathTests.m */,
@@ -4063,6 +4069,7 @@
 				008966EE2486D43700DC48C2 /* BugsnagClientPayloadInfoTest.m in Sources */,
 				010F80C228645B4200D6569E /* BSGDefinesTests.m in Sources */,
 				01BDB1F525DEBFB200A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */,
+				5E2ADE88B272206E152C7EF3 /* BSGEventUploadOperationTests.m in Sources */,
 				008967782486D43700DC48C2 /* BSG_KSMachHeadersTests.m in Sources */,
 				09E3132F2BF3867C0081F219 /* BugsnagPerformanceBridgeTests.m in Sources */,
 				0089673F2486D43700DC48C2 /* BugsnagAppTest.m in Sources */,
@@ -4278,6 +4285,7 @@
 				0163BF5A25823D8D008DC28B /* BSGNotificationBreadcrumbsTests.m in Sources */,
 				01F9FCB728929336005EDD8C /* BSGSerializationTests.m in Sources */,
 				01BDB1FD25DEBFB300A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */,
+				79BC9EE033D569AA1F3E2340 /* BSGEventUploadOperationTests.m in Sources */,
 				00896A452486DBF000DC48C2 /* BugsnagConfigurationTests.m in Sources */,
 				008967492486D43700DC48C2 /* BugsnagUserTest.m in Sources */,
 				0089673A2486D43700DC48C2 /* BugsnagEventFromKSCrashReportTest.m in Sources */,
@@ -4494,6 +4502,7 @@
 				0089674A2486D43700DC48C2 /* BugsnagUserTest.m in Sources */,
 				0089673B2486D43700DC48C2 /* BugsnagEventFromKSCrashReportTest.m in Sources */,
 				01BDB20525DEBFB300A91FAF /* BSGEventUploadKSCrashReportOperationTests.m in Sources */,
+				C52DF3E879AA2AC62B22AB1E /* BSGEventUploadOperationTests.m in Sources */,
 				0089674D2486D43700DC48C2 /* BSGConnectivityTest.m in Sources */,
 				01E87660256684E700F4B70A /* URLSessionMock.m in Sources */,
 				1C55AD902EB91EA30097F3C2 /* BugsnagCaptureOptionsTests.m in Sources */,
@@ -4860,6 +4869,7 @@
 				CB28F0A628294D4F003AB200 /* KSCrashSentry_NSException_Tests.m in Sources */,
 				CB28F0AF28294D4F003AB200 /* KSCrashState_Tests.m in Sources */,
 				CB28F0B528294DE1003AB200 /* BSGEventUploadKSCrashReportOperationTests.m in Sources */,
+				0E47D52D0B5970AB7A1027F4 /* BSGEventUploadOperationTests.m in Sources */,
 				CB28F0A428294D4F003AB200 /* KSSysCtl_Tests.m in Sources */,
 				96828BB62F33D76D0020821F /* BSGHashDiscardIntegrationTests.m in Sources */,
 				01A2958928B667C2005FCC8C /* BSGNetworkBreadcrumbTests.m in Sources */,

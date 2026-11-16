@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Changing `unhandled` in an `OnSendError` callback now sets `severityReason.unhandledOverridden` and moves the event between the session's handled and unhandled counts, as an `OnError` callback already does.
+  [#1984](https://github.com/bugsnag/bugsnag-cocoa/issues/1984)
+
 ## 6.39.0 (2026-11-05)
 
 ### Bug Fixes

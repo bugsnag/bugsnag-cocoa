@@ -35,6 +35,26 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
 
 @end
 
+/// Moves one event between the session's handled and unhandled counts after an OnSendError block changes
+/// `event.unhandled`, as `-[BugsnagClient notifyInternal:block:]` and `-[BugsnagEvent initWithKSCrashReport:]` count the
+/// event under its final value.
+static void BSGMoveSessionEventCount(BugsnagSession *_Nullable session, BOOL fromUnhandled) {
+    if (!session) {
+        return;
+    }
+    if (fromUnhandled) {
+        if (session.unhandledCount > 0) {
+            session.unhandledCount--;
+            session.handledCount++;
+        }
+    } else {
+        if (session.handledCount > 0) {
+            session.handledCount--;
+            session.unhandledCount++;
+        }
+    }
+}
+
 // MARK: -
 
 @implementation BSGEventUploadOperation
@@ -80,6 +100,7 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
     }
     
     NSDictionary *retryPayload = nil;
+    BOOL originalUnhandledValue = event.unhandled;
     for (BugsnagOnSendErrorBlock block in configuration.onSendBlocks) {
         @try {
             if (!retryPayload) {
@@ -95,7 +116,11 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
             bsg_log_err(@"Ignoring exception thrown by onSend callback: %@", exception);
         }
     }
-    
+    if (event.unhandled != originalUnhandledValue) {
+        [event notifyUnhandledOverridden];
+        BSGMoveSessionEventCount(event.session, originalUnhandledValue);
+    }
+
     NSDictionary *eventPayload;
     @try {
         [event truncateStrings:configuration.maxStringValueLength];
