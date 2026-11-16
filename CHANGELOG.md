@@ -11,6 +11,10 @@ Changelog
   A symbolic link at the run context file's path is now refused rather than followed.
   [#1982](https://github.com/bugsnag/bugsnag-cocoa/pull/1982)
 
+* A feature flag that is added again now keeps its original position in crash reports instead of moving to the end, and a name
+  that is repeated in a call to `addFeatureFlags:` no longer appears twice in crash reports.
+  [#1983](https://github.com/bugsnag/bugsnag-cocoa/pull/1983)
+
 ## 6.39.0 (2026-11-05)
 
 ### Bug Fixes
