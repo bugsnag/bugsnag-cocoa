@@ -49,9 +49,10 @@
 // because a reboot stops BSGRunContext reporting an OOM or thermal kill for the launch before it.
 // Every write error (e.g. a full disk) is an ordinary error: the flags stay in memory, the log in
 // the file is emptied so that it never holds stale flags, and writing is tried again later, with
-// the delay doubling after each failure up to a maximum. The exception is a log that has outgrown
-// the file when a larger file cannot be created (see writeSnapshot): the file is intact, so its log
-// of earlier flags is kept until the larger file is created.
+// the delay doubling after each failure up to a maximum. That includes a log that has outgrown the
+// file when a larger file cannot be created yet (see writeSnapshot): an OOM or thermal kill before
+// the retry succeeds then reports no flags rather than flags the app may since have changed or
+// cleared.
 //
 // Only one store writes to a directory: the one that holds an exclusive lock on featureflag.lock (see
 // BSGPersistentFeatureFlagStore.h). Nothing is created in the directory until there are flags to save.
@@ -63,8 +64,9 @@
 // NSFileProtectionCompleteUnlessOpen, so that the descriptors kept open stay usable while the device is locked. Such a
 // file cannot be created while the device is locked, though: it is closed once created and cannot be opened again
 // until the unlock (see BSGCreateFileWithoutCompleteProtection). While the device is locked, flags keep being written
-// to a file that is already open; a new file (the first one, or one with larger slots) waits for the unlock, with any
-// earlier log kept meanwhile (see writeSnapshot), and UIApplicationProtectedDataDidBecomeAvailable tries again. In any
+// to a file that is already open; a new file (the first one, or one with larger slots) waits for the unlock, with the
+// log of the open file emptied meanwhile (see writeSnapshot), and UIApplicationProtectedDataDidBecomeAvailable tries
+// again. In any
 // other directory the files keep the class they inherit, normally the default
 // NSFileProtectionCompleteUntilFirstUserAuthentication, so that a launch in the background while the device is locked
 // (after the first unlock) can still open them. featureflag.lock is opened the same way, and created with
@@ -105,9 +107,6 @@
 //   fileIsCurrent      Replaying the file's log gives exactly the encodable flags, so records can be appended. Set by a
 //                      successful write of a whole log, or when a valid file is read; cleared by any failure, by flags
 //                      that are over the size limit, and when another store's file is taken over.
-//   keepingEarlierLog  The file is not current but its log holds an earlier set of this store's flags, kept because the
-//                      flags no longer fit and a larger file could not be created yet. Cleared by the next write that
-//                      succeeds, or when the log is emptied.
 //   staleFileMayExist  A file that this store does not have open may be at the path and hold flags that are not
 //                      current (e.g. the previous launch's, left unread by a store without the lock, or a file that
 //                      could not be opened). Cleared once it has been opened, replaced or removed.
@@ -249,7 +248,6 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 @property (nonatomic) uint32_t activeSlot;
 @property (nonatomic) uint64_t activeLength;
 @property (nonatomic) BOOL fileIsCurrent;
-@property (nonatomic) BOOL keepingEarlierLog;
 @property (nonatomic) BOOL tooLargeToPersist;
 @property (nonatomic) NSTimeInterval retryTime;
 // The delay after the first failure, and the largest delay after consecutive failures
@@ -565,8 +563,6 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     self.activeSlot = header.active & 1;
     self.activeLength = header.active >> 1;
     self.fileIsCurrent = NO;
-    // The log holds another store's (or an earlier launch's) flags, which are never kept in place of this store's
-    self.keepingEarlierLog = NO;
     self.staleFileMayExist = NO;
 }
 
@@ -1032,7 +1028,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     const uint64_t capacity = hasFile ? self.slotCapacity : 0;
     if (!canRetryNow && (!hasFile || self.liveLength > capacity)) {
         // The flags remain in memory, and are saved by a later change or by the scheduled retry
-        [self keepEarlierLogUntilTheFileIsReplaced];
+        [self emptyLogUntilTheFileIsReplaced];
         return NO;
     }
     NSMutableData *snapshot = [NSMutableData dataWithCapacity:(NSUInteger)self.liveLength];
@@ -1049,7 +1045,6 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     if ((tooSmall || [self fileShouldShrink]) && canRetryNow) {
         if ([self replaceFileWithSnapshot:snapshot]) {
             self.fileIsCurrent = YES;
-            self.keepingEarlierLog = NO;
             self.staleFileMayExist = NO;
             [self resetRetry];
             return YES;
@@ -1058,7 +1053,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     }
     if (!fits) {
         // The flags remain in memory, and are saved by a later change or by the scheduled retry
-        [self keepEarlierLogUntilTheFileIsReplaced];
+        [self emptyLogUntilTheFileIsReplaced];
         return NO;
     }
     // The log is written before the header that makes it active
@@ -1070,7 +1065,6 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         return NO;
     }
     self.fileIsCurrent = YES;
-    self.keepingEarlierLog = NO;
     self.waitingForProtectedData = NO;
     return YES;
 }
@@ -1078,20 +1072,12 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// Called when the current flags no longer fit in the file and a larger file cannot be created now, e.g. while the
 /// device is locked, or because the disk is full. A retry has been scheduled (or is pending) to create it.
 ///
-/// The file itself is intact, so its log, which holds the flags as they were when they last fitted, is kept rather
-/// than emptied: an OOM or thermal kill before the retry succeeds is then reported with slightly stale flags rather
-/// than with none. While the flags grow they are mostly added or changed, and the flags they
-/// replace describe the app's state more closely than an empty set. Records are never appended to the kept
-/// log (the file is not current), so it is replaced whole by the next write that succeeds.
-///
-/// A log that does not hold this store's flags (one written by another store, which this store took over when it
-/// took the lock) is emptied as before, because those flags may belong to an earlier launch.
-- (void)keepEarlierLogUntilTheFileIsReplaced {
-    if (self.fd != -1 && (self.fileIsCurrent || self.keepingEarlierLog)) {
-        self.keepingEarlierLog = YES;
-    } else {
-        [self discardSnapshot];
-    }
+/// The log of the open file is emptied, as after any other failure to save the flags: an OOM or thermal kill before
+/// the retry succeeds then reports no flags rather than flags that the app may since have changed or cleared (a
+/// cleared flag reported as active would be misleading, an empty set is not). The current flags are written whole
+/// by the next write that succeeds.
+- (void)emptyLogUntilTheFileIsReplaced {
+    [self discardSnapshot];
     self.fileIsCurrent = NO;
 }
 
@@ -1189,7 +1175,6 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// that it does not contain flags that have since been changed or cleared. A file this store has not
 /// opened is never deleted here.
 - (void)discardSnapshot {
-    self.keepingEarlierLog = NO;
     if (self.fd == -1 || self.activeLength == 0) {
         return;
     }

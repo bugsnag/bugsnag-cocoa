@@ -1639,13 +1639,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     store.failReplaceFile = YES;
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    // The file is intact, so it keeps the flags as they were when they last fitted, never a partial set
-    NSArray *earlier = @[@[@"a", @"1"], @[@"b", @"2"]];
-    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    // The log is emptied until the larger file can be created, so that flags the app has since changed or cleared
+    // are never reported
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
     [store addFeatureFlag:@"c" withVariant:nil];
-    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
     [store clear:@"a"];
-    XCTAssertEqualObjects([self reopenedFlags], earlier, @"Nothing is appended to the earlier log");
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"Nothing is appended to the emptied log");
 
     NSArray *expected = @[@[@"b", @"2"], @[@"large", large], @[@"c", NSNull.null]];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
@@ -1668,7 +1668,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store clear:@"a"];
     XCTAssertEqual(store.replaceFileCount, 2, @"Growing the file should not be retried");
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"large", large], @[@"b", NSNull.null]]));
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"The flags that last fitted are kept");
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:[self.filePath stringByAppendingString:@".tmp"]]);
 
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
@@ -1681,13 +1681,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"The flags that last fitted are kept");
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
 
     // Within the retry interval the file is not written
     [store addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqual(store.replaceFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
 
     // Once it has passed, the next change writes all of the flags
     store.retryTime = 0;
@@ -1825,7 +1825,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
     XCTAssertEqual(store.replaceFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]), @"The file keeps the flags that last fitted");
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
 
     // Within the retry interval the file is not replaced on later changes, even though they would now fit
     store.replacementSnapshot = nil;
@@ -1833,7 +1833,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
     [store addFeatureFlag:@"b" withVariant:nil];
     [store addFeatureFlag:@"large" withVariant:[large stringByAppendingString:@"y"]];
     XCTAssertEqual(store.replaceFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(store.allFlags.count, 3);
 }
 
@@ -2323,7 +2323,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     return [files filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self ENDSWITH '.tmp'"]];
 }
 
-- (void)testGrowthWhileTheDeviceIsLockedKeepsTheExistingLogAndIsRetried {
+- (void)testGrowthWhileTheDeviceIsLockedEmptiesTheLogAndIsRetried {
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     [scheduler attachToStore:store];
@@ -2348,7 +2348,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
     XCTAssertEqual(gLockedCreateFileCount, 1);
-    XCTAssertEqualObjects([self reopenedFlags], earlier, @"The log must not be emptied");
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
     XCTAssertEqual(scheduler.delays.count, 1, @"A retry should have been scheduled");
     XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, 3600, 60);
     XCTAssertEqualObjects([self temporaryFiles], @[]);
@@ -2356,16 +2356,16 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &after), 0);
     XCTAssertEqual(after.st_ino, before.st_ino, @"The file should not have been replaced");
 
-    // Changes within the retry interval neither empty the log nor are appended to it
+    // Changes within the retry interval are not appended to the emptied log
     [store addFeatureFlag:@"c" withVariant:nil];
     [store clear:@"a"];
-    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(gLockedCreateFileCount, 1);
 
-    // A retry while the device is still locked keeps the log too, and schedules another
+    // A retry while the device is still locked leaves the log empty, and schedules another
     XCTAssertEqual([scheduler runPendingRetries], 1);
     XCTAssertEqual(gLockedCreateFileCount, 2);
-    XCTAssertEqualObjects([self reopenedFlags], earlier);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(scheduler.pendingRetries.count, 1);
 
     // Once the device is unlocked, the retry creates the larger file with the current flags
@@ -2394,15 +2394,15 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     [self simulateLockedDevice];
     NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
+    XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
 
     // Flags that fit in the file again are written to it, without waiting for the retry or the unlock
     [store clear:@"large"];
     [store addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
     [store addFeatureFlag:@"large" withVariant:large];
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
-    // Clearing all of the flags empties the kept log
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+    // Clearing all of the flags leaves the log empty
     [store clear];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(gLockedCreateFileCount, 1, @"The file is not replaced again within the retry interval");
@@ -2420,8 +2420,8 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     [scheduler attachToStore:second];
     first = nil;
 
-    // The second store takes the lock and the first store's file, but cannot grow it. The flags in the file were
-    // never this store's own, so they are not kept in place of its flags.
+    // The second store takes the lock and the first store's file, but cannot grow it. The log is emptied, as it is
+    // for a store's own flags that no longer fit.
     [self simulateLockedDevice];
     second.retryTime = 0;
     NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
