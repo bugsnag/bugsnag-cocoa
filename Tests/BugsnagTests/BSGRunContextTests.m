@@ -19,7 +19,10 @@
 
 - (void)setUp {
     [super setUp];
-    if (!bsg_runContext) {
+    // bsg_runContext is never NULL: before BSGRunContextInit() is called it points to a zeroed fallback, whose
+    // structVersion is not set. It is initialised here when this test case runs on its own; in the full suite
+    // an earlier test (e.g. one that starts Bugsnag) may already have done it.
+    if (bsg_runContext->structVersion != BSGRUNCONTEXT_VERSION) {
         BSGRunContextInit(BSGFileLocations.current.runContext);
     }
 }
