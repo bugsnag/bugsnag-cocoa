@@ -12,6 +12,7 @@
 #import "BugsnagLogger.h"
 
 #import <fcntl.h>
+#import <sys/stat.h>
 #import <unistd.h>
 
 void bsg_safe_strncpy(char *dst, const char *src, size_t length) {
@@ -155,6 +156,16 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
         }
         // The first descriptor still refers to the file, whose protection class has been changed
         return fd;
+    }
+    // A different file could have been put at the path between the two opens, in which case the reopened descriptor
+    // refers to a file whose protection class was never checked, so both descriptors must refer to the same file
+    struct stat first, second;
+    if (fstat(fd, &first) != 0 || fstat(reopened, &second) != 0 ||
+        first.st_dev != second.st_dev || first.st_ino != second.st_ino) {
+        close(fd);
+        close(reopened);
+        errno = EAGAIN;
+        return -1;
     }
     close(fd);
     return reopened;
