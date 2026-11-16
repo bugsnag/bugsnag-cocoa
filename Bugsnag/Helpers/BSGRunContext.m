@@ -8,7 +8,6 @@
 #import "BSGRunContext.h"
 
 #import "BSGAppKit.h"
-#import "BSGFilesystem.h"
 #import "BSGHardware.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
@@ -547,24 +546,28 @@ static struct BSGRunContext bsg_lastRunContext_fallback = {
 const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 
 /// Opens the file and disables content protection, returning -1 on error.
+///
+/// NSFileProtectionComplete invalidates mappings 10 seconds after device is
+/// locked, so must be disabled to prevent segfaults when accessing
+/// bsg_runContext. It is downgraded to NSFileProtectionCompleteUnlessOpen,
+/// which only keeps the file accessible while the device is locked for as
+/// long as it stays open, so the descriptor returned here must be kept open
+/// for as long as the file is mapped (see ResizeAndMapFile.)
+///
+/// A symbolic link at the path is refused. If the file is removed or renamed
+/// away while it is being opened (EAGAIN, see
+/// BSGOpenFileWithoutCompleteProtection) it is opened once more. If it still
+/// cannot be opened, that is logged, because OOM and thermal kill detection
+/// then does not work for this launch.
 static int OpenFile(NSString *_Nonnull path) {
-    int fd = open(path.fileSystemRepresentation, O_RDWR | O_CREAT, 0600);
+    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    if (fd == -1 && errno == EAGAIN) {
+        fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    }
     if (fd == -1) {
-        bsg_log_warn(@"Could not open %@", path);
-        return -1;
+        bsg_log_warn(@"Could not open the run context file (errno %d); OOM and thermal kill detection is disabled "
+                     "for this launch", errno);
     }
-    // This file is created with low-level APIs for memory mapping, so apply
-    // Bugsnag's Apple backup policy here instead of relying on JSON helpers.
-    [BSGFilesystem applyFileBackupSupportToPath:path];
-    
-    // NSFileProtectionComplete invalidates mappings 10 seconds after device is
-    // locked, so must be disabled to prevent segfaults when accessing 
-    // bsg_runContext
-    if (!BSGDisableNSFileProtectionComplete(path)) {
-        close(fd);
-        return -1;
-    }
-    
     return fd;
 }
 
@@ -584,12 +587,24 @@ static void LoadLastRunContext(int fd) {
     }
 }
 
+/// The descriptor of the file currently mapped at `bsg_runContext`, or -1.
+///
+/// The file may have NSFileProtectionCompleteUnlessOpen, which only keeps it
+/// accessible while the device is locked as long as it is open, so this
+/// descriptor is never closed while the mapping is in use. The mapping is never
+/// unmapped, so in practice it stays open for the lifetime of the process.
+static int bsg_runContextFd = -1;
+
 /// Truncates or extends the file to the size of struct BSGRunContext,
 /// maps it into memory, and sets the `bsg_runContext` pointer.
+///
+/// Takes ownership of `fd`: it is either kept open alongside the mapping or
+/// closed if the file could not be mapped.
 static void ResizeAndMapFile(int fd) {
     // Note: ftruncate fills the file with zeros when extending.
     if (ftruncate(fd, SIZEOF_STRUCT) != 0) {
         bsg_log_warn(@"ftruncate failed: %d", errno);
+        close(fd);
         return;
     }
     
@@ -598,21 +613,34 @@ static void ResizeAndMapFile(int fd) {
     void *ptr = mmap(0, SIZEOF_STRUCT, prot, flags, fd, 0);
     if (ptr == MAP_FAILED) {
         bsg_log_warn(@"mmap failed: %d", errno);
+        close(fd);
         return;
     }
     
     memset(ptr, 0, SIZEOF_STRUCT);
     mlock(ptr, SIZEOF_STRUCT);
+
+    const int previousFd = bsg_runContextFd;
+    bsg_runContextFd = fd;
     bsg_runContext = ptr;
+
+    // Only reached if BSGRunContextInit() is called more than once (e.g. by
+    // unit tests.) The previous mapping is left in place, as before, because
+    // other threads may still hold its address, but nothing writes to it via
+    // bsg_runContext any more. When the same path is reinitialised, the file
+    // stays open through the new descriptor.
+    if (previousFd != -1) {
+        close(previousFd);
+    }
 }
 
 void BSGRunContextInit(NSString *_Nonnull path) {
     int fd = OpenFile(path);
-    LoadLastRunContext(fd);
-    ResizeAndMapFile(fd);
+    if (fd != -1) {
+        LoadLastRunContext(fd);
+        // Takes ownership of fd, which stays open while the file is mapped.
+        ResizeAndMapFile(fd);
+    }
     InitRunContext();
     AddObservers();
-    if (fd > 0) {
-        close(fd);
-    }
 }

@@ -206,6 +206,16 @@ static int BSGReopenWithoutCompleteProtection(NSString *path, int fd, int flags,
         // The first descriptor still refers to the file, whose protection class has been changed
         return fd;
     }
+    // A different file could have been put at the path between the two opens, in which case the reopened descriptor
+    // refers to a file whose protection class was never checked, so both descriptors must refer to the same file
+    struct stat first, second;
+    if (fstat(fd, &first) != 0 || fstat(reopened, &second) != 0 ||
+        first.st_dev != second.st_dev || first.st_ino != second.st_ino) {
+        close(fd);
+        close(reopened);
+        errno = EAGAIN;
+        return -1;
+    }
     close(fd);
     return reopened;
 }

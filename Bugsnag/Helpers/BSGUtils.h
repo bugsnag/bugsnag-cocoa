@@ -50,9 +50,10 @@ int BSGOpenFileWithoutFollowingLinks(NSString *path, int flags);
 /// Applies Bugsnag's backup policy to the file and changes NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen
 /// (see BSGDisableNSFileProtectionComplete). If the protection class was changed, the file is reopened, so that the
 /// descriptor returned is normally one opened after the change rather than under NSFileProtectionComplete. If the file
-/// is no longer at the path by then (it was removed or renamed away after the first open), the first descriptor is
-/// closed and -1 is returned with errno set to EAGAIN, so that the caller can try again rather than use a file that is
-/// no longer at the path. If it cannot be reopened for another reason (for example because the device locked between
+/// is no longer at the path by then (it was removed or renamed away after the first open), or a different file is at
+/// the path (the two descriptors are compared by device and inode number), the descriptors are closed and -1 is
+/// returned with errno set to EAGAIN, so that the caller can try again rather than use a file that is no longer at the
+/// path or whose protection class was not checked. If it cannot be reopened for another reason (for example because the device locked between
 /// the two opens), the first descriptor is returned instead: it was opened under NSFileProtectionComplete, so reads and
 /// writes through it can start failing once the device is locked, and callers must handle a later read or write
 /// failure. The file is opened as BSGOpenFileWithoutFollowingLinks opens it, so a symbolic link at the path is refused

@@ -598,6 +598,43 @@ static BOOL IsMarked(int fd) {
     }
 }
 
+- (void)testFileReplacedBeforeItIsReopenedCanBeOpenedAgain {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    NSString *other = [self.directory stringByAppendingPathComponent:@"other"];
+    XCTAssertTrue([[@"original" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    XCTAssertTrue([[@"replacement" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:other atomically:NO]);
+    struct stat original, replacement;
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &original), 0);
+    XCTAssertEqual(lstat(other.fileSystemRepresentation, &replacement), 0);
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    // A different file is renamed over the path between the two opens, so the reopened descriptor would refer to a
+    // file whose protection class was never checked
+    gWillSetProtection = ^(NSString *p) {
+        rename(other.fileSystemRepresentation, p.fileSystemRepresentation);
+    };
+
+    errno = 0;
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR), -1);
+    XCTAssertEqual(errno, EAGAIN, @"The caller can tell that the file at the path changed, and try again");
+    XCTAssertEqual(gSetProtectionCalls.count, 1);
+    XCTAssertEqualObjects(DescriptorsForFile(original.st_dev, original.st_ino), @[], @"The first descriptor should be closed");
+    XCTAssertEqualObjects(DescriptorsForFile(replacement.st_dev, replacement.st_ino), @[], @"The reopened descriptor should be closed");
+
+    // Opening it again (as the caller does) opens the file that is now at the path, and checks its class
+    gWillSetProtection = nil;
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+    const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+    XCTAssertNotEqual(fd, -1);
+    if (fd != -1) {
+        struct stat byDescriptor;
+        XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+        XCTAssertEqual(byDescriptor.st_ino, replacement.st_ino);
+        XCTAssertEqualObjects(gSimulatedProtection[path], NSURLFileProtectionCompleteUnlessOpen);
+        close(fd);
+    }
+}
+
 static int BSGLowestFreeDescriptor(void) {
     int fd = dup(STDIN_FILENO);
     if (fd != -1) {

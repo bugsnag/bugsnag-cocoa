@@ -40,7 +40,8 @@ that change with error 513 even while the screen is unlocked, so run them in an 
 unlocked, run them so that they fail instead of skipping:
 
     TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
-        -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGUtilsTests
+        -destination 'platform=iOS Simulator,name=iPhone 17' \
+        -only-testing:Bugsnag-iOSTests/BSGUtilsTests -only-testing:Bugsnag-iOSTests/BSGRunContextTests
 
 ## End-to-end tests
 

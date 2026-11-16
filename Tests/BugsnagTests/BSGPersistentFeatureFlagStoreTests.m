@@ -1046,8 +1046,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
                                                                                  atomicStore:atomicStore];
     [store synchronizeFlagsWithMemoryStore];
     XCTAssertEqualObjects(persistentStore.calls, (@[@[@"replaceAllFlags:", @[@"a", @"b"]]]));
-    // The crash-time store is brought into line by clearing it and adding the flags
-    XCTAssertEqualObjects(atomicStore.calls, (@[@"clear", @"addFeatureFlags:"]));
+    // The crash-time store's flags are replaced in one update too
+    XCTAssertEqualObjects(atomicStore.calls, (@[@[@"replaceAllFlags:", @[@"a", @"b"]]]));
     XCTAssertEqualObjects(FlagsToArray(memoryStore.allFlags), (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
 }
 

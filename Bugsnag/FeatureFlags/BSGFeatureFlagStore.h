@@ -11,10 +11,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// BSGMemoryFeatureFlagStore and BSGPersistentFeatureFlagStore treat duplicate names the same way: adding a flag
-/// whose name is already present replaces its variant and keeps the flag in the position where that name was first
-/// added. For example, adding A:1, B, A:2 gives A:2, B. Clearing a name and adding it again puts it at the end.
-/// (BSGAtomicFeatureFlagStore, used for crash reports, does not follow this rule yet.)
+/// BSGMemoryFeatureFlagStore, BSGAtomicFeatureFlagStore and BSGPersistentFeatureFlagStore treat duplicate names the same
+/// way: adding a flag whose name is already present replaces its variant and keeps the flag in the position where that
+/// name was first added. For example, adding A:1, B, A:2 gives A:2, B. Clearing a name and adding it again puts it at
+/// the end.
 @protocol BSGFeatureFlagStore
 
 @property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *allFlags;
@@ -28,12 +28,13 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /// A store whose flags can all be replaced at once. BSGCompositeFeatureFlagStore uses this to copy the
-/// memory store's flags to the persistent store when Bugsnag starts (see -synchronizeFlagsWithMemoryStore).
+/// memory store's flags to the crash-time and persistent stores when Bugsnag starts (see -synchronizeFlagsWithMemoryStore).
 @protocol BSGReplaceableFeatureFlagStore <BSGFeatureFlagStore>
 
 /// Replaces all of the flags, applying the duplicate-name rule above to featureFlags.
-/// BSGPersistentFeatureFlagStore saves the new set in a single update, so that a process killed part
-/// way through never leaves an empty or partial set persisted.
+/// BSGAtomicFeatureFlagStore publishes the new list with a single pointer swap, so that a crash report written part
+/// way through never sees an empty or partial set. BSGPersistentFeatureFlagStore saves the new set in a single update,
+/// so that a process killed part way through never leaves an empty or partial set persisted.
 - (void)replaceAllFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags;
 
 @end
