@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Out Of Memory and thermal kill events could stop being detected after the device was locked, because the descriptor of the
+  memory-mapped run context file was closed as soon as the file was mapped, which `NSFileProtectionCompleteUnlessOpen` does not
+  allow for. The descriptor is now kept open while the file is mapped, and a warning is logged if the file cannot be opened.
+  [#XXXX](https://github.com/bugsnag/bugsnag-cocoa/pull/XXXX)
+
 ## 6.39.0 (2026-11-05)
 
 ### Bug Fixes

@@ -15,6 +15,17 @@ Or to test on tvOS:
 
     make PLATFORM=tvOS test
 
+### Tests that need an unlocked screen
+
+The tests that set `NSFileProtectionComplete` on real files skip when the host cannot set it, for example
+while the screen is locked, or cannot change it to `NSFileProtectionCompleteUnlessOpen` (some macOS versions refuse
+that change with error 513 even while the screen is unlocked, so run them in an iOS simulator). With the screen
+unlocked, run them so that they fail instead of skipping:
+
+    TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
+        -destination 'platform=iOS Simulator,name=iPhone 17' \
+        -only-testing:Bugsnag-iOSTests/BSGUtilsTests -only-testing:Bugsnag-iOSTests/BSGRunContextTests
+
 ## End-to-end tests
 
 These tests are implemented with our notifier testing tool [Maze runner](https://github.com/bugsnag/maze-runner).
