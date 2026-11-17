@@ -47,12 +47,14 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
 @implementation BSGAtomicFeatureFlagStoreTests
 
 - (void)setUp {
+    [super setUp];
     BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
     [store clear];
 }
 
 - (void)tearDown {
     [[BSGAtomicFeatureFlagStore store] clear];
+    [super tearDown];
 }
 
 - (void)testStoreIsInitiallyEmpty {
@@ -541,8 +543,10 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
 
 #pragma mark - Several crash-time readers at once
 
-// The original addJSONElement of the writer used by the readers in the test below
-static void (*g_originalAddJSONElement)(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement);
+typedef void (*BSGAddJSONElementFunction)(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement);
+// The original addJSONElement of the writer used by the readers in the test below. Atomic, because every reader thread
+// stores it and every reader thread loads it.
+static _Atomic(BSGAddJSONElementFunction) g_originalAddJSONElement;
 // Set to let paused readers write their remaining elements without stopping
 static atomic_bool g_pausingDisabled;
 // The "proceed" semaphores of the readers started by the running test, so that tearDown can release a reader that a
@@ -561,7 +565,7 @@ static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, cons
         dispatch_semaphore_signal(entered);
         dispatch_semaphore_wait(proceed, dispatch_time(DISPATCH_TIME_NOW, BSGPausedReaderTimeout));
     }
-    g_originalAddJSONElement(writer, name, jsonElement);
+    atomic_load(&g_originalAddJSONElement)(writer, name, jsonElement);
 }
 
 @interface BSGAtomicFeatureFlagStoreConcurrentReaderTests : BSGTestCase
@@ -600,7 +604,7 @@ static void BSGStartPausedReader(dispatch_group_t group, dispatch_semaphore_t en
         threadDictionary[@"BSGReaderEntered"] = entered;
         threadDictionary[@"BSGReaderProceed"] = proceed;
         NSDictionary *object = bsg_JSONObject(^(BSG_KSCrashReportWriter *writer) {
-            g_originalAddJSONElement = writer->addJSONElement;
+            atomic_store(&g_originalAddJSONElement, writer->addJSONElement);
             BSG_KSCrashReportWriter pausingWriter = *writer;
             pausingWriter.addJSONElement = BSGPausingAddJSONElement;
             pausingWriter.beginObject(&pausingWriter, "");

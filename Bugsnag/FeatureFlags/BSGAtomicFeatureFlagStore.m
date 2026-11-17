@@ -54,37 +54,19 @@ static size_t g_retiredCount;
 /**
  * Writers keep one rule: every pointer they publish (the head or an item's next) points at a fully
  * built item, and an item is only freed once no crash-time reader can reach it. The crash-time
- * reader, which takes no locks and allocates nothing, therefore always walks a complete list:
- * either the one from before an update or the one from after it.
+ * reader, which takes no locks and allocates nothing, therefore never reads a partly built or freed
+ * item. It does not always see one consistent list, though: a reader on an item that is being
+ * unlinked keeps following that item's next pointer, which is never changed once it has been
+ * unlinked, so if a flag is cleared and added again while a report is being read, that report can
+ * show the flag twice (the old item and the new one at the tail). The crash handler stops the other
+ * threads while it writes a report, so this can only happen when two crashes happen at once.
  *
- * Publishing needs no wait. An item is fully built (including its next pointer) before the single
- * atomic store that makes it reachable, so a reader that loads the pointer before that store sees the
- * old list and one that loads it afterwards sees the new item; both are complete lists. A reader on an
- * item that is being unlinked keeps following that item's next pointer, which is never changed once the
- * item has been unlinked, so it also stays on a complete list, made of items that are either still
- * published or retired (and so not freed).
- *
- * Freeing is deferred rather than waited for. An unlinked item is not freed straight away: it is put on
- * the retired list (BSGRetireItem), and the whole retired list is freed by a write that finds no
- * crash-time reader (BSGFreeRetiredItemsIfNoReaders), at the end of every write. Writers never wait, and
- * a reader that never finishes (e.g. a crash part way through writing a report) only means that retired
- * items are never freed.
- *
- * Why freeing is safe. All the operations on g_crash_report_readers and on the list pointers are
- * sequentially consistent, so they have a single total order. A reader increments the count before it
- * loads the head and decrements it once it has finished with the list. A writer unlinks an item (a store
- * that makes it unreachable from every published pointer), then retires it, and only later loads the
- * count. Take any retired item X, unlinked by the store U, and a write that loads the count (L) and frees
- * X because it reads 0; U comes before L in the total order. For any reader:
- *  - if its increment comes after L, every load it makes comes after U, so it starts from a list that no
- *    longer reaches X, and it can never reach X (no published pointer, nor the next pointer of any item
- *    still reachable, points at it);
- *  - otherwise its increment comes before L, and L reading 0 means that its decrement also comes before
- *    L, so it has finished with the list before X is freed.
- * So no reader can be on X, or reach it, once it is freed. Because readers are counted, one reader
- * finishing does not let a writer free an item that another reader is still walking: the count is only
- * 0 when every reader has finished. A retired item's next pointer can point at another retired item;
- * both stay allocated until the retired list is freed as a whole.
+ * Unlinked items are not freed straight away but retired (BSGRetireItem), and each write ends by
+ * freeing the retired items if no crash-time reader is counted (BSGFreeRetiredItemsIfNoReaders), so
+ * writers never wait. This is safe because all the operations on g_crash_report_readers and the list
+ * pointers are sequentially consistent: a reader that increments the count after a writer reads 0
+ * starts from a list that no longer reaches the retired items, and any other reader has already
+ * decremented it. The full argument is in the description of PR #1983.
  *
  * Duplicate names follow BSGMemoryFeatureFlagStore: adding a name that is already present replaces
  * its variant and keeps the flag in the position where the name was first added. That rule is applied in
