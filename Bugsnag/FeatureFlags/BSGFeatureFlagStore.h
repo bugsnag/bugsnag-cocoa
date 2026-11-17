@@ -39,4 +39,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+/// A persistent store that keeps a copy of the flags it read when it was created, i.e. the flags of the previous
+/// launch, so that an OOM or thermal kill event for that launch is not given flags that the app added (or cleared)
+/// after creating the client but before calling start.
+@protocol BSGPreviousLaunchFeatureFlagStore <NSObject>
+
+/// The flags read when the store was created (empty if there were none, or the store did not hold the lock). An
+/// immutable copy: later changes to the store do not affect it. Released (empty) after replaceAllFlags:, which
+/// BSGCompositeFeatureFlagStore calls when Bugsnag starts, after the event for the previous launch has been built.
+@property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *previousLaunchFlags;
+
+@end
+
 NS_ASSUME_NONNULL_END

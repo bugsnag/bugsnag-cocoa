@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Durability: by design the file is not synchronised to disk (no fsync), so a power loss can lose recent
 /// changes or leave the header ahead of the records it refers to. A reboot stops an OOM or thermal kill
 /// being reported for the launch before it, so such a file is not used for a report.
-@interface BSGPersistentFeatureFlagStore ()
+@interface BSGPersistentFeatureFlagStore () <BSGPreviousLaunchFeatureFlagStore>
 
 - (instancetype)initWithStorageDirectory:(NSString *)directory;
 

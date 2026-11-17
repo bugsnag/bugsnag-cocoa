@@ -1014,6 +1014,62 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [[BSGAtomicFeatureFlagStore store] clear];
 }
 
+#pragma mark Previous launch's flags
+
+- (void)testPreviousLaunchFlagsAreTheFlagsReadAtLaunch {
+    @autoreleasepool {
+        [[self newStore] addFeatureFlag:@"A" withVariant:@"1"];
+    }
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    // As when the app adds a flag after creating the client but before starting it
+    [store addFeatureFlag:@"B" withVariant:@"2"];
+    [store clear:@"A"];
+    XCTAssertEqualObjects(FlagsToArray(store.previousLaunchFlags), (@[@[@"A", @"1"]]));
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"B", @"2"]]));
+
+    // Released once Bugsnag has started
+    [store replaceAllFlags:store.allFlags];
+    XCTAssertEqualObjects(store.previousLaunchFlags, @[]);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"B", @"2"]]));
+}
+
+- (void)testStoreWithoutTheLockHasNoPreviousLaunchFlags {
+    BSGPersistentFeatureFlagStore *first = [self newStore];
+    [first addFeatureFlag:@"A" withVariant:@"1"];
+    BSGPersistentFeatureFlagStore *second = [self newStore];
+    [second addFeatureFlag:@"B" withVariant:@"2"];
+    XCTAssertEqualObjects(second.previousLaunchFlags, @[]);
+    XCTAssertEqualObjects(FlagsToArray(first.previousLaunchFlags), @[], @"The first store found no file");
+}
+
+- (void)testCompositeStorePreviousLaunchFlagsExcludeFlagsAddedBeforeStart {
+    @autoreleasepool {
+        [[self newStore] addFeatureFlag:@"A" withVariant:@"1"];
+    }
+    BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
+    BSGCompositeFeatureFlagStore *store = [BSGCompositeFeatureFlagStore storeWithMemoryStore:memoryStore
+                                                                             persistentStore:[self newStore]
+                                                                                 atomicStore:[BSGAtomicFeatureFlagStore store]];
+    // Bugsnag.addFeatureFlag before -[BugsnagClient start]
+    [store addFeatureFlag:@"B" withVariant:@"2"];
+    XCTAssertEqualObjects(FlagsToArray(store.previousLaunchFlags), (@[@[@"A", @"1"]]),
+                          @"The OOM or thermal kill event for the previous launch only has that launch's flags");
+    XCTAssertEqualObjects(FlagsToArray(store.persistedFlags), (@[@[@"A", @"1"], @[@"B", @"2"]]));
+
+    [store synchronizeFlagsWithMemoryStore];
+    XCTAssertEqualObjects(store.previousLaunchFlags, @[]);
+    [[BSGAtomicFeatureFlagStore store] clear];
+}
+
+- (void)testCompositeStoreWithAnotherPersistentStoreGivesItsCurrentFlags {
+    BSGReplaceableMemoryFeatureFlagStore *persistentStore = [BSGReplaceableMemoryFeatureFlagStore new];
+    [persistentStore addFeatureFlag:@"previous" withVariant:nil];
+    BSGCompositeFeatureFlagStore *store = [BSGCompositeFeatureFlagStore storeWithMemoryStore:[BSGMemoryFeatureFlagStore new]
+                                                                             persistentStore:persistentStore
+                                                                                 atomicStore:[BSGAtomicFeatureFlagStore store]];
+    XCTAssertEqualObjects(FlagsToArray(store.previousLaunchFlags), (@[@[@"previous", NSNull.null]]));
+}
+
 - (void)testCompositeStoreSynchronizesOtherPersistentStores {
     BSGReplaceableMemoryFeatureFlagStore *persistentStore = [BSGReplaceableMemoryFeatureFlagStore new];
     [persistentStore addFeatureFlag:@"previous" withVariant:nil];

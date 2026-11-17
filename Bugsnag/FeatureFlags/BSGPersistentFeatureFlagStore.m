@@ -262,6 +262,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 @property (nonatomic) BOOL staleFileMayExist;
 @property (nonatomic) BOOL directoryAtFilePath;
 @property (nonatomic, strong) NSArray<NSString *> *pendingLegacyPaths;
+// See BSGPreviousLaunchFeatureFlagStore
+@property (nonatomic, copy) NSArray<BugsnagFeatureFlag *> *loadedFlags;
 // Observes UIApplicationProtectedDataDidBecomeAvailable
 @property (nonatomic, strong, nullable) id protectedDataObserver;
 
@@ -283,6 +285,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         _fd = -1;
         _lockFd = -1;
         [self loadFlags];
+        // The previous launch's flags, before the app can change the flags in memory (empty without the lock)
+        _loadedFlags = [[self allFlags] copy];
         [self observeProtectedData];
     }
     return self;
@@ -299,6 +303,14 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     if (_lockFd != -1) {
         // Closing the descriptor releases the lock
         close(_lockFd);
+    }
+}
+
+#pragma mark - BSGPreviousLaunchFeatureFlagStore
+
+- (nonnull NSArray<BugsnagFeatureFlag *> *)previousLaunchFlags {
+    @synchronized (self) {
+        return self.loadedFlags;
     }
 }
 
@@ -342,6 +354,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 
 - (void)replaceAllFlags:(NSArray<BugsnagFeatureFlag *> *)featureFlags {
     @synchronized (self) {
+        // Called when Bugsnag starts, after the event for the previous launch was built, so its flags are not needed
+        self.loadedFlags = @[];
         // The records whose log the file holds, if it is current
         NSArray<NSData *> *savedRecords = self.fd != -1 && self.fileIsCurrent ? [self orderedRecords] : nil;
         [self removeAllFlagsFromMemory];

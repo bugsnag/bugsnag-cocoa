@@ -1472,7 +1472,8 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     event.context = stateDict[BSGKeyClient][BSGKeyContext];
     event.groupingDiscriminator = stateDict[BSGKeyClient][BSGKeyGroupingDiscriminator];
-    event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore persistedFlags]);
+    // The flags read at launch: flags the app added before calling start belong to this launch, not the previous one
+    event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore previousLaunchFlags]);
 
     return event;
 }

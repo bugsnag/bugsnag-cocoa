@@ -33,6 +33,14 @@
     return [self.persistentStore allFlags];
 }
 
+- (nonnull NSArray<BugsnagFeatureFlag *> *)previousLaunchFlags {
+    id persistentStore = self.persistentStore;
+    if ([persistentStore conformsToProtocol:@protocol(BSGPreviousLaunchFeatureFlagStore)]) {
+        return [(id<BSGPreviousLaunchFeatureFlagStore>)persistentStore previousLaunchFlags];
+    }
+    return [self.persistentStore allFlags];
+}
+
 - (id<BSGFeatureFlagStore>)copyMemoryStore {
     return [self.memoryStore copyWithZone:nil];
 }
