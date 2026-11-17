@@ -70,20 +70,35 @@
 @property(readwrite, strong) NSString *mockRepresentedURLString;
 @property(readwrite, strong) BSGMockScene *mockScene;
 @property(readwrite, strong) BSGMockViewController *mockViewController;
+- (void)removeMocks;
 @end
 
+// The mock scene and view controller only implement what BSGNotificationBreadcrumbs reads. The window can outlive the
+// test that created it, and UIKit or AppKit can then ask it for its scene or view controller (for example
+// -[BSGMockScene traitCollection] while a later test runs the run loop), so tearDown removes them again and the window
+// then answers like a real one.
 @implementation BSGMockWindow
 - (NSString *)description {return self.mockDescription;}
 #if TARGET_OS_OSX
-- (NSViewController *)contentViewController {return (NSViewController *)self.mockViewController;}
+- (NSViewController *)contentViewController {
+    return self.mockViewController ? (NSViewController *)self.mockViewController : [super contentViewController];
+}
 - (NSString *)title {return self.mockTitle;}
 - (NSURL *)representedURL {return [NSURL URLWithString:self.mockRepresentedURLString];}
 #else
 #if !TARGET_OS_TV && (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
-- (UIScene *)windowScene  {return (UIScene *)self.mockScene;}
+- (UIWindowScene *)windowScene {
+    return self.mockScene ? (UIWindowScene *)self.mockScene : [super windowScene];
+}
 #endif
-- (UIViewController *)rootViewController {return (UIViewController *)self.mockViewController;}
+- (UIViewController *)rootViewController {
+    return self.mockViewController ? (UIViewController *)self.mockViewController : [super rootViewController];
+}
 #endif
+- (void)removeMocks {
+    self.mockScene = nil;
+    self.mockViewController = nil;
+}
 @end
 
 #endif
@@ -124,6 +139,16 @@
     self.notificationObject = nil;
     self.notificationUserInfo = nil;
     [self.notificationBreadcrumbs start];
+}
+
+- (void)tearDown {
+#if BSG_HAVE_WINDOW
+    if ([self.notificationObject isKindOfClass:[BSGMockWindow class]]) {
+        [(BSGMockWindow *)self.notificationObject removeMocks];
+    }
+#endif
+    self.notificationObject = nil;
+    [super tearDown];
 }
 
 - (BugsnagBreadcrumb *)breadcrumbForNotificationWithName:(NSString *)name {
