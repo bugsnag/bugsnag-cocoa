@@ -636,6 +636,8 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     }
 }
 
+// These tests use BSGAtomicFeatureFlagStoreRetiredItemCount, which exists only in debug builds.
+#if defined(DEBUG) && DEBUG
 - (void)testTwoConcurrentReadersKeepTheirItemsAndWritersDoNotWait {
     BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
     [store addFeatureFlag:@"first" withVariant:@"1"];
@@ -750,4 +752,5 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     XCTAssertEqualObjects(results, (@[@[@{@"featureFlag": @"D"}]]));
 }
 
+#endif
 @end
