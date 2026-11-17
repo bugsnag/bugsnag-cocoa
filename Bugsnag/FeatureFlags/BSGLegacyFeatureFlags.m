@@ -14,6 +14,7 @@
 #import "BSGUtils.h"
 #import "BugsnagLogger.h"
 
+#import <errno.h>
 #import <fcntl.h>
 #import <sys/stat.h>
 #import <unistd.h>
@@ -92,11 +93,26 @@ NSArray<BugsnagFeatureFlag *> * BSGLegacyFeatureFlags(NSArray<NSString *> *paths
 NSArray<NSString *> * BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths) {
     NSMutableArray<NSString *> *remaining = [NSMutableArray array];
     for (NSString *path in paths) {
-        NSError *error = nil;
-        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error] &&
-            !([error.domain isEqualToString:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
-            bsg_log_err(@"Unable to delete a feature flag file: %@", error);
-            [remaining addObject:path];
+        const char *fileSystemPath = path.fileSystemRepresentation;
+        struct stat st;
+        if (lstat(fileSystemPath, &st) != 0) {
+            const int error = errno;
+            if (error != ENOENT) {
+                bsg_log_err(@"Unable to delete feature flag file %@: %d", path.lastPathComponent, error);
+                [remaining addObject:path];
+            }
+            continue;
+        }
+        if (!S_ISREG(st.st_mode)) {
+            // Not a file that the SDK wrote (e.g. a directory whose name ends in ".json"), so it is not deleted
+            continue;
+        }
+        if (unlink(fileSystemPath) != 0) {
+            const int error = errno;
+            if (error != ENOENT) {
+                bsg_log_err(@"Unable to delete feature flag file %@: %d", path.lastPathComponent, error);
+                [remaining addObject:path];
+            }
         }
     }
     return remaining;

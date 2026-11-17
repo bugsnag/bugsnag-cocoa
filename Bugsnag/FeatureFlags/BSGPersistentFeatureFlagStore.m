@@ -75,8 +75,10 @@
 // reads the previous launch's flags nor takes the lock, and the file is kept (see "Files that cannot be opened" below).
 // Symbolic links at the paths are never followed.
 //
-// Files that cannot be opened. Only a file whose header was read and is invalid is ever deleted (something other than a
-// regular file at the path is replaced when the flags are next saved). A file that cannot be opened (EMFILE, ENFILE, EINTR, EAGAIN, or EACCES or EPERM while protected data is unavailable) may hold good flags, so
+// Files that cannot be opened. Only a file whose header was read and is invalid is ever deleted. Something else at the
+// path is replaced when the flags are next saved, except a directory: rename() cannot replace one, so an empty directory
+// is removed first (rmdir(), never its contents), and while one that is not empty is there no flags are saved for the
+// rest of the launch (logged once, not retried; see removeDirectoryAtFilePath). A file that cannot be opened (EMFILE, ENFILE, EINTR, EAGAIN, or EACCES or EPERM while protected data is unavailable) may hold good flags, so
 // it is kept, and a retry is scheduled to open it again. Its flags are not available for an OOM or thermal kill report
 // of the previous launch. If this launch has flags to save, a new file is renamed over it as usual; if it has none, it
 // is emptied in place once it can be opened. If that never happens during this launch, the next launch can read the
@@ -107,12 +109,17 @@
 //   fileIsCurrent      Replaying the file's log gives exactly the encodable flags, so records can be appended. Set by a
 //                      successful write of a whole log, or when a valid file is read; cleared by any failure, by flags
 //                      that are over the size limit, and when another store's file is taken over.
+//   directoryAtFilePath  A directory that is not empty is at featureflag.bin's path, so no file can be created there.
+//                      Set by removeDirectoryAtFilePath and never cleared: nothing is retried. Logged once, when it is
+//                      set.
 //   staleFileMayExist  A file that this store does not have open may be at the path and hold flags that are not
 //                      current (e.g. the previous launch's, left unread by a store without the lock, or a file that
 //                      could not be opened). Cleared once it has been opened, replaced or removed.
 //   pendingLegacyPaths JSON files whose flags were imported, discarded, or (by a store without the lock) not read, but
 //                      which have not been deleted yet. They are deleted by the first write that holds the lock, which
-//                      is normally when Bugsnag starts, so that featureflag.bin and JSON files are not both kept.
+//                      is normally when Bugsnag starts, so that featureflag.bin and JSON files are not both kept. Those
+//                      that could not be deleted then are tried again by every later write (a log or an appended
+//                      record) and by a scheduled retry.
 //   tooLargeToPersist  The flags were last over BSGFeatureFlagMaxPersistedLength (so that is only logged once).
 //   retryTime,         After a failure, the uptime before which the file is not replaced, the lock not tried and a
 //   retryDelay,        file that could not be opened not opened again; the delay used (doubling up to the maximum);
@@ -130,7 +137,7 @@ static const uint64_t BSGFeatureFlagMinimumCompactionSize = 4096;
 static const uint64_t BSGFeatureFlagMinimumShrinkableCapacity = 256 * 1024;
 // How long to wait before trying to write the file (or take the lock) again after it could not be done.
 // The delay doubles after each consecutive failure, up to the maximum, so that a failure that never
-// clears (e.g. a directory at the file's path, or a read-only volume) is not repeated every minute.
+// clears (e.g. a read-only volume) is not repeated every minute.
 static const NSTimeInterval BSGFeatureFlagRetryInterval = 60;
 static const NSTimeInterval BSGFeatureFlagMaximumRetryInterval = 60 * 60;
 
@@ -257,6 +264,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 @property (nonatomic) NSUInteger retryGeneration;
 @property (nonatomic) BOOL waitingForProtectedData;
 @property (nonatomic) BOOL staleFileMayExist;
+@property (nonatomic) BOOL directoryAtFilePath;
 @property (nonatomic, strong) NSArray<NSString *> *pendingLegacyPaths;
 // Observes UIApplicationProtectedDataDidBecomeAvailable
 @property (nonatomic, strong, nullable) id protectedDataObserver;
@@ -531,7 +539,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// the store was created, and to retry a file that could not be opened earlier.
 ///
 /// A file whose header is invalid holds no flags that can be read, and is removed. Something other than a regular
-/// file holds no flags either; it is left alone, and replaced when the flags are next saved. A file that cannot be
+/// file holds no flags either; it is left alone, and replaced when the flags are next saved (a directory only if it is
+/// empty; see removeDirectoryAtFilePath). A file that cannot be
 /// opened (e.g. while protected data is unavailable) may hold good flags, so it is kept (see "Files that cannot be
 /// opened" at the top of this file).
 - (void)openExistingFile {
@@ -592,7 +601,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// fixed when a file is created (see BSGFeatureFlagFileFormat.h), and a file is kept and written in place for many
 /// launches, so a marker would still be set when a later downgrade and upgrade leaves newer JSON files next to it,
 /// which would then be ignored in favour of stale flags. Modification times are not reliable either, because the
-/// clock can change. Deleting the files is therefore tried again whenever a log is written, which makes the case
+/// clock can change. Deleting the files is therefore tried again by every write that holds the lock (a whole log or
+/// an appended record) and by a scheduled retry (they count as pending work, see hasPendingWork), which makes the case
 /// very unlikely.
 - (void)removePendingLegacyFiles {
     if (self.pendingLegacyPaths.count && self.canWrite) {
@@ -628,14 +638,22 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     }
 }
 
-/// Whether the file does not hold the current flags and a write could change that: there are flags to save (within
-/// the size limit), a file this store has open whose log is not current, a file that may hold stale flags, or JSON
-/// files to delete. False once the lock has been given up, because this store can then never write.
+/// Whether there are JSON files to delete, or the file does not hold the current flags and a write could change that:
+/// there are flags to save (within the size limit), a file this store has open whose log is not current, or a file
+/// that may hold stale flags. JSON files that could not be deleted count even while the file is current. False once
+/// the lock has been given up, because this store can then never write, and (apart from JSON files) while a directory
+/// that is not empty is at the file's path, because no file can be saved there.
 - (BOOL)hasPendingWork {
-    if (self.lockGivenUp || self.fileIsCurrent) {
+    if (self.lockGivenUp) {
         return NO;
     }
-    if (self.staleFileMayExist || self.pendingLegacyPaths.count) {
+    if (self.pendingLegacyPaths.count) {
+        return YES;
+    }
+    if (self.fileIsCurrent || self.directoryAtFilePath) {
+        return NO;
+    }
+    if (self.staleFileMayExist) {
         return YES;
     }
     if (self.liveLength > BSGFeatureFlagMaxPersistedLength) {
@@ -941,6 +959,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         // Rewriting the log only after it has doubled keeps the cost of each change constant on average
         return [self writeSnapshot];
     }
+    // JSON files that could not be deleted by an earlier write are tried again (writeSnapshot does this too)
+    [self removePendingLegacyFiles];
     return YES;
 }
 
@@ -1039,17 +1059,24 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     // The largest slot holds twice the most flags that are persisted (see BSGFeatureFlagFileFormat.h), so once a
     // file has the largest slots, a log of flags at the limit can still double before it is rewritten.
     const BOOL tooSmall = !hasFile || ((uint64_t)snapshot.length * 2 > capacity && capacity < BSGFeatureFlagMaxSlotCapacity);
-    // Failures to replace the file are file system errors (e.g. no space, or something other than a
-    // file at the path) that are unlikely to resolve themselves immediately, so the file is not
-    // replaced again until the retry interval has passed.
-    if ((tooSmall || [self fileShouldShrink]) && canRetryNow) {
+    // Failures to replace the file are file system errors (e.g. no space) that are unlikely to resolve
+    // themselves immediately, so the file is not replaced again until the retry interval has passed (a
+    // directory that is not empty at the path is never retried; see removeDirectoryAtFilePath).
+    // At most one retry is scheduled per attempt, so that a failure to replace the file followed by a failure to
+    // write it in place does not double the delay twice.
+    BOOL retryScheduled = NO;
+    if ((tooSmall || [self fileShouldShrink]) && canRetryNow && !self.directoryAtFilePath) {
         if ([self replaceFileWithSnapshot:snapshot]) {
             self.fileIsCurrent = YES;
             self.staleFileMayExist = NO;
             [self resetRetry];
             return YES;
         }
-        [self retryLater];
+        if (!self.directoryAtFilePath) {
+            // (A directory that is not empty at the path is not retried)
+            [self retryLater];
+            retryScheduled = YES;
+        }
     }
     if (!fits) {
         // The flags remain in memory, and are saved by a later change or by the scheduled retry
@@ -1061,7 +1088,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     if ((snapshot.length &&
          !BSGFeatureFlagFileWrite(self.fd, snapshot.bytes, snapshot.length, BSGFeatureFlagSlotOffset(self.slotCapacity, slot))) ||
         ![self writeActiveLength:snapshot.length slot:slot]) {
-        [self handleWriteFailure];
+        [self handleWriteFailureSchedulingRetry:!retryScheduled];
         return NO;
     }
     self.fileIsCurrent = YES;
@@ -1085,6 +1112,12 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// that the file does not hold flags that have since changed, the file is closed, and it is replaced
 /// once the retry interval has passed.
 - (void)handleWriteFailure {
+    [self handleWriteFailureSchedulingRetry:YES];
+}
+
+/// As handleWriteFailure, but a retry is only scheduled if `scheduleRetry` is YES; it is NO when this attempt has
+/// already scheduled one (after failing to replace the file), so that the delay is not doubled twice.
+- (void)handleWriteFailureSchedulingRetry:(BOOL)scheduleRetry {
     const int error = errno;
     bsg_log_err(@"Unable to save feature flags: %d", error);
     [self recordFailure:error];
@@ -1094,7 +1127,9 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         self.fd = -1;
     }
     self.fileIsCurrent = NO;
-    [self retryLater];
+    if (scheduleRetry) {
+        [self retryLater];
+    }
 }
 
 /// Records the error of a failure, so that UIApplicationProtectedDataDidBecomeAvailable tries again if it was one
@@ -1190,6 +1225,38 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     }
 }
 
+/// rename() cannot replace a directory with a file, so a directory at featureflag.bin's path is removed before the file
+/// is replaced, but only if it is empty: rmdir() is used, and nothing inside a directory is ever removed. An empty
+/// directory holds no flags, so nothing is lost. A directory that is not empty was not made by the SDK, and while it is
+/// there no file can be saved at the path: that is logged once and not retried for the rest of this launch
+/// (directoryAtFilePath). Any other failure to remove it is an ordinary failure, retried later. Returns whether the
+/// file can be replaced (nothing, or no directory, is at the path).
+- (BOOL)removeDirectoryAtFilePath {
+    const char *path = self.filePath.fileSystemRepresentation;
+    struct stat st;
+    if (lstat(path, &st) != 0 || !S_ISDIR(st.st_mode)) {
+        return YES;
+    }
+    if (rmdir(path) == 0) {
+        bsg_log_info(@"Removed an empty directory at %@ so that feature flags can be saved", self.filePath.lastPathComponent);
+        return YES;
+    }
+    const int error = errno;
+    if (error == ENOENT) {
+        return YES;
+    }
+    if (error == ENOTEMPTY || error == EEXIST) {
+        bsg_log_err(@"Feature flags cannot be saved because %@ is a directory that is not empty",
+                    self.filePath.lastPathComponent);
+        self.directoryAtFilePath = YES;
+        return NO;
+    }
+    bsg_log_warn(@"Could not remove the empty directory at %@ (%d); saving feature flags will be tried again later",
+                 self.filePath.lastPathComponent, error);
+    [self recordFailure:error];
+    return NO;
+}
+
 /// Writes a new file with room for the log to grow and atomically replaces the current one. A file is
 /// shrunk to no less than a quarter of its size at a time, so that flags being cleared and then added
 /// again do not repeatedly replace it.
@@ -1214,6 +1281,10 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         .slotCapacity = (uint32_t)slotCapacity,
         .active = BSGFeatureFlagFileActiveValue(snapshot.length, 0),
     };
+
+    if (![self removeDirectoryAtFilePath]) {
+        return NO;
+    }
 
     NSString *tempPath = [self newTemporaryFilePath];
     // Created without NSFileProtectionComplete, so that the descriptor kept open stays usable while the device is

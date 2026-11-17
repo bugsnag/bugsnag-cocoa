@@ -632,6 +632,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     }
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)testTwoConcurrentReadersKeepTheirItemsAndWritersDoNotWait {
     BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
     [store addFeatureFlag:@"first" withVariant:@"1"];
@@ -745,5 +746,6 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"D", @"variant": @"999"}, @{@"featureFlag": @"E"}]));
     XCTAssertEqualObjects(results, (@[@[@{@"featureFlag": @"D"}]]));
 }
+#endif
 
 @end

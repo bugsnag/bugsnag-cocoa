@@ -47,7 +47,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// launch's flags are not saved, and a larger file that is needed cannot be created and is retried with the usual
 /// delay. The directory is not recreated then: that would need a check before every write, and when Bugsnag's whole
 /// directory is removed, the run context file goes with it, so no OOM or thermal kill is reported for this launch
-/// anyway.
+/// anyway. Removing the directory also removes featureflag.lock while this store holds the lock on it: another store
+/// (in this process or another) that then creates the directory again creates a new featureflag.lock, which it can
+/// lock, so two stores could each believe that they are the only writer and both write featureflag.bin in that
+/// directory. This is not guarded against, for the same reasons.
 ///
 /// Only EWOULDBLOCK from flock() means that another store holds the lock. On a file system that does not support
 /// flock() (ENOTSUP or EOPNOTSUPP, e.g. an NFS volume without a lock daemon) the store logs that once and proceeds

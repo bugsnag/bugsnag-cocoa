@@ -258,12 +258,16 @@ static NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *contents) 
 
 #pragma mark - Reopening files whose protection class is changed
 
+// BSGSetFileProtectionFunctions only exists in debug builds, so the tests that simulate protection classes (and the
+// tests that replace the functions in other ways) do too.
+
 /// These tests stand in for the file system's protection classes (see BSGSetFileProtectionFunctions), so that the
 /// handling of NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator.
 @interface BSGOpenFileWithoutCompleteProtectionTests : BSGTestCase
 @property (nonatomic) NSString *directory;
 @end
 
+#if defined(DEBUG) && DEBUG
 // The simulated protection class of each path; a path that is not present has none
 static NSMutableDictionary<NSString *, NSString *> *gSimulatedProtection;
 // The paths and classes passed to SimulatedSetProtection
@@ -311,6 +315,7 @@ static BOOL SimulatedSetProtection(NSString *path, NSString *protection, NSError
     gSimulatedProtection[path] = protection;
     return YES;
 }
+#endif
 
 /// The descriptors in this process that refer to the file with this device and inode.
 static NSArray<NSNumber *> * DescriptorsForFile(dev_t dev, ino_t ino) {
@@ -361,11 +366,14 @@ static BOOL IsMarked(int fd) {
 }
 
 - (void)tearDown {
+#if defined(DEBUG) && DEBUG
     [self stopSimulatingProtection];
+#endif
     [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
     [super tearDown];
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)simulateProtection {
     gSimulatedDirectory = self.directory;
     gSimulatedProtection = [NSMutableDictionary dictionary];
@@ -392,9 +400,11 @@ static BOOL IsMarked(int fd) {
     gWillGetProtection = nil;
     gWillSetProtection = nil;
 }
+#endif
 
 #pragma mark Simulated protection classes
 
+#if defined(DEBUG) && DEBUG
 - (void)testOnlyCompleteIsChanged {
     [self simulateProtection];
     NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
@@ -563,9 +573,11 @@ static BOOL IsMarked(int fd) {
     close(fd);
     XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
 }
+#endif
 
 #pragma mark Real files
 
+#if defined(DEBUG) && DEBUG
 /// The lowest descriptor number that is not in use, which is the one open() returns next.
 - (void)testFileRemovedBeforeItIsReopenedCanBeOpenedAgain {
     [self simulateProtection];
@@ -634,6 +646,7 @@ static BOOL IsMarked(int fd) {
         close(fd);
     }
 }
+#endif
 
 static int BSGLowestFreeDescriptor(void) {
     int fd = dup(STDIN_FILENO);
@@ -700,12 +713,14 @@ static int BSGLowestFreeDescriptor(void) {
 #pragma mark Creating files
 
 // The error that FailingCreateFile fails with
+#if defined(DEBUG) && DEBUG
 static int gCreateFileErrno;
 
 static BOOL FailingCreateFile(__unused NSString *path) {
     errno = gCreateFileErrno;
     return NO;
 }
+#endif
 
 - (void)testCreateFileWithoutCompleteProtection {
     NSString *path = [self.directory stringByAppendingPathComponent:@"created"];
@@ -765,6 +780,7 @@ static BOOL FailingCreateFile(__unused NSString *path) {
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:missing]);
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)testCreateFileFailsWhenTheFileCannotBeCreated {
     // As when the device is locked and the file would have NSFileProtectionComplete
     gCreateFileErrno = EPERM;
@@ -830,6 +846,7 @@ static BOOL FailingCreateFile(__unused NSString *path) {
         close(fd);
     }
 }
+#endif
 
 - (void)testOpenFileWithoutFollowingLinks {
     NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
@@ -856,6 +873,7 @@ static BOOL FailingCreateFile(__unused NSString *path) {
 
 #pragma mark Protection class of new files
 
+#if defined(DEBUG) && DEBUG
 /// A directory inside the test's directory, so that its simulated protection class is used.
 - (NSString *)subdirectoryWithSimulatedProtection:(nullable NSString *)protection {
     NSString *subdirectory = [self.directory stringByAppendingPathComponent:@"subdirectory"];
@@ -904,6 +922,7 @@ static BOOL FailingCreateFile(__unused NSString *path) {
     }
     XCTAssertEqualObjects(gSetProtectionCalls, @[], @"No class should be set on a file that does not have Complete");
 }
+#endif
 
 - (void)testSymbolicLinkAtThePathIsRefused {
     NSString *target = [self.directory stringByAppendingPathComponent:@"target"];
@@ -926,6 +945,7 @@ static BOOL FailingCreateFile(__unused NSString *path) {
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:missing]);
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)testDefaultProtectionFunctionsReadAndChangeARealFile {
     // The tests above stand in for the file system, so this checks the functions they replace against a real file.
     // NSFileProtectionCompleteUntilFirstUserAuthentication and NSFileProtectionCompleteUnlessOpen, unlike
@@ -989,5 +1009,6 @@ static BOOL FailingCreateFile(__unused NSString *path) {
 #endif
     XCTSkip(@"NSURLFileProtectionKey is unavailable");
 }
+#endif
 
 @end
