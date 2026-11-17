@@ -199,6 +199,8 @@ static NSDictionary<NSNumber *, NSNumber *> * DescriptorsForPath(NSString *path)
     return descriptors;
 }
 
+#if defined(DEBUG) && DEBUG
+// BSGSetFileProtectionFunctions only exists in debug builds, so these tests do too.
 // Simulated protection classes (see BSGSetFileProtectionFunctions), so that the run context's handling of
 // NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator
 static NSString *gRunContextPath;
@@ -379,6 +381,8 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
 
     BSGRunContextInit(path);
 }
+
+#endif // DEBUG
 
 #pragma mark Real protection classes
 

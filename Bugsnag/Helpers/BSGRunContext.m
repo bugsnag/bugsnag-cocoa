@@ -565,8 +565,10 @@ static int OpenFile(NSString *_Nonnull path) {
         fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
     }
     if (fd == -1) {
+        // Saved before logging, which can change errno (unused when logging is compiled out)
+        const int openError __unused = errno;
         bsg_log_warn(@"Could not open the run context file (errno %d); OOM and thermal kill detection is disabled "
-                     "for this launch", errno);
+                     "for this launch", openError);
     }
     return fd;
 }

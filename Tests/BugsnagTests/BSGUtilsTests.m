@@ -245,6 +245,8 @@ static NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *contents) 
 @property (nonatomic) NSString *directory;
 @end
 
+// BSGSetFileProtectionFunctions only exists in debug builds, so the tests that simulate protection classes do too
+#if defined(DEBUG) && DEBUG
 // The simulated protection class of each path; a path that is not present has none
 static NSMutableDictionary<NSString *, NSString *> *gSimulatedProtection;
 // The paths and classes passed to SimulatedSetProtection
@@ -292,6 +294,7 @@ static BOOL SimulatedSetProtection(NSString *path, NSString *protection, NSError
     gSimulatedProtection[path] = protection;
     return YES;
 }
+#endif
 
 /// The descriptors in this process that refer to the file with this device and inode.
 static NSArray<NSNumber *> * DescriptorsForFile(dev_t dev, ino_t ino) {
@@ -342,11 +345,14 @@ static BOOL IsMarked(int fd) {
 }
 
 - (void)tearDown {
+#if defined(DEBUG) && DEBUG
     [self stopSimulatingProtection];
+#endif
     [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
     [super tearDown];
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)simulateProtection {
     gSimulatedDirectory = self.directory;
     gSimulatedProtection = [NSMutableDictionary dictionary];
@@ -603,6 +609,8 @@ static BOOL IsMarked(int fd) {
     }
 }
 
+#endif // DEBUG
+
 #pragma mark Real files
 
 /// The lowest descriptor number that is not in use, which is the one open() returns next.
@@ -689,6 +697,7 @@ static int BSGLowestFreeDescriptor(void) {
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:missing]);
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)testDefaultProtectionFunctionsReadAndChangeARealFile {
     // The tests above stand in for the file system, so this checks the functions they replace against a real file.
     // NSFileProtectionCompleteUntilFirstUserAuthentication and NSFileProtectionCompleteUnlessOpen, unlike
@@ -752,5 +761,6 @@ static int BSGLowestFreeDescriptor(void) {
 #endif
     XCTSkip(@"NSURLFileProtectionKey is unavailable");
 }
+#endif
 
 @end
