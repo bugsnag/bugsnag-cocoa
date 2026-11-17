@@ -143,10 +143,6 @@ static const NSTimeInterval BSGFeatureFlagMaximumRetryInterval = 60 * 60;
 
 static NSString * const BSGFeatureFlagFileName = @"featureflag.bin";
 static NSString * const BSGFeatureFlagLockFileName = @"featureflag.lock";
-// The name used by pre-release builds of this format, whose files are deleted (with their temporary files).
-// No released version wrote it; it is only on test and development devices that ran those builds. This name, and
-// its handling in isObsoleteFile:, can be removed one release after featureflag.bin is first released.
-static NSString * const BSGFeatureFlagPrereleaseFileName = @"flags.bin";
 
 #if defined(DEBUG) && DEBUG
 // flock(), unless a unit test replaces it (see BSGSetFeatureFlagLockFunction)
@@ -578,14 +574,9 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// Whether a file in the directory is one that the store holding the lock deletes when it reads the directory.
 - (BOOL)isObsoleteFile:(NSString *)file {
     NSString *temporaryFilePrefix = [BSGFeatureFlagFileName stringByAppendingString:@"."];
-    NSString *prereleaseTemporaryFilePrefix = [BSGFeatureFlagPrereleaseFileName stringByAppendingString:@"."];
     // Temporary files are left behind by a process that was killed while replacing featureflag.bin. Only the
-    // store that holds the lock writes them, so none of them is in use. Pre-release builds used a different
-    // file name; the flags in their files are not read. (The pre-release files can stop being deleted one
-    // release after featureflag.bin is first released; see BSGFeatureFlagPrereleaseFileName.)
-    return (([file hasPrefix:temporaryFilePrefix] && [file.pathExtension isEqualToString:@"tmp"]) ||
-            [file isEqualToString:BSGFeatureFlagPrereleaseFileName] ||
-            ([file hasPrefix:prereleaseTemporaryFilePrefix] && [file.pathExtension isEqualToString:@"tmp"]));
+    // store that holds the lock writes them, so none of them is in use.
+    return [file hasPrefix:temporaryFilePrefix] && [file.pathExtension isEqualToString:@"tmp"];
 }
 
 /// Deletes the JSON files whose flags were imported or discarded.

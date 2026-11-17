@@ -1986,7 +1986,6 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [first addFeatureFlag:@"first" withVariant:@"1"];
     // Files the second store would otherwise delete or replace
     [NSData.data writeToFile:[self.directory stringByAppendingPathComponent:@"featureflag.bin.6F9619FF-8B86-D011-B42D-00CF4FC964FF.tmp"] atomically:NO];
-    [NSData.data writeToFile:[self.directory stringByAppendingPathComponent:@"flags.bin"] atomically:NO];
     NSDictionary *contents = [self directoryContents];
 
     BSGCountingPersistentFeatureFlagStore *second = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
@@ -2043,20 +2042,6 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
     NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directory error:nil];
     XCTAssertEqualObjects([files sortedArrayUsingSelector:@selector(compare:)], (@[@"featureflag.bin", @"featureflag.lock", @"other.tmp"]));
-}
-
-- (void)testFilesWrittenByPrereleaseBuildsAreDeleted {
-    // Pre-release builds used flags.bin; the file is not read, just deleted
-    NSString *prerelease = [self.directory stringByAppendingPathComponent:@"flags.bin"];
-    [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
-    XCTAssertTrue([NSFileManager.defaultManager moveItemAtPath:self.filePath toPath:prerelease error:nil]);
-    [NSData.data writeToFile:[prerelease stringByAppendingString:@".6F9619FF-8B86-D011-B42D-00CF4FC964FF.tmp"] atomically:NO];
-    [NSData.data writeToFile:[self.directory stringByAppendingPathComponent:@"flags.binary"] atomically:NO];
-
-    BSGPersistentFeatureFlagStore *store = [self newStore];
-    XCTAssertEqualObjects(store.allFlags, @[]);
-    NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.directory error:nil];
-    XCTAssertEqualObjects([files sortedArrayUsingSelector:@selector(compare:)], (@[@"featureflag.lock", @"flags.binary"]));
 }
 
 - (void)testSlotCapacityChangedByAnotherProcessIsIgnored {
