@@ -103,8 +103,9 @@ NSArray<NSString *> * BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths
             }
             continue;
         }
-        if (!S_ISREG(st.st_mode)) {
-            // Not a file that the SDK wrote (e.g. a directory whose name ends in ".json"), so it is not deleted
+        if (!S_ISREG(st.st_mode) && !S_ISLNK(st.st_mode)) {
+            // Not a file that the SDK wrote (e.g. a directory whose name ends in ".json"), so it is not deleted. A
+            // symbolic link is deleted: unlink() removes the link itself, never the file it points to.
             continue;
         }
         if (unlink(fileSystemPath) != 0) {
