@@ -119,7 +119,6 @@ steps:
   #
   - label: ":bitbar: {{matrix}} e2e tests batch 1"
     matrix:
-      - "IOS_26"
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -163,7 +162,6 @@ steps:
 
   - label: ":bitbar: {{matrix}} e2e tests batch 2"
     matrix:
-      - "IOS_26"
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -211,7 +209,6 @@ steps:
   # PLAT-11155: App hang tests run on BrowserStack (Appium 1.x) for now
   - label: ":browserstack: {{matrix}} app hang tests"
     matrix:
-      - "IOS_26"
       - "IOS_18"
       - "IOS_17"
       - "IOS_16"
@@ -258,7 +255,7 @@ steps:
   - label: "macOS {{matrix.os}} e2e tests"
     matrix:
       setup:
-        os: [ "26", "15", "14", "13", "12" ]
+        os: [ "15", "14", "13", "12" ]
     depends_on: "cocoa_fixture"
     timeout_in_minutes: 60
     agents:
