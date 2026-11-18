@@ -11,7 +11,9 @@ let package = Package(
     ],
     products: [
         .library(name: "Bugsnag", targets: ["Bugsnag"]),
+        .library(name: "Bugsnag-Dynamic", type: .dynamic, targets: ["Bugsnag"]),
         .library(name: "BugsnagNetworkRequestPlugin", targets: ["BugsnagNetworkRequestPlugin"]),
+        .library(name: "BugsnagNetworkRequestPlugin-Dynamic", type: .dynamic, targets: ["BugsnagNetworkRequestPlugin"])
     ],
     dependencies: [],
     targets: [
