@@ -42,10 +42,12 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 /// The file is opened with O_CLOEXEC and O_NOFOLLOW, so a symbolic link at the path is refused (ELOOP), and new files
 /// get mode 0600. Applies Bugsnag's backup policy to the file and changes NSFileProtectionComplete to
 /// NSFileProtectionCompleteUnlessOpen (see BSGDisableNSFileProtectionComplete); if that fails, errno is EPERM. If the
-/// protection class was changed, the file is reopened, so that the descriptor returned was opened after the change. If
-/// the file is no longer at the path by then, or a different file is at the path (the two descriptors are compared by
-/// device and inode number), -1 is returned with errno set to EAGAIN, so that the caller can try again; if it cannot be
-/// reopened for another reason, the first descriptor is returned.
+/// protection class was not changed, the descriptor is returned only if it still refers to the file at the path
+/// (compared by device and inode number); otherwise -1 is returned with errno set to EAGAIN. If the protection class
+/// was changed, the file is reopened, so that the descriptor returned was opened after the change. If the file is no
+/// longer at the path by then, or a different file is at the path (the two descriptors are compared by device and inode
+/// number), -1 is returned with errno set to EAGAIN; if it cannot be reopened for another reason, the first descriptor
+/// is returned. In each EAGAIN case the caller can try again.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
 #if defined(DEBUG) && DEBUG

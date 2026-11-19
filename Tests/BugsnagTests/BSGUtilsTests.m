@@ -294,7 +294,8 @@ static BOOL SimulatedSetProtection(NSString *path, NSString *protection, NSError
     gSimulatedProtection[path] = protection;
     return YES;
 }
-#endif
+
+// Only the tests that simulate protection classes use these helpers, so they are only in debug builds too
 
 /// The descriptors in this process that refer to the file with this device and inode.
 static NSArray<NSNumber *> * DescriptorsForFile(dev_t dev, ino_t ino) {
@@ -334,6 +335,7 @@ static void MarkOpenDescriptors(NSString *path) {
 static BOOL IsMarked(int fd) {
     return (fcntl(fd, F_GETFL) & O_NONBLOCK) != 0;
 }
+#endif
 
 @implementation BSGOpenFileWithoutCompleteProtectionTests
 
@@ -605,6 +607,75 @@ static BOOL IsMarked(int fd) {
         XCTAssertEqual(fstat(fd, &byDescriptor), 0);
         XCTAssertEqual(byDescriptor.st_ino, replacement.st_ino);
         XCTAssertEqualObjects(gSimulatedProtection[path], NSURLFileProtectionCompleteUnlessOpen);
+        close(fd);
+    }
+}
+
+- (void)testFileReplacedOrRemovedBeforeItsProtectionIsReadCanBeOpenedAgain {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    NSString *other = [self.directory stringByAppendingPathComponent:@"other"];
+    XCTAssertTrue([[@"original" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    XCTAssertTrue([[@"replacement" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:other atomically:NO]);
+    struct stat original, replacement;
+    XCTAssertEqual(lstat(path.fileSystemRepresentation, &original), 0);
+    XCTAssertEqual(lstat(other.fileSystemRepresentation, &replacement), 0);
+    // The class read from the path does not need changing, so the file is not reopened
+    gSimulatedProtection[path] = NSURLFileProtectionCompleteUntilFirstUserAuthentication;
+    // A different file is renamed over the path after it is opened, so the class read is that of the replacement and
+    // not of the file that the descriptor refers to
+    gWillGetProtection = ^(NSString *p) {
+        rename(other.fileSystemRepresentation, p.fileSystemRepresentation);
+    };
+
+    // The result and errno are saved before any assertion, and a descriptor returned unexpectedly is closed
+    errno = 0;
+    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+    int openError = errno;
+    if (fd != -1) {
+        close(fd);
+    }
+    XCTAssertEqual(fd, -1);
+    XCTAssertEqual(openError, EAGAIN, @"The caller can tell that the file at the path changed, and try again");
+    XCTAssertEqualObjects(gSetProtectionCalls, @[]);
+    XCTAssertEqualObjects(DescriptorsForFile(original.st_dev, original.st_ino), @[], @"The descriptor should be closed");
+    XCTAssertEqualObjects(DescriptorsForFile(replacement.st_dev, replacement.st_ino), @[], @"Nothing else should be open");
+
+    // Opening it again (as the caller does) returns a descriptor for the file that is now at the path
+    gWillGetProtection = nil;
+    fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+    XCTAssertNotEqual(fd, -1);
+    if (fd != -1) {
+        struct stat byDescriptor;
+        XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+        XCTAssertEqual(byDescriptor.st_dev, replacement.st_dev);
+        XCTAssertEqual(byDescriptor.st_ino, replacement.st_ino);
+        close(fd);
+    }
+
+    // The same applies if the file is removed after it is opened
+    gWillGetProtection = ^(NSString *p) {
+        unlink(p.fileSystemRepresentation);
+    };
+    errno = 0;
+    fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR);
+    openError = errno;
+    if (fd != -1) {
+        close(fd);
+    }
+    XCTAssertEqual(fd, -1);
+    XCTAssertEqual(openError, EAGAIN, @"The caller can tell that the file was removed, and try again");
+    XCTAssertEqualObjects(DescriptorsForFile(replacement.st_dev, replacement.st_ino), @[], @"The descriptor should be closed");
+
+    gWillGetProtection = nil;
+    fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    XCTAssertNotEqual(fd, -1);
+    if (fd != -1) {
+        struct stat byDescriptor, byPath;
+        XCTAssertEqual(fstat(fd, &byDescriptor), 0);
+        XCTAssertEqual(lstat(path.fileSystemRepresentation, &byPath), 0);
+        XCTAssertEqual(byDescriptor.st_dev, byPath.st_dev);
+        XCTAssertEqual(byDescriptor.st_ino, byPath.st_ino);
         close(fd);
     }
 }

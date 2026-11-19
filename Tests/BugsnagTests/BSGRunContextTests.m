@@ -162,6 +162,9 @@ static int WaitForOpenDescriptorCount(NSString *path, int expected, NSTimeInterv
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
 }
 
+#if defined(DEBUG) && DEBUG
+// BSGSetFileProtectionFunctions only exists in debug builds, so these tests, and the helpers only they use, do too.
+
 /// Sets O_NONBLOCK on the open file description of each descriptor that refers to the file at `path`, so that a
 /// descriptor opened before this was called can be told apart from one opened afterwards (which has its own
 /// description, without the flag). Returns the descriptors that were marked.
@@ -199,8 +202,6 @@ static NSDictionary<NSNumber *, NSNumber *> * DescriptorsForPath(NSString *path)
     return descriptors;
 }
 
-#if defined(DEBUG) && DEBUG
-// BSGSetFileProtectionFunctions only exists in debug builds, so these tests do too.
 // Simulated protection classes (see BSGSetFileProtectionFunctions), so that the run context's handling of
 // NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator
 static NSString *gRunContextPath;

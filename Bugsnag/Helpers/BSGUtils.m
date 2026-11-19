@@ -140,6 +140,16 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
         return -1;
     }
     if (!changed) {
+        // The protection class was read from the file at the path, so it only applies to the descriptor if that is
+        // still the file it refers to. If the file was removed or replaced after it was opened, the descriptor refers to
+        // a file whose protection class was never checked.
+        struct stat byDescriptor, byPath;
+        if (fstat(fd, &byDescriptor) != 0 || lstat(fileSystemPath, &byPath) != 0 ||
+            byDescriptor.st_dev != byPath.st_dev || byDescriptor.st_ino != byPath.st_ino) {
+            close(fd);
+            errno = EAGAIN;
+            return -1;
+        }
         // The descriptor was not opened under NSFileProtectionComplete, so it is kept as it is
         return fd;
     }
