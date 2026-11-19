@@ -330,7 +330,19 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbStore removeAllBreadcrumbs];
-    [self.featureFlagStore synchronizeFlagsWithMemoryStore];
+    // Under the lock that the feature flag methods take: Bugsnag.client exists before start has finished, so a flag
+    // added or cleared on another thread between reading the memory store and replacing the other stores' flags
+    // would otherwise be lost from, or brought back to, crash reports and the flags saved for OOM and thermal kill
+    // events. The lock must therefore cover reading the memory store and replacing the flags of both the crash-time and
+    // the persistent store: a change made after that read and before both replacements would be overwritten in at least
+    // one of them. This trades some startup latency for correctness: a call on another thread that adds, clears or
+    // reads the flags (for example, to copy them into an event) waits until both stores have been given the flags,
+    // including however long the persistent store takes to save them, and start waits for any such call already in
+    // progress. The lock adds no work of its own, and it is not contended unless another thread uses feature flags
+    // while start runs.
+    @synchronized (self.featureFlagStore) {
+        [self.featureFlagStore synchronizeFlagsWithMemoryStore];
+    }
 
 #if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];

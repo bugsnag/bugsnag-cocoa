@@ -20,8 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)storeWithMemoryStore:(id<BSGFeatureFlagStore, NSCopying>)memoryStore
                      persistentStore:(id<BSGFeatureFlagStore>)persistenStore
-                         atomicStore:(id<BSGFeatureFlagStore>)atomicStore;
+                         atomicStore:(id<BSGReplaceableFeatureFlagStore>)atomicStore;
 
+/// Replaces the flags in the persistent and crash-time stores with the memory store's flags.
 - (void)synchronizeFlagsWithMemoryStore;
 
 @end
