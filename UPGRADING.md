@@ -4,16 +4,16 @@ Upgrading Guide
 Upgrade from 6.X to 7.X
 -----------------------
 
-This version contains no API changes. The only change is the minimum supported OS versions, which have been raised because Xcode 27 no longer builds for earlier versions:
+This version contains no API changes. The only change is the minimum deployment targets, which have been raised because Xcode 27 no longer builds for earlier versions:
 
-| Platform | 6.X minimum | 7.X minimum |
-|----------|-------------|-------------|
-| iOS      | 9.0         | 15.0        |
-| macOS    | 10.11       | 12.0        |
-| tvOS     | 9.2         | 15.0        |
-| watchOS  | 6.3         | 9.0         |
+| Platform | 6.X minimum deployment target | 7.X minimum deployment target |
+|----------|-------------------------------|-------------------------------|
+| iOS      | 9.0                           | 15.0                          |
+| macOS    | 10.11                         | 12.0                          |
+| tvOS     | 9.2                           | 15.0                          |
+| watchOS  | 6.3                           | 9.0                           |
 
-If your app's deployment target is at or above the 7.X minimum for each platform, update your dependency to `7.0.0` (for example `pod 'Bugsnag', '~> 7.0'` with CocoaPods, or dependency rule `7.0.0` with Swift Package Manager). No code changes are needed.
+If your app's deployment target is at or above the 7.X minimum deployment target for each platform, update your dependency to `7.0.0` (for example `pod 'Bugsnag', '~> 7.0'` with CocoaPods, or dependency rule `7.0.0` with Swift Package Manager). No code changes are needed.
 
 Apps that need to support older OS versions should stay on `6.39.0`.
 
