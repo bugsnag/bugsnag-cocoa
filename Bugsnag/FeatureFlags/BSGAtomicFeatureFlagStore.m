@@ -48,8 +48,11 @@ static NSMutableDictionary<NSString *, NSValue *> *nameToFlag;
 // on them. Only read and written under g_lock. They are chained through `previous`, which crash-time readers never
 // follow, so that chaining them does not change anything a reader can see.
 static struct bsg_feature_flag_list_item *g_retired;
-// The number of items in g_retired, for unit tests. Only read and written under g_lock.
+#if defined(DEBUG) && DEBUG
+// The number of items in g_retired, for unit tests (see BSGAtomicFeatureFlagStoreRetiredItemCount, which also exists
+// only in debug builds). Only read and written under g_lock. Freeing does not depend on it.
 static size_t g_retiredCount;
+#endif
 
 /**
  * Writers keep one rule: every pointer they publish (the head or an item's next) points at a fully
@@ -63,10 +66,46 @@ static size_t g_retiredCount;
  *
  * Unlinked items are not freed straight away but retired (BSGRetireItem), and each write ends by
  * freeing the retired items if no crash-time reader is counted (BSGFreeRetiredItemsIfNoReaders), so
- * writers never wait. This is safe because all the operations on g_crash_report_readers and the list
- * pointers are sequentially consistent: a reader that increments the count after a writer reads 0
- * starts from a list that no longer reaches the retired items, and any other reader has already
- * decremented it. The full argument is in the description of PR #1983.
+ * writers never wait. Why no reader can be on an item when it is freed:
+ *
+ * - Every operation on g_crash_report_readers, on the list head and on the items' next pointers is
+ *   sequentially consistent (the default for these atomic_* calls), so they all fall in one total
+ *   order. That is what this relies on; acquire and release alone would not be enough.
+ * - A reader increments g_crash_report_readers before it loads the head, and decrements it after it
+ *   has finished with the last item.
+ * - A writer, holding g_lock, unlinks items (stores to the head or a next pointer), retires them and
+ *   then loads g_crash_report_readers, freeing every retired item only if it reads 0. Writes are
+ *   serialized by g_lock, so earlier writes' unlinking also comes before that load.
+ * - A count of 0 means that every reader that incremented before the load has also decremented
+ *   before it. The load reads that decrement or a later change to the count, so everything such a
+ *   reader did with the items happens before they are freed.
+ * - Every other reader increments after the load, so each pointer it loads comes after the
+ *   unlinking stores in the total order and holds the value they stored or a later one. No write
+ *   ever stores a pointer to an item that has already been unlinked, and an unlinked item's next
+ *   pointer still points at an item that was linked when it was unlinked. Such a reader therefore
+ *   only reaches items that were still linked after the load. Any of those that a later write
+ *   retires are not freed while the reader is counted.
+ * - Items in the list that replaceAllFlags: builds are freed straight away when replaced, because
+ *   no reader can reach them until that list is published.
+ *
+ * This argument uses only C11's rules for atomics shared between threads, so it holds for a reader
+ * running while writers run on other threads. Two cases fall outside those rules, and it does not
+ * formally establish safety for them:
+ * - The reader runs in a signal handler on the thread of a writer it interrupted. C11 does not order a
+ *   thread's operations with its own signal handler (and leaves non-atomic values unspecified there).
+ * - The reader runs while the crash handler has suspended a writer part way through a write. C11 does
+ *   not describe suspending a thread, so this relies on the writer's stores from before it was
+ *   suspended being visible to the reader.
+ * In both, the reader is expected to see some prefix of the writer's steps, each of which leaves the
+ * list safe to walk. That depends on toolchain behaviour that C11 does not guarantee: the compiler
+ * treating these sequentially consistent operations as barriers, so that it does not move the writer's
+ * other stores (such as an item's contents) past them. Separately, and in every case, an item added at
+ * the end of a list has its next pointer set to NULL by calloc's zero fill rather than by atomic_init,
+ * which assumes that a lock-free atomic pointer is represented like a plain one and that all-zero bits
+ * are NULL, as on Apple platforms.
+ *
+ * If a reader never decrements the count, for example because the app crashes again while a report is
+ * being written, no retired item is freed again before the process ends: memory is kept, never reused.
  *
  * Duplicate names follow BSGMemoryFeatureFlagStore: adding a name that is already present replaces
  * its variant and keeps the flag in the position where the name was first added. That rule is applied in
@@ -79,7 +118,9 @@ static size_t g_retiredCount;
 static void BSGRetireItem(struct bsg_feature_flag_list_item *item) {
     item->previous = g_retired;
     g_retired = item;
+#if defined(DEBUG) && DEBUG
     g_retiredCount++;
+#endif
 }
 
 /// Frees the retired items if no crash-time reader is walking the list; otherwise leaves them for a later write. Called
@@ -93,13 +134,15 @@ static void BSGFreeRetiredItemsIfNoReaders(void) {
         free(g_retired);
         g_retired = previous;
     }
+#if defined(DEBUG) && DEBUG
     g_retiredCount = 0;
+#endif
 }
 
-/// Frees an item that has been unlinked. If the list is published, crash-time readers may still be on it, so it is
-/// retired instead.
-static void BSGFreeUnlinkedItem(struct bsg_feature_flag_list_item *item, BOOL published) {
-    if (published) {
+/// Frees an item that has been unlinked from a list. If the list is the published one (g_list), crash-time readers may
+/// still be on it, so it is retired instead.
+static void BSGFreeUnlinkedItem(struct bsg_feature_flag_list *list, struct bsg_feature_flag_list_item *item) {
+    if (list == &g_list) {
         BSGRetireItem(item);
     } else {
         free(item);
@@ -124,7 +167,7 @@ static void BSGListUnlink(struct bsg_feature_flag_list *list, struct bsg_feature
 
 /// Adds a new item to a list, or swaps it into the position of the item with the same name.
 static void BSGListSetItem(struct bsg_feature_flag_list *list, NSMutableDictionary<NSString *, NSValue *> *index,
-                           NSString *name, struct bsg_feature_flag_list_item *newItem, BOOL published) {
+                           NSString *name, struct bsg_feature_flag_list_item *newItem) {
     struct bsg_feature_flag_list_item *oldItem = [index[name] pointerValue];
     if (oldItem) {
         // The new item is fully linked before the single store that makes it reachable, and the old item
@@ -143,7 +186,7 @@ static void BSGListSetItem(struct bsg_feature_flag_list *list, NSMutableDictiona
         } else {
             atomic_store(&list->tail, newItem);
         }
-        BSGFreeUnlinkedItem(oldItem, published);
+        BSGFreeUnlinkedItem(list, oldItem);
     } else {
         struct bsg_feature_flag_list_item *tail = atomic_load(&list->tail);
         newItem->previous = tail;
@@ -159,11 +202,11 @@ static void BSGListSetItem(struct bsg_feature_flag_list *list, NSMutableDictiona
 
 /// Removes the item with a name from a list, if there is one, and frees it.
 static void BSGListRemove(struct bsg_feature_flag_list *list, NSMutableDictionary<NSString *, NSValue *> *index,
-                          NSString *name, BOOL published) {
+                          NSString *name) {
     struct bsg_feature_flag_list_item *item = [index[name] pointerValue];
     if (item) {
         BSGListUnlink(list, item);
-        BSGFreeUnlinkedItem(item, published);
+        BSGFreeUnlinkedItem(list, item);
         index[name] = nil;
     }
 }
@@ -206,7 +249,7 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
 
 - (void)addFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant {
     @synchronized (g_lock) {
-        [self _setFeatureFlag:name withVariant:variant inList:&g_list index:nameToFlag published:YES];
+        [self _setFeatureFlag:name withVariant:variant inList:&g_list index:nameToFlag];
         BSGFreeRetiredItemsIfNoReaders();
     }
 }
@@ -214,7 +257,7 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
 - (void)addFeatureFlags:(nonnull NSArray<BugsnagFeatureFlag *> *)featureFlags {
     @synchronized (g_lock) {
         for (BugsnagFeatureFlag *flag in featureFlags) {
-            [self _setFeatureFlag:flag.name withVariant:flag.variant inList:&g_list index:nameToFlag published:YES];
+            [self _setFeatureFlag:flag.name withVariant:flag.variant inList:&g_list index:nameToFlag];
         }
         BSGFreeRetiredItemsIfNoReaders();
     }
@@ -223,7 +266,7 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
 - (void)clear:(nullable NSString *)name {
     @synchronized (g_lock) {
         if (name != nil) {
-            BSGListRemove(&g_list, nameToFlag, (NSString *_Nonnull)name, YES);
+            BSGListRemove(&g_list, nameToFlag, (NSString *_Nonnull)name);
         } else {
             [self _clearAll];
         }
@@ -245,7 +288,7 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
         struct bsg_feature_flag_list newList = {NULL, NULL};
         NSMutableDictionary<NSString *, NSValue *> *newNameToFlag = [NSMutableDictionary dictionaryWithCapacity:featureFlags.count];
         for (BugsnagFeatureFlag *flag in featureFlags) {
-            [self _setFeatureFlag:flag.name withVariant:flag.variant inList:&newList index:newNameToFlag published:NO];
+            [self _setFeatureFlag:flag.name withVariant:flag.variant inList:&newList index:newNameToFlag];
         }
 
         // Publish the new list with a single pointer swap, then retire the old one, which is no longer reachable from
@@ -275,16 +318,16 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
 
 - (void)_setFeatureFlag:(nonnull NSString *)name withVariant:(nullable NSString *)variant
                  inList:(struct bsg_feature_flag_list *)list
-                  index:(NSMutableDictionary<NSString *, NSValue *> *)index
-              published:(BOOL)published {
+                  index:(NSMutableDictionary<NSString *, NSValue *> *)index {
     struct bsg_feature_flag_list_item *newItem = [self _newItemForFeatureFlagWithName:name variant:variant];
     if (!newItem) {
         // The new value cannot be serialized. Remove any earlier value so that a crash report leaves the flag
-        // out rather than reporting a variant the app has replaced. This matches the persistent store.
-        BSGListRemove(list, index, name, published);
+        // out rather than reporting a variant the app has replaced. The JSON-file BSGPersistentFeatureFlagStore does not
+        // do this: if it cannot encode a flag, it logs an error and leaves any file written for an earlier value in place.
+        BSGListRemove(list, index, name);
         return;
     }
-    BSGListSetItem(list, index, name, newItem, published);
+    BSGListSetItem(list, index, name, newItem);
 }
 
 - (NSData *)_dataForFeatureFlagWithName:(nonnull NSString *)name variant:(nullable NSString *)variant {
