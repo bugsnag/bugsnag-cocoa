@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* The memory-mapped run context file, used to detect Out Of Memory and thermal kill events, could become inaccessible after the device was locked if it had `NSFileProtectionCompleteUnlessOpen`, or `NSFileProtectionComplete` (which the SDK already changes to `NSFileProtectionCompleteUnlessOpen`), because its descriptor was closed as soon as the file was mapped and that protection class is only documented to keep a file accessible while it is open. The descriptor is now kept open while the file is mapped.
+A symbolic link at the run context file's path is now refused rather than followed.
+[#1982](https://github.com/bugsnag/bugsnag-cocoa/pull/1982)
+
 ## 7.0.0 (2026-11-06)
 
 ### Enhancements
