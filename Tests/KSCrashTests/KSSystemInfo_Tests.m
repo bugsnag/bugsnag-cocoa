@@ -24,13 +24,14 @@
 // THE SOFTWARE.
 //
 
-#import <XCTest/XCTest.h>
+#import "BSGTestCase.h"
 
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSSystemInfoC.h"
 
 
-@interface KSSystemInfo_Tests : XCTestCase @end
+// A BSGTestCase, so that the crash state that +systemInfo updates exists even if no client has been started yet
+@interface KSSystemInfo_Tests : BSGTestCase @end
 
 
 @implementation KSSystemInfo_Tests

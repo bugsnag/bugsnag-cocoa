@@ -38,6 +38,21 @@
 
 @implementation bsg_kscrashstate_Tests
 
+- (void)tearDown
+{
+    // Each test passes bsg_kscrashstate_init a state on its stack and a path that it frees, and the crash state keeps
+    // pointers to both. Later tests that update the crash state (e.g. by starting a session) would then write to
+    // freed stack memory, and crash or corrupt whatever is there. Point it at storage that outlives the test instead.
+    static BSG_KSCrash_State state;
+    static char *path;
+    if (!path) {
+        path = strdup([NSTemporaryDirectory() stringByAppendingPathComponent:
+                       [NSString stringWithFormat:@"bsg_kscrashstate_Tests-%d.json", getpid()]].fileSystemRepresentation);
+    }
+    bsg_kscrashstate_init(path, &state);
+    [super tearDown];
+}
+
 #if TARGET_OS_OSX || TARGET_OS_TV || TARGET_OS_WATCH // Not needed on iOS because there the tests are injected into a host app
 
 - (void)setUp

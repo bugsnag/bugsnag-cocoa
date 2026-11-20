@@ -126,4 +126,88 @@
     [self measureBlock:block];
 }
 
+
+- (void)testAddFeatureFlagsWithDuplicateNamesKeepsFirstPositionAndLastVariant {
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"A" variant:@"1"],
+                             [BugsnagFeatureFlag flagWithName:@"B"],
+                             [BugsnagFeatureFlag flagWithName:@"A" variant:@"2"]]];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"A", @"variant": @"2"}, @{@"featureFlag": @"B"}]));
+
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"C" variant:@"3"],
+                             [BugsnagFeatureFlag flagWithName:@"A"]]];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"A"}, @{@"featureFlag": @"B"}, @{@"featureFlag": @"C", @"variant": @"3"}]));
+
+    // Clearing a name and adding it again puts it at the end
+    [store clear:@"A"];
+    [store addFeatureFlag:@"A" withVariant:@"4"];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"B"}, @{@"featureFlag": @"C", @"variant": @"3"}, @{@"featureFlag": @"A", @"variant": @"4"}]));
+}
+
+- (void)testClearWithNilNameRemovesAllFlags {
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
+    [store addFeatureFlag:@"A" withVariant:@"1"];
+    [store addFeatureFlag:@"B" withVariant:nil];
+    [store clear:@"missing"];
+    XCTAssertEqual(BSGFeatureFlagStoreToJSON(store).count, 2);
+
+    [store clear:nil];
+    XCTAssertTrue(store.isEmpty);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
+
+    // The store is still usable after being cleared
+    [store addFeatureFlag:@"C" withVariant:nil];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), (@[@{@"featureFlag": @"C"}]));
+}
+
+- (void)testWithFlagsKeepsTheOrderAndAppliesTheDuplicateNameRule {
+    NSArray<BugsnagFeatureFlag *> *flags = @[[BugsnagFeatureFlag flagWithName:@"B" variant:@"1"],
+                                             [BugsnagFeatureFlag flagWithName:@"A"],
+                                             [BugsnagFeatureFlag flagWithName:@"B" variant:@"2"],
+                                             [BugsnagFeatureFlag flagWithName:@"C" variant:@""]];
+    NSArray *expected = @[@{@"featureFlag": @"B", @"variant": @"2"},
+                          @{@"featureFlag": @"A"},
+                          @{@"featureFlag": @"C", @"variant": @""}];
+
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON([BSGMemoryFeatureFlagStore withFlags:flags]), expected);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(BSGFeatureFlagStoreWithFlags(flags)), expected);
+
+    // Each call returns a new store
+    BSGMemoryFeatureFlagStore *store = BSGFeatureFlagStoreWithFlags(flags);
+    [store clear];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(BSGFeatureFlagStoreWithFlags(flags)), expected);
+}
+
+- (void)testWithFlagsEmpty {
+    XCTAssertTrue([BSGMemoryFeatureFlagStore withFlags:@[]].isEmpty);
+    XCTAssertTrue(BSGFeatureFlagStoreWithFlags(@[]).isEmpty);
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(BSGFeatureFlagStoreWithFlags(@[])), @[]);
+}
+
+- (void)testFromJSONIgnoresInvalidItems {
+    NSArray *json = @[@"not a dictionary",
+                      @{@"variant": @"no name"},
+                      @{@"featureFlag": @1},
+                      @{@"featureFlag": @"A", @"variant": @2},
+                      @{@"featureFlag": @"B", @"variant": @"b"}];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(BSGFeatureFlagStoreFromJSON(json)),
+                          (@[@{@"featureFlag": @"A"}, @{@"featureFlag": @"B", @"variant": @"b"}]));
+    XCTAssertTrue(BSGFeatureFlagStoreFromJSON(@{@"featureFlag": @"A"}).isEmpty);
+    XCTAssertTrue(BSGFeatureFlagStoreFromJSON(nil).isEmpty);
+}
+
+- (void)testCopyIsIndependent {
+    BSGMemoryFeatureFlagStore *store = [[BSGMemoryFeatureFlagStore alloc] init];
+    [store addFeatureFlag:@"A" withVariant:@"1"];
+    BSGMemoryFeatureFlagStore *copy = [store copy];
+    [store addFeatureFlag:@"B" withVariant:nil];
+    [copy clear:@"A"];
+    XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store),
+                          (@[@{@"featureFlag": @"A", @"variant": @"1"}, @{@"featureFlag": @"B"}]));
+    XCTAssertTrue(copy.isEmpty);
+}
+
 @end

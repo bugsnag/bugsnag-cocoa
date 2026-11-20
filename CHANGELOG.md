@@ -1,6 +1,33 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Feature flags for OOM and thermal kill events are now persisted in a single binary file (`featureflag.bin`) instead of one file
+  per flag, which makes adding and clearing flags, and starting Bugsnag, faster when many flags are used. Each update is atomic, so
+  the app being terminated part way through an update never leaves a partial set of flags. If the flags take up more than 2 MB, none
+  of them are persisted: they remain in memory and are still included in handled events and crash reports, but not in OOM or thermal
+  kill events.
+  [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
+
+### Bug Fixes
+
+* Out Of Memory and thermal kill events could stop being detected after the device was locked, because the descriptor of the
+  memory-mapped run context file was closed as soon as the file was mapped, which `NSFileProtectionCompleteUnlessOpen` does not
+  allow for. The descriptor is now kept open while the file is mapped, and a warning is logged if the file cannot be opened.
+  A symbolic link at the run context file's path is now refused rather than followed.
+  [#1982](https://github.com/bugsnag/bugsnag-cocoa/pull/1982)
+
+* A feature flag that is added again now keeps its original position in crash reports instead of moving to the end, and a name
+  that is repeated in a call to `addFeatureFlags:` no longer appears twice in crash reports.
+  [#1983](https://github.com/bugsnag/bugsnag-cocoa/pull/1983)
+
+* A feature flag that is added again now keeps its original position in Out Of Memory and thermal kill events instead of moving to
+  the end, as it already did in handled events.
+  [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
+
 ## 7.0.0 (2026-11-06)
 
 ### Enhancements

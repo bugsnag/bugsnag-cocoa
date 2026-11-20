@@ -271,7 +271,7 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
                                                         discardProcessor:_discardProcessor];
         bsg_g_bugsnag_data.onCrash = (void (*)(const BSG_KSCrashReportWriter *))self.configuration.onCrashHandler;
         _breadcrumbStore = [[BugsnagBreadcrumbs alloc] initWithConfiguration:self.configuration];
-        id<BSGFeatureFlagStore> persistentFeatureFlagsStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:fileLocations.featureFlags];
+        id<BSGReplaceableFeatureFlagStore> persistentFeatureFlagsStore = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:fileLocations.featureFlags];
         _featureFlagStore = [BSGCompositeFeatureFlagStore storeWithMemoryStore:[configuration.featureFlagStore copy]
                                                                persistentStore:persistentFeatureFlagsStore
                                                                    atomicStore:[BSGAtomicFeatureFlagStore store]];
@@ -330,7 +330,12 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbStore removeAllBreadcrumbs];
-    [self.featureFlagStore synchronizeFlagsWithMemoryStore];
+    // Under the lock that the feature flag methods take: Bugsnag.client exists before start has finished, so a flag
+    // added or cleared on another thread between reading the memory store and replacing the other stores' flags
+    // would otherwise be lost from, or brought back to, crash reports
+    @synchronized (self.featureFlagStore) {
+        [self.featureFlagStore synchronizeFlagsWithMemoryStore];
+    }
 
 #if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];
@@ -1467,7 +1472,8 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     event.context = stateDict[BSGKeyClient][BSGKeyContext];
     event.groupingDiscriminator = stateDict[BSGKeyClient][BSGKeyGroupingDiscriminator];
-    event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore persistedFlags]);
+    // The flags read at launch: flags the app added before calling start belong to this launch, not the previous one
+    event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore previousLaunchFlags]);
 
     return event;
 }

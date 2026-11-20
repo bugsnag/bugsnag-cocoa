@@ -29,7 +29,13 @@
                                 options:0
                                 error:nil];
     // required due to BugsnagEvent using global singleton
-    Bugsnag.client.configuration.bundleVersion = @"3";
+    BugsnagConfiguration *configuration = Bugsnag.client.configuration;
+    NSString *previousBundleVersion = configuration.bundleVersion;
+    // Restored afterwards, so that tests that run later (e.g. BugsnagClientPayloadInfoTest) see the real value
+    [self addTeardownBlock:^{
+        configuration.bundleVersion = previousBundleVersion;
+    }];
+    configuration.bundleVersion = @"3";
     self.event = [[BugsnagEvent alloc] initWithKSReport:dictionary];
 }
 
