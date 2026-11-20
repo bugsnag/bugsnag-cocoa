@@ -16,6 +16,7 @@
 #include <mach-o/dyld.h>
 #include <mach-o/dyld_images.h>
 #include <os/trace.h>
+#include <sched.h>
 #include <stdatomic.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,7 +77,7 @@ static bool copy_cached_image(const BSG_Mach_Image_Node *node,
                               BSG_Mach_Header_Info *image);
 static bool cache_image(const BSG_Mach_Header_Info *image,
                         BSG_Mach_Image_Node **slot);
-static void clear_cached_images(void);
+static void forget_cached_images(void);
 static bool cache_image_for_header(const struct mach_header *header,
                                    const char *name,
                                    BSG_Mach_Image_Node **slot);
@@ -821,18 +822,38 @@ bool bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *image,
     return bsg_image_read_string((const char *)(uintptr_t)annotation.message, message, capacity);
 }
 
+// Test-only. A lookup holds one of these flags for a few microseconds. Wait for
+// it (bounded, so a flag left set cannot hang a test run) before freeing what it
+// reads.
+static void acquire_for_test_reset(atomic_flag *flag) {
+    for (int i = 0; i < 1000000 &&
+         atomic_flag_test_and_set_explicit(flag, memory_order_acquire); i++) {
+        sched_yield();
+    }
+}
+
 // Test hooks require quiescent readers; never reset the cache in production.
+// A test cannot always guarantee that: event uploads started by earlier tests
+// can still be symbolicating on other threads. So the reset waits for a lookup
+// that is using the snapshot or the shared-image cache, and does not free the
+// startup cache nodes, which a lookup may still be walking.
 void bsg_test_support_mach_headers_reset(void) {
-    clear_cached_images();
+    for (int i = 0; i < 1000000 &&
+         atomic_load(&g_initialization_state) == BSGImagesInitializing; i++) {
+        sched_yield();
+    }
+    acquire_for_test_reset(&g_image_snapshot_busy);
+    acquire_for_test_reset(&g_shared_images_busy);
+    forget_cached_images();
     g_all_image_infos = NULL;
     g_shared_image_count = 0;
-    atomic_flag_clear(&g_shared_images_busy);
     g_initialization_hook = NULL;
     g_get_images_hook = NULL;
     snapshot_free(g_image_snapshot);
     g_image_snapshot = NULL;
     g_image_snapshot_failed = false;
-    atomic_flag_clear(&g_image_snapshot_busy);
+    atomic_flag_clear_explicit(&g_shared_images_busy, memory_order_release);
+    atomic_flag_clear_explicit(&g_image_snapshot_busy, memory_order_release);
     atomic_store(&g_initialization_state, BSGImagesUninitialized);
 }
 
@@ -1060,13 +1081,9 @@ static bool cache_image_for_header(const struct mach_header *header,
     return cache_image(&image, slot);
 }
 
-static void clear_cached_images(void) {
-    BSG_Mach_Image_Node *node = g_cached_images_head;
-    while (node != NULL) {
-        BSG_Mach_Image_Node *next = node->next;
-        free(node);
-        node = next;
-    }
+// Test-only (see bsg_test_support_mach_headers_reset). The nodes are left
+// allocated: a few KB per reset, and only unit tests reset the cache.
+static void forget_cached_images(void) {
     g_cached_images_head = NULL;
     g_cached_images_tail = NULL;
     g_main_image = NULL;

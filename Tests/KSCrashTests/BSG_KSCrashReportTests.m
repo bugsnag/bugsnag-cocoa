@@ -292,7 +292,7 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     
     // Make a fake stack trace with addresses from a library (Foundation) that will generate a non-trivial symbolication workload.
     
-    const int numFrames = 500;
+    enum { numFrames = 500 };
     uintptr_t stackTrace[numFrames];
     for (int i = 0; i < numFrames; i++) {
         stackTrace[i] = (uintptr_t)NSLog;

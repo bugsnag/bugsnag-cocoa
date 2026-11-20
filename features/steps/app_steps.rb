@@ -202,7 +202,9 @@ def run_macos_app
   end
 
   system("unzip -qd #{dir} #{dir}/macOSTestApp*.zip", exception: true) unless File.exist? exe
-  $fixture_pid = Process.spawn($app_env, exe, %i[err out] => '/dev/null')
+  # The macOS e2e jobs upload this file as an artifact, so the fixture's own log (and any message from a failed
+  # launch) is kept when a scenario receives nothing.
+  $fixture_pid = Process.spawn($app_env, exe, %i[err out] => ['macOSTestApp.stderr.log', 'a'])
 
   $logger.debug "Launched app with PID #{$fixture_pid}"
 end
