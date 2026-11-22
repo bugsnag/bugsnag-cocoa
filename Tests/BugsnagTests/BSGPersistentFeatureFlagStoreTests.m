@@ -1371,9 +1371,9 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start" variant:nil]]];
     XCTAssertEqual(store.replaceFileCount, 2);
     // The JSON files that could not be deleted when the store was created are deleted by the next write, so
-    // the next launch does not find both kinds of file
+    // the next launch does not find both kinds of file. The imported flag is kept ahead of the app's flags.
     XCTAssertEqual([self jsonFiles].count, 0);
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"start", NSNull.null]]));
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"], @[@"start", NSNull.null]]));
 }
 
 #pragma mark Legacy files
@@ -1397,6 +1397,57 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
     XCTAssertEqualObjects([self reopenedFlags], expected);
+}
+
+- (void)testLegacyFlagsAreKeptAheadOfTheAppsFlagsWhenBugsnagStarts {
+    [self writeLegacyFlag:@"old-a" variant:@"1" index:0];
+    [self writeLegacyFlag:@"shared" variant:@"old" index:1];
+    [self writeLegacyFlag:@"old-b" variant:nil index:2];
+
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"app" variant:@"x"],
+                             [BugsnagFeatureFlag flagWithName:@"shared" variant:@"new"]]];
+    // A flag the app also sets keeps its imported position and takes the app's variant
+    NSArray *expected = @[@[@"old-a", @"1"], @[@"shared", @"new"], @[@"old-b", NSNull.null], @[@"app", @"x"]];
+    XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
+    XCTAssertEqualObjects([self jsonFiles], @[]);
+    XCTAssertEqualObjects([self reopenedFlags], expected);
+
+    // Changes after Bugsnag has started apply to them like any other flag
+    [store clear:@"old-a"];
+    [store addFeatureFlag:@"later" withVariant:nil];
+    expected = @[@[@"shared", @"new"], @[@"old-b", NSNull.null], @[@"app", @"x"], @[@"later", NSNull.null]];
+    XCTAssertEqualObjects([self reopenedFlags], expected);
+    store = nil;
+
+    // The next launch replaces them
+    BSGPersistentFeatureFlagStore *next = [self newStore];
+    XCTAssertEqualObjects(FlagsToArray(next.previousLaunchFlags), expected);
+    [next replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"app" variant:@"y"]]];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"app", @"y"]]));
+}
+
+- (void)testLegacyFlagsClearedBeforeBugsnagStartsAreNotKept {
+    [self writeLegacyFlag:@"keep" variant:@"1" index:0];
+    [self writeLegacyFlag:@"drop" variant:@"2" index:1];
+
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    [store clear:@"drop"];
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"app"]]];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"keep", @"1"], @[@"app", NSNull.null]]));
+    XCTAssertEqualObjects([self jsonFiles], @[]);
+}
+
+- (void)testLegacyFlagsAreNotKeptAfterClearingAllFlagsBeforeBugsnagStarts {
+    [self writeLegacyFlag:@"old" variant:@"1" index:0];
+
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    // The previous launch's flags are still reported
+    XCTAssertEqualObjects(FlagsToArray(store.previousLaunchFlags), (@[@[@"old", @"1"]]));
+    [store clear];
+    [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"app"]]];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"app", NSNull.null]]));
+    XCTAssertEqualObjects([self jsonFiles], @[]);
 }
 
 - (void)testLegacyFlagWithAnEmptyNameIsImportedAndDeleted {
@@ -3514,7 +3565,8 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self jsonFiles], @[], @"featureflag.bin and JSON files must not both be kept");
     XCTAssertEqualObjects([self files], (@[@"featureflag.bin", @"featureflag.lock"]));
     store = nil;
-    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"start", @"2"]]));
+    // The imported flags are kept ahead of the app's flags
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"], @[@"other", NSNull.null], @[@"start", @"2"]]));
 }
 
 #pragma mark featureflag.lock removed while it is created
@@ -3751,6 +3803,8 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
+    // Clearing all flags also drops the imported ones, so nothing is left to write
+    [store clear];
     [store replaceAllFlags:@[]];
     XCTAssertEqualObjects([self files], (@[@"featureflag.lock"]));
     store = nil;

@@ -264,6 +264,9 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 @property (nonatomic, strong) NSArray<NSString *> *pendingLegacyPaths;
 // See BSGPreviousLaunchFeatureFlagStore
 @property (nonatomic, copy) NSArray<BugsnagFeatureFlag *> *loadedFlags;
+// The flags imported from JSON files, which replaceAllFlags keeps in featureflag.bin (see BSGLegacyFeatureFlags.h).
+// Flags the app clears before Bugsnag starts are removed from it. Empty once Bugsnag has started.
+@property (nonatomic, copy) NSArray<BugsnagFeatureFlag *> *importedLegacyFlags;
 // Observes UIApplicationProtectedDataDidBecomeAvailable
 @property (nonatomic, strong, nullable) id protectedDataObserver;
 
@@ -282,6 +285,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         _recordsByName = [NSMutableDictionary dictionary];
         _unencodableFlags = [NSMutableDictionary dictionary];
         _pendingLegacyPaths = @[];
+        _importedLegacyFlags = @[];
         _fd = -1;
         _lockFd = -1;
         [self loadFlags];
@@ -359,6 +363,12 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         // The records whose log the file holds, if it is current
         NSArray<NSData *> *savedRecords = self.fd != -1 && self.fileIsCurrent ? [self orderedRecords] : nil;
         [self removeAllFlagsFromMemory];
+        // Flags imported from JSON files on the first launch after an upgrade are kept, ahead of the app's flags.
+        // A flag the app also sets keeps its position and takes the app's variant.
+        for (BugsnagFeatureFlag *flag in self.importedLegacyFlags) {
+            [self setFlagNamed:flag.name variant:flag.variant];
+        }
+        self.importedLegacyFlags = @[];
         for (BugsnagFeatureFlag *flag in featureFlags) {
             [self setFlagNamed:flag.name variant:flag.variant];
         }
@@ -386,6 +396,12 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         return;
     }
     @synchronized (self) {
+        if (self.importedLegacyFlags.count) {
+            self.importedLegacyFlags = [self.importedLegacyFlags filteredArrayUsingPredicate:
+                                        [NSPredicate predicateWithBlock:^BOOL(BugsnagFeatureFlag *flag, __unused id bindings) {
+                return ![flag.name isEqualToString:(NSString *_Nonnull)name];
+            }]];
+        }
         if ([self.names containsObject:(NSString *_Nonnull)name]) {
             BOOL persisted = self.recordsByName[(NSString *_Nonnull)name] != nil;
             [self.names removeObject:(NSString *_Nonnull)name];
@@ -401,6 +417,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 
 - (void)clear {
     @synchronized (self) {
+        self.importedLegacyFlags = @[];
         if (self.names.count) {
             [self flagsDidChange];
         }
@@ -746,9 +763,11 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         case BSGFeatureFlagFileMissing:
         case BSGFeatureFlagFileNotAFile:
             // Flags written as individual files by earlier versions of the SDK are imported so that they can be
-            // included in an OOM event (see BSGLegacyFeatureFlags.h). They are written, and the JSON files deleted,
-            // by the next write (see removePendingLegacyFiles).
-            for (BugsnagFeatureFlag *flag in BSGLegacyFeatureFlags(legacyPaths)) {
+            // included in an OOM event, and are kept in featureflag.bin when Bugsnag starts (see
+            // BSGLegacyFeatureFlags.h). They are written, and the JSON files deleted, by the next write (see
+            // removePendingLegacyFiles).
+            self.importedLegacyFlags = BSGLegacyFeatureFlags(legacyPaths);
+            for (BugsnagFeatureFlag *flag in self.importedLegacyFlags) {
                 [self setFlagNamed:flag.name variant:flag.variant];
                 imported = YES;
             }

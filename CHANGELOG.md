@@ -9,7 +9,8 @@ Changelog
   per flag, which makes adding and clearing flags, and starting Bugsnag, faster when many flags are used. Each update is atomic, so
   the app being terminated part way through an update never leaves a partial set of flags. If the flags take up more than 2 MB, none
   of them are persisted: they remain in memory and are still included in handled events and crash reports, but not in OOM or thermal
-  kill events.
+  kill events. On the first launch after upgrading, the flags saved by an earlier version are copied into `featureflag.bin`, ahead of
+  the app's own flags, and the old files are deleted.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ### Bug Fixes

@@ -83,23 +83,33 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
     XCTAssertEqual([self jsonFileCount], 0);
-    // The imported flags are not written when the store is created, and the launch has no flags, so no file is needed
-    XCTAssertFalse([self flagFileExists]);
+    // The imported flags are copied into featureflag.bin when Bugsnag starts, even when the launch has no flags
+    XCTAssertTrue([self flagFileExists]);
+    XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
 
     [self launchPreviousReleaseWithFlags:@[[BugsnagFeatureFlag flagWithName:@"c" variant:@"3"]]];
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"d"]]],
                           (@[@[@"c", @"3"]]));
     XCTAssertEqual([self jsonFileCount], 0);
     XCTAssertTrue([self flagFileExists]);
-    XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"d", NSNull.null]]));
+    // The imported flag is kept ahead of the launch's own flags
+    XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"c", @"3"], @[@"d", NSNull.null]]));
+
+    // A later launch replaces them, as it does any other persisted flags
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"e"]]],
+                          (@[@[@"c", @"3"], @[@"d", NSNull.null]]));
+    XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"e", NSNull.null]]));
 }
 
-- (void)testUpgradeDowngradeAndUpgradeNeverReportsStaleFlags {
+- (void)testUpgradeDowngradeAndUpgradeAgain {
     [self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-1"]]];
     XCTAssertEqualObjects([self launchPreviousReleaseWithFlags:@[[BugsnagFeatureFlag flagWithName:@"old-1"]]], @[]);
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-2"]]],
                           (@[@[@"old-1", NSNull.null]]));
-    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"new-2", NSNull.null]]));
+    // The flag saved by the previous release is copied into featureflag.bin with the launch's own flag
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]],
+                          (@[@[@"old-1", NSNull.null], @[@"new-2", NSNull.null]]));
+    XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], @[]);
     XCTAssertEqual([self jsonFileCount], 0);
 }
 
