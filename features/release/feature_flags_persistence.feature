@@ -119,7 +119,7 @@ Feature: Feature flag persistence
       | new         | launch2        |
 
   # 6 (OOM)
-  @skip_macos
+  @skip_macos @skip_simulator
   Scenario: Flags from a previous launch are not reported in an OOM event
     When I run "FeatureFlagsRelaunchOOMScenario" and relaunch the crashed app
     And I run "FeatureFlagsRelaunchOOMScenario" and relaunch the crashed app
@@ -142,7 +142,7 @@ Feature: Feature flag persistence
       | new         | launch2        |
 
   # 7 (also covers 2 and 4 for the persisted file)
-  @skip_macos
+  @skip_macos @skip_simulator
   Scenario: OOM events contain bulk-added, updated, long, Unicode, empty-variant and nil-variant flags
     When I run "FeatureFlagsOOMScenario" and relaunch the crashed app
     And I configure Bugsnag for "FeatureFlagsOOMScenario"
@@ -177,7 +177,7 @@ Feature: Feature flag persistence
     And the event contains the feature flag "nil-variant" with no variant
 
   # 8 (OOM)
-  @skip_macos
+  @skip_macos @skip_simulator
   Scenario: Flags stored as JSON files by an older SDK are reported in an OOM event after upgrading
     # Launch 1 replaces featureflag.bin with legacy JSON files after Bugsnag has started, then is killed
     When I run "FeatureFlagsLegacyUpgradeOOMScenario" and relaunch the crashed app
@@ -235,7 +235,7 @@ Feature: Feature flag persistence
       | launch2-flag | launch2        |
 
   # 9 (OOM)
-  @skip_macos
+  @skip_macos @skip_simulator
   Scenario: Flags are not reported in an OOM event when featureflag.bin and JSON files are found together, and the JSON files are deleted
     When I run "FeatureFlagsStaleJSONOOMScenario" and relaunch the crashed app
     And I configure Bugsnag for "FeatureFlagsStaleJSONOOMScenario"
@@ -272,7 +272,7 @@ Feature: Feature flag persistence
       | futureVersion |
 
   # 10 (OOM)
-  @skip_macos
+  @skip_macos @skip_simulator
   Scenario Outline: A corrupt featureflag.bin does not prevent flags being reported in an OOM event
     When I set the app to "<mode>" mode
     And I run "FeatureFlagsCorruptFileOOMScenario" and relaunch the crashed app
