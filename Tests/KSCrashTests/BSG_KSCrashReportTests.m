@@ -24,6 +24,7 @@
 // array and unmaps the fixture between frame and binary-image serialization.
 extern void bsg_kscrw_i_prepareReportWriter(BSG_KSCrashReportWriter *, BSG_KSJSONEncodeContext *);
 extern void bsg_kscrw_i_writeTraceInfo(const BSG_KSCrash_Context *, const BSG_KSCrashReportWriter *);
+extern void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *, const char *, const BSG_KSCrash_SentryContext *);
 
 typedef struct {
     __unsafe_unretained NSMutableData *data;
@@ -336,6 +337,129 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
         [[NSFileManager defaultManager] removeItemAtPath:path error:nil];
     }];
     return path;
+}
+
+#pragma mark - Mach exception error serialization
+
+static int appendErrorJSON(const char *data, size_t length, void *userData) {
+    [(__bridge NSMutableData *)userData appendBytes:data length:length];
+    return BSG_KSJSON_OK;
+}
+
+- (NSDictionary *)errorJSONForMachException:(int)type code:(uint64_t)code subcode:(uint64_t)subcode {
+    BSG_KSCrash_SentryContext crash;
+    memset(&crash, 0, sizeof(crash));
+    crash.crashType = BSG_KSCrashTypeMachException;
+    crash.mach.type = type;
+    crash.mach.code = (int64_t)code;
+    crash.mach.subcode = (int64_t)subcode;
+    crash.faultAddress = 0x1000;
+
+    NSMutableData *data = [NSMutableData data];
+    BSG_KSJSONEncodeContext json;
+    bsg_ksjsonbeginEncode(&json, false, appendErrorJSON, (__bridge void *)data);
+    BSG_KSCrashReportWriter writer;
+    bsg_kscrw_i_prepareReportWriter(&writer, &json);
+    writer.beginObject(&writer, NULL);
+    bsg_kscrw_i_writeError(&writer, "error", &crash);
+    writer.endContainer(&writer);
+    bsg_ksjsonendEncode(&json);
+
+    NSDictionary *root = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    XCTAssertNotNil(root);
+    return root[@"error"];
+}
+
+- (void)testWriteErrorGuardFileDescriptor {
+    NSDictionary *error = [self errorJSONForMachException:EXC_GUARD
+                                                     code:0x4000000100000003ULL
+                                                  subcode:0xfeedfacecafef00dULL];
+    XCTAssertEqualObjects(error[@"type"], @"mach");
+    NSDictionary *mach = error[@"mach"];
+    XCTAssertEqualObjects(mach[@"exception"], @(EXC_GUARD));
+    XCTAssertEqualObjects(mach[@"exception_name"], @"EXC_GUARD");
+    // Full-width, unmasked and not sign-extended.
+    XCTAssertEqualObjects(mach[@"code"], @"0x4000000100000003");
+    XCTAssertEqualObjects(mach[@"subcode"], @"0xfeedfacecafef00d");
+    // The low 32 bits are an fd number, not a kern_return_t.
+    XCTAssertNil(mach[@"code_name"]);
+    XCTAssertEqualObjects(mach[@"guard"], (@{
+        @"type": @2, @"type_name": @"GUARD_TYPE_FD",
+        @"flavor": @1, @"flavor_name": @"kGUARD_EXC_CLOSE",
+        @"target": @3}));
+}
+
+- (void)testWriteErrorGuardMachPort {
+    NSDictionary *error = [self errorJSONForMachException:EXC_GUARD
+                                                     code:0x2000000100000b03ULL
+                                                  subcode:0x1234];
+    NSDictionary *mach = error[@"mach"];
+    XCTAssertEqualObjects(mach[@"exception_name"], @"EXC_GUARD");
+    XCTAssertEqualObjects(mach[@"code"], @"0x2000000100000b03");
+    XCTAssertEqualObjects(mach[@"subcode"], @"0x1234");
+    XCTAssertNil(mach[@"code_name"]);
+    XCTAssertEqualObjects(mach[@"guard"], (@{
+        @"type": @1, @"type_name": @"GUARD_TYPE_MACH_PORT",
+        @"flavor": @1, @"flavor_name": @"kGUARD_EXC_DESTROY",
+        @"target": @0xb03}));
+}
+
+- (void)testWriteErrorGuardVirtualMemory {
+    NSDictionary *error = [self errorJSONForMachException:EXC_GUARD
+                                                     code:0xa000000100000000ULL
+                                                  subcode:0x1021dc000];
+    XCTAssertEqualObjects(error[@"mach"][@"guard"], (@{
+        @"type": @5, @"type_name": @"GUARD_TYPE_VIRT_MEMORY",
+        @"flavor": @1, @"flavor_name": @"kGUARD_EXC_DEALLOC_GAP",
+        @"target": @0}));
+}
+
+- (void)testWriteErrorGuardOptionalMachPort {
+    NSDictionary *error = [self errorJSONForMachException:EXC_GUARD
+                                                     code:0x2000010000003103ULL
+                                                  subcode:0];
+    XCTAssertEqualObjects(error[@"mach"][@"guard"], (@{
+        @"type": @1, @"type_name": @"GUARD_TYPE_MACH_PORT",
+        @"flavor": @256, @"flavor_name": @"kGUARD_EXC_INVALID_RIGHT",
+        @"target": @0x3103}));
+}
+
+- (void)testWriteErrorGuardUnknownSubtype {
+    // Unknown FD flavor: raw values kept, no name invented.
+    NSDictionary *mach = [self errorJSONForMachException:EXC_GUARD
+                                                    code:0x4000008000000007ULL
+                                                 subcode:0][@"mach"];
+    XCTAssertEqualObjects(mach[@"code"], @"0x4000008000000007");
+    XCTAssertEqualObjects(mach[@"subcode"], @"0x0");
+    XCTAssertEqualObjects(mach[@"guard"], (@{
+        @"type": @2, @"type_name": @"GUARD_TYPE_FD", @"flavor": @0x80, @"target": @7}));
+
+    // Unknown guard type with the sign bit set.
+    mach = [self errorJSONForMachException:EXC_GUARD
+                                      code:0xe0000005ffffffffULL
+                                   subcode:0x8000000000000000ULL][@"mach"];
+    XCTAssertEqualObjects(mach[@"code"], @"0xe0000005ffffffff");
+    XCTAssertEqualObjects(mach[@"subcode"], @"0x8000000000000000");
+    XCTAssertNil(mach[@"code_name"]);
+    XCTAssertEqualObjects(mach[@"guard"], (@{@"type": @7, @"flavor": @5, @"target": @0xffffffffU}));
+}
+
+- (void)testWriteErrorBadAccessUnchanged {
+    NSDictionary *error = [self errorJSONForMachException:EXC_BAD_ACCESS code:KERN_INVALID_ADDRESS subcode:0x10];
+    NSDictionary *mach = error[@"mach"];
+    XCTAssertEqualObjects(error[@"type"], @"mach");
+    XCTAssertEqualObjects(error[@"address"], @0x1000);
+    XCTAssertEqualObjects(mach, (@{
+        @"exception": @(EXC_BAD_ACCESS), @"exception_name": @"EXC_BAD_ACCESS",
+        @"code": @"0x1", @"code_name": @"KERN_INVALID_ADDRESS", @"subcode": @"0x10"}));
+}
+
+- (void)testWriteErrorBreakpointUnchanged {
+    NSDictionary *mach = [self errorJSONForMachException:EXC_BREAKPOINT code:1 subcode:0x1000][@"mach"];
+    XCTAssertEqualObjects(mach[@"exception_name"], @"EXC_BREAKPOINT");
+    XCTAssertEqualObjects(mach[@"code"], @"0x1");
+    XCTAssertEqualObjects(mach[@"code_name"], @"KERN_INVALID_ADDRESS");
+    XCTAssertNil(mach[@"guard"]);
 }
 
 @end

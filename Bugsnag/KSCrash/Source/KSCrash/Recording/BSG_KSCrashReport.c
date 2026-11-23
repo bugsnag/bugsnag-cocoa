@@ -1130,6 +1130,33 @@ void bsg_kscrw_i_writeDiskInfo(const BSG_KSCrashReportWriter *const writer,
 }
 #endif
 
+/** Write the decoded fields of an EXC_GUARD code. The raw code and subcode are
+ * written separately; names are only written when they are known.
+ */
+void bsg_kscrw_i_writeGuardInfo(const BSG_KSCrashReportWriter *const writer,
+                                const int64_t code) {
+    const uint64_t type = BSG_EXC_GUARD_DECODE_GUARD_TYPE(code);
+    const uint64_t flavor = BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code);
+    const char *typeName = bsg_ksmachguardTypeName(type);
+    const char *flavorName = bsg_ksmachguardFlavorName(type, flavor);
+
+    writer->beginObject(writer, BSG_KSCrashField_Guard);
+    {
+        writer->addUIntegerElement(writer, BSG_KSCrashField_Type, type);
+        if (typeName != NULL) {
+            writer->addStringElement(writer, BSG_KSCrashField_TypeName, typeName);
+        }
+        writer->addUIntegerElement(writer, BSG_KSCrashField_Flavor, flavor);
+        if (flavorName != NULL) {
+            writer->addStringElement(writer, BSG_KSCrashField_FlavorName,
+                                     flavorName);
+        }
+        writer->addUIntegerElement(writer, BSG_KSCrashField_Target,
+                                   BSG_EXC_GUARD_DECODE_GUARD_TARGET(code));
+    }
+    writer->endContainer(writer);
+}
+
 /** Write information about the error leading to the crash to the report.
  *
  * @param writer The writer.
@@ -1185,7 +1212,13 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
     }
 
     const char *machExceptionName = bsg_ksmachexceptionName(machExceptionType);
-    const char *machCodeName = machCode == 0 ? NULL :
+#ifdef EXC_GUARD
+    // An EXC_GUARD code is a bitfield, not a kern_return_t.
+    const bool isGuard = machExceptionType == EXC_GUARD;
+#else
+    const bool isGuard = false;
+#endif
+    const char *machCodeName = machCode == 0 || isGuard ? NULL :
         bsg_ksmachkernelReturnCodeName((kern_return_t)machCode);
     const char *sigName = bsg_kssignal_signalName(sigNum);
     const char *sigCodeName = bsg_kssignal_signalCodeName(sigNum, sigCode);
@@ -1225,6 +1258,10 @@ void bsg_kscrw_i_writeError(const BSG_KSCrashReportWriter *const writer,
                 
                 bsg_uint64_to_hex((uint64_t)machSubCode, buffer+2, 0);
                 writer->addStringElement(writer, BSG_KSCrashField_Subcode, buffer);
+
+                if (isGuard) {
+                    bsg_kscrw_i_writeGuardInfo(writer, machCode);
+                }
             }
             writer->endContainer(writer);
             writer->addStringElement(writer, BSG_KSCrashField_Type,

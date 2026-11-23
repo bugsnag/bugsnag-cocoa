@@ -63,6 +63,72 @@ const char *bsg_ksmachexceptionName(exception_type_t exceptionType);
 const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode);
 
 // ============================================================================
+#pragma mark - EXC_GUARD -
+// ============================================================================
+
+/*
+ * EXC_GUARD code layout, from XNU <kern/exc_guard.h> (shipped only in the
+ * macOS SDK, so mirrored here):
+ *
+ *   code:    [63:61] guard type | [60:32] flavor | [31:0] target
+ *   subcode: [63:0]  guard identifier / payload (meaning depends on type)
+ *
+ * The guard type values are mirrored too. Some of them are also defined by
+ * <mach/port.h> and <mach/vm_statistics.h>; BSG_KSMach.c checks those at
+ * compile time.
+ */
+#define BSG_GUARD_TYPE_NONE 0x0
+#define BSG_GUARD_TYPE_MACH_PORT 0x1
+#define BSG_GUARD_TYPE_FD 0x2
+#define BSG_GUARD_TYPE_USER 0x3
+#define BSG_GUARD_TYPE_VN 0x4
+#define BSG_GUARD_TYPE_VIRT_MEMORY 0x5
+#define BSG_GUARD_TYPE_REJECTED_SC 0x6
+
+#define BSG_EXC_GUARD_DECODE_GUARD_TYPE(code)                                  \
+    ((((uint64_t)(code)) >> 61) & 0x7ull)
+#define BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code)                                \
+    ((((uint64_t)(code)) >> 32) & 0x1fffffffull)
+#define BSG_EXC_GUARD_DECODE_GUARD_TARGET(code) ((uint32_t)(code))
+
+/** Get the name of an EXC_GUARD guard type, e.g. "GUARD_TYPE_FD".
+ *
+ * @return The name, or NULL if the type is not known.
+ */
+const char *bsg_ksmachguardTypeName(uint64_t guardType);
+
+/** Get the name of an EXC_GUARD flavor for a given guard type,
+ * e.g. "kGUARD_EXC_CLOSE". Only flavors defined by Apple headers are named.
+ *
+ * @return The name, or NULL if the flavor is not known.
+ */
+const char *bsg_ksmachguardFlavorName(uint64_t guardType, uint64_t flavor);
+
+/** Whether XNU terminates the process after synchronously delivering an
+ * EXC_GUARD with this code to the task's exception port, given the task's
+ * guard behavior (task_get_exc_guard_behavior()).
+ *
+ * File descriptor guards, always-fatal Mach port guards and vnode guards (except
+ * VNG_PERMISSIONS) are fatal whatever the behavior. Optional Mach port guards
+ * and virtual memory guards are fatal only if the matching FATAL bit is set.
+ *
+ * @param code The exception code of the EXC_GUARD.
+ * @param taskGuardBehavior The task's TASK_EXC_GUARD_* behavior bits.
+ */
+bool bsg_ksmachguardIsFatalWithPolicy(int64_t code, uint32_t taskGuardBehavior);
+
+/** Whether XNU terminates the process after synchronously delivering an
+ * EXC_GUARD with this code to the task's exception port, using the current
+ * task's guard behavior where it matters.
+ *
+ * Returns false for guards that can be delivered without terminating the
+ * process, and for guards whose fatality cannot be determined (the user and
+ * rejected-syscall types, and when the task's guard behavior is unavailable).
+ * These must not be recorded as crashes.
+ */
+bool bsg_ksmachguardIsFatal(int64_t code);
+
+// ============================================================================
 #pragma mark - Thread State Info -
 // ============================================================================
 

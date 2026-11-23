@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Capture fatal `EXC_GUARD` Mach exceptions (for example closing a guarded file descriptor or destroying a guarded Mach port). They are reported as `EXC_GUARD` with the guard type, flavor, target and stack trace. Virtual-memory guards and optional Mach port guards are reported when the app's guard policy (`task_exc_guard_behavior`) makes them fatal. Requires `enabledErrorTypes.machExceptions` (enabled by default). Terminations the operating system performs without notifying the app cannot be captured in-process.
+[#1989](https://github.com/bugsnag/bugsnag-cocoa/pull/1989)
+
 ## 7.0.0 (2026-11-06)
 
 ### Enhancements
