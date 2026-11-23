@@ -128,6 +128,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     [copy setFileBackupSupport:self.fileBackupSupport];
     [copy setPlugins:[self.plugins mutableCopyWithZone:zone]];
     [copy setReleaseStage:self.releaseStage];
+    [copy setRemoteConfigFirstFetchJitter:self.remoteConfigFirstFetchJitter];
     copy.session = self.session; // NSURLSession does not declare conformance to NSCopying
 #if BSG_HAVE_MACH_THREADS
     [copy setSendThreads:self.sendThreads];
@@ -211,6 +212,7 @@ static NSURLSession *getConfigDefaultURLSession(void) {
     _autoTrackSessions = YES;
     _remoteConfigUpdateInterval = 86400;
     _remoteConfigUpdateTolerance = 7200;
+    _remoteConfigFirstFetchJitter = 10;
 #if BSG_HAVE_MACH_THREADS
     _sendThreads = BSGThreadSendPolicyAlways;
 #else

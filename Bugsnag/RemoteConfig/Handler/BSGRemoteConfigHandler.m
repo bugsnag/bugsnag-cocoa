@@ -140,12 +140,33 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
 }
 
 - (void)updateRemoteConfig {
-    NSString *currentTag = nil;
+    NSTimeInterval firstFetchDelay = 0;
     @synchronized (self) {
         if (self.isLoadingRemoteConfig || [self isCooldownActive]) {
             return;
         }
         self.isLoadingRemoteConfig = YES;
+        if ([self isFirstFetch]) {
+            double randomFraction = (double)arc4random() / (double)UINT32_MAX;
+            firstFetchDelay = MAX(0, self.configuration.remoteConfigFirstFetchJitter) * randomFraction;
+        }
+    }
+    if (firstFetchDelay <= 0) {
+        [self sendRemoteConfigRequest];
+        return;
+    }
+    // Spread a fleet's first fetches so devices whose first errors arrive together do not all fetch at once.
+    // Errors are still delivered meanwhile; they just do not have discard rules yet.
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(firstFetchDelay * NSEC_PER_SEC)),
+                   dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [weakSelf sendRemoteConfigRequest];
+    });
+}
+
+- (void)sendRemoteConfigRequest {
+    NSString *currentTag = nil;
+    @synchronized (self) {
         // Persisted before the request so an attempt interrupted by process death is counted as a failure on next launch.
         self.fetchState.attemptInProgress = YES;
         [self.store saveFetchState:self.fetchState];
@@ -157,6 +178,14 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
         }
     }
     [self loadRemoteConfigWithCurrentTag:currentTag allowsUnconditionalRetry:YES];
+}
+
+// No config has been cached for this app version and no fetch has failed yet. Refreshes are spread by expiry
+// jitter and retries by the backoff, so only this first fetch needs its own delay.
+- (BOOL)isFirstFetch {
+    return self.remoteConfig == nil &&
+        self.fetchState.fetchFailureCount == 0 &&
+        [self.store loadConfiguration] == nil;
 }
 
 - (void)loadRemoteConfigWithCurrentTag:(NSString *)currentTag allowsUnconditionalRetry:(BOOL)allowsUnconditionalRetry {

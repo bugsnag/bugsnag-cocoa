@@ -42,6 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readwrite, retain, nonnull, nonatomic) BugsnagUser *user;
 
+/// Upper bound of the random delay before a device's first remote config fetch, so a fleet whose first
+/// errors arrive together does not fetch config in the same second. Defaults to 10 seconds; 0 disables it.
+@property (nonatomic) NSTimeInterval remoteConfigFirstFetchJitter;
+
 #pragma mark Methods
 
 + (BOOL)isValidApiKey:(NSString *)apiKey;

@@ -46,6 +46,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)loadRemoteConfigWithCurrentTag:(NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion;
 
+/**
+ * The cached lifetime for a config the server said lasts `lifetime` seconds, shortened by up to 10%:
+ * lifetime * (1 - 0.1 * randomFraction), where randomFraction is in the range [0, 1].
+ * Spreads refreshes across a fleet that fetched config at the same time.
+ */
++ (NSTimeInterval)jitteredLifetime:(NSTimeInterval)lifetime randomFraction:(double)randomFraction;
+
 @end
 
 NS_ASSUME_NONNULL_END

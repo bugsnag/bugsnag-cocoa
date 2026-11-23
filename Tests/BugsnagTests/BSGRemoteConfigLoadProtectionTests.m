@@ -120,11 +120,33 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
                                          store:(BSGInMemoryRemoteConfigStore *)store
                               configurationURL:(NSURL *)configurationURL
                                     appVersion:(NSString *)appVersion {
+    return [self handlerWithService:service store:store configurationURL:configurationURL
+                         appVersion:appVersion firstFetchJitter:0];
+}
+- (BSGRemoteConfigHandler *)handlerWithService:(BSGRecordingRemoteConfigService *)service
+                                         store:(BSGInMemoryRemoteConfigStore *)store
+                              configurationURL:(NSURL *)configurationURL
+                                    appVersion:(NSString *)appVersion
+                              firstFetchJitter:(NSTimeInterval)firstFetchJitter {
     BSGTestRemoteConfigConfiguration *configuration =
         [[BSGTestRemoteConfigConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     configuration.testConfigurationURL = configurationURL;
     configuration.appVersion = appVersion;
+    // Most tests check what a fetch does, so they fetch immediately; the first-fetch jitter tests opt in.
+    configuration.remoteConfigFirstFetchJitter = firstFetchJitter;
     return [BSGRemoteConfigHandler handlerWithService:service store:store configuration:configuration];
+}
+- (BSGRemoteConfigHandler *)jitteredHandlerWithService:(BSGRecordingRemoteConfigService *)service
+                                                  store:(BSGInMemoryRemoteConfigStore *)store
+                                       firstFetchJitter:(NSTimeInterval)firstFetchJitter {
+    return [self handlerWithService:service store:store
+                   configurationURL:[NSURL URLWithString:@"https://example.com/config"]
+                         appVersion:@"1.0" firstFetchJitter:firstFetchJitter];
+}
+- (void)waitFor:(NSTimeInterval)seconds {
+    XCTestExpectation *expectation = [self expectationWithDescription:@"waited"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ [expectation fulfill]; });
+    [self waitForExpectations:@[expectation] timeout:seconds + 5];
 }
 - (BSGRemoteConfigHandler *)handlerWithService:(BSGRecordingRemoteConfigService *)service
                                          store:(BSGInMemoryRemoteConfigStore *)store
@@ -658,6 +680,55 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertNil(decoded.nextAllowedFetchAt);
     XCTAssertFalse(decoded.attemptInProgress);
 }
+#pragma mark - First-fetch jitter
+
+- (void)testFirstFetchJitterDefaultsToTenSecondsAndIsCopied {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(configuration.remoteConfigFirstFetchJitter, 10);
+    configuration.remoteConfigFirstFetchJitter = 3;
+    XCTAssertEqual(((BugsnagConfiguration *)[configuration copy]).remoteConfigFirstFetchJitter, 3);
+}
+- (void)testFirstFetchIsDelayedWithinJitterWindow {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+    BSGRemoteConfigHandler *handler = [self jitteredHandlerWithService:service store:store firstFetchJitter:0.5];
+
+    XCTAssertNil([handler currentConfiguration]);
+    // The request has not started, so an app killed during the delay is not counted as a failed attempt.
+    XCTAssertFalse(store.attemptWasPersistedBeforeRequest);
+    [self waitFor:1.0];
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertTrue(store.attemptWasPersistedBeforeRequest);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 1);
+}
+- (void)testCacheMissesDuringFirstFetchDelayStartOnlyOneRequest {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigHandler *handler = [self jitteredHandlerWithService:service
+                                                                  store:[BSGInMemoryRemoteConfigStore new]
+                                                       firstFetchJitter:0.3];
+    dispatch_apply(100, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^(size_t __unused index) {
+        [handler currentConfiguration];
+    });
+    [self waitFor:0.6];
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testExpiredCachedConfigRefreshIsNotDelayed {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [BSGRemoteConfiguration configFromJson:@{} eTag:@"expired-etag" expiryDate:[NSDate dateWithTimeIntervalSinceNow:-1]];
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    [[self jitteredHandlerWithService:service store:store firstFetchJitter:60] currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqualObjects(service.currentTag, @"expired-etag");
+}
+- (void)testRetryAfterFailedFetchIsNotDelayed {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    [store setFetchStateWithAppVersion:@"1.0" failureCount:1 nextAllowedFetchAt:[NSDate dateWithTimeIntervalSinceNow:-1] attemptInProgress:NO];
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    [[self jitteredHandlerWithService:service store:store firstFetchJitter:60] currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+}
+
 - (void)testLegacyCooldownPreferencesAreRemoved {
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate dateWithTimeIntervalSinceNow:Hour]
                                               forKey:BSGLegacyRemoteConfigCooldownPreference];
@@ -846,6 +917,48 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
     session.statusCode = 404;
     XCTAssertEqual([self responseForSession:session tag:nil].type, BSGRemoteConfigServiceResponseTypeError);
+}
+- (void)testJitteredLifetimeShortensByUpToTenPercent {
+    XCTAssertEqualWithAccuracy([BSGRemoteConfigService jitteredLifetime:1000 randomFraction:0], 1000, 0.001);
+    XCTAssertEqualWithAccuracy([BSGRemoteConfigService jitteredLifetime:1000 randomFraction:0.5], 950, 0.001);
+    XCTAssertEqualWithAccuracy([BSGRemoteConfigService jitteredLifetime:1000 randomFraction:1], 900, 0.001);
+    XCTAssertEqualWithAccuracy([BSGRemoteConfigService jitteredLifetime:1000 randomFraction:-1], 1000, 0.001);
+    XCTAssertEqualWithAccuracy([BSGRemoteConfigService jitteredLifetime:1000 randomFraction:2], 900, 0.001);
+}
+- (void)testMaxAgeExpiryIsJitteredWithinTenPercent {
+    NSMutableSet *lifetimes = [NSMutableSet set];
+    for (int i = 0; i < 20; i++) {
+        BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+        session.statusCode = 200;
+        session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": @"max-age=86400"};
+        NSDate *before = [NSDate date];
+        BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil];
+        NSTimeInterval lifetime = [response.configuration.expiryDate timeIntervalSinceDate:before];
+        XCTAssertGreaterThanOrEqual(lifetime, 86400 * 0.9 - 1);
+        XCTAssertLessThanOrEqual(lifetime, 86400 + 1);
+        [lifetimes addObject:@((NSInteger)lifetime)];
+    }
+    // Devices fetching at the same moment should not all expire at the same moment.
+    XCTAssertGreaterThan(lifetimes.count, 1);
+}
+- (void)testNotModifiedExpiryIsJittered {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 304;
+    session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": @"max-age=1000"};
+    NSDate *before = [NSDate date];
+    NSTimeInterval lifetime = [[self responseForSession:session tag:@"\"v1\""].expiryDate timeIntervalSinceDate:before];
+    XCTAssertGreaterThanOrEqual(lifetime, 900 - 1);
+    XCTAssertLessThanOrEqual(lifetime, 1000 + 1);
+}
+- (void)testDefaultExpiryWithoutMaxAgeIsJittered {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    session.headers = @{@"ETag": @"\"v1\""};
+    NSDate *before = [NSDate date];
+    NSTimeInterval lifetime = [[self responseForSession:session tag:nil].configuration.expiryDate timeIntervalSinceDate:before];
+    NSTimeInterval defaultLifetime = 86400 + 7200;
+    XCTAssertGreaterThanOrEqual(lifetime, defaultLifetime * 0.9 - 1);
+    XCTAssertLessThanOrEqual(lifetime, defaultLifetime + 1);
 }
 - (void)testEmptySuccessBodyIsValidEmptyConfig {
     BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];

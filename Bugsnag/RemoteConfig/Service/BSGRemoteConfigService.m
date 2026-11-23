@@ -6,6 +6,7 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
+#import <stdlib.h>
 #import "BugsnagConfiguration+Private.h"
 #import "BSGRemoteConfigService.h"
 #import "BugsnagApiClient.h"
@@ -31,6 +32,10 @@ static const NSInteger HTTPStatusCodeNotModified = 304;
 static const NSInteger HTTPStatusCodeOK = 200;
 
 static const NSTimeInterval RequestTimeoutInterval = 30;
+
+// Each cached config's lifetime is shortened by a random fraction up to this value, so devices that fetched
+// together do not all expire, and refresh, at the same moment.
+static const double ExpiryJitterFraction = 0.1;
 
 static NSString *CurrentPayloadVersion = @"1";
 
@@ -255,19 +260,19 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
                            userInfo:@{NSLocalizedDescriptionKey: @"Unexpected Remote Config response"}];
 }
 
-- (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {
-    NSTimeInterval maxAge = [self parseMaxAgeFromCacheControl:cacheControl];
-    if (maxAge > 0) {
-        return [NSDate dateWithTimeIntervalSinceNow:maxAge];
-    }
-    
-    return [self defaultExpiryDate];
++ (NSTimeInterval)jitteredLifetime:(NSTimeInterval)lifetime randomFraction:(double)randomFraction {
+    double fraction = MIN(1.0, MAX(0.0, randomFraction));
+    return lifetime * (1.0 - ExpiryJitterFraction * fraction);
 }
 
-- (NSDate *)defaultExpiryDate {
-    NSTimeInterval defaultExpireTime = self.configuration.remoteConfigUpdateInterval +
-                                        self.configuration.remoteConfigUpdateTolerance;
-    return [NSDate dateWithTimeIntervalSinceNow:defaultExpireTime];
+- (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {
+    NSTimeInterval lifetime = [self parseMaxAgeFromCacheControl:cacheControl];
+    if (lifetime <= 0) {
+        lifetime = self.configuration.remoteConfigUpdateInterval +
+                   self.configuration.remoteConfigUpdateTolerance;
+    }
+    double randomFraction = (double)arc4random() / (double)UINT32_MAX;
+    return [NSDate dateWithTimeIntervalSinceNow:[[self class] jitteredLifetime:lifetime randomFraction:randomFraction]];
 }
 
 - (NSTimeInterval)parseMaxAgeFromCacheControl:(NSString *)cacheControl {

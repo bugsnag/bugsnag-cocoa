@@ -80,6 +80,8 @@ static __weak Scenario *currentScenario;
     self.config.endpoints.sessions = self.fixtureConfig.sessionsURL.absoluteString;
     // Disable remote config by default - only RemoteConfig* scenarios should enable it
     self.config.endpoints.configuration = nil;
+    // Fetch remote config as soon as it is needed so scenario timings are deterministic.
+    [self.config setValue:@0 forKey:@"remoteConfigFirstFetchJitter"];
 #if !TARGET_OS_WATCH
     self.config.enabledErrorTypes.ooms = NO;
 #endif
