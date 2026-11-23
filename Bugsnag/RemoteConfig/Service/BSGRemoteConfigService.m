@@ -149,7 +149,7 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
     return self;
 }
 
-- (void)loadRemoteConfigWithCurrentTag:(NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion {
+- (void)loadRemoteConfigWithCurrentTag:(nullable NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion {
     NSURL *configUrl = self.configuration.configurationURL;
     if (!configUrl) {
         completion([BSGRemoteConfigServiceResponse responseWithError:[self noUrlError]]);
@@ -308,7 +308,7 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
     return (NSTimeInterval)seconds;
 }
 
-- (NSURLRequest *)requestWithUrl:(NSURL *)url currentTag:(NSString *)tag {
+- (NSURLRequest *)requestWithUrl:(NSURL *)url currentTag:(nullable NSString *)tag {
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[ContentTypeHeader] = @"application/json";
     if (tag) {

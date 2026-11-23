@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
                             device:(BugsnagDevice *)device
                                app:(BugsnagApp *)app;
 
-- (void)loadRemoteConfigWithCurrentTag:(NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion;
+- (void)loadRemoteConfigWithCurrentTag:(nullable NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion;
 
 /**
  * The cached lifetime for a config the server said lasts `lifetime` seconds, shortened by up to 10%:
