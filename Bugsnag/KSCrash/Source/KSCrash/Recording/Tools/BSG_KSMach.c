@@ -59,8 +59,151 @@ const char *bsg_ksmachexceptionName(const exception_type_t exceptionType) {
         RETURN_NAME_FOR_ENUM(EXC_MACH_SYSCALL);
         RETURN_NAME_FOR_ENUM(EXC_RPC_ALERT);
         RETURN_NAME_FOR_ENUM(EXC_CRASH);
+#ifdef EXC_GUARD
+        RETURN_NAME_FOR_ENUM(EXC_GUARD);
+#endif
     }
     return NULL;
+}
+
+// ============================================================================
+#pragma mark - EXC_GUARD -
+// ============================================================================
+
+// Keep the mirrored values in sync with the SDK wherever the SDK defines them.
+#ifdef GUARD_TYPE_MACH_PORT
+_Static_assert(GUARD_TYPE_MACH_PORT == BSG_GUARD_TYPE_MACH_PORT,
+               "GUARD_TYPE_MACH_PORT mismatch");
+#endif
+#ifdef GUARD_TYPE_FD
+_Static_assert(GUARD_TYPE_FD == BSG_GUARD_TYPE_FD, "GUARD_TYPE_FD mismatch");
+#endif
+#ifdef GUARD_TYPE_USER
+_Static_assert(GUARD_TYPE_USER == BSG_GUARD_TYPE_USER,
+               "GUARD_TYPE_USER mismatch");
+#endif
+#ifdef GUARD_TYPE_VN
+_Static_assert(GUARD_TYPE_VN == BSG_GUARD_TYPE_VN, "GUARD_TYPE_VN mismatch");
+#endif
+#ifdef GUARD_TYPE_VIRT_MEMORY
+_Static_assert(GUARD_TYPE_VIRT_MEMORY == BSG_GUARD_TYPE_VIRT_MEMORY,
+               "GUARD_TYPE_VIRT_MEMORY mismatch");
+#endif
+#ifdef GUARD_TYPE_REJECTED_SC
+_Static_assert(GUARD_TYPE_REJECTED_SC == BSG_GUARD_TYPE_REJECTED_SC,
+               "GUARD_TYPE_REJECTED_SC mismatch");
+#endif
+
+// Mach port guard reasons up to and including this value are always fatal
+// (<mach/port.h>; kGUARD_EXC_MSG_FILTERED, unchanged since xnu-7195 / iOS 14).
+#define BSG_MAX_FATAL_kGUARD_EXC_CODE 0x80
+#ifdef MAX_FATAL_kGUARD_EXC_CODE
+_Static_assert(MAX_FATAL_kGUARD_EXC_CODE == BSG_MAX_FATAL_kGUARD_EXC_CODE,
+               "MAX_FATAL_kGUARD_EXC_CODE mismatch");
+#endif
+
+// The only non-fatal vnode guard flavor (XNU bsd/sys/guarded.h).
+#define BSG_VNG_PERMISSIONS (1u << 7)
+
+const char *bsg_ksmachguardTypeName(const uint64_t guardType) {
+    switch (guardType) {
+    case BSG_GUARD_TYPE_NONE:
+        return "GUARD_TYPE_NONE";
+    case BSG_GUARD_TYPE_MACH_PORT:
+        return "GUARD_TYPE_MACH_PORT";
+    case BSG_GUARD_TYPE_FD:
+        return "GUARD_TYPE_FD";
+    case BSG_GUARD_TYPE_USER:
+        return "GUARD_TYPE_USER";
+    case BSG_GUARD_TYPE_VN:
+        return "GUARD_TYPE_VN";
+    case BSG_GUARD_TYPE_VIRT_MEMORY:
+        return "GUARD_TYPE_VIRT_MEMORY";
+    case BSG_GUARD_TYPE_REJECTED_SC:
+        return "GUARD_TYPE_REJECTED_SC";
+    }
+    return NULL;
+}
+
+// Always-fatal Mach port guard reasons (enum mach_port_guard_exception_codes
+// in <mach/port.h>). Only these can be recorded, so only these are named.
+static const char *bsg_ksmachguardMachPortFlavorName(const uint64_t flavor) {
+    switch (flavor) {
+    case 1: return "kGUARD_EXC_DESTROY";
+    case 2: return "kGUARD_EXC_MOD_REFS";
+    case 3: return "kGUARD_EXC_INVALID_OPTIONS";
+    case 4: return "kGUARD_EXC_SET_CONTEXT";
+    case 5: return "kGUARD_EXC_THREAD_SET_STATE";
+    case 6: return "kGUARD_EXC_EXCEPTION_BEHAVIOR_ENFORCE";
+    case 7: return "kGUARD_EXC_SERVICE_PORT_VIOLATION_FATAL";
+    case 8: return "kGUARD_EXC_UNGUARDED";
+    case 9: return "kGUARD_EXC_KOBJECT_REPLY_PORT_SEMANTICS";
+    case 10: return "kGUARD_EXC_REQUIRE_REPLY_PORT_SEMANTICS";
+    case 11: return "kGUARD_EXC_RESTRICT_VOUCHER_OPERATIONS";
+    case 12: return "kGUARD_EXC_MACH_EXC_THREAD_SET_STATE";
+    case 13: return "kGUARD_EXC_MOVE_WEAK_REPLY_PORT_FATAL";
+    case 16: return "kGUARD_EXC_INCORRECT_GUARD";
+    case 17: return "kGUARD_EXC_BOOTSTRAP_PORT_NOTIFICATION";
+    case 18: return "kGUARD_EXC_CV_INVALID_EXCEPTION_PORT";
+    case 32: return "kGUARD_EXC_IMMOVABLE";
+    case 33: return "kGUARD_EXC_RESTRICT_VOUCHER_RECIPE_SIZE";
+    case 34: return "kGUARD_EXC_RESTRICT_INLINE_PORT_DESCRIPTORS";
+    case 64: return "kGUARD_EXC_STRICT_REPLY";
+    case 65: return "kGUARD_EXC_INVALID_NOTIFICATION_REQ";
+    case 66: return "kGUARD_EXC_INVALID_MPO_ENTITLEMENT";
+    case 67: return "kGUARD_EXC_DESCRIPTOR_VIOLATION";
+    case 128: return "kGUARD_EXC_MSG_FILTERED";
+    }
+    return NULL;
+}
+
+// File descriptor guard flavors (enum guard_fd_exception_codes in XNU
+// bsd/sys/guarded.h, which is not part of the public SDKs).
+static const char *bsg_ksmachguardFDFlavorName(const uint64_t flavor) {
+    switch (flavor) {
+    case 1u << 0: return "kGUARD_EXC_CLOSE";
+    case 1u << 1: return "kGUARD_EXC_DUP";
+    case 1u << 2: return "kGUARD_EXC_NOCLOEXEC";
+    case 1u << 3: return "kGUARD_EXC_SOCKET_IPC";
+    case 1u << 4: return "kGUARD_EXC_FILEPORT";
+    case 1u << 5: return "kGUARD_EXC_MISMATCH";
+    case 1u << 6: return "kGUARD_EXC_WRITE";
+    }
+    return NULL;
+}
+
+const char *bsg_ksmachguardFlavorName(const uint64_t guardType,
+                                      const uint64_t flavor) {
+    switch (guardType) {
+    case BSG_GUARD_TYPE_MACH_PORT:
+        return bsg_ksmachguardMachPortFlavorName(flavor);
+    case BSG_GUARD_TYPE_FD:
+        return bsg_ksmachguardFDFlavorName(flavor);
+    }
+    return NULL;
+}
+
+bool bsg_ksmachguardIsFatal(const int64_t code) {
+    const uint64_t flavor = BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code);
+    switch (BSG_EXC_GUARD_DECODE_GUARD_TYPE(code)) {
+    case BSG_GUARD_TYPE_FD:
+        // fd_guard_ast() exits the process after delivery for every flavor.
+        return true;
+    case BSG_GUARD_TYPE_MACH_PORT:
+        // mach_port_guard_ast() exits the process after delivery for reasons up
+        // to MAX_FATAL_kGUARD_EXC_CODE. Higher ("optional" and "soft") reasons
+        // can be delivered while the process keeps running.
+        return flavor != 0 && flavor <= BSG_MAX_FATAL_kGUARD_EXC_CODE;
+    case BSG_GUARD_TYPE_VN:
+        // vn_guard_ast() exits the process for every flavor except
+        // VNG_PERMISSIONS.
+        return flavor != 0 && flavor != BSG_VNG_PERMISSIONS;
+    default:
+        // GUARD_TYPE_VIRT_MEMORY: fatality depends on the task's guard policy.
+        // GUARD_TYPE_USER: raised as a simulated crash, not a sync delivery.
+        // GUARD_TYPE_REJECTED_SC and unknown types: not determinable.
+        return false;
+    }
 }
 
 const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode) {

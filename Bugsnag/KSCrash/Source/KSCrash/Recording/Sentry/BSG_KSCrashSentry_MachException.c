@@ -38,6 +38,7 @@
 #include "BSG_KSCrashSentry_Private.h"
 #include <pthread.h>
 #include <mach/mach.h>
+#include <stddef.h>
 
 // ============================================================================
 #pragma mark - Constants -
@@ -96,6 +97,16 @@ typedef struct {
     char padding[512];
 } MachExceptionMessage;
 #pragma pack()
+
+// With MACH_EXCEPTION_CODES the kernel sends 64-bit codes immediately after
+// codeCount, with 4-byte packing (the mach_exc.defs MIG request layout).
+// Reading them as 32-bit integer_t truncates the subcode (KSCrash issue #810).
+_Static_assert(sizeof(mach_exception_data_type_t) == 8,
+               "Mach exception codes must be 64-bit");
+_Static_assert(offsetof(MachExceptionMessage, code) ==
+                   offsetof(MachExceptionMessage, codeCount) +
+                       sizeof(mach_msg_type_number_t),
+               "Mach exception codes must directly follow codeCount");
 
 /** A mach reply message (according to ux_exception.c, xnu-1699.22.81).
  */
@@ -203,6 +214,99 @@ void bsg_ksmachexc_i_restoreExceptionPorts(void) {
     bsg_g_previousExceptionPorts.count = 0;
 }
 
+/** Whether a task-level exception handler is installed for any of the
+ * exceptions in mask. Errs on the side of "yes" if the ports can't be read.
+ */
+bool bsg_ksmachexc_i_hasTaskExceptionHandler(const task_t task,
+                                             const exception_mask_t mask) {
+    exception_mask_t masks[EXC_TYPES_COUNT];
+    exception_handler_t ports[EXC_TYPES_COUNT];
+    exception_behavior_t behaviors[EXC_TYPES_COUNT];
+    thread_state_flavor_t flavors[EXC_TYPES_COUNT];
+    mach_msg_type_number_t count = EXC_TYPES_COUNT;
+    kern_return_t kr = task_get_exception_ports(task, mask, masks, &count,
+                                                ports, behaviors, flavors);
+    if (kr != KERN_SUCCESS) {
+        BSG_KSLOG_ERROR("task_get_exception_ports: %s", mach_error_string(kr));
+        return true;
+    }
+    bool found = false;
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        if (MACH_PORT_VALID(ports[i])) {
+            found = true;
+            // Release the send right that task_get_exception_ports returned.
+            mach_port_deallocate(mach_task_self(), ports[i]);
+        }
+    }
+    return found;
+}
+
+/** Whether an exception message is an EXC_GUARD that the kernel may deliver
+ * without terminating the process (or whose fatality is unknown). Recording
+ * one as a crash would produce a false report and leave the app running with
+ * its crash handlers uninstalled.
+ */
+bool bsg_ksmachexc_i_isNonFatalGuard(const MachExceptionMessage *const message) {
+#ifdef EXC_GUARD
+    return message->exception == EXC_GUARD &&
+           (message->codeCount < 1 || !bsg_ksmachguardIsFatal(message->code[0]));
+#else
+    return false;
+#endif
+}
+
+/** Build the header of a reply to an exception request, the way a MIG server
+ * does: it only moves the send-once reply right. Copying the request header
+ * would also move a send right for our exception port (the request's local
+ * disposition), leaving the port without one after the first reply; any later
+ * reply would then fail and the thread that raised the exception would wait
+ * for it forever.
+ */
+void bsg_ksmachexc_i_makeReplyHeader(const mach_msg_header_t *const request,
+                                     mach_msg_header_t *const reply,
+                                     const mach_msg_size_t replySize) {
+    memset(reply, 0, sizeof(*reply));
+    reply->msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(request->msgh_bits), 0);
+    reply->msgh_remote_port = request->msgh_remote_port;
+    reply->msgh_local_port = MACH_PORT_NULL;
+    reply->msgh_size = replySize;
+    reply->msgh_id = request->msgh_id + 100;
+}
+
+/** Reply to an exception message saying "I didn't handle this exception",
+ * so that the kernel continues with the next handler / default behavior.
+ */
+void bsg_ksmachexc_i_replyNotHandled(const MachExceptionMessage *const message) {
+    MachReplyMessage replyMessage = {{0}};
+    bsg_ksmachexc_i_makeReplyHeader(&message->header, &replyMessage.header,
+                                    sizeof(replyMessage));
+    replyMessage.NDR = message->NDR;
+    replyMessage.returnCode = KERN_FAILURE;
+
+    mach_msg(&replyMessage.header, MACH_SEND_MSG, sizeof(replyMessage), 0,
+             MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+}
+
+/** Return an exception message to the kernel unhandled and keep running.
+ */
+void bsg_ksmachexc_i_passThrough(MachExceptionMessage *const message) {
+    bsg_ksmachexc_i_replyNotHandled(message);
+
+    // Release the thread and task send rights carried by the request, as a
+    // MIG server does when its handler fails. (mach_msg_destroy() is not used
+    // because the reply right has already been consumed by the reply.)
+    const task_t thisTask = mach_task_self();
+    if (MACH_PORT_VALID(message->thread.name)) {
+        mach_port_deallocate(thisTask, message->thread.name);
+    }
+    if (MACH_PORT_VALID(message->task.name)) {
+        mach_port_deallocate(thisTask, message->task.name);
+    }
+
+    // Never reply to this message again.
+    memset(message, 0, sizeof(*message));
+}
+
 // ============================================================================
 #pragma mark - Handler -
 // ============================================================================
@@ -213,7 +317,6 @@ void bsg_ksmachexc_i_restoreExceptionPorts(void) {
  */
 void *ksmachexc_i_handleExceptions(void *const userData) {
     MachExceptionMessage exceptionMessage = {{0}};
-    MachReplyMessage replyMessage = {{0}};
 
     const char *threadName = (const char *)userData;
     pthread_setname_np(threadName);
@@ -229,12 +332,20 @@ void *ksmachexc_i_handleExceptions(void *const userData) {
         mach_msg_return_t result = mach_msg(
             &exceptionMessage.header, MACH_RCV_MSG, 0, sizeof(exceptionMessage),
             bsg_g_exceptionPort, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
-        if (result == MACH_MSG_SUCCESS) {
-            break;
+        if (result != MACH_MSG_SUCCESS) {
+            // Loop and try again on failure.
+            BSG_KSLOG_ERROR("mach_msg: %d", result);
+            continue;
         }
 
-        // Loop and try again on failure.
-        BSG_KSLOG_ERROR("mach_msg: %d", result);
+        if (bsg_ksmachexc_i_isNonFatalGuard(&exceptionMessage)) {
+            BSG_KSLOG_DEBUG("Ignoring non-fatal EXC_GUARD code 0x%llx",
+                            exceptionMessage.code[0]);
+            bsg_ksmachexc_i_passThrough(&exceptionMessage);
+            continue;
+        }
+
+        break;
     }
 
     BSG_KSLOG_DEBUG("Trapped mach exception code 0x%llx, subcode 0x%llx",
@@ -303,12 +414,7 @@ void *ksmachexc_i_handleExceptions(void *const userData) {
 
     BSG_KSLOG_DEBUG("Replying to mach exception message.");
     // Send a reply saying "I didn't handle this exception".
-    replyMessage.header = exceptionMessage.header;
-    replyMessage.NDR = exceptionMessage.NDR;
-    replyMessage.returnCode = KERN_FAILURE;
-
-    mach_msg(&replyMessage.header, MACH_SEND_MSG, sizeof(replyMessage), 0,
-             MACH_PORT_NULL, MACH_MSG_TIMEOUT_NONE, MACH_PORT_NULL);
+    bsg_ksmachexc_i_replyNotHandled(&exceptionMessage);
 
     return NULL;
 }
@@ -349,9 +455,23 @@ bool bsg_kscrashsentry_installMachHandler(
 
     bsg_g_context = context;
 
+    exception_mask_t guardMask = 0;
+#ifdef EXC_MASK_GUARD
+    // The other exception types reach a previously installed handler because
+    // the faulting instruction re-raises after our ports are restored. A guard
+    // violation is not re-raised (the kernel terminates the process instead),
+    // so only claim EXC_GUARD when no other task-level handler has.
+    if (bsg_ksmachexc_i_hasTaskExceptionHandler(thisTask, EXC_MASK_GUARD)) {
+        BSG_KSLOG_WARN("An EXC_GUARD handler is already installed. "
+                       "Not replacing it.");
+    } else {
+        guardMask = EXC_MASK_GUARD;
+    }
+#endif
+
     BSG_KSLOG_DEBUG("Backing up original exception ports.");
     kr = task_get_exception_ports(
-        thisTask, mask, bsg_g_previousExceptionPorts.masks,
+        thisTask, mask | guardMask, bsg_g_previousExceptionPorts.masks,
         &bsg_g_previousExceptionPorts.count, bsg_g_previousExceptionPorts.ports,
         bsg_g_previousExceptionPorts.behaviors,
         bsg_g_previousExceptionPorts.flavors);
@@ -387,6 +507,18 @@ bool bsg_kscrashsentry_installMachHandler(
     if (kr != KERN_SUCCESS) {
         BSG_KSLOG_ERROR("task_set_exception_ports: %s", mach_error_string(kr));
         goto failed;
+    }
+
+    if (guardMask) {
+        // Installed separately so that a failure here cannot prevent the
+        // handler for the other exception types from being installed.
+        kr = task_set_exception_ports(thisTask, guardMask, bsg_g_exceptionPort,
+                                      (int)(EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES),
+                                      THREAD_STATE_NONE);
+        if (kr != KERN_SUCCESS) {
+            BSG_KSLOG_WARN("task_set_exception_ports(EXC_MASK_GUARD): %s",
+                           mach_error_string(kr));
+        }
     }
 
     BSG_KSLOG_DEBUG("Creating secondary exception thread (suspended).");

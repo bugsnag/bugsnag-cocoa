@@ -63,6 +63,59 @@ const char *bsg_ksmachexceptionName(exception_type_t exceptionType);
 const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode);
 
 // ============================================================================
+#pragma mark - EXC_GUARD -
+// ============================================================================
+
+/*
+ * EXC_GUARD code layout, from XNU <kern/exc_guard.h> (shipped only in the
+ * macOS SDK, so mirrored here):
+ *
+ *   code:    [63:61] guard type | [60:32] flavor | [31:0] target
+ *   subcode: [63:0]  guard identifier / payload (meaning depends on type)
+ *
+ * The guard type values are mirrored too. Some of them are also defined by
+ * <mach/port.h> and <mach/vm_statistics.h>; BSG_KSMach.c checks those at
+ * compile time.
+ */
+#define BSG_GUARD_TYPE_NONE 0x0
+#define BSG_GUARD_TYPE_MACH_PORT 0x1
+#define BSG_GUARD_TYPE_FD 0x2
+#define BSG_GUARD_TYPE_USER 0x3
+#define BSG_GUARD_TYPE_VN 0x4
+#define BSG_GUARD_TYPE_VIRT_MEMORY 0x5
+#define BSG_GUARD_TYPE_REJECTED_SC 0x6
+
+#define BSG_EXC_GUARD_DECODE_GUARD_TYPE(code)                                  \
+    ((((uint64_t)(code)) >> 61) & 0x7ull)
+#define BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code)                                \
+    ((((uint64_t)(code)) >> 32) & 0x1fffffffull)
+#define BSG_EXC_GUARD_DECODE_GUARD_TARGET(code) ((uint32_t)(code))
+
+/** Get the name of an EXC_GUARD guard type, e.g. "GUARD_TYPE_FD".
+ *
+ * @return The name, or NULL if the type is not known.
+ */
+const char *bsg_ksmachguardTypeName(uint64_t guardType);
+
+/** Get the name of an EXC_GUARD flavor for a given guard type,
+ * e.g. "kGUARD_EXC_CLOSE". Only flavors defined by Apple headers are named.
+ *
+ * @return The name, or NULL if the flavor is not known.
+ */
+const char *bsg_ksmachguardFlavorName(uint64_t guardType, uint64_t flavor);
+
+/** Whether XNU always terminates the process after synchronously delivering
+ * an EXC_GUARD with this code to the task's exception port.
+ *
+ * Returns false for guards that can be delivered without terminating the
+ * process, and for guards whose fatality cannot be determined from the code.
+ * These must not be recorded as crashes.
+ *
+ * Async-signal-safe.
+ */
+bool bsg_ksmachguardIsFatal(int64_t code);
+
+// ============================================================================
 #pragma mark - Thread State Info -
 // ============================================================================
 

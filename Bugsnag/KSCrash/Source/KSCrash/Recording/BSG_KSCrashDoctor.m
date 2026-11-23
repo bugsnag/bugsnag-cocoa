@@ -119,6 +119,43 @@
     return NO;
 }
 
+/// A stable description of an EXC_GUARD (guard type and flavor only; the
+/// target and identifier stay in the metadata so they don't affect grouping).
+- (NSString *)guardDiagnosis:(NSDictionary *)errorReport {
+    NSDictionary *machError = errorReport[@BSG_KSCrashField_Mach];
+    if (![machError isKindOfClass:[NSDictionary class]] ||
+        ![machError[@BSG_KSCrashField_ExceptionName] isEqual:@"EXC_GUARD"]) {
+        return nil;
+    }
+    NSDictionary *guard = machError[@BSG_KSCrashField_Guard];
+    if (![guard isKindOfClass:[NSDictionary class]]) {
+        return @"Violated guarded resource protections.";
+    }
+    NSString *typeName = guard[@BSG_KSCrashField_TypeName];
+    NSNumber *type = guard[@BSG_KSCrashField_Type];
+    NSString *flavorName = guard[@BSG_KSCrashField_FlavorName];
+    NSNumber *flavor = guard[@BSG_KSCrashField_Flavor];
+
+    NSString *typeDescription = @"Unknown guard type";
+    if ([typeName isKindOfClass:[NSString class]]) {
+        typeDescription = typeName;
+    } else if ([type isKindOfClass:[NSNumber class]]) {
+        typeDescription = [NSString stringWithFormat:@"Guard type %llu", type.unsignedLongLongValue];
+    }
+
+    NSString *flavorDescription = nil;
+    if ([flavorName isKindOfClass:[NSString class]]) {
+        flavorDescription = flavorName;
+    } else if ([flavor isKindOfClass:[NSNumber class]]) {
+        flavorDescription = [NSString stringWithFormat:@"flavor 0x%llx", flavor.unsignedLongLongValue];
+    }
+
+    if (!flavorDescription) {
+        return [NSString stringWithFormat:@"%@ violation", typeDescription];
+    }
+    return [NSString stringWithFormat:@"%@ violation: %@", typeDescription, flavorDescription];
+}
+
 - (BOOL)isStackOverflow:(NSDictionary *)crashedThreadReport {
     NSDictionary *stack =
             crashedThreadReport[@BSG_KSCrashField_Stack];
@@ -130,6 +167,11 @@
         NSString *lastFunctionName = [self lastInAppStackEntry:report][@BSG_KSCrashField_SymbolName];
         NSDictionary *crashedThreadReport = [self crashedThreadReport:report];
         NSDictionary *errorReport = [self errorReport:report];
+
+        NSString *guardDiagnosis = [self guardDiagnosis:errorReport];
+        if (guardDiagnosis) {
+            return guardDiagnosis;
+        }
 
         if ([self isStackOverflow:crashedThreadReport]) {
             return [NSString

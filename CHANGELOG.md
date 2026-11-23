@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Capture fatal `EXC_GUARD` Mach exceptions (for example closing a guarded file descriptor or destroying a guarded Mach port). They are reported as `EXC_GUARD` with the guard type, flavor, target and stack trace. Requires `enabledErrorTypes.machExceptions` (enabled by default). Terminations the operating system performs without notifying the app cannot be captured in-process.
+[#PR_NUMBER](https://github.com/bugsnag/bugsnag-cocoa/pull/PR_NUMBER)
+
 ## 7.0.0 (2026-11-06)
 
 ### Enhancements

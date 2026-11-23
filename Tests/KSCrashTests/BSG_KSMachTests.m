@@ -376,4 +376,149 @@ void * executeBlock(void *ptr)
     XCTAssertEqual(3, count);
 }
 
+#pragma mark - EXC_GUARD
+
+#define GUARD_CODE(type, flavor, target) \
+    ((int64_t)(((uint64_t)(type) << 61) | ((uint64_t)(flavor) << 32) | (uint32_t)(target)))
+
+- (void)testGuardExceptionName {
+    XCTAssertEqualObjects(@(bsg_ksmachexceptionName(EXC_GUARD)), @"EXC_GUARD");
+}
+
+- (void)testGuardTypeValuesMatchSDK {
+    XCTAssertEqual(BSG_GUARD_TYPE_MACH_PORT, GUARD_TYPE_MACH_PORT);
+    XCTAssertEqual(BSG_GUARD_TYPE_VIRT_MEMORY, GUARD_TYPE_VIRT_MEMORY);
+}
+
+- (void)testGuardDecodeFileDescriptor {
+    // Delivered by macOS 26.6.1 for close() of a guarded fd 3 (see the
+    // EXC_GUARD validation notes); used here as a synthetic fixture.
+    const int64_t code = (int64_t)0x4000000100000003ULL;
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TYPE(code), BSG_GUARD_TYPE_FD);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code), 1ULL);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TARGET(code), 3U);
+    XCTAssertEqualObjects(@(bsg_ksmachguardTypeName(BSG_GUARD_TYPE_FD)), @"GUARD_TYPE_FD");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_FD, 1)), @"kGUARD_EXC_CLOSE");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_FD, 1u << 6)), @"kGUARD_EXC_WRITE");
+    XCTAssertTrue(bsg_ksmachguardIsFatal(code));
+}
+
+- (void)testGuardDecodeMachPort {
+    // Delivered by macOS 26.6.1 for mach_port_destruct() of guarded port 0xb03.
+    const int64_t code = (int64_t)0x2000000100000b03ULL;
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TYPE(code), BSG_GUARD_TYPE_MACH_PORT);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code), (uint64_t)kGUARD_EXC_DESTROY);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TARGET(code), 0xb03U);
+    XCTAssertEqualObjects(@(bsg_ksmachguardTypeName(BSG_GUARD_TYPE_MACH_PORT)), @"GUARD_TYPE_MACH_PORT");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_DESTROY)), @"kGUARD_EXC_DESTROY");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_INCORRECT_GUARD)), @"kGUARD_EXC_INCORRECT_GUARD");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_MSG_FILTERED)), @"kGUARD_EXC_MSG_FILTERED");
+    XCTAssertTrue(bsg_ksmachguardIsFatal(code));
+}
+
+- (void)testGuardDecodeFullWidthValues {
+    // All flavor bits and a target with the top bit set.
+    const int64_t code = GUARD_CODE(BSG_GUARD_TYPE_REJECTED_SC, 0x1fffffff, 0xffffffff);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TYPE(code), BSG_GUARD_TYPE_REJECTED_SC);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code), 0x1fffffffULL);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TARGET(code), 0xffffffffU);
+    // Type 7 sets the sign bit of the int64_t code.
+    const int64_t negative = GUARD_CODE(7, 1, 1);
+    XCTAssertLessThan(negative, 0);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_TYPE(negative), 7ULL);
+    XCTAssertEqual(BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(negative), 1ULL);
+}
+
+- (void)testGuardUnknownValuesHaveNoNames {
+    XCTAssertTrue(bsg_ksmachguardTypeName(7) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_FD, 1u << 7) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_FD, 0) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, 14) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_INVALID_RIGHT) == NULL);
+    // No flavor names are claimed for types whose flavors aren't decoded.
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, kGUARD_EXC_DEALLOC_GAP) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VN, 1) == NULL);
+}
+
+- (void)testGuardFatality {
+    // File descriptor guards: always fatal, including unknown flavors.
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_FD, 1, 5)));
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_FD, 1u << 7, 5)));
+
+    // Mach port guards: only the always-fatal reasons.
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 0 /* kGUARD_EXC_NONE */, 1)));
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_DESTROY, 1)));
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_IMMOVABLE, 1)));
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, MAX_FATAL_kGUARD_EXC_CODE, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_INVALID_RIGHT, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 1u << 19 /* MAX_OPTIONAL_kGUARD_EXC_CODE */, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 0x00100000 /* kGUARD_EXC_RCV_GUARDED_DESC */, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 1u << 21 /* kGUARD_EXC_MOD_REFS_NON_FATAL */, 1)));
+
+    // Vnode guards: fatal except VNG_PERMISSIONS (1 << 7).
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VN, 1u << 0, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VN, 1u << 7, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VN, 0, 1)));
+
+    // Types whose fatality can't be determined from the code are never fatal.
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_NONE, 1, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_USER, 0, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, kGUARD_EXC_DEALLOC_GAP, 0)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, 200 /* kGUARD_EXC_MTE_SYNC_FAULT */, 0)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_REJECTED_SC, 0, 1)));
+    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(7, 1, 1)));
+}
+
+#if BSG_HAVE_MACH_EXCEPTIONS
+
+extern void bsg_ksmachexc_i_makeReplyHeader(const mach_msg_header_t *request, mach_msg_header_t *reply, mach_msg_size_t replySize);
+extern bool bsg_ksmachexc_i_hasTaskExceptionHandler(task_t task, exception_mask_t mask);
+
+- (void)testExceptionReplyHeader {
+    // Header of a real EXC_GUARD request received on macOS 26.6.1.
+    mach_msg_header_t request = {0};
+    request.msgh_bits = 0x80001112; // complex | local MOVE_SEND | remote MOVE_SEND_ONCE
+    request.msgh_remote_port = 0xc03;
+    request.msgh_local_port = 0x1e03;
+    request.msgh_id = 2405; // mach_exception_raise
+    mach_msg_header_t reply;
+    memset(&reply, 0xff, sizeof(reply));
+    bsg_ksmachexc_i_makeReplyHeader(&request, &reply, 36);
+    XCTAssertEqual(reply.msgh_bits, (mach_msg_bits_t)MACH_MSG_TYPE_MOVE_SEND_ONCE);
+    XCTAssertEqual(reply.msgh_bits & MACH_MSGH_BITS_COMPLEX, 0U);
+    XCTAssertEqual(reply.msgh_remote_port, (mach_port_t)0xc03);
+    // Must not move a send right for our own exception port.
+    XCTAssertEqual(reply.msgh_local_port, (mach_port_t)MACH_PORT_NULL);
+    XCTAssertEqual(reply.msgh_voucher_port, (mach_port_t)MACH_PORT_NULL);
+    XCTAssertEqual(reply.msgh_size, 36U);
+    XCTAssertEqual(reply.msgh_id, 2505);
+}
+
+- (void)testHasTaskExceptionHandler {
+    task_t task = mach_task_self();
+    exception_mask_t masks[EXC_TYPES_COUNT];
+    exception_handler_t ports[EXC_TYPES_COUNT];
+    exception_behavior_t behaviors[EXC_TYPES_COUNT];
+    thread_state_flavor_t flavors[EXC_TYPES_COUNT];
+    mach_msg_type_number_t count = EXC_TYPES_COUNT;
+    XCTAssertEqual(task_get_exception_ports(task, EXC_MASK_GUARD, masks, &count, ports, behaviors, flavors), KERN_SUCCESS);
+
+    mach_port_t port = MACH_PORT_NULL;
+    XCTAssertEqual(mach_port_allocate(task, MACH_PORT_RIGHT_RECEIVE, &port), KERN_SUCCESS);
+    XCTAssertEqual(mach_port_insert_right(task, port, port, MACH_MSG_TYPE_MAKE_SEND), KERN_SUCCESS);
+
+    XCTAssertEqual(task_set_exception_ports(task, EXC_MASK_GUARD, MACH_PORT_NULL, EXCEPTION_DEFAULT, THREAD_STATE_NONE), KERN_SUCCESS);
+    XCTAssertFalse(bsg_ksmachexc_i_hasTaskExceptionHandler(task, EXC_MASK_GUARD));
+    XCTAssertEqual(task_set_exception_ports(task, EXC_MASK_GUARD, port, (int)(EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES), THREAD_STATE_NONE), KERN_SUCCESS);
+    XCTAssertTrue(bsg_ksmachexc_i_hasTaskExceptionHandler(task, EXC_MASK_GUARD));
+
+    // Restore whatever was installed before.
+    for (mach_msg_type_number_t i = 0; i < count; i++) {
+        task_set_exception_ports(task, masks[i], ports[i], behaviors[i], flavors[i]);
+    }
+    mach_port_destruct(task, port, -1, 0);
+}
+
+#endif
+
 @end
