@@ -4,7 +4,7 @@ Upgrading Guide
 Upgrade from 6.X to 7.X
 -----------------------
 
-This version contains no API changes. The only change is the minimum deployment targets, which have been raised because Xcode 27 no longer builds for earlier versions:
+This version contains no API changes. The only change is the minimum deployment targets, which have been raised because Xcode 27 no longer supports building for older OS versions:
 
 | Platform | 6.X minimum deployment target | 7.X minimum deployment target |
 |----------|-------------------------------|-------------------------------|
