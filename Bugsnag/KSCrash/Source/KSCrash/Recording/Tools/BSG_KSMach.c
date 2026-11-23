@@ -105,6 +105,26 @@ _Static_assert(MAX_FATAL_kGUARD_EXC_CODE == BSG_MAX_FATAL_kGUARD_EXC_CODE,
 // The only non-fatal vnode guard flavor (XNU bsd/sys/guarded.h).
 #define BSG_VNG_PERMISSIONS (1u << 7)
 
+// Mach port guard reasons above BSG_MAX_FATAL_kGUARD_EXC_CODE and up to and
+// including this value ("optional" guards) are fatal only if the task's guard
+// behavior has TASK_EXC_GUARD_MP_FATAL (<mach/port.h>; kGUARD_EXC_RCV_INVALID_NAME).
+#define BSG_MAX_OPTIONAL_kGUARD_EXC_CODE (1u << 19)
+#ifdef MAX_OPTIONAL_kGUARD_EXC_CODE
+_Static_assert(MAX_OPTIONAL_kGUARD_EXC_CODE == BSG_MAX_OPTIONAL_kGUARD_EXC_CODE,
+               "MAX_OPTIONAL_kGUARD_EXC_CODE mismatch");
+#endif
+
+// Task guard behavior bits (<mach/task_info.h>). Optional Mach port guards and
+// virtual memory guards are fatal only if the task has the FATAL bit set.
+#define BSG_TASK_EXC_GUARD_VM_FATAL 0x08
+#define BSG_TASK_EXC_GUARD_MP_FATAL 0x80
+#ifdef TASK_EXC_GUARD_VM_FATAL
+_Static_assert(TASK_EXC_GUARD_VM_FATAL == BSG_TASK_EXC_GUARD_VM_FATAL, "TASK_EXC_GUARD_VM_FATAL mismatch");
+#endif
+#ifdef TASK_EXC_GUARD_MP_FATAL
+_Static_assert(TASK_EXC_GUARD_MP_FATAL == BSG_TASK_EXC_GUARD_MP_FATAL, "TASK_EXC_GUARD_MP_FATAL mismatch");
+#endif
+
 const char *bsg_ksmachguardTypeName(const uint64_t guardType) {
     switch (guardType) {
     case BSG_GUARD_TYPE_NONE:
@@ -153,6 +173,38 @@ static const char *bsg_ksmachguardMachPortFlavorName(const uint64_t flavor) {
     case 66: return "kGUARD_EXC_INVALID_MPO_ENTITLEMENT";
     case 67: return "kGUARD_EXC_DESCRIPTOR_VIOLATION";
     case 128: return "kGUARD_EXC_MSG_FILTERED";
+    // "Optional" reasons: fatal only if the task has TASK_EXC_GUARD_MP_FATAL.
+    case 1u << 8: return "kGUARD_EXC_INVALID_RIGHT";
+    case 1u << 9: return "kGUARD_EXC_INVALID_NAME";
+    case 1u << 10: return "kGUARD_EXC_INVALID_VALUE";
+    case 1u << 11: return "kGUARD_EXC_INVALID_ARGUMENT";
+    case 1u << 12: return "kGUARD_EXC_RIGHT_EXISTS";
+    case 1u << 13: return "kGUARD_EXC_KERN_NO_SPACE";
+    case 1u << 14: return "kGUARD_EXC_KERN_FAILURE";
+    case 1u << 15: return "kGUARD_EXC_KERN_RESOURCE";
+    case 1u << 16: return "kGUARD_EXC_SEND_INVALID_REPLY";
+    case 1u << 17: return "kGUARD_EXC_SEND_INVALID_VOUCHER";
+    case 1u << 18: return "kGUARD_EXC_SEND_INVALID_RIGHT";
+    case 1u << 19: return "kGUARD_EXC_RCV_INVALID_NAME";
+    }
+    return NULL;
+}
+
+// XNU osfmk/mach/vm_statistics.h (virtual_memory_guard_exception_code_t).
+static const char *bsg_ksmachguardVirtualMemoryFlavorName(const uint64_t flavor) {
+    switch (flavor) {
+    case 1: return "kGUARD_EXC_DEALLOC_GAP";
+    case 2: return "kGUARD_EXC_RECLAIM_COPYIO_FAILURE";
+    case 4: return "kGUARD_EXC_RECLAIM_INDEX_FAILURE";
+    case 8: return "kGUARD_EXC_RECLAIM_DEALLOCATE_FAILURE";
+    case 9: return "kGUARD_EXC_RECLAIM_ACCOUNTING_FAILURE";
+    case 10: return "kGUARD_EXC_SEC_IOPL_ON_EXEC_PAGE";
+    case 11: return "kGUARD_EXC_SEC_EXEC_ON_IOPL_PAGE";
+    case 12: return "kGUARD_EXC_SEC_UPL_WRITE_ON_EXEC_REGION";
+    case 98: return "kGUARD_EXC_SEC_ACCESS_FAULT";
+    case 99: return "kGUARD_EXC_SEC_ASYNC_ACCESS_FAULT";
+    case 100: return "kGUARD_EXC_SEC_COPY_DENIED";
+    case 101: return "kGUARD_EXC_SEC_SHARING_DENIED";
     }
     return NULL;
 }
@@ -179,31 +231,61 @@ const char *bsg_ksmachguardFlavorName(const uint64_t guardType,
         return bsg_ksmachguardMachPortFlavorName(flavor);
     case BSG_GUARD_TYPE_FD:
         return bsg_ksmachguardFDFlavorName(flavor);
+    case BSG_GUARD_TYPE_VIRT_MEMORY:
+        return bsg_ksmachguardVirtualMemoryFlavorName(flavor);
     }
     return NULL;
 }
 
-bool bsg_ksmachguardIsFatal(const int64_t code) {
+bool bsg_ksmachguardIsFatalWithPolicy(const int64_t code, const uint32_t taskGuardBehavior) {
     const uint64_t flavor = BSG_EXC_GUARD_DECODE_GUARD_FLAVOR(code);
     switch (BSG_EXC_GUARD_DECODE_GUARD_TYPE(code)) {
     case BSG_GUARD_TYPE_FD:
         // fd_guard_ast() exits the process after delivery for every flavor.
         return true;
     case BSG_GUARD_TYPE_MACH_PORT:
-        // mach_port_guard_ast() exits the process after delivery for reasons up
-        // to MAX_FATAL_kGUARD_EXC_CODE. Higher ("optional" and "soft") reasons
-        // can be delivered while the process keeps running.
-        return flavor != 0 && flavor <= BSG_MAX_FATAL_kGUARD_EXC_CODE;
+        // mach_port_guard_exception() is fatal for reasons up to
+        // MAX_FATAL_kGUARD_EXC_CODE. Reasons up to MAX_OPTIONAL_kGUARD_EXC_CODE
+        // are fatal only if the task has TASK_EXC_GUARD_MP_FATAL. Higher
+        // ("soft") reasons can be delivered while the process keeps running.
+        if (flavor != 0 && flavor <= BSG_MAX_FATAL_kGUARD_EXC_CODE) {
+            return true;
+        }
+        return flavor > BSG_MAX_FATAL_kGUARD_EXC_CODE && flavor <= BSG_MAX_OPTIONAL_kGUARD_EXC_CODE &&
+               (taskGuardBehavior & BSG_TASK_EXC_GUARD_MP_FATAL) != 0;
     case BSG_GUARD_TYPE_VN:
         // vn_guard_ast() exits the process for every flavor except
         // VNG_PERMISSIONS.
         return flavor != 0 && flavor != BSG_VNG_PERMISSIONS;
+    case BSG_GUARD_TYPE_VIRT_MEMORY:
+        // virt_memory_guard_ast() exits the process after delivery only if the
+        // task has TASK_EXC_GUARD_VM_FATAL, whatever the flavor.
+        return (taskGuardBehavior & BSG_TASK_EXC_GUARD_VM_FATAL) != 0;
     default:
-        // GUARD_TYPE_VIRT_MEMORY: fatality depends on the task's guard policy.
         // GUARD_TYPE_USER: raised as a simulated crash, not a sync delivery.
         // GUARD_TYPE_REJECTED_SC and unknown types: not determinable.
         return false;
     }
+}
+
+// task_get_exc_guard_behavior() is not available on every OS version the SDK
+// supports, so it is weakly linked and checked before use.
+extern kern_return_t task_get_exc_guard_behavior(task_inspect_t task, task_exc_guard_behavior_t *behaviorp)
+    __attribute__((weak_import));
+
+bool bsg_ksmachguardIsFatal(const int64_t code) {
+    uint32_t behavior = 0;
+    const uint64_t type = BSG_EXC_GUARD_DECODE_GUARD_TYPE(code);
+    // Only the types whose fatality depends on the task's guard behavior need it.
+    if (type == BSG_GUARD_TYPE_VIRT_MEMORY || type == BSG_GUARD_TYPE_MACH_PORT) {
+        if (task_get_exc_guard_behavior != NULL) {
+            task_exc_guard_behavior_t value = 0;
+            if (task_get_exc_guard_behavior(mach_task_self(), &value) == KERN_SUCCESS) {
+                behavior = (uint32_t)value;
+            }
+        }
+    }
+    return bsg_ksmachguardIsFatalWithPolicy(code, behavior);
 }
 
 const char *bsg_ksmachkernelReturnCodeName(const kern_return_t returnCode) {

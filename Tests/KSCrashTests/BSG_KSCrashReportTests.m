@@ -404,6 +404,26 @@ static int appendErrorJSON(const char *data, size_t length, void *userData) {
         @"target": @0xb03}));
 }
 
+- (void)testWriteErrorGuardVirtualMemory {
+    NSDictionary *error = [self errorJSONForMachException:EXC_GUARD
+                                                     code:0xa000000100000000ULL
+                                                  subcode:0x1021dc000];
+    XCTAssertEqualObjects(error[@"mach"][@"guard"], (@{
+        @"type": @5, @"type_name": @"GUARD_TYPE_VIRT_MEMORY",
+        @"flavor": @1, @"flavor_name": @"kGUARD_EXC_DEALLOC_GAP",
+        @"target": @0}));
+}
+
+- (void)testWriteErrorGuardOptionalMachPort {
+    NSDictionary *error = [self errorJSONForMachException:EXC_GUARD
+                                                     code:0x2000010000003103ULL
+                                                  subcode:0];
+    XCTAssertEqualObjects(error[@"mach"][@"guard"], (@{
+        @"type": @1, @"type_name": @"GUARD_TYPE_MACH_PORT",
+        @"flavor": @256, @"flavor_name": @"kGUARD_EXC_INVALID_RIGHT",
+        @"target": @0x3103}));
+}
+
 - (void)testWriteErrorGuardUnknownSubtype {
     // Unknown FD flavor: raw values kept, no name invented.
     NSDictionary *mach = [self errorJSONForMachException:EXC_GUARD

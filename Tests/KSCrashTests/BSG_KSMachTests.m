@@ -434,9 +434,11 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_FD, 1u << 7) == NULL);
     XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_FD, 0) == NULL);
     XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, 14) == NULL);
-    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_INVALID_RIGHT) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, 1u << 20) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, 0) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, 3) == NULL);
+    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, 200 /* kGUARD_EXC_MTE_SYNC_FAULT */) == NULL);
     // No flavor names are claimed for types whose flavors aren't decoded.
-    XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, kGUARD_EXC_DEALLOC_GAP) == NULL);
     XCTAssertTrue(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VN, 1) == NULL);
 }
 
@@ -450,8 +452,7 @@ void * executeBlock(void *ptr)
     XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_DESTROY, 1)));
     XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_IMMOVABLE, 1)));
     XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, MAX_FATAL_kGUARD_EXC_CODE, 1)));
-    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_INVALID_RIGHT, 1)));
-    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 1u << 19 /* MAX_OPTIONAL_kGUARD_EXC_CODE */, 1)));
+    // Optional reasons are fatal only when the task has TASK_EXC_GUARD_MP_FATAL (see testGuardFatalityDependsOnTaskPolicy).
     XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 0x00100000 /* kGUARD_EXC_RCV_GUARDED_DESC */, 1)));
     XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 1u << 21 /* kGUARD_EXC_MOD_REFS_NON_FATAL */, 1)));
 
@@ -463,10 +464,69 @@ void * executeBlock(void *ptr)
     // Types whose fatality can't be determined from the code are never fatal.
     XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_NONE, 1, 1)));
     XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_USER, 0, 1)));
-    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, kGUARD_EXC_DEALLOC_GAP, 0)));
-    XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, 200 /* kGUARD_EXC_MTE_SYNC_FAULT */, 0)));
     XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_REJECTED_SC, 0, 1)));
     XCTAssertFalse(bsg_ksmachguardIsFatal(GUARD_CODE(7, 1, 1)));
+}
+
+- (void)testGuardVirtualMemoryAndPortFlavorNames {
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, 1)), @"kGUARD_EXC_DEALLOC_GAP");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, 9)), @"kGUARD_EXC_RECLAIM_ACCOUNTING_FAILURE");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_VIRT_MEMORY, 101)), @"kGUARD_EXC_SEC_SHARING_DENIED");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_INVALID_RIGHT)), @"kGUARD_EXC_INVALID_RIGHT");
+    XCTAssertEqualObjects(@(bsg_ksmachguardFlavorName(BSG_GUARD_TYPE_MACH_PORT, 1u << 19)), @"kGUARD_EXC_RCV_INVALID_NAME");
+}
+
+- (void)testGuardFatalityDependsOnTaskPolicy {
+    const int64_t vm = GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, 1 /* kGUARD_EXC_DEALLOC_GAP */, 0);
+    const int64_t vmOther = GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, 200, 0);
+    const int64_t optionalPort = GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 256 /* kGUARD_EXC_INVALID_RIGHT */, 1);
+    const int64_t lastOptionalPort = GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 1u << 19 /* MAX_OPTIONAL_kGUARD_EXC_CODE */, 1);
+    const int64_t softPort = GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 0x00100000 /* kGUARD_EXC_RCV_GUARDED_DESC */, 1);
+    const int64_t nonFatalPort = GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 1u << 21 /* kGUARD_EXC_MOD_REFS_NON_FATAL */, 1);
+    const uint32_t vmFatal = 0x08, vmDeliverOnly = 0x01, mpFatal = 0x80, mpDeliverOnly = 0x10;
+
+    // Virtual memory: only the VM FATAL bit matters, for every flavor.
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(vm, 0));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(vm, vmDeliverOnly));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(vm, mpFatal));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(vm, vmFatal));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(vm, vmFatal | vmDeliverOnly));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(vmOther, vmFatal));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(vmOther, 0));
+
+    // Optional Mach port reasons: only the MP FATAL bit matters.
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(optionalPort, 0));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(optionalPort, mpDeliverOnly));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(optionalPort, vmFatal));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(optionalPort, mpFatal));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(lastOptionalPort, mpFatal));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(lastOptionalPort, 0));
+    // Reasons above the optional range stay non-fatal whatever the policy.
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(softPort, 0xff));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(nonFatalPort, 0xff));
+
+    // Always-fatal guards ignore the policy.
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_FD, 1, 5), 0));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, kGUARD_EXC_DESTROY, 1), 0));
+    XCTAssertTrue(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_VN, 1, 1), 0));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_VN, 1u << 7, 1), 0xff));
+
+    // User, rejected syscall and unknown types are never fatal, even with every bit set.
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_USER, 0, 1), 0xff));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_REJECTED_SC, 0, 1), 0xff));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(BSG_GUARD_TYPE_NONE, 1, 1), 0xff));
+    XCTAssertFalse(bsg_ksmachguardIsFatalWithPolicy(GUARD_CODE(7, 1, 1), 0xff));
+}
+
+- (void)testGuardFatalityUsesTheTasksOwnPolicy {
+    // The live check must agree with whatever policy this test process has.
+    task_exc_guard_behavior_t behavior = 0;
+    XCTAssertEqual(task_get_exc_guard_behavior(mach_task_self(), &behavior), KERN_SUCCESS);
+    const int64_t vm = GUARD_CODE(BSG_GUARD_TYPE_VIRT_MEMORY, 1, 0);
+    const int64_t optionalPort = GUARD_CODE(BSG_GUARD_TYPE_MACH_PORT, 256, 1);
+    XCTAssertEqual(bsg_ksmachguardIsFatal(vm), (behavior & TASK_EXC_GUARD_VM_FATAL) != 0);
+    XCTAssertEqual(bsg_ksmachguardIsFatal(optionalPort), (behavior & TASK_EXC_GUARD_MP_FATAL) != 0);
+    XCTAssertTrue(bsg_ksmachguardIsFatal(GUARD_CODE(BSG_GUARD_TYPE_FD, 1, 1)));
 }
 
 #if BSG_HAVE_MACH_EXCEPTIONS

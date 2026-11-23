@@ -234,6 +234,22 @@ static NSArray * FrameAddresses(NSArray<BugsnagStackframe *> *stacktrace) {
     XCTAssertEqualObjects(mach[@"subcode"], @"0x1234");
 }
 
+- (void)testGuardVirtualMemoryEvent {
+    // Delivered by macOS 26.x for a deallocation spanning an unmapped gap (kGUARD_EXC_DEALLOC_GAP).
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:
+                           [self reportWithMachException:EXC_GUARD code:0xa000000100000000ULL subcode:0x1021dc000]];
+    XCTAssertEqualObjects(event.errors[0].errorClass, @"EXC_GUARD");
+    XCTAssertEqualObjects(event.errors[0].errorMessage, @"GUARD_TYPE_VIRT_MEMORY violation: kGUARD_EXC_DEALLOC_GAP");
+}
+
+- (void)testGuardOptionalMachPortEvent {
+    // An "optional" port guard (kGUARD_EXC_INVALID_RIGHT) made fatal by TASK_EXC_GUARD_MP_FATAL.
+    BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:
+                           [self reportWithMachException:EXC_GUARD code:0x2000010000003103ULL subcode:0]];
+    XCTAssertEqualObjects(event.errors[0].errorClass, @"EXC_GUARD");
+    XCTAssertEqualObjects(event.errors[0].errorMessage, @"GUARD_TYPE_MACH_PORT violation: kGUARD_EXC_INVALID_RIGHT");
+}
+
 - (void)testGuardUnknownSubtypeEvent {
     BugsnagEvent *event = [[BugsnagEvent alloc] initWithKSReport:
                            [self reportWithMachException:EXC_GUARD code:0x4000008000000007ULL subcode:0]];

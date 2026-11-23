@@ -104,14 +104,27 @@ const char *bsg_ksmachguardTypeName(uint64_t guardType);
  */
 const char *bsg_ksmachguardFlavorName(uint64_t guardType, uint64_t flavor);
 
-/** Whether XNU always terminates the process after synchronously delivering
- * an EXC_GUARD with this code to the task's exception port.
+/** Whether XNU terminates the process after synchronously delivering an
+ * EXC_GUARD with this code to the task's exception port, given the task's
+ * guard behavior (task_get_exc_guard_behavior()).
+ *
+ * File descriptor guards, always-fatal Mach port guards and vnode guards (except
+ * VNG_PERMISSIONS) are fatal whatever the behavior. Optional Mach port guards
+ * and virtual memory guards are fatal only if the matching FATAL bit is set.
+ *
+ * @param code The exception code of the EXC_GUARD.
+ * @param taskGuardBehavior The task's TASK_EXC_GUARD_* behavior bits.
+ */
+bool bsg_ksmachguardIsFatalWithPolicy(int64_t code, uint32_t taskGuardBehavior);
+
+/** Whether XNU terminates the process after synchronously delivering an
+ * EXC_GUARD with this code to the task's exception port, using the current
+ * task's guard behavior where it matters.
  *
  * Returns false for guards that can be delivered without terminating the
- * process, and for guards whose fatality cannot be determined from the code.
+ * process, and for guards whose fatality cannot be determined (the user and
+ * rejected-syscall types, and when the task's guard behavior is unavailable).
  * These must not be recorded as crashes.
- *
- * Async-signal-safe.
  */
 bool bsg_ksmachguardIsFatal(int64_t code);
 
