@@ -22,4 +22,16 @@
 - (BOOL)hasValidConfig;
 - (BOOL)isRemoteConfigEnabled;
 
+/**
+ * Exponential backoff delay ceiling for the given consecutive failure index (k):
+ * min(24h, 15min * 4^k)
+ */
++ (NSTimeInterval)backoffDelayForFailureIndex:(NSUInteger)failureIndex;
+
+/**
+ * Equal Jitter wait for the given failure index: (delay / 2) + (delay / 2) * randomFraction,
+ * where randomFraction is in the range [0, 1].
+ */
++ (NSTimeInterval)backoffWaitForFailureIndex:(NSUInteger)failureIndex randomFraction:(double)randomFraction;
+
 @end

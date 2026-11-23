@@ -23,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSString *remoteConfigurations;
 
 /**
+ * Remote config fetch retry state (failure count and cooldown), kept outside
+ * remoteConfigurations so clearing cached configs does not reset backoff.
+ */
+@property (readonly, nonatomic) NSString *remoteConfigFetchState;
+
+/**
  * File containing details of the current app hang (if the app is hung)
  */
 @property (readonly, nonatomic) NSString *appHangEvent;

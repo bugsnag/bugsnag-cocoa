@@ -25,9 +25,12 @@ static NSString *IfNoneMatchHeader = @"If-None-Match";
 static NSString *ETagHeader = @"ETag";
 static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
+static NSString *RetryAfterHeader = @"Retry-After";
 
 static const NSInteger HTTPStatusCodeNotModified = 304;
 static const NSInteger HTTPStatusCodeOK = 200;
+
+static const NSTimeInterval RequestTimeoutInterval = 30;
 
 static NSString *CurrentPayloadVersion = @"1";
 
@@ -40,6 +43,21 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
         }
     }
     return nil;
+}
+
+// The device has no usable connection, so the request never reached the config service.
+static BOOL BSGIsNetworkUnavailableError(NSError *error) {
+    if (![error.domain isEqualToString:NSURLErrorDomain]) {
+        return NO;
+    }
+    switch (error.code) {
+        case NSURLErrorNotConnectedToInternet:
+        case NSURLErrorInternationalRoamingOff:
+        case NSURLErrorDataNotAllowed:
+            return YES;
+        default:
+            return NO;
+    }
 }
 
 @implementation BSGRemoteConfigServiceResponse
@@ -155,7 +173,13 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
             completion([BSGRemoteConfigServiceResponse responseWithError:error]);
             return;
         }
-        
+        if (error && ![response isKindOfClass:[NSHTTPURLResponse class]]) {
+            BSGRemoteConfigServiceResponse *errorResponse = [BSGRemoteConfigServiceResponse responseWithError:error];
+            errorResponse.networkUnavailable = BSGIsNetworkUnavailableError(error);
+            completion(errorResponse);
+            return;
+        }
+
         NSString *etag = nil;
         NSDate *expiryDate = nil;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
@@ -173,8 +197,10 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
                 return;
             }
             if (httpResponse.statusCode != HTTPStatusCodeOK) {
-                completion([BSGRemoteConfigServiceResponse responseWithError:
-                            [strongSelf unexpectedResponseErrorWithStatusCode:httpResponse.statusCode]]);
+                BSGRemoteConfigServiceResponse *errorResponse = [BSGRemoteConfigServiceResponse responseWithError:
+                                                                 [strongSelf unexpectedResponseErrorWithStatusCode:httpResponse.statusCode]];
+                errorResponse.retryAfter = [strongSelf parseRetryAfter:BSGHeaderValue(httpResponse.allHeaderFields, RetryAfterHeader)];
+                completion(errorResponse);
                 return;
             }
             if ([data length] == 0) {
@@ -263,6 +289,20 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
     return 0;
 }
 
+// Only the delay-seconds form is supported; an HTTP-date value is ignored.
+- (NSTimeInterval)parseRetryAfter:(NSString *)retryAfter {
+    NSString *trimmed = [retryAfter stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (trimmed.length == 0) {
+        return 0;
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:trimmed];
+    NSInteger seconds = 0;
+    if (![scanner scanInteger:&seconds] || !scanner.isAtEnd || seconds <= 0) {
+        return 0;
+    }
+    return (NSTimeInterval)seconds;
+}
+
 - (NSURLRequest *)requestWithUrl:(NSURL *)url currentTag:(NSString *)tag {
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[ContentTypeHeader] = @"application/json";
@@ -307,6 +347,7 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
     request.allHTTPHeaderFields = headers;
     request.HTTPMethod = @"GET";
     request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+    request.timeoutInterval = RequestTimeoutInterval;
     
     return request;
 }

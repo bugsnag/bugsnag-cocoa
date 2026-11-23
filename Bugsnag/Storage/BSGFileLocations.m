@@ -122,6 +122,7 @@ static NSString *getAndCreateSubdir(NSString *rootPath, NSString *relativePath) 
         _kscrashReports = getAndCreateSubdir(root, @"KSCrashReports");
         _featureFlags = getAndCreateSubdir(root, @"featureFlags");
         _remoteConfigurations = getAndCreateSubdir(root, @"config");
+        _remoteConfigFetchState = [root stringByAppendingPathComponent:@"remote_config_fetch_state.json"];
         _appHangEvent = [root stringByAppendingPathComponent:@"app_hang.json"];
         _flagHandledCrash = [root stringByAppendingPathComponent:@"bugsnag_handled_crash.txt"];
         _configuration = [root stringByAppendingPathComponent:@"config.json"];

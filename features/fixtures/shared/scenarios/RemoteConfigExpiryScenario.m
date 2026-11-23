@@ -21,6 +21,10 @@
     [super configure];
     NSURL *configURL = [self.fixtureConfig.mazeRunnerURL URLByAppendingPathComponent:@"error-config"];
     self.config.endpoints.configuration = configURL.absoluteString;
+    // The scenario mode, when set, overrides the app version to simulate an app upgrade.
+    if (self.args.count > 0 && self.args[0].length > 0) {
+        self.config.appVersion = self.args[0];
+    }
 }
 
 - (void)run {

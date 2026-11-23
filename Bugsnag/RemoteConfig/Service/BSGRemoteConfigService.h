@@ -25,6 +25,10 @@ typedef NS_ENUM(NSUInteger, BSGRemoteConfigServiceResponseType) {
 @property (nonatomic, nullable) NSError *error;
 @property (nonatomic, nullable) NSString *configurationTag;
 @property (nonatomic, nullable) NSDate *expiryDate;
+/// Server-requested minimum wait in seconds from a Retry-After header on a failed response, or 0.
+@property (nonatomic) NSTimeInterval retryAfter;
+/// The request failed because the device had no network connection, not because of the config service.
+@property (nonatomic) BOOL networkUnavailable;
 
 @end
 
