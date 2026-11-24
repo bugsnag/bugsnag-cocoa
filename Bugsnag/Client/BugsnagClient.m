@@ -330,9 +330,8 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbStore removeAllBreadcrumbs];
-    // Under the lock that every feature flag method takes, so that a flag added or cleared on another thread can't land
-    // between reading the memory store and replacing the crash-time and persistent stores' flags. Such a call waits
-    // until both stores have the flags.
+    // Every feature flag method takes this lock, so a flag added or cleared on another thread cannot land between
+    // reading the memory store and replacing the crash-time and persistent stores' flags; it waits until both are set.
     @synchronized (self.featureFlagStore) {
         [self.featureFlagStore synchronizeFlagsWithMemoryStore];
     }
@@ -1472,7 +1471,7 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
 
     event.context = stateDict[BSGKeyClient][BSGKeyContext];
     event.groupingDiscriminator = stateDict[BSGKeyClient][BSGKeyGroupingDiscriminator];
-    // The flags read at launch: flags the app added before calling start belong to this launch, not the previous one
+    // The flags read at launch: those added before start belong to this launch, not the previous one
     event.featureFlagStore = BSGFeatureFlagStoreWithFlags([self.featureFlagStore previousLaunchFlags]);
 
     return event;

@@ -158,7 +158,7 @@
     XCTAssertTrue(store.isEmpty);
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), @[]);
 
-    // The store is still usable after being cleared
+    // Still usable after clearing
     [store addFeatureFlag:@"C" withVariant:nil];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(store), (@[@{@"featureFlag": @"C"}]));
 }

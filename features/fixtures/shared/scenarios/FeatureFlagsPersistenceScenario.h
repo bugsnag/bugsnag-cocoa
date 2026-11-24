@@ -2,28 +2,26 @@
 //  FeatureFlagsPersistenceScenario.h
 //  Shared scenarios
 //
-//  Helpers for scenarios that exercise how feature flags are persisted to
-//  <storage>/featureFlags/featureflag.bin (and, in older SDKs, one JSON file per flag).
+//  Helpers for feature flag persistence scenarios (<storage>/featureFlags/featureflag.bin, or legacy JSON files).
 //
 
 #import "Scenario.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// The SDK's featureFlags storage directory, mirroring -[BSGFileLocations initWithVersion1].
-/// The directory is created if it does not already exist.
+/// The SDK's featureFlags directory (as in -[BSGFileLocations initWithVersion1]), created if missing.
 NSString * FeatureFlagsDirectoryPath(void);
 
-/// The path of the binary feature flag file. The SDK creates it when it first has flags to save.
+/// Path of featureflag.bin, which the SDK creates when it first has flags to save.
 NSString * FeatureFlagsFilePath(void);
 
-/// Writes a feature flag file in the format used by SDK versions that stored one JSON file per flag.
+/// Writes a flag in the legacy one-JSON-file-per-flag format.
 void FeatureFlagsWriteLegacyFile(NSString *name, NSString *_Nullable variant, uint64_t index);
 
 /// Replaces featureflag.bin with invalid content. Modes: random, badSnapshot, truncated, empty, futureVersion.
 void FeatureFlagsWriteCorruptFile(NSString *mode);
 
-/// Describes the contents of the featureFlags directory, for adding to an event's metadata.
+/// Describes the featureFlags directory, for event metadata.
 NSDictionary<NSString *, id> * FeatureFlagsDirectorySummary(void);
 
 /// "long-name-" + 300 x "n" + "-end" (314 characters)
@@ -39,22 +37,19 @@ extern NSString * const FeatureFlagsUnicodeVariant;
 /// Flags named "bulk-000" ... with variants "bulk-000:v1" ...
 NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count);
 
-/// Base class for feature flag persistence scenarios.
-///
-/// Every event gets a "flagsDir" metadata section describing the featureFlags directory at the
-/// time the event is sent, and a "flagsDirBeforeStart" section describing it before Bugsnag started.
+/// Base class for feature flag persistence scenarios. Events get "flagsDir" and "flagsDirBeforeStart" metadata
+/// describing the featureFlags directory when sent and before Bugsnag started.
 @interface FeatureFlagsPersistenceScenario : Scenario
 
 @property (nonatomic, copy, nullable) NSDictionary *summaryBeforeStart;
 
-/// Called by -startBugsnag before Bugsnag is started. Subclasses override this to plant files.
+/// Called by -startBugsnag before starting Bugsnag; override to plant files.
 - (void)prepareFilesBeforeStart;
 
 /// Sends a handled error with the current flags directory summary in metadata.
 - (void)notifyHandledError;
 
-/// Kills the app with SIGKILL after allowing time for state to be flushed, which the SDK
-/// detects as an Out Of Memory termination at next launch.
+/// Kills the app with SIGKILL once state is flushed; the next launch detects an OOM.
 - (void)fakeOutOfMemoryAfterDelay;
 
 @end

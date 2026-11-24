@@ -22,8 +22,7 @@
 // Each file holds one flag; this only stops an unexpectedly large file being read into memory
 static const off_t BSGLegacyFeatureFlagMaxFileSize = 16 * 1024 * 1024;
 
-/// Reads a JSON file, returning nil if it cannot be read. As with featureflag.bin, a symbolic link at the path is
-/// not followed (see BSGOpenFileWithoutFollowingLinks).
+/// Reads a JSON file, returning nil if it cannot be read. Symbolic links are not followed.
 static NSData *_Nullable BSGReadLegacyFeatureFlagFile(NSString *path) {
     const int fd = BSGOpenFileWithoutFollowingLinks(path, O_RDONLY);
     if (fd == -1) {
@@ -42,8 +41,8 @@ static NSData *_Nullable BSGReadLegacyFeatureFlagFile(NSString *path) {
     return data;
 }
 
-/// Returns whether a file's contents have the types expected by BSGStoredFeatureFlag. The SDK always
-/// wrote a name, so a file without one is not a feature flag file.
+/// Whether the contents have the types BSGStoredFeatureFlag expects. The SDK always wrote a name, so a file without
+/// one is not a feature flag file.
 static BOOL BSGIsValidStoredFeatureFlag(id content) {
     if (![content isKindOfClass:[NSDictionary class]]) {
         return NO;
@@ -56,14 +55,10 @@ static BOOL BSGIsValidStoredFeatureFlag(id content) {
             (!index || [index isKindOfClass:[NSNumber class]]));
 }
 
-/// Whether a file in the directory is one of the JSON files. A flag with an empty name was saved as
-/// ".json", which pathExtension treats as having no extension.
 BOOL BSGIsLegacyFeatureFlagFile(NSString *file) {
     return [file hasSuffix:@".json"];
 }
 
-/// The flags saved in the JSON files, in the order they were added. Files that cannot be read or
-/// decoded are skipped.
 NSArray<BugsnagFeatureFlag *> * BSGLegacyFeatureFlags(NSArray<NSString *> *paths) {
     NSMutableArray<BSGStoredFeatureFlag *> *storedFlags = [NSMutableArray array];
     for (NSString *path in paths) {
@@ -104,8 +99,7 @@ NSArray<NSString *> * BSGRemoveLegacyFeatureFlagFiles(NSArray<NSString *> *paths
             continue;
         }
         if (!S_ISREG(st.st_mode) && !S_ISLNK(st.st_mode)) {
-            // Not a file that the SDK wrote (e.g. a directory whose name ends in ".json"), so it is not deleted. A
-            // symbolic link is deleted: unlink() removes the link itself, never the file it points to.
+            // Not written by the SDK (e.g. a directory named "*.json"), so not deleted
             continue;
         }
         if (unlink(fileSystemPath) != 0) {

@@ -2,11 +2,8 @@
 //  FeatureFlagsPersistenceOOMScenarios.m
 //  iOSTestApp
 //
-//  Feature flag persistence scenarios that rely on Out Of Memory detection, which is only
-//  available on iOS / tvOS. The OOM is faked with SIGKILL, as in OOMSessionlessScenario.
-//
-//  The flags in an OOM event are read from featureflag.bin (or legacy JSON files) at next launch,
-//  unlike crash reports and handled errors, so these scenarios exercise the persisted format.
+//  Persistence scenarios using OOM detection (iOS / tvOS only), faked with SIGKILL as in OOMSessionlessScenario.
+//  OOM events read flags from featureflag.bin (or legacy JSON) at next launch, so they test the persisted format.
 //
 
 #import "FeatureFlagsPersistenceScenario.h"
@@ -15,7 +12,7 @@
 #import <signal.h>
 #import <unistd.h>
 
-/// Deletes the temporary files the SDK writes before replacing featureflag.bin (featureflag.bin.<UUID>.tmp).
+/// Deletes the SDK's temporary featureflag.bin.<UUID>.tmp files.
 static void FeatureFlagsRemoveTemporaryFiles(void) {
     NSString *directory = FeatureFlagsDirectoryPath();
     for (NSString *name in [NSFileManager.defaultManager contentsOfDirectoryAtPath:directory error:nil]) {
@@ -55,8 +52,8 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 #pragma mark - 6. Flags do not leak between launches (OOM)
 
-/// Launch 1 adds "old" and is killed. Launch 2 (which sends the OOM event for launch 1) adds "new"
-/// and is killed. The OOM event for launch 2 must not contain "old".
+/// Launch 1 adds "old", launch 2 (sending launch 1's OOM) adds "new"; both are killed. Launch 2's OOM event must not
+/// contain "old".
 @interface FeatureFlagsRelaunchOOMScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -73,7 +70,7 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
         [Bugsnag addFeatureFlagWithName:@"old" variant:@"launch1"];
         [self fakeOutOfMemoryAfterDelay];
     } else {
-        // Allow time for the OOM event from launch 1 to be delivered, so the events arrive in order.
+        // Let launch 1's OOM event arrive first, keeping events in order.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [Bugsnag addFeatureFlagWithName:@"new" variant:@"launch2"];
             [self fakeOutOfMemoryAfterDelay];
@@ -85,10 +82,8 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 #pragma mark - 8. Upgrade from an SDK that stored flags as JSON files
 
-/// Simulates an app that was OOM-killed while running an SDK that stored one JSON file per flag:
-/// after Bugsnag has started (so OOM detection state is in place), featureflag.bin is deleted and legacy
-/// JSON files are written in its place, then the app is killed. At next launch the OOM event should
-/// contain the flags from the JSON files, which should then be deleted.
+/// An app OOM-killed on an SDK that used JSON files: after start, featureflag.bin is replaced with legacy JSON files
+/// and the app killed. The next OOM event must report the JSON flags, which are then deleted.
 @interface FeatureFlagsLegacyUpgradeOOMScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -123,9 +118,8 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 #pragma mark - 9. Stale legacy JSON files alongside featureflag.bin (OOM)
 
-/// As FeatureFlagsStaleJSONScenario, but launch 1 is OOM-killed so that the JSON files are
-/// planted before an OOM event is generated from the persisted flags. Because featureflag.bin and JSON
-/// files are found together, neither is used, and the OOM event has no flags.
+/// As FeatureFlagsStaleJSONScenario, but launch 1 is OOM-killed so JSON files are planted before its OOM event is
+/// built. With both kinds of file present neither is used, so the event has no flags.
 @interface FeatureFlagsStaleJSONOOMScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -154,8 +148,8 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 #pragma mark - 10. Corrupt featureflag.bin (OOM)
 
-/// featureflag.bin is corrupted before Bugsnag starts at launch 1; flags added afterwards must still be
-/// persisted and reported in the OOM event at launch 2.
+/// featureflag.bin is corrupted before launch 1 starts Bugsnag; later flags must still be persisted and in launch 2's
+/// OOM event.
 @interface FeatureFlagsCorruptFileOOMScenario : FeatureFlagsPersistenceScenario
 @end
 

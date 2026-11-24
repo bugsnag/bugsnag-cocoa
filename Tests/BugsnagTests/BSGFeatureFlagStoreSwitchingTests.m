@@ -19,8 +19,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     return result;
 }
 
-// Earlier releases of the SDK saved one JSON file per flag (BSGLegacyJSONFeatureFlagStore is a copy of
-// that store). Upgrading from, or downgrading to, such a release must never report stale flags.
+// Earlier releases saved one JSON file per flag (see BSGLegacyJSONFeatureFlagStore). Upgrading from or downgrading to
+// them must never report stale flags.
 @interface BSGFeatureFlagStoreSwitchingTests : BSGTestCase
 
 @property (nonatomic) NSString *directory;
@@ -41,8 +41,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [super tearDown];
 }
 
-// Named new... so that ARC returns the store retained rather than autoreleased: each store must be released (giving up
-// the lock on featureflag.lock) before the next launch opens one.
+// Named new... so ARC returns the store retained: each must be released (freeing featureflag.lock) before the next
+// launch.
 - (BSGPersistentFeatureFlagStore *)newStore {
     return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
@@ -67,7 +67,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     return previous;
 }
 
-/// The previous release's store at launch: its flags are read, then its files are cleared and the current flags added.
+/// The previous release's store at launch: reads its flags, clears its files and adds the current flags.
 - (NSArray *)launchPreviousReleaseWithFlags:(NSArray<BugsnagFeatureFlag *> *)flags {
     BSGLegacyJSONFeatureFlagStore *store = [self openPreviousReleaseStore];
     NSArray *previous = FlagsToArray(store.allFlags);
@@ -83,7 +83,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
     XCTAssertEqual([self jsonFileCount], 0);
-    // The imported flags are copied into featureflag.bin when Bugsnag starts, even when the launch has no flags
+    // Imported flags are copied into featureflag.bin at start, even if the launch has no flags
     XCTAssertTrue([self flagFileExists]);
     XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
 
@@ -95,7 +95,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     // The imported flag is kept ahead of the launch's own flags
     XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"c", @"3"], @[@"d", NSNull.null]]));
 
-    // A later launch replaces them, as it does any other persisted flags
+    // A later launch replaces them like any persisted flags
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"e"]]],
                           (@[@[@"c", @"3"], @[@"d", NSNull.null]]));
     XCTAssertEqualObjects(FlagsToArray([self newStore].allFlags), (@[@[@"e", NSNull.null]]));
@@ -106,7 +106,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self launchPreviousReleaseWithFlags:@[[BugsnagFeatureFlag flagWithName:@"old-1"]]], @[]);
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-2"]]],
                           (@[@[@"old-1", NSNull.null]]));
-    // The flag saved by the previous release is copied into featureflag.bin with the launch's own flag
+    // The previous release's flag is copied into featureflag.bin with the launch's own
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]],
                           (@[@[@"old-1", NSNull.null], @[@"new-2", NSNull.null]]));
     XCTAssertEqualObjects([self launchWithStore:[self newStore] flags:@[]], @[]);
@@ -116,7 +116,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 - (void)testDowngradeToPreviousReleaseAndUpgrade {
     [self launchWithStore:[self newStore] flags:@[[BugsnagFeatureFlag flagWithName:@"new-sdk"]]];
 
-    // The previous release's store cannot decode featureflag.bin, and deletes it when it clears its files at launch
+    // The previous release's store can't decode featureflag.bin and deletes it when clearing at launch
     BSGLegacyJSONFeatureFlagStore *previousRelease = [self openPreviousReleaseStore];
     XCTAssertEqualObjects(previousRelease.allFlags, @[]);
     [previousRelease clear];

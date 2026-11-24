@@ -4,18 +4,11 @@
 //
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
-//  Benchmarks comparing the legacy feature flag persistence (one JSON file per
-//  flag, BSGLegacyJSONFeatureFlagStore) with
-//  BSGPersistentFeatureFlagStore, which keeps them in one binary file. Each
-//  workload runs against both stores, each in a fresh temporary directory.
+//  Benchmarks BSGLegacyJSONFeatureFlagStore (one JSON file per flag) against BSGPersistentFeatureFlagStore (one
+//  binary file), each workload in a fresh directory. XCTest allows one measure block per test, so each benchmark has
+//  a "JSON" and a "Binary" test. testPrintComparisonTable logs p50 / p95 timings as a markdown table.
 //
-//  XCTest allows only one measure block per test method, so every benchmark is
-//  split into a "JSON" and a "Binary" test with an identical workload.
-//  testPrintComparisonTable logs a markdown table of p50 / p95 timings.
-//
-//  The benchmarks take several minutes, so CI does not run them: they only run
-//  when the environment variable BSG_RUN_PERFORMANCE_TESTS is set. Run them by
-//  hand before a release (see TESTING.md):
+//  Too slow for CI, they run only when BSG_RUN_PERFORMANCE_TESTS is set. Run them before a release (see TESTING.md):
 //
 //  TEST_RUNNER_BSG_RUN_PERFORMANCE_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-macOS \
 //      -destination 'platform=macOS' -only-testing:Bugsnag-macOSTests/BSGFeatureFlagStorePerformanceTests
@@ -69,7 +62,7 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
 @implementation BSGFeatureFlagStorePerformanceTests
 
 + (XCTestSuite *)defaultTestSuite {
-    // An empty suite rather than a skip in every test, so that a normal run does not list dozens of skipped tests
+    // An empty suite rather than dozens of skipped tests in a normal run
     if (!NSProcessInfo.processInfo.environment[@"BSG_RUN_PERFORMANCE_TESTS"]) {
         return [XCTestSuite testSuiteWithName:NSStringFromClass(self)];
     }
@@ -105,8 +98,8 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
     [self.temporaryDirectories removeObject:directory];
 }
 
-// Named new... so that ARC returns the store retained rather than autoreleased: a persistent store holds
-// the lock on its directory until it is released, and only the store holding it writes.
+// Named new... so ARC returns the store retained: only the lock holder writes, and a store holds the lock until
+// released.
 - (id<BSGFeatureFlagStore>)newStoreOfKind:(BSGFeatureFlagStoreKind)kind directory:(NSString *)directory {
     switch (kind) {
         case BSGFeatureFlagStoreKindJSON:
@@ -116,7 +109,7 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
     }
 }
 
-/// A fresh directory holding `count` flags written by a previous store instance.
+/// A fresh directory with `count` flags saved by an earlier store.
 - (NSString *)directoryWithFlags:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind {
     NSString *directory = [self makeTemporaryDirectory];
     [[self newStoreOfKind:kind directory:directory] addFeatureFlags:BSGMakeFlags(0, count)];
@@ -125,8 +118,8 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
 
 #pragma mark - XCTest measure benchmarks
 
-/// Wall-clock measurement with manual start/stop. Uses a reduced iteration count where
-/// XCTMeasureOptions is available, because the JSON store takes many seconds for 10,000 flags.
+/// Wall-clock measurement with manual start/stop, with fewer iterations where XCTMeasureOptions exists (the JSON store
+/// takes seconds for 10,000 flags).
 - (void)measureWithIterations:(NSUInteger)iterations block:(void (^)(void))block {
     if (@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 8.0, *)) {
         XCTMeasureOptions *options = [XCTMeasureOptions defaultOptions];
@@ -135,7 +128,7 @@ static double BSGPercentile(NSArray<NSNumber *> *samples, double percentile) {
         [self measureWithMetrics:@[[[XCTClockMetric alloc] init]] options:options block:block];
         return;
     }
-    // Older OS versions: the default iteration count, measured with the older API
+    // Older OSes: default iterations via the older API
     [self measureMetrics:@[XCTPerformanceMetric_WallClockTime] automaticallyStartMeasuring:NO forBlock:block];
 }
 
@@ -295,7 +288,7 @@ typedef void (^ BSGTimedBlock)(void);
     return samples;
 }
 
-/// One addFeatureFlag: call that changes the variant of an existing flag in a store holding `count` flags.
+/// One addFeatureFlag: changing an existing variant in a store of `count` flags.
 - (NSArray<NSNumber *> *)singleUpdateSamples:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind iterations:(NSUInteger)iterations {
     NSString *directory = [self makeTemporaryDirectory];
     id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
@@ -310,7 +303,7 @@ typedef void (^ BSGTimedBlock)(void);
     return samples;
 }
 
-/// One addFeatureFlag: call that adds a new flag to a store holding `count` flags.
+/// One addFeatureFlag: adding a new flag to a store of `count` flags.
 - (NSArray<NSNumber *> *)singleAddSamples:(NSUInteger)count kind:(BSGFeatureFlagStoreKind)kind iterations:(NSUInteger)iterations {
     NSString *directory = [self makeTemporaryDirectory];
     id<BSGFeatureFlagStore> store = [self newStoreOfKind:kind directory:directory];
@@ -324,7 +317,7 @@ typedef void (^ BSGTimedBlock)(void);
     return samples;
 }
 
-/// The JSON store takes many seconds per 10,000-flag batch add, so fewer samples are taken.
+/// Fewer samples: the JSON store takes seconds per 10,000-flag batch add.
 static NSUInteger BSGTableIterations(NSUInteger count) {
     return count >= 10000 ? 5 : 10;
 }
@@ -357,9 +350,8 @@ static NSString * BSGDescribeSamples(NSArray<NSNumber *> *samples) {
             BSGPercentile(samples, 50), BSGPercentile(samples, 99), (unsigned long)samples.count];
 }
 
-/// Measures the slowest single call that runs on the caller's thread (normally the main thread): adding flags one at a
-/// time up to the 2 MB limit (which grows the file several times), clearing them and shrinking the file, and
-/// replaceAllFlags: at start with about 2 MB of flags. Logs the results; it asserts nothing.
+/// Logs (asserting nothing) the slowest call on the caller's thread: adding flags one by one up to the 2 MB limit,
+/// clearing and shrinking, and replaceAllFlags: at start with about 2 MB.
 - (void)testSlowestSingleCallOnTheCallersThread {
     NSMutableString *report = [NSMutableString stringWithString:@"\n"];
     const NSUInteger rounds = 5;
@@ -392,7 +384,7 @@ static NSString * BSGDescribeSamples(NSArray<NSNumber *> *samples) {
                 [addMaxima addObject:@(roundMax)];
                 XCTAssertEqual(store.allFlags.count, flags.count);
 
-                // Clearing them, then replacing them with a few flags, which replaces the large file with a small one
+                // Clearing, then replacing with a few flags, which swaps the large file for a small one
                 [clearAll addObject:@(BSGTimeCall(^{ [store clear]; }))];
                 const unsigned long long sizeBefore = [[NSFileManager.defaultManager attributesOfItemAtPath:
                                                         [directory stringByAppendingPathComponent:@"featureflag.bin"] error:nil] fileSize];
@@ -403,10 +395,10 @@ static NSString * BSGDescribeSamples(NSArray<NSNumber *> *samples) {
                 store = nil;
                 [self removeDirectory:directory];
 
-                // replaceAllFlags: when Bugsnag starts, with about 2 MB of flags: with no file, with a file that holds
-                // the same flags (the usual case), and with a file that holds other flags
-                // Each store is released (giving up the lock) in its own pool before the next one is created, or the
-                // next one would not get the lock and would read and write nothing
+                // replaceAllFlags: at start with about 2 MB of flags: no file, a file with the same flags (usual), and
+                // one with other flags
+                // Each store is released in its own pool so the next gets the lock (otherwise it reads and writes
+                // nothing)
                 directory = [self makeTemporaryDirectory];
                 @autoreleasepool {
                     BSGPersistentFeatureFlagStore *first = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];

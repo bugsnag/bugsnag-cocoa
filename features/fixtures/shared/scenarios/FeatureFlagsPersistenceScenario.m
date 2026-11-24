@@ -2,11 +2,8 @@
 //  FeatureFlagsPersistenceScenario.m
 //  Shared scenarios
 //
-//  End-to-end scenarios for feature flag persistence (featureflag.bin, and the migration
-//  from / downgrade to the legacy format of one JSON file per flag).
-//
-//  Scenarios that rely on Out Of Memory detection are in FeatureFlagsPersistenceOOMScenarios.m
-//  (iOS only).
+//  End-to-end feature flag persistence scenarios: featureflag.bin, and migration from / downgrade to legacy JSON
+//  files. OOM scenarios (iOS only) are in FeatureFlagsPersistenceOOMScenarios.m.
 //
 
 #import "FeatureFlagsPersistenceScenario.h"
@@ -54,7 +51,7 @@ NSString * FeatureFlagsFilePath(void) {
 }
 
 void FeatureFlagsWriteLegacyFile(NSString *name, NSString *variant, uint64_t index) {
-    // Format and file naming used by BSGPersistentFeatureFlagStore before featureflag.bin was introduced.
+    // The legacy store's format and file naming.
     NSMutableDictionary *json = [NSMutableDictionary dictionary];
     json[@"featureFlag"] = name;
     json[@"index"] = @(index);
@@ -92,7 +89,7 @@ void FeatureFlagsWriteCorruptFile(NSString *mode) {
         memset(data.mutableBytes, 0xFF, fileSize);
         memcpy(data.mutableBytes, &header, sizeof(header));
     } else if ([mode isEqualToString:@"truncated"]) {
-        // A valid header that describes a file much larger than the one on disk
+        // A valid header describing a much larger file than on disk
         header.slotCapacity = 1000000;
         data = [NSMutableData dataWithLength:fileSize];
         memcpy(data.mutableBytes, &header, sizeof(header));
@@ -319,9 +316,8 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 #pragma mark - 5. Concurrent changes while crashing
 
-/// Four threads add and clear flags while the main thread crashes.
-///
-/// Every flag's variant is "<name>:<counter>" so that each reported entry can be checked for consistency.
+/// Four threads add and clear flags while the main thread crashes. Variants are "<name>:<counter>" so each entry can be
+/// checked.
 @interface FeatureFlagsConcurrentCrashScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -374,7 +370,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 - (void)run {
     if (self.launchCount <= 1) {
         [Bugsnag addFeatureFlagWithName:@"old" variant:@"launch1"];
-        // Lets the test wait for launch 1 to have run before the app is killed
+        // Lets the test wait for launch 1 before killing the app
         [self notifyHandledError];
     } else {
         [Bugsnag addFeatureFlagWithName:@"new" variant:@"launch2"];
@@ -386,7 +382,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 #pragma mark - 8. Migration from legacy JSON files
 
-/// Plants legacy JSON flag files (and no featureflag.bin) before Bugsnag starts, as left by an older SDK.
+/// Plants legacy JSON files (no featureflag.bin) before start, as an older SDK leaves them.
 @interface FeatureFlagsLegacyMigrationScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -413,10 +409,8 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 #pragma mark - 9. Stale legacy JSON files alongside featureflag.bin
 
-/// At launch 1, featureflag.bin does not exist and Bugsnag creates it when it saves config-flag.
-/// At subsequent launches, legacy JSON files are planted next to the existing featureflag.bin before
-/// Bugsnag starts, as if a file could not be deleted after a downgrade to an SDK that stored one
-/// JSON file per flag. Both are discarded, and the JSON files are deleted.
+/// Launch 1 creates featureflag.bin when saving config-flag. Later launches plant legacy JSON files beside it before
+/// start, as after a downgrade that failed to delete a file; both are discarded and the JSON files deleted.
 @interface FeatureFlagsStaleJSONScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -438,7 +432,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 - (void)run {
     if (self.launchCount <= 1) {
         [Bugsnag addFeatureFlagWithName:@"launch1-flag" variant:@"launch1"];
-        // Lets the test wait for launch 1 to have run before the app is killed
+        // Lets the test wait for launch 1 before killing the app
         [self notifyHandledError];
     } else {
         [Bugsnag addFeatureFlagWithName:@"launch2-flag" variant:@"launch2"];
@@ -450,8 +444,8 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 #pragma mark - 10. Corrupt featureflag.bin
 
-/// Replaces featureflag.bin with invalid content before Bugsnag starts at launch 1.
-/// The scenario mode selects the kind of corruption; see FeatureFlagsWriteCorruptFile().
+/// Corrupts featureflag.bin before Bugsnag starts at launch 1; the mode selects how (see
+/// FeatureFlagsWriteCorruptFile()).
 @interface FeatureFlagsCorruptFileScenario : FeatureFlagsPersistenceScenario
 @end
 
@@ -536,9 +530,8 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
 
 #pragma mark - 12. No files without flags
 
-/// Starts Bugsnag without any feature flags and sends a handled error. Nothing is created in the featureFlags
-/// directory, because there is never a flag to save. In "add-clear" mode a flag is added (which creates the
-/// files) and then cleared before the error is sent, so featureflag.bin exists but holds no flags.
+/// Starts Bugsnag with no flags and sends a handled error; nothing is created in featureFlags. In "add-clear" mode a
+/// flag is added then cleared first, so featureflag.bin exists but is empty.
 @interface FeatureFlagsNoFlagsScenario : FeatureFlagsPersistenceScenario
 @end
 

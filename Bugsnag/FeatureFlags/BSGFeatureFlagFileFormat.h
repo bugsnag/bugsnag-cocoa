@@ -15,42 +15,32 @@
 @class BugsnagFeatureFlag;
 
 //
-// The format of featureflag.bin, in which BSGPersistentFeatureFlagStore saves the feature flags.
-//
-// The flags are stored in a single binary file containing two slots, each of which can hold a
-// log of changes to the flags:
+// Format of featureflag.bin, in which BSGPersistentFeatureFlagStore saves the feature flags: a header and two slots,
+// each able to hold a log of changes to the flags.
 //
 //   [header][slot 0][slot 1]
 //   log = record*
 //   record = [name length][variant length][name][variant]
 //
-// Lengths are uint32 values in native byte order (little-endian on every supported platform),
-// and records are packed with no alignment padding. The name and variant are UTF-8.
+// Lengths are uint32 in native byte order (little-endian on every supported platform); records are packed with no
+// padding; name and variant are UTF-8. Variant length UINT32_MAX means no variant; UINT32_MAX - 1 means the record
+// removes the flag (no variant bytes). Replaying the log in order gives the flags in BSGMemoryFeatureFlagStore's
+// order: a record for a present flag replaces its variant in place; one for an absent flag (including one removed
+// earlier) adds it at the end.
 //
-// The variant length is UINT32_MAX for a flag without a variant, and UINT32_MAX - 1 for a
-// record that removes the flag (which has no variant bytes). Replaying the log in order gives
-// the flags, in the same order as BSGMemoryFeatureFlagStore keeps them: a record for a flag that
-// is already present replaces its variant and keeps its position, and a record for a flag that is
-// not present (including one removed by an earlier record) adds it at the end.
-//
-// File format policy. Released versions of the SDK only read files whose version they know,
-// so once a format version has been released it must never change:
-//
-// - A change that older versions can ignore uses the reserved header fields, which are written
-//   as zero and ignored when read; a newer version must treat zero as "not set". They may only
-//   hold values that are fixed when the file is created (a file is always created whole and
-//   renamed into place), because an older version that appends to a newer version's file leaves
-//   them unchanged. Anything that describes the log needs a new version.
-// - All integers in the file are little-endian (checked when building, see below).
-// - Any other change (header layout, record layout, the meaning of a length or of the special
-//   variant lengths) needs a new version number. A version that writes format N+1 must still
-//   read every earlier version, so that flags survive an upgrade.
-// - A file with a different magic number or an unknown version is discarded, never misread. So
-//   when older and newer versions of the SDK replace each other (upgrade, downgrade, or two
-//   versions in the same container), only the flags from the previous launch can be lost.
-// - The JSON files written by SDK versions before this file existed (one file per flag) are
-//   imported and deleted at launch. That import must be kept as long as an upgrade from such a
-//   version is supported (see BSGLegacyFeatureFlags.h).
+// File format policy. Released SDK versions only read files whose version they know, so a released format version
+// must never change:
+// - Changes older versions can ignore use the reserved header fields: written as zero, ignored when read, zero means
+//   "not set". They may only hold values fixed at creation (a file is always created whole and renamed into place),
+//   because an older version appending to a newer file leaves them unchanged. Anything describing the log needs a new
+//   version.
+// - All integers are little-endian (checked at build time, below).
+// - Any other change (header or record layout, the meaning of a length or of the special variant lengths) needs a new
+//   version number. A version that writes format N+1 must still read every earlier version, so flags survive upgrades.
+// - A file with another magic number or an unknown version is discarded, never misread, so when SDK versions replace
+//   each other (upgrade, downgrade, or two versions in one container) at most the previous launch's flags are lost.
+// - The one-file-per-flag JSON files of earlier SDK versions are imported and deleted at launch; keep that import as
+//   long as upgrading from such a version is supported (see BSGLegacyFeatureFlags.h).
 //
 
 NS_ASSUME_NONNULL_BEGIN
@@ -61,20 +51,17 @@ static const uint32_t BSGFeatureFlagFileMagic = 0x46465342; // "BSFF"
 static const uint32_t BSGFeatureFlagFileVersion = 1;
 static const uint32_t BSGFeatureFlagNoVariant = UINT32_MAX;
 static const uint32_t BSGFeatureFlagRemoved = UINT32_MAX - 1;
-// The most flags that are persisted: flags whose records take up more than this (just under 2 MB) are
-// kept in memory but not persisted.
+// Flags whose records exceed this (just under 2 MB) are kept in memory but not persisted.
 #define BSG_FEATURE_FLAG_MAX_PERSISTED_LENGTH (2ULL * 1024 * 1024 - 16)
 static const uint64_t BSGFeatureFlagMaxPersistedLength = BSG_FEATURE_FLAG_MAX_PERSISTED_LENGTH;
-// The largest slot capacity that is written, which makes the largest file 8 MB. It is at least twice
-// the most flags that are persisted, so that a log of flags at that limit can still double before it is
-// rewritten; otherwise nearly every change to such flags would rewrite all of them. Files are not
-// preallocated, so the disk space used is only that of the parts of the slots that have been written.
+// The largest slot capacity written (an 8 MB file). At least twice the persisted limit, so a log at the limit can
+// double before a rewrite rather than nearly every change rewriting it. Files are not preallocated, so only the
+// written parts of the slots use disk space.
 #define BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY (4ULL * 1024 * 1024 - 16)
 static const uint64_t BSGFeatureFlagMaxSlotCapacity = BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY;
-// The largest slot capacity that is read; anything larger in a header means the file is corrupt.
-// It is larger than the capacity that is written so that a later version can raise that limit
-// without its files being discarded by this one, and small enough that a corrupt header cannot
-// make the store read or allocate much memory (only the active log is read).
+// The largest slot capacity read; a larger one means the header is corrupt. Above the written capacity so a later
+// version can raise that without this one discarding its files; small enough that a corrupt header cannot make the
+// store read or allocate much memory (only the active log is read).
 #define BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY (16ULL * 1024 * 1024)
 static const uint64_t BSGFeatureFlagMaxReadableSlotCapacity = BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY;
 
@@ -91,13 +78,12 @@ struct bsg_feature_flag_file_header {
 // The layout is part of the file format, so it must be the same on every architecture (e.g. arm64_32).
 _Static_assert(sizeof(struct bsg_feature_flag_file_header) == 32, "Feature flag file header size");
 _Static_assert(offsetof(struct bsg_feature_flag_file_header, active) == 16, "Feature flag file header layout");
-// Integers are read and written in the host's byte order, so the format is little-endian only because every platform
-// the SDK supports is. A big-endian build must convert them first, rather than write files in another byte order.
+// Integers use the host's byte order, which is little-endian on every supported platform. A big-endian build must
+// convert them rather than write another byte order.
 #ifndef __LITTLE_ENDIAN__
 #error "The feature flag file format is little-endian: convert its integers before building for a big-endian target"
 #endif
-// The macros are used because older compilers don't treat static const variables as constant
-// expressions in C.
+// Macros, because older compilers don't treat static const variables as constant expressions in C.
 _Static_assert(BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY <= BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY, "Files that are written must be readable");
 _Static_assert(BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY <= UINT32_MAX, "Slot capacities must fit in the header");
 _Static_assert(2 * BSG_FEATURE_FLAG_MAX_PERSISTED_LENGTH <= BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY,

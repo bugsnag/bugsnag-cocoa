@@ -2,8 +2,7 @@
 //  BSGLegacyJSONFeatureFlagStore.h
 //  Bugsnag
 //
-//  Test-only copy of the legacy (one JSON file per flag) BSGPersistentFeatureFlagStore
-//  from master, renamed so it can be benchmarked against the binary file store.
+//  Test-only, renamed copy of master's legacy (one JSON file per flag) BSGPersistentFeatureFlagStore.
 //
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //

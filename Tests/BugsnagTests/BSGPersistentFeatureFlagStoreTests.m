@@ -53,9 +53,8 @@ static const size_t ActiveOffset = 16;
 - (void)protectedDataDidBecomeAvailable;
 @end
 
-/// Waits until the store holds the lock and has saved its current flags, as a retry that runs in the background
-/// does. Unlike reading the file from another store, this does not take the lock, so it never competes with the
-/// retry it is waiting for.
+/// Waits until the store holds the lock and has saved, without taking the lock itself (so never competing with a
+/// retry).
 static BOOL BSGWaitUntilStoreHasSaved(BSGPersistentFeatureFlagStore *store, NSTimeInterval timeout) {
     NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
     while (YES) {
@@ -71,9 +70,8 @@ static BOOL BSGWaitUntilStoreHasSaved(BSGPersistentFeatureFlagStore *store, NSTi
     }
 }
 
-/// The flags in a directory's featureflag.bin as [name, variant or NSNull] pairs, decoded directly from the file, or an
-/// empty array if there is no valid file. This is what the next launch reads, and it is read without creating a store,
-/// because a store created while another one holds the lock reports no persisted flags.
+/// The flags in featureflag.bin as [name, variant or NSNull] pairs, or [] if there is no valid file. Decoded without a
+/// store, because a store created while another holds the lock reports none.
 static NSArray<NSArray *> * BSGFlagsInFeatureFlagFile(NSString *directory) {
     NSString *path = [directory stringByAppendingPathComponent:@"featureflag.bin"];
     struct stat st;
@@ -100,7 +98,7 @@ static NSArray<NSArray *> * BSGFlagsInFeatureFlagFile(NSString *directory) {
             [names removeObject:name];
             [variants removeObjectForKey:name];
         } else {
-            // A flag that is already present keeps its position, as the store replays the log
+            // An existing flag keeps its position, as in the store
             [names addObject:name];
             variants[name] = variant ?: NSNull.null;
         }
@@ -115,8 +113,8 @@ static NSArray<NSArray *> * BSGFlagsInFeatureFlagFile(NSString *directory) {
     return flags;
 }
 
-/// The flags that the next launch reads: those of a new store if it takes the lock (which also imports JSON files),
-/// otherwise, while another store holds the lock, those decoded from featureflag.bin.
+/// The flags the next launch reads: from a new store if it can take the lock (importing JSON files), else decoded from
+/// featureflag.bin.
 static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
     @autoreleasepool {
         BSGPersistentFeatureFlagStore *store = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
@@ -132,16 +130,15 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
 }
 
 #if defined(DEBUG) && DEBUG
-// retryScheduler only exists in debug builds, so this class and the tests that use it do too
-/// Records the retries that stores schedule instead of running them after their delay, so that a test decides when
-/// they run and does not depend on timing. It does not retain the stores: the retries hold them weakly.
+// retryScheduler is debug-only, so this class and its tests are too
+/// Queues scheduled retries instead of running them, so tests decide when they run. Retries hold their stores weakly.
 @interface BSGManualRetryScheduler : NSObject
 /// The delay of each retry scheduled so far, in order.
 @property (nonatomic, readonly) NSMutableArray<NSNumber *> *delays;
 @property (nonatomic, readonly) NSMutableArray<dispatch_block_t> *pendingRetries;
 - (void)attachToStore:(BSGPersistentFeatureFlagStore *)store;
-/// Runs the retries scheduled so far, in order, and returns how many were run. Only the most recently scheduled
-/// one does anything. Retries that they schedule are left pending.
+/// Runs the pending retries in order and returns how many ran. Only the latest does anything; retries they schedule
+/// stay pending.
 - (NSUInteger)runPendingRetries;
 @end
 
@@ -176,7 +173,6 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
 @end
 #endif
 
-/// Counts calls to the store's private methods.
 /// A store whose file can never be replaced, as when the disk is full.
 @interface BSGUnreplaceablePersistentFeatureFlagStore : BSGPersistentFeatureFlagStore
 @end
@@ -189,12 +185,13 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
 
 @end
 
+/// Counts calls to the store's private methods.
 @interface BSGCountingPersistentFeatureFlagStore : BSGPersistentFeatureFlagStore
 @property (nonatomic) NSUInteger snapshotCount;
 @property (nonatomic) NSUInteger appendCount;
 @property (nonatomic) NSUInteger replaceFileCount;
 @property (nonatomic) NSUInteger clearCount;
-// Writes of the header's active value: every write to an open file ends with one
+// Header active-value writes; every write to an open file ends with one
 @property (nonatomic) NSUInteger headerWriteCount;
 @end
 
@@ -225,14 +222,14 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
     return [super writeActiveLength:length slot:slot];
 }
 
-/// Every write to the directory's files: a file replaced, or a header written to the open file.
+/// File replacements plus header writes.
 - (NSUInteger)writeCount {
     return self.replaceFileCount + self.headerWriteCount;
 }
 
 @end
 
-/// Fails to replace the file while failReplaceFile is set, or passes a different snapshot to it.
+/// Fails replaceFile while failReplaceFile is set, or substitutes replacementSnapshot.
 @interface BSGFailingPersistentFeatureFlagStore : BSGCountingPersistentFeatureFlagStore
 @property (nonatomic) BOOL failReplaceFile;
 @property (nonatomic) NSData *replacementSnapshot;
@@ -250,9 +247,7 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
 
 @end
 
-/// Fails to replace the file while failReplaceFile is set (see BSGFailingPersistentFeatureFlagStore), and fails the
-/// next failHeaderWrites writes of the header's active value with EIO, so that both ways of writing a log can fail in
-/// one attempt.
+/// Also fails the next failHeaderWrites header writes with EIO, so both ways of writing a log fail in one attempt.
 @interface BSGDoublyFailingPersistentFeatureFlagStore : BSGFailingPersistentFeatureFlagStore
 @property (nonatomic) NSUInteger failHeaderWrites;
 @end
@@ -270,8 +265,7 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
 
 @end
 
-/// Fails the next failHeaderWrites writes of the header's active value, as an I/O error would. Writes of the
-/// log itself are not affected, so this reaches the case where the records were written but the header was not.
+/// Fails the next failHeaderWrites header writes with EIO, leaving records written but not committed by the header.
 @interface BSGHeaderFailingPersistentFeatureFlagStore : BSGPersistentFeatureFlagStore
 @property (nonatomic) NSUInteger failHeaderWrites;
 @end
@@ -289,10 +283,8 @@ static NSArray<NSArray *> * BSGReopenedFlags(NSString *directory) {
 
 @end
 
-/// The directory of the test that is running. The functions that tests swap in for the store's file functions (see
-/// BSGSetFileProtectionFunctions and BSGSetFeatureFlagLockFunction) are global, so stores that are still alive from
-/// earlier tests (e.g. a retry they scheduled, or a client's store) can call them on other threads while a test runs.
-/// The simulations and counters only act on this directory's files, and pass anything else to the real functions.
+/// The running test's directory. Swapped-in file functions are global and stores left from earlier tests may call them,
+/// so simulations and counters act only on this directory and pass other paths through.
 static NSString *gTestDirectory;
 
 static BOOL BSGIsInTestDirectory(NSString *path) {
@@ -300,9 +292,8 @@ static BOOL BSGIsInTestDirectory(NSString *path) {
     return directory && [path hasPrefix:[directory stringByAppendingString:@"/"]];
 }
 
-/// Whether the descriptor refers to a file in the test's directory. The directory's name is unique (it ends with a
-/// UUID), so the path is matched on that name: the path of a descriptor can differ from the path it was opened with
-/// (e.g. /private/var rather than /var).
+/// Whether the descriptor is in the test's directory, matched on its unique (UUID) name since the path may differ
+/// (/private/var vs /var).
 static BOOL BSGDescriptorIsInTestDirectory(int fd) {
     NSString *directory = gTestDirectory;
     char path[MAXPATHLEN] = {0};
@@ -313,11 +304,9 @@ static BOOL BSGDescriptorIsInTestDirectory(int fd) {
     return [@(path) containsString:component];
 }
 
-/// Runs the block with the process's file size limit (RLIMIT_FSIZE) set to `limit` bytes, so that writing or
-/// extending any file past that offset fails with EFBIG, as writes fail when the disk is full. A write that
-/// crosses the limit is cut short. SIGXFSZ, which would otherwise end the process, is ignored meanwhile.
-/// Returns NO if the limit could not be set. The limit applies to the whole process, so it is restored however the
-/// block ends, and the block must be short: other threads cannot extend files past the limit meanwhile either.
+/// Runs the block with RLIMIT_FSIZE at `limit`, so writes past it fail with EFBIG (or are cut short) as on a full disk;
+/// SIGXFSZ is ignored meanwhile. Returns NO if the limit can't be set. The limit is process-wide, so it is always
+/// restored and the block must be short.
 static BOOL BSGWithFileSizeLimit(rlim_t limit, void (^ block)(void)) {
     struct rlimit original;
     if (getrlimit(RLIMIT_FSIZE, &original) != 0 || limit > original.rlim_max) {
@@ -342,9 +331,8 @@ static NSArray * FlagNames(NSArray<BugsnagFeatureFlag *> *flags) {
     return [flags valueForKey:@"name"];
 }
 
-/// Makes the existing featureflag.lock in a directory unreadable, so that a store cannot open it (EACCES), as when
-/// protected data is unavailable. That is a failure that can clear, so the store tries to take the lock again later,
-/// unlike when another store holds it. Returns NO if file permissions are not enforced (for root).
+/// Makes featureflag.lock unopenable (EACCES), as when protected data is unavailable: a failure that clears, so the
+/// store retries the lock. Returns NO for root.
 static BOOL BSGMakeLockFileUnopenable(NSString *directory) {
     NSString *path = [directory stringByAppendingPathComponent:@"featureflag.lock"];
     return geteuid() != 0 && chmod(path.fileSystemRepresentation, 0) == 0;
@@ -398,8 +386,8 @@ static void BSGRestoreLockFile(NSString *directory) {
 
 @end
 
-/// A memory store that can stand in for the persistent store, or act as the reference that a persistent store's
-/// order is checked against. The SDK's memory store does not implement replaceAllFlags: because nothing calls it.
+/// A memory store with replaceAllFlags: (the SDK's lacks it, as nothing calls it), used as a stand-in or as the
+/// reference order.
 @interface BSGReplaceableMemoryFeatureFlagStore : BSGMemoryFeatureFlagStore <BSGReplaceableFeatureFlagStore>
 @end
 
@@ -432,7 +420,7 @@ static void BSGRestoreLockFile(NSString *directory) {
 
 - (void)tearDown {
     gTestDirectory = nil;
-    // Restored in case testUnwritableDirectoryAfterTheFileIsCreated failed part way through
+    // In case testUnwritableDirectoryAfterTheFileIsCreated failed midway
     chmod(self.directory.fileSystemRepresentation, 0700);
     [NSFileManager.defaultManager removeItemAtPath:self.directory error:nil];
     [super tearDown];
@@ -444,8 +432,7 @@ static void BSGRestoreLockFile(NSString *directory) {
     return [self.directory stringByAppendingPathComponent:@"featureflag.bin"];
 }
 
-/// Named "new" so that ARC returns it retained rather than autoreleased: a store keeps the directory's
-/// lock until it is deallocated, so a store that is used once must be released straight away.
+/// Named "new" so ARC returns it retained: a store holds the lock until deallocated, so release one-off stores at once.
 - (BSGPersistentFeatureFlagStore *)newStore {
     return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
@@ -462,8 +449,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     return BSGReopenedFlags(self.directory);
 }
 
-/// A store that has been created and then had its flags replaced with the ones it read, as when Bugsnag starts with
-/// those flags. JSON files whose flags were imported are deleted by that first write.
+/// A store that has replaced its flags with those it read, as at Bugsnag start. That write deletes imported JSON files.
 - (BSGPersistentFeatureFlagStore *)newStartedStore {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store replaceAllFlags:store.allFlags];
@@ -494,7 +480,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [data writeToFile:self.filePath atomically:NO];
 }
 
-/// The offset in the file of the active snapshot.
+/// Offset of the active snapshot.
 - (size_t)activeSlotOffset {
     return HeaderSize + ([self activeValue] & 1) * [self headerFieldAtOffset:SlotCapacityOffset];
 }
@@ -507,8 +493,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)assertUnusableFileWasRemoved {
-    // A file that cannot be used holds no flags that can be read, and there is nothing to save, so it is
-    // removed rather than replaced
+    // An unusable file with nothing to save is removed, not replaced
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
 }
 
@@ -540,7 +525,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertTrue(store.isEmpty);
     XCTAssertEqualObjects(store.allFlags, @[]);
-    // The file is not created until there is something to save
+    // Not created until there is something to save
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 
@@ -641,7 +626,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testLastEntryWithEmptyNameAndNoVariant {
-    // An entry with an empty name and no variant is just the two lengths
+    // An empty name with no variant is just the two lengths
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"" withVariant:nil];
     XCTAssertEqual([self activeValue] >> 1, 8);
@@ -701,7 +686,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testFileSizeMatchesTheHeader {
-    // The file is created whole (it is not preallocated, so it can be sparse), and grows by being replaced
+    // Created whole (not preallocated, so possibly sparse); grows by being replaced
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"a" withVariant:nil];
     [self assertFileSizeMatchesTheHeader];
@@ -745,7 +730,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"c"]]];
     const uint64_t after = [self activeValue];
     XCTAssertEqual(after & 1, before & 1, @"Appending should not switch slots");
-    // Each entry is two uint32 lengths followed by the name and variant
+    // Entry: two uint32 lengths, then name and variant
     XCTAssertEqual((after >> 1) - (before >> 1), (uint64_t)(8 + 2 + 8 + 1));
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", @"2"], @[@"c", NSNull.null]]));
 }
@@ -765,7 +750,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store clear:@"b"];
     after = [self activeValue];
     XCTAssertEqual(after & 1, before & 1, @"Clearing should append a record");
-    // A removal record is the name length, UINT32_MAX - 1 and the name
+    // Removal record: name length, UINT32_MAX - 1, name
     XCTAssertEqual((after >> 1) - (before >> 1), (uint64_t)(8 + 1));
 
     before = after;
@@ -808,7 +793,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     const uint64_t empty = [self activeValue];
     XCTAssertEqual(empty >> 1, 0);
 
-    // The file already holds an empty, current log, so clearing again doesn't switch slots
+    // The log is already empty and current, so clearing again doesn't switch slots
     [store clear];
     [store clear];
     XCTAssertEqual([self activeValue], empty);
@@ -819,7 +804,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     [store clear];
-    // JSON files whose deletion failed earlier are still pending, so clearing is not skipped
+    // JSON files are still pending deletion, so clearing is not skipped
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     NSString *legacyPath = [self.directory stringByAppendingPathComponent:@"legacy.json"];
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:legacyPath]);
@@ -849,14 +834,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlag:@"a" withVariant:@"1"];
     [store addFeatureFlag:@"b" withVariant:@"1"];
     store.snapshotCount = 0;
-    // Each change appends 10 bytes; the log is rewritten once it holds 4096 bytes of records it no longer
-    // needs, or sooner if the slot is smaller than that (4 KB pages)
+    // Each change appends 10 bytes; the log is compacted at 4096 dead bytes, or sooner in smaller (4 KB page) slots
     uint64_t longestLog = 0;
     for (int i = 0; i < 1000; i++) {
         [store addFeatureFlag:(i % 2) ? @"a" : @"b" withVariant:[NSString stringWithFormat:@"%d", i % 10]];
         longestLog = MAX(longestLog, [self activeValue] >> 1);
     }
-    // The current flags take 20 bytes, so the log never holds more than 4096 bytes it doesn't need
+    // Live flags take 20 bytes, so the log never holds over 4096 dead bytes
     XCTAssertLessThanOrEqual(longestLog, (uint64_t)(4096 + 2 * 10 + 10));
     XCTAssertGreaterThan(store.snapshotCount, 0);
     XCTAssertLessThan(store.snapshotCount, 10, @"The log should only be rewritten once it has doubled");
@@ -876,7 +860,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual([self activeValue], before);
     XCTAssertEqual(store.appendCount, 0);
     XCTAssertEqual(store.snapshotCount, 0);
-    // A flag that is not last changes nothing either, because it keeps its position
+    // Nor does re-adding one that is not last: it keeps its position
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual([self activeValue], before);
     XCTAssertEqual(store.appendCount, 0);
@@ -893,7 +877,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlag:@"first" withVariant:nil];
     const uint32_t capacity = [self headerFieldAtOffset:SlotCapacityOffset];
     XCTAssertGreaterThan(capacity, 0);
-    // Add flags one at a time until they take up most of a slot, then keep changing one of them
+    // Fill most of a slot one flag at a time, then keep changing one
     NSUInteger count = 0;
     while ([self activeValue] >> 1 < capacity * 3 / 4 && [self headerFieldAtOffset:SlotCapacityOffset] == capacity) {
         [store addFeatureFlag:[NSString stringWithFormat:@"flag-%05lu", (unsigned long)count++] withVariant:@"v"];
@@ -915,7 +899,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     [store addFeatureFlag:@"b" withVariant:@"1"];
-    // Replacing a persisted variant with one that cannot be encoded removes the persisted record
+    // An unencodable variant removes the persisted record
     [store addFeatureFlag:@"a" withVariant:unencodable];
     [store addFeatureFlag:unencodable withVariant:@"1"];
     XCTAssertEqual(store.allFlags.count, 3);
@@ -931,8 +915,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store clear:@"a"];
     XCTAssertEqual(store.allFlags.count, 3);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"d", NSNull.null]]));
-    // Encodable again: b keeps its position before c and d, as in the memory store, so the log is rewritten
-    // (a record appended to it would put b at the end when it is replayed)
+    // Encodable again: b must stay before c and d, so the log is rewritten (an appended record would move b to the end)
     [store addFeatureFlag:@"b" withVariant:@"2"];
     XCTAssertEqualObjects(FlagNames(store.allFlags), (@[@"b", @"c", @"d"]));
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"b", @"2"], @[@"d", NSNull.null]]));
@@ -978,7 +961,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
                    @"A file is only shrunk when the log it replaces also takes up very little of it");
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"only" variant:@"1"]]];
     unsigned long long size = [[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize];
-    // It shrinks to a quarter of its size at a time, so that clearing and refilling flags doesn't keep replacing it
+    // Shrinks to a quarter at a time, so clearing and refilling doesn't keep replacing it
     XCTAssertLessThanOrEqual(size, largeSize / 4 + (unsigned long long)getpagesize());
     XCTAssertGreaterThan(size, (unsigned long long)getpagesize());
     for (int i = 0; i < 10; i++) {
@@ -1052,7 +1035,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
         [[self newStore] addFeatureFlag:@"A" withVariant:@"1"];
     }
     BSGPersistentFeatureFlagStore *store = [self newStore];
-    // As when the app adds a flag after creating the client but before starting it
+    // A flag added after creating the client, before starting it
     [store addFeatureFlag:@"B" withVariant:@"2"];
     [store clear:@"A"];
     XCTAssertEqualObjects(FlagsToArray(store.previousLaunchFlags), (@[@[@"A", @"1"]]));
@@ -1136,7 +1119,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
     XCTAssertEqualObjects([self reopenedFlags], expected);
 
-    // As when Bugsnag starts: the memory store's flags replace the persisted ones
+    // At start, the memory store's flags replace the persisted ones
     [memoryStore clear];
     [memoryStore addFeatureFlag:@"d" withVariant:@"4"];
     [store synchronizeFlagsWithMemoryStore];
@@ -1161,15 +1144,15 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
                                                                                  atomicStore:atomicStore];
     [store synchronizeFlagsWithMemoryStore];
     XCTAssertEqualObjects(persistentStore.calls, (@[@[@"replaceAllFlags:", @[@"a", @"b"]]]));
-    // The crash-time store's flags are replaced in one update too
+    // The crash-time store is also replaced in one update
     XCTAssertEqualObjects(atomicStore.calls, (@[@[@"replaceAllFlags:", @[@"a", @"b"]]]));
     XCTAssertEqualObjects(FlagsToArray(memoryStore.allFlags), (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
 }
 
 #pragma mark Same order as the memory store
 
-/// Applies operations to a memory store and a persistent store, checking after each that both hold the
-/// same flags in the same order, also after the persistent store is reloaded.
+/// Applies each operation to a memory and a persistent store, checking both hold the same flags in order, also after a
+/// reload.
 - (void)assertOperationsMatchTheMemoryStore:(NSArray<void (^)(id<BSGReplaceableFeatureFlagStore> store)> *)operations {
     BSGReplaceableMemoryFeatureFlagStore *memoryStore = [BSGReplaceableMemoryFeatureFlagStore new];
     BSGPersistentFeatureFlagStore *store = [self newStore];
@@ -1195,7 +1178,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
         // A:1, B, A:2 -> A:2, B
         ^(id<BSGReplaceableFeatureFlagStore> s) { [s addFeatureFlag:@"A" withVariant:@"2"]; },
         ^(id<BSGReplaceableFeatureFlagStore> s) { [s addFeatureFlag:@"C" withVariant:@"3"]; },
-        // A flag that is cleared and added again goes to the end
+        // A cleared flag added again goes to the end
         ^(id<BSGReplaceableFeatureFlagStore> s) { [s clear:@"A"]; },
         ^(id<BSGReplaceableFeatureFlagStore> s) { [s addFeatureFlag:@"A" withVariant:@"4"]; },
         ^(id<BSGReplaceableFeatureFlagStore> s) { [s addFeatureFlag:@"B" withVariant:@"5"]; },
@@ -1217,7 +1200,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testRandomOperationsMatchTheMemoryStore {
-    // Enough changes to the same few flags that the log is also rewritten (compacted) several times
+    // Enough changes to a few flags to compact the log several times
     srand48(1974);
     NSMutableArray *operations = [NSMutableArray array];
     for (int i = 0; i < 300; i++) {
@@ -1243,7 +1226,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 #pragma mark Size limit
 
 - (void)testFlagsLargerThanTheLimitAreKeptInMemoryButNotPersisted {
-    // The limit is just under 2 MB of flags, in slots of up to 4 MB (an 8 MB file)
+    // Limit: just under 2 MB of flags, slots up to 4 MB (8 MB file)
     NSString *large = [@"" stringByPaddingToLength:1200 * 1024 withString:@"x" startingAtIndex:0];
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     [store addFeatureFlag:@"small" withVariant:@"1"];
@@ -1252,7 +1235,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self reopenedFlags], persisted);
     XCTAssertLessThanOrEqual([[NSFileManager.defaultManager attributesOfItemAtPath:self.filePath error:nil] fileSize], 8 * 1024 * 1024ULL);
 
-    // Crossing the limit empties the persisted log, and the flags stay in memory
+    // Over the limit the persisted log is emptied; flags stay in memory
     [store addFeatureFlag:@"large-2" withVariant:large];
     XCTAssertEqual(store.allFlags.count, 3);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
@@ -1263,7 +1246,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(store.replaceFileCount, replacements, @"Flags over the limit are not written");
 
-    // Dropping back under the limit persists them again, without waiting for a retry interval
+    // Back under the limit they are persisted at once, without waiting for a retry
     [store clear:@"large-1"];
     NSArray *expected = @[@[@"small", @"2"], @[@"large-2", large], @[@"another", NSNull.null]];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
@@ -1288,17 +1271,17 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 #if defined(DEBUG) && DEBUG
 - (void)testFailedWriteIsRetriedAfterTheRetryInterval {
-    // As when Bugsnag starts: flags set only at start must be saved even though nothing changes them later
+    // Flags set only at start must still be saved
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     [scheduler attachToStore:store];
-    // Long enough that the changes below are always within it, however slowly the test runs
+    // Long enough to cover the changes below on a slow machine
     store.retryInterval = 3600;
     store.failReplaceFile = YES;
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"a" variant:@"1"], [BugsnagFeatureFlag flagWithName:@"b"]]];
     XCTAssertEqual(scheduler.delays.count, 1);
     XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, 3600, 60);
-    // Changes within the retry interval neither write the file nor schedule more retries
+    // Changes within the retry interval neither write nor schedule retries
     [store addFeatureFlag:@"c" withVariant:nil];
     [store addFeatureFlag:@"d" withVariant:nil];
     XCTAssertEqual(store.replaceFileCount, 1);
@@ -1306,7 +1289,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     store.failReplaceFile = NO;
 
-    // The retry saves the flags, including the changes made since the failure
+    // The retry saves the flags, including later changes
     XCTAssertEqual([scheduler runPendingRetries], 1);
     NSArray *expected = @[@[@"a", @"1"], @[@"b", NSNull.null], @[@"c", NSNull.null], @[@"d", NSNull.null]];
     XCTAssertEqual(store.replaceFileCount, 2);
@@ -1316,7 +1299,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 #endif
 
 - (void)testFailedWriteIsRetriedByTheTimer {
-    // The same with the real timer (dispatch_after), waiting for as long as a slow machine could need
+    // Same with the real timer (dispatch_after), with a generous wait
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     store.retryInterval = 0.2;
     store.failReplaceFile = YES;
@@ -1375,7 +1358,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     // Within the retry interval a change does not write the file...
     [store addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
-    // ...but replacing all of the flags, which Bugsnag does when it starts, does
+    // ...but replaceAllFlags (at Bugsnag start) does
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start" variant:@"1"]]];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"start", @"1"]]));
 }
@@ -1383,7 +1366,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 - (void)testFailureBeforeBugsnagStartsIsRetriedWhenItStarts {
     XCTSkipIf(geteuid() == 0, @"File permissions are not enforced for root");
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
-    // The lock file is created before the directory becomes read-only
+    // Create the lock file before making the directory read-only
     int fd = open([self.directory stringByAppendingPathComponent:@"featureflag.lock"].fileSystemRepresentation, O_RDONLY | O_CREAT, 0600);
     XCTAssertNotEqual(fd, -1);
     close(fd);
@@ -1392,7 +1375,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"legacy", @"1"]]));
     // The imported flags are not written when the store is created
     XCTAssertEqual(store.replaceFileCount, 0);
-    // A write while the directory is read-only fails, and is retried after the retry interval...
+    // A write to the read-only directory fails and is retried after the interval...
     [store addFeatureFlag:@"before-start" withVariant:nil];
     XCTAssertEqual(store.replaceFileCount, 1);
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
@@ -1401,8 +1384,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     // ...or when Bugsnag starts
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start" variant:nil]]];
     XCTAssertEqual(store.replaceFileCount, 2);
-    // The JSON files that could not be deleted when the store was created are deleted by the next write, so
-    // the next launch does not find both kinds of file. The imported flag is kept ahead of the app's flags.
+    // The next write deletes the leftover JSON files so the next launch won't find both kinds; the imported flag stays
+    // first.
     XCTAssertEqual([self jsonFiles].count, 0);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"], @[@"start", NSNull.null]]));
 }
@@ -1418,11 +1401,11 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     NSArray *expected = @[@[@"first", @"1"], @[@"second flag/ü", @""], @[@"third", NSNull.null]];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
-    // Nothing is written when the store is created, so the JSON files are kept until the flags have been written
+    // The JSON files stay until the flags are written
     XCTAssertEqual(store.replaceFileCount, 0);
     XCTAssertEqual([self jsonFiles].count, 3);
     XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
-    // As when Bugsnag starts: the flags are written once, then the JSON files are deleted
+    // At start the flags are written once, then the JSON files deleted
     [store replaceAllFlags:store.allFlags];
     XCTAssertEqual(store.replaceFileCount, 1);
     XCTAssertEqualObjects([self jsonFiles], @[]);
@@ -1438,13 +1421,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"app" variant:@"x"],
                              [BugsnagFeatureFlag flagWithName:@"shared" variant:@"new"]]];
-    // A flag the app also sets keeps its imported position and takes the app's variant
+    // A flag the app also sets keeps its imported position with the app's variant
     NSArray *expected = @[@[@"old-a", @"1"], @[@"shared", @"new"], @[@"old-b", NSNull.null], @[@"app", @"x"]];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), expected);
     XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertEqualObjects([self reopenedFlags], expected);
 
-    // Changes after Bugsnag has started apply to them like any other flag
+    // Later changes apply to them like any flag
     [store clear:@"old-a"];
     [store addFeatureFlag:@"later" withVariant:nil];
     expected = @[@[@"shared", @"new"], @[@"old-b", NSNull.null], @[@"app", @"x"], @[@"later", NSNull.null]];
@@ -1522,7 +1505,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 - (void)testFileAndLegacyFilesAreBothDiscardedWhenFoundTogether {
     [[self newStore] addFeatureFlag:@"current" withVariant:@"1"];
-    // Only left together when a file could not be deleted; which of them is current is unknown
+    // Both exist only after a failed delete; which is current is unknown
     [self writeLegacyFlag:@"stale" variant:@"old" index:0];
     [self writeLegacyFlag:@"current" variant:@"old" index:1];
     XCTAssertEqual([self jsonFiles].count, 2);
@@ -1579,8 +1562,8 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 - (void)testSlotCapacityTooLargeToRead {
     [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
-    // A capacity larger than the store reads (16 MB), in a file large enough to hold it so that only
-    // the capacity limit can reject it. The file is sparse, so it does not use much disk space.
+    // A capacity over the read limit (16 MB), in a sparse file big enough to hold it, so only the capacity check
+    // rejects it
     const uint32_t slotCapacity = 16 * 1024 * 1024 + 1;
     [self replaceFileBytesAtOffset:SlotCapacityOffset withBytes:&slotCapacity length:sizeof(slotCapacity)];
     XCTAssertEqual(truncate(self.filePath.fileSystemRepresentation, (off_t)(HeaderSize + 2 * (uint64_t)slotCapacity)), 0);
@@ -1594,8 +1577,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testSlotCapacityLargerThanWrittenIsRead {
-    // A later version may write larger slots than this one; they are read as long as they are within
-    // the read limit
+    // Larger slots from a later version are read if within the read limit
     [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
     NSMutableData *data = [NSMutableData dataWithContentsOfFile:self.filePath];
     uint32_t oldCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
@@ -1615,7 +1597,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testHugeSlotCapacities {
-    // On 32-bit platforms, a file size calculated in size_t would wrap and pass the size check
+    // On 32-bit, a size_t file size would wrap and pass the size check
     const uint32_t capacities[] = {0x80000000, 0x80000001, 0xFFFFFFF0, UINT32_MAX};
     for (size_t i = 0; i < sizeof(capacities) / sizeof(capacities[0]); i++) {
         [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
@@ -1650,7 +1632,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     original = nil;
     const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
     XCTAssertGreaterThan(slotCapacity, 4 * (uint32_t)getpagesize());
-    // Accessing the slots would touch pages past the end of the file
+    // The slots would touch pages past the end of the file
     XCTAssertEqual(truncate(self.filePath.fileSystemRepresentation, 64), 0);
 
     BSGPersistentFeatureFlagStore *store = [self newStore];
@@ -1679,7 +1661,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     uint64_t active = 0;
     [data getBytes:&slotCapacity range:NSMakeRange(SlotCapacityOffset, sizeof(slotCapacity))];
     [data getBytes:&active range:NSMakeRange(ActiveOffset, sizeof(active))];
-    // Make the second entry's name length run past the end of the snapshot
+    // The second entry's name runs past the snapshot's end
     const size_t secondEntry = HeaderSize + (active & 1) * slotCapacity + 8 + 1 + 1;
     const uint32_t badLength = 0x7FFFFFF0;
     [data replaceBytesInRange:NSMakeRange(secondEntry, sizeof(badLength)) withBytes:&badLength];
@@ -1718,7 +1700,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     const uint32_t badLength = 0x7FFFFFF0;
     [self replaceFileBytesAtOffset:[self activeSlotOffset] withBytes:&badLength length:sizeof(badLength)];
 
-    // No changes are made, so the corrupt snapshot must be replaced when the store is opened
+    // With no changes, the corrupt snapshot must be replaced on open
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertEqualObjects(store.allFlags, @[]);
     [self assertFileIsAValidEmptySnapshot];
@@ -1757,7 +1739,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(store.replaceFileCount, 1);
     XCTAssertFalse(store.directoryAtFilePath);
-    // The empty directory was removed and the file created in its place
+    // The empty directory was replaced by the file
     struct stat st;
     XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &st), 0);
     XCTAssertTrue(S_ISREG(st.st_mode));
@@ -1767,7 +1749,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testDirectoryAtFilePath {
-    // A directory that is not empty is never removed, and no file can be created in its place
+    // A non-empty directory is never removed, so no file can replace it
     XCTAssertTrue([NSFileManager.defaultManager createDirectoryAtPath:self.filePath withIntermediateDirectories:NO attributes:nil error:nil]);
     NSString *contents = [self.filePath stringByAppendingPathComponent:@"contents"];
     XCTAssertTrue([[@"keep" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:contents atomically:NO]);
@@ -1784,7 +1766,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
     // Flags still work in memory
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"a", @"1"], @[@"b", NSNull.null], @[@"c", @"3"]]));
-    // Replacing the file is tried once and never again, not even by replaceAllFlags (called when Bugsnag starts)
+    // Replacing the file is tried once only, not even again by replaceAllFlags at start
     XCTAssertEqual(store.replaceFileCount, 1);
     XCTAssertTrue(store.directoryAtFilePath);
     XCTAssertFalse([store hasPendingWork], @"Nothing is retried");
@@ -1814,7 +1796,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     BSGPersistentFeatureFlagStore *store = [self newStartedStore];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"legacy", @"1"]]));
-    // The empty directory is replaced by the file, and the legacy files are deleted once the flags are written
+    // Legacy files are deleted once flags are written
     XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"]]));
 }
@@ -1825,8 +1807,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     BSGPersistentFeatureFlagStore *store = [self newStartedStore];
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"legacy", @"1"]]));
-    // The legacy files are deleted by the first write even though the flags could not be saved, so that they are
-    // not imported again at the next launch when they would be stale
+    // The first write deletes the legacy files even though saving failed, so stale flags aren't imported next launch
     XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 }
@@ -1841,8 +1822,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     store.failReplaceFile = YES;
     NSString *large = [@"" stringByPaddingToLength:4 * (NSUInteger)getpagesize() withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
-    // The log is emptied until the larger file can be created, so that flags the app has since changed or cleared
-    // are never reported
+    // The log stays empty until the larger file exists, so changed or cleared flags are never reported
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     [store addFeatureFlag:@"c" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
@@ -1891,7 +1871,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(store.replaceFileCount, 2);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 
-    // Once it has passed, the next change writes all of the flags
+    // After it, the next change writes all the flags
     store.retryTime = 0;
     [store clear:@"a"];
     [store addFeatureFlag:@"c" withVariant:nil];
@@ -1913,13 +1893,13 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects(store.allFlags, @[], @"The flags are not available for this launch");
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath], @"The file may hold good flags");
 
-    // Bugsnag starts with no flags: the file can still not be opened, so it is kept, and a retry is scheduled
+    // Start with no flags: the file still can't be opened, so it is kept and a retry scheduled
     [store replaceAllFlags:@[]];
     XCTAssertEqual(scheduler.pendingRetries.count, 1);
     XCTAssertEqual(chmod(self.filePath.fileSystemRepresentation, 0600), 0);
     XCTAssertEqualObjects([NSData dataWithContentsOfFile:self.filePath], contents, @"The file must not be changed");
 
-    // Once it can be opened, the retry empties it in place, so its flags are not reported for a later launch
+    // Once openable, the retry empties it in place so a later launch doesn't report its flags
     XCTAssertEqual([scheduler runPendingRetries], 1);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
     XCTAssertEqual(scheduler.pendingRetries.count, 0);
@@ -1936,14 +1916,14 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertEqualObjects(store.allFlags, @[]);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
-    // This launch's flags are saved in a new file, which replaces it
+    // A new file holds this launch's flags
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"a" variant:@"1"]]];
     store = nil;
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"]]));
 }
 
-/// Fills the process's descriptor table, so that opening a file fails with EMFILE, and runs the block. Returns NO if
-/// that could not be arranged. One descriptor is left free when the block is called if `leaveOneFree` is set.
+/// Runs the block with the descriptor table full (open fails with EMFILE), leaving one free if `leaveOneFree`. Returns
+/// NO if that can't be arranged.
 static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void)) {
     struct rlimit original;
     if (getrlimit(RLIMIT_NOFILE, &original) != 0) {
@@ -1983,9 +1963,8 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
 }
 
 - (void)testFileIsKeptWhenTooManyFilesAreOpen {
-    // The descriptor table belongs to the whole process, so other threads (such as the queues of clients that earlier
-    // tests started) can take the free descriptor, or close one of theirs and so let featureflag.bin be opened. The
-    // case under test is only reached when neither happens, so it is arranged again until it is.
+    // The descriptor table is process-wide and other threads can take or free descriptors, so this retries until the
+    // case under test is reached.
     __block BSGPersistentFeatureFlagStore *store = nil;
     NSData *contents = nil;
     BOOL reached = NO;
@@ -1995,7 +1974,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
         [NSFileManager.defaultManager createDirectoryAtPath:self.directory withIntermediateDirectories:YES attributes:nil error:nil];
         [[self newStore] addFeatureFlag:@"previous-launch" withVariant:@"1"];
         contents = [NSData dataWithContentsOfFile:self.filePath];
-        // One descriptor is free for featureflag.lock, so opening featureflag.bin fails with EMFILE
+        // Only featureflag.lock gets a descriptor; featureflag.bin fails with EMFILE
         const BOOL arranged = BSGWithDescriptorsExhausted(YES, ^{
             store = [self newStore];
         });
@@ -2009,7 +1988,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
     }
     XCTAssertEqualObjects(store.allFlags, @[]);
     XCTAssertEqualObjects([NSData dataWithContentsOfFile:self.filePath], contents, @"The file must be kept as it was");
-    // Once descriptors are available, this launch's flags are saved as usual
+    // With descriptors free again, flags are saved as usual
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start"]]];
     store = nil;
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"start", NSNull.null]]));
@@ -2020,7 +1999,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(store.replaceFileCount, 1);
 
-    // Reserved but never touched, so this does not use the memory
+    // Reserved but never touched, so it uses no memory
     const size_t length = UINT32_MAX / 8 + 1;
     void *bytes = mmap(NULL, length, PROT_READ, MAP_PRIVATE | MAP_ANON, -1, 0);
     XCTAssertNotEqual(bytes, MAP_FAILED);
@@ -2031,7 +2010,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
     XCTAssertEqual(store.replaceFileCount, 2);
     XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
 
-    // Within the retry interval the file is not replaced on later changes, even though they would now fit
+    // Within the retry interval later changes don't replace the file, even if they'd fit
     store.replacementSnapshot = nil;
     munmap(bytes, length);
     [store addFeatureFlag:@"b" withVariant:nil];
@@ -2080,7 +2059,7 @@ static BOOL BSGWithDescriptorsExhausted(BOOL leaveOneFree, void (^ block)(void))
 
 #pragma mark Several stores using one directory
 
-/// Adds enough flags to replace the file with a larger one, with each flag's variant equal to its name.
+/// Adds enough flags (variant = name) to force a larger file.
 static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix, int count) {
     NSMutableArray *flags = [NSMutableArray array];
     for (int i = 0; i < count; i++) {
@@ -2099,10 +2078,10 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 }
 
 - (void)testStoresSharingADirectoryCanGrowConcurrently {
-    // Two clients, or two instances of a macOS app, use the same directory. Only the store that holds the
-    // lock writes to it, so the file holds exactly that store's flags.
+    // Two clients (or macOS app instances) share a directory; only the lock holder writes, so the file holds only its
+    // flags.
     BSGPersistentFeatureFlagStore *first = [self newStore];
-    // The lock is taken before the first write, so the first store writes before the second is created
+    // The first store takes the lock and writes before the second is created
     [first addFeatureFlag:@"first" withVariant:nil];
     BSGPersistentFeatureFlagStore *second = [self newStore];
     dispatch_apply(2, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^(size_t index) {
@@ -2127,7 +2106,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     NSDictionary *contents = [self directoryContents];
 
     BSGCountingPersistentFeatureFlagStore *second = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    // Without the lock, the store reports no persisted flags and never opens the file
+    // Without the lock: no persisted flags, file never opened
     XCTAssertTrue(second.isEmpty);
     XCTAssertEqual(second.fd, -1);
     [second addFeatureFlag:@"second" withVariant:nil];
@@ -2146,7 +2125,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [first addFeatureFlag:@"more" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"first", @"1"], @[@"more", NSNull.null]]));
 
-    // Once it is deallocated, a new store takes the lock and writes
+    // Once it is gone, a new store takes the lock and writes
     first = nil;
     BSGPersistentFeatureFlagStore *third = [self newStore];
     [third addFeatureFlag:@"third" withVariant:@"3"];
@@ -2158,7 +2137,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 - (void)testStoreWithoutTheLockReportsNoPersistedFlags {
     BSGPersistentFeatureFlagStore *first = [self newStore];
     [first addFeatureFlag:@"first" withVariant:@"1"];
-    // A JSON file left by an earlier version of the SDK, which a store with the lock would import
+    // A legacy JSON file, which a lock holder would import
     [self writeLegacyFlag:@"legacy" variant:@"2" index:0];
     NSDictionary *contents = [self directoryContents];
 
@@ -2183,11 +2162,10 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 }
 
 - (void)testSlotCapacityChangedByAnotherProcessIsIgnored {
-    // Offsets come from the slot capacity read when the file was opened or created, not from the header,
-    // which another process could change.
+    // Offsets use the slot capacity read at open, not the header, which another process could change.
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    // Clearing writes the log into the other slot, whose address depends on the slot capacity
+    // Clearing writes to the other slot, whose address depends on the capacity
     [store clear];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual([self activeValue] & 1, 1);
@@ -2207,7 +2185,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 - (void)testTemporaryFileLeftByAnotherProcessDoesNotStopTheFileBeingReplaced {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    // As if another process using this directory was killed while replacing the file
+    // As if another process was killed while replacing the file
     [NSData.data writeToFile:[self.filePath stringByAppendingString:@".tmp"] atomically:NO];
     BSGGrowStore(store, @"after", 1000);
     XCTAssertEqual([self reopenedFlags].count, 1001);
@@ -2223,8 +2201,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual([self activeValue], 10 << 1, @"One 10-byte record in slot 0");
 
-    // The record for "b" (10 bytes at offset 42) crosses the limit, so it is written in part and then fails
-    // with EFBIG, like a write to a full disk. The header is below the limit, so the log can be emptied.
+    // Record "b" (10 bytes at 42) crosses the limit: part-written, then EFBIG as on a full disk. The header is below
+    // it, so the log can be emptied.
     XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + 10 + 4, ^{
         [store addFeatureFlag:@"b" withVariant:@"2"];
     }));
@@ -2234,7 +2212,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects([self reopenedFlags], @[], @"The file must not hold flags that have since changed");
     [self assertFileIsAValidEmptySnapshot];
 
-    // A change within the retry interval is not written, and the scheduled retry saves everything
+    // A change within the interval is not written; the retry saves everything
     [store addFeatureFlag:@"c" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     expected = [expected arrayByAddingObject:@[@"c", NSNull.null]];
@@ -2253,7 +2231,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqual([self activeValue] & 1, 0);
     const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
 
-    // The new log fits in the file, so it is written to slot 1, which is past the limit
+    // The new log goes to slot 1, past the limit
     XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + slotCapacity, ^{
         [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"c" variant:@"3"]]];
     }));
@@ -2264,8 +2242,8 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 }
 
 - (void)testVersion1FileWrittenByHandIsRead {
-    // A version 1 file built byte by byte, not with the encoder, so that a change to the format that would stop
-    // released files being read fails this test. Integers are little-endian.
+    // A version 1 file built by hand (little-endian), not by the encoder, so a format change that breaks released files
+    // fails here.
     const uint8_t header[32] = {
         'B', 'S', 'F', 'F',                         // magic
         0x01, 0x00, 0x00, 0x00,                     // version 1
@@ -2281,7 +2259,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
         0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 'c', 'x',      // add c, variant "x"
         0x01, 0x00, 0x00, 0x00, 0xFE, 0xFF, 0xFF, 0xFF, 'b',           // remove b
     };
-    // Slot 0 holds a valid log too, which must be ignored because slot 1 is active
+    // Slot 0's valid log must be ignored: slot 1 is active
     const uint8_t inactive[10] = {0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 'z', 'z'};
     NSMutableData *file = [NSMutableData dataWithLength:32 + 2 * 64];
     [file replaceBytesInRange:NSMakeRange(0, sizeof(header)) withBytes:header];
@@ -2289,7 +2267,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [file replaceBytesInRange:NSMakeRange(32 + 64, sizeof(log)) withBytes:log];
     XCTAssertTrue([file writeToFile:[self.directory stringByAppendingPathComponent:@"featureflag.bin"] atomically:NO]);
 
-    // A flag added again keeps its first position with its last variant, and a removed flag is gone
+    // Re-added flags keep their first position and last variant; removed flags are gone
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"22"], @[@"c", @"x"]]));
 }
 
@@ -2301,13 +2279,12 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [store addFeatureFlag:@"b" withVariant:@"2"];
     XCTAssertEqual([self activeValue] & 1, 0);
     const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
-    // The log is compacted once it is 4,096 bytes longer than the flags; slot 0 must have room for that
+    // Compaction happens at 4,096 bytes over the flags; slot 0 must fit that
     if (slotCapacity < 4096 + 1024) {
         XCTSkip(@"The file's slots (%u bytes) fill up before the log would be compacted", slotCapacity);
     }
 
-    // Changing a flag appends to the log in slot 0 until it is long enough to be compacted into slot 1, which is past
-    // the limit, as when the disk is full
+    // Changes append in slot 0 until compacted into slot 1, past the limit (a full disk)
     __block NSString *variant = nil;
     XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + slotCapacity, ^{
         for (int i = 0; i < 1000 && ([self activeValue] >> 1) <= 4096 + 256; i++) {
@@ -2320,17 +2297,17 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"]]),
                           @"The file should still hold the current flags");
 
-    // There is nothing to save, so no retry is scheduled
+    // Nothing to save, so no retry
     XCTAssertEqualObjects(scheduler.delays, @[]);
 
-    // Once the retry interval has passed, the next change compacts the log into slot 1
+    // After the retry interval the next change compacts into slot 1
     store.compactionRetryTime = 0;
     [store addFeatureFlag:@"c" withVariant:@"3"];
     XCTAssertEqual([self activeValue] & 1, 1, @"The log should have been compacted into slot 1");
     XCTAssertLessThan([self activeValue] >> 1, 256u, @"The compacted log should hold only the live flags");
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"], @[@"c", @"3"]]));
 
-    // A later failure to save the flags is retried after the usual first delay, not a doubled one
+    // A later failure gets the usual first delay, not a doubled one
     XCTAssertTrue(BSGWithFileSizeLimit(ActiveOffset, ^{
         [store addFeatureFlag:@"d" withVariant:nil];
     }));
@@ -2344,8 +2321,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [scheduler attachToStore:store];
     [store addFeatureFlag:@"a" withVariant:@"1"];
 
-    // Neither the record nor the header (at offset 16) can be written, so the log cannot be emptied and
-    // the file, which this store owns, is deleted instead
+    // Neither record nor header (offset 16) can be written, so this store deletes its file instead
     XCTAssertTrue(BSGWithFileSizeLimit(ActiveOffset, ^{
         [store addFeatureFlag:@"b" withVariant:@"2"];
     }));
@@ -2385,7 +2361,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     [scheduler attachToStore:store];
     [store addFeatureFlag:@"a" withVariant:@"1"];
 
-    // The records are written but the length that makes them part of the log is not; the log is emptied
+    // Records written but not the length that commits them: the log is emptied
     store.failHeaderWrites = 1;
     [store addFeatureFlag:@"b" withVariant:@"2"];
     XCTAssertEqual(store.failHeaderWrites, 0);
@@ -2410,7 +2386,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     [scheduler attachToStore:store];
 
-    // The temporary file cannot be extended to its full size (ftruncate fails with EFBIG)
+    // The temporary file can't reach full size (ftruncate fails with EFBIG)
     XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize, ^{
         [store addFeatureFlag:@"a" withVariant:@"1"];
     }));
@@ -2435,7 +2411,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     NSData *contents = [NSData dataWithContentsOfFile:self.filePath];
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
 
-    // Without the lock the store reads nothing and changes nothing
+    // Without the lock the store reads and changes nothing
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertTrue(store.isEmpty);
     [store addFeatureFlag:@"a" withVariant:nil];
@@ -2458,7 +2434,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath], @"A store without the lock deletes nothing");
     other = nil;
 
-    // The store that holds the lock still writes through the descriptor it has open
+    // The lock holder still writes through its open descriptor
     [owner addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqual(chmod(self.filePath.fileSystemRepresentation, 0600), 0);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
@@ -2467,9 +2443,9 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 #pragma mark Size limit and decoding
 
 - (void)testSizeLimitAtTheExactBoundary {
-    // The limit applies to the encoded flags: each record is 8 bytes of lengths, then the name and variant
+    // The limit is on encoded flags: 8 bytes of lengths plus name and variant per record
     const NSUInteger maxSlotCapacity = 2 * 1024 * 1024 - 16;
-    // The largest slot is twice as large, so that a log of flags at the limit can still double
+    // The largest slot is twice the limit, so a full log can still double
     const NSUInteger largestSlotCapacity = 4 * 1024 * 1024 - 16;
     NSString *(^variant)(NSUInteger) = ^(NSUInteger recordLength) {
         return [@"" stringByPaddingToLength:recordLength - 8 - 1 withString:@"x" startingAtIndex:0];
@@ -2489,7 +2465,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects(FlagsToArray(store.allFlags), (@[@[@"a", variant(maxSlotCapacity + 1)]]));
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 
-    // Back at the limit, the flags are persisted again in the same file
+    // Back at the limit, they are persisted in the same file
     [store addFeatureFlag:@"a" withVariant:variant(maxSlotCapacity)];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant(maxSlotCapacity)]]));
     XCTAssertEqual([self activeValue] & 1, 1);
@@ -2505,7 +2481,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
 - (void)testRecordCutShortAtTheEndOfTheLog {
     [[self newStore] addFeatureFlag:@"a" withVariant:@"1"];
-    // The log ends 3 bytes into what would be the next record's lengths (the slot is zero-filled)
+    // The log ends 3 bytes into a next record's lengths (the slot is zero-filled)
     const uint64_t active = (10 + 3) << 1;
     [self replaceFileBytesAtOffset:ActiveOffset withBytes:&active length:sizeof(active)];
 
@@ -2544,7 +2520,7 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqual(flags.count, 4);
     XCTAssertEqualObjects(flags.firstObject, (@[@"first", @"1"]));
     XCTAssertEqualObjects(flags.lastObject, (@[@"last", NSNull.null]));
-    // Files with the same index keep the order in which the directory was listed
+    // Equal indexes keep directory listing order
     NSSet *middle = [NSSet setWithArray:[flags subarrayWithRange:NSMakeRange(1, 2)]];
     XCTAssertEqualObjects(middle, ([NSSet setWithArray:@[@[@"same-1", NSNull.null], @[@"same-2", @"2"]]]));
     XCTAssertEqualObjects([self reopenedFlags], flags);
@@ -2552,13 +2528,13 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
 
 #pragma mark Growing the file while the device is locked
 
-// How many times SimulatedLockedCreateFile has been called for the test's directory
+// Calls to SimulatedLockedCreateFile for the test's directory
 #if defined(DEBUG) && DEBUG
 static NSUInteger gLockedCreateFileCount;
 static BSGFileProtectionFunctions gUnlockedFunctions;
 
-/// Stands in for creating a file in the test's directory while the device is locked for an app whose default
-/// protection class is NSFileProtectionComplete, which open() refuses with EPERM.
+/// Fails file creation in the test's directory with EPERM, as on a locked device with default class
+/// NSFileProtectionComplete.
 static BOOL SimulatedLockedCreateFile(NSString *path) {
     if (!BSGIsInTestDirectory(path)) {
         return gUnlockedFunctions.createFile(path);
@@ -2568,10 +2544,10 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     return NO;
 }
 
-/// Makes creating files fail as they do while the device is locked, until the test ends or the returned block is called.
+/// Makes file creation fail as on a locked device until the test ends or the returned block is called.
 - (dispatch_block_t)simulateLockedDevice {
     gLockedCreateFileCount = 0;
-    // Known before the simulated function is installed, because other threads may call it straight away
+    // Set before installing the simulated function, which other threads may call at once
     gUnlockedFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
     const BSGFileProtectionFunctions previous = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
         .createFile = SimulatedLockedCreateFile,
@@ -2598,7 +2574,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     [scheduler attachToStore:store];
-    // Long enough that the changes below are always within it, however slowly the test runs
+    // Long enough to cover the changes below on a slow machine
     store.retryInterval = 3600;
     [store addFeatureFlag:@"a" withVariant:@"1"];
     [store addFeatureFlag:@"b" withVariant:@"2"];
@@ -2608,14 +2584,14 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     struct stat before;
     XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &before), 0);
 
-    // The device locks. Records still fit in the open file, which stays writable...
+    // Device locked: records still fit in the open, writable file...
     dispatch_block_t unlock = [self simulateLockedDevice];
     [store addFeatureFlag:@"b" withVariant:@"3"];
     earlier = @[@[@"a", @"1"], @[@"b", @"3"]];
     XCTAssertEqualObjects([self reopenedFlags], earlier);
     XCTAssertEqual(gLockedCreateFileCount, 0);
 
-    // ...but a flag that needs a larger file cannot be saved, because the new file cannot be created
+    // ...but a flag needing a larger file can't be saved: the new file can't be created
     NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
     [store addFeatureFlag:@"large" withVariant:large];
     XCTAssertEqual(gLockedCreateFileCount, 1);
@@ -2627,19 +2603,19 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &after), 0);
     XCTAssertEqual(after.st_ino, before.st_ino, @"The file should not have been replaced");
 
-    // Changes within the retry interval are not appended to the emptied log
+    // Changes within the interval are not appended to the emptied log
     [store addFeatureFlag:@"c" withVariant:nil];
     [store clear:@"a"];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(gLockedCreateFileCount, 1);
 
-    // A retry while the device is still locked leaves the log empty, and schedules another
+    // A retry while still locked leaves the log empty and schedules another
     XCTAssertEqual([scheduler runPendingRetries], 1);
     XCTAssertEqual(gLockedCreateFileCount, 2);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
     XCTAssertEqual(scheduler.pendingRetries.count, 1);
 
-    // Once the device is unlocked, the retry creates the larger file with the current flags
+    // After unlock the retry creates the larger file
     unlock();
     XCTAssertEqual([scheduler runPendingRetries], 1);
     NSArray *expected = @[@[@"b", @"3"], @[@"large", large], @[@"c", NSNull.null]];
@@ -2667,7 +2643,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     [store addFeatureFlag:@"large" withVariant:large];
     XCTAssertEqualObjects([self reopenedFlags], @[], @"The log is emptied until the larger file can be created");
 
-    // Flags that fit in the file again are written to it, without waiting for the retry or the unlock
+    // Flags that fit again are written at once, without waiting for the retry or unlock
     [store clear:@"large"];
     [store addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
@@ -2683,7 +2659,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     BSGPersistentFeatureFlagStore *first = [self newStore];
     [first addFeatureFlag:@"previous" withVariant:@"1"];
     const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
-    // The second store cannot open featureflag.lock when it is created, so it takes the lock later
+    // The second store can't open featureflag.lock at creation, so it takes the lock later
     XCTSkipUnless(BSGMakeLockFileUnopenable(self.directory), @"File permissions are not enforced for root");
     BSGPersistentFeatureFlagStore *second = [self newStore];
     BSGRestoreLockFile(self.directory);
@@ -2691,8 +2667,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     [scheduler attachToStore:second];
     first = nil;
 
-    // The second store takes the lock and the first store's file, but cannot grow it. The log is emptied, as it is
-    // for a store's own flags that no longer fit.
+    // The second store takes the lock and file but can't grow it, so the log is emptied as for flags that don't fit.
     [self simulateLockedDevice];
     second.retryTime = 0;
     NSString *large = [@"" stringByPaddingToLength:slotCapacity withString:@"x" startingAtIndex:0];
@@ -2707,8 +2682,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
 
 #pragma mark Flags near the size limit
 
-/// Every slot switch or file replacement that a change caused, as seen in the file. The log is rewritten whole
-/// (into the other slot, or into a new file) exactly when one of these happens.
+/// Counts whole-log rewrites (slot switches or file replacements) the changes caused, as seen in the file.
 - (NSUInteger)countRewritesDuring:(void (^)(void))changes
                     maximumFileSize:(uint64_t)maximumFileSize
                             changes:(NSUInteger)count {
@@ -2732,8 +2706,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
 }
 
 - (void)testSmallChangesToFlagsAtTheLimitDoNotRewriteThem {
-    // Flags exactly at the limit (just under 2 MB), so that a file whose slots were no larger than that would
-    // have no room left to append to, and every change would rewrite all of the flags
+    // Flags at the limit (just under 2 MB): with slots no larger, every change would rewrite all of them
     const uint64_t limit = 2 * 1024 * 1024 - 16;
     const uint64_t maximumFileSize = 8 * 1024 * 1024;
     const NSUInteger smallRecordLength = 8 + 5 + 4; // "small" and a 4-character variant
@@ -2751,7 +2724,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     const NSUInteger rewrites = [self countRewritesDuring:^{
         [store addFeatureFlag:@"small" withVariant:[NSString stringWithFormat:@"%04lu", (unsigned long)(++i % 10000)]];
     } maximumFileSize:maximumFileSize changes:changes];
-    // 1000 records of 17 bytes fit in the room left after the flags, so nothing is rewritten
+    // 1000 records of 17 bytes fit after the flags, so nothing is rewritten
     XCTAssertEqual(rewrites, 0);
     XCTAssertEqual(store.snapshotCount, snapshots);
     XCTAssertEqual(store.replaceFileCount, replacements);
@@ -2759,7 +2732,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
 }
 
 - (void)testLargeChangesToFlagsNearTheLimitAreRewrittenOnlyWhenTheLogDoubles {
-    // 19 flags of 100 KB, which take up just under 2 MB
+    // 19 flags of 100 KB: just under 2 MB
     const uint64_t maximumFileSize = 8 * 1024 * 1024;
     const NSUInteger variantLength = 100 * 1024;
     NSString *(^variant)(NSUInteger) = ^(NSUInteger n) {
@@ -2776,8 +2749,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
     XCTAssertLessThanOrEqual(liveLength, 2 * 1024 * 1024 - 16);
     const NSUInteger replacements = store.replaceFileCount;
 
-    // Each change appends 100 KB. 40 of them append about twice the size of the flags, so the log should be
-    // rewritten about twice; with no room to grow it would be rewritten by nearly every change.
+    // 40 changes of 100 KB append about twice the flags' size, so expect about two rewrites, not one per change.
     __block NSUInteger i = 0;
     const NSUInteger changes = 40;
     const NSUInteger rewrites = [self countRewritesDuring:^{
@@ -2804,7 +2776,7 @@ static BOOL SimulatedLockedCreateFile(NSString *path) {
 @property (nonatomic) NSString *directory;
 @end
 
-// The error that SimulatedLockFailure fails with, and how many times it has been called
+// SimulatedLockFailure's error and call count
 #if defined(DEBUG) && DEBUG
 static int gLockErrno;
 static NSUInteger gLockCallCount;
@@ -2861,7 +2833,7 @@ static int CountingLock(int fd, int operation) {
 }
 #endif
 
-/// Named "new" so that ARC returns it retained: a store keeps the directory's lock until it is deallocated.
+/// Named "new" so ARC returns it retained: a store holds the lock until deallocated.
 - (BSGPersistentFeatureFlagStore *)newStore {
     return [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
 }
@@ -2901,7 +2873,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 #pragma mark Nothing is created without flags
 
 - (void)testReplaceAllFlagsWithNoFlagsCreatesNoFiles {
-    // As when Bugsnag starts with no flags in its configuration
+    // Bugsnag starting with no configured flags
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store replaceAllFlags:@[]];
     XCTAssertEqualObjects([self files], @[], @"Neither featureflag.bin nor featureflag.lock should be created");
@@ -2916,7 +2888,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store clear:@"missing"];
     XCTAssertEqualObjects([self files], @[]);
 
-    // Flags that cannot be persisted do not create the file either
+    // Unpersistable flags don't create the file either
     const unichar loneSurrogate = 0xD800;
     [store addFeatureFlag:[NSString stringWithCharacters:&loneSurrogate length:1] withVariant:nil];
     XCTAssertEqualObjects([self files], @[]);
@@ -2938,7 +2910,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"1"], @[@"b", NSNull.null]]));
     [store clear];
     store = nil;
-    // The existing file is emptied in place rather than left holding the earlier flags
+    // The existing file is emptied in place, not left with the earlier flags
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:self.filePath]);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 }
@@ -2971,8 +2943,8 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 #if defined(DEBUG) && DEBUG
 - (void)testMissingDirectoryIsCreatedWhenTheLockIsTaken {
-    // The directory is created when Bugsnag starts, but can be removed while the app runs. That does not clear by
-    // itself, so the store creates it rather than retrying for the rest of the launch.
+    // The directory can be removed while the app runs, which won't clear by itself, so the store recreates it rather
+    // than retrying.
     NSString *directory = [self.directory stringByAppendingPathComponent:@"removed/featureFlags"];
     BSGPersistentFeatureFlagStore *store = [[BSGPersistentFeatureFlagStore alloc] initWithStorageDirectory:directory];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
@@ -3001,7 +2973,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [scheduler attachToStore:store];
 
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    // ENOENT for a directory that could not be created is not a failure that clears, so it is not retried
+    // ENOENT for an uncreatable directory won't clear, so it is not retried
     XCTAssertTrue(store.lockGivenUp);
     XCTAssertEqual(scheduler.pendingRetries.count, 0);
     store.retryTime = 0;
@@ -3049,7 +3021,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testPermanentFailureIsRetriedLessOften {
-    // A file that can never be replaced (e.g. on a read-only volume) is a failure that never clears
+    // A file that can never be replaced (e.g. read-only volume) never clears
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     store.failReplaceFile = YES;
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
@@ -3058,7 +3030,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     store.maximumRetryInterval = 3600;
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(store.replaceFileCount, 1);
-    // Each attempt fails and schedules the next after twice the delay, up to an hour, rather than every minute
+    // Each failure doubles the delay, up to an hour, rather than retrying every minute
     NSArray<NSNumber *> *expectedDelays = @[@120, @240, @480, @960, @1920, @3600, @3600];
     for (NSNumber *expected in expectedDelays) {
         XCTAssertEqual([scheduler runPendingRetries], 1);
@@ -3079,8 +3051,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(scheduler.delays.count, 0);
 
-    // Flags that still fit in the file but take up more than half of a slot: the file is replaced with a larger one,
-    // which fails, and then the log is written in place, which fails too
+    // Flags over half a slot: replacing with a larger file fails, then writing in place fails too
     NSString *variant = [@"" stringByPaddingToLength:(NSUInteger)(store.slotCapacity * 3 / 4) withString:@"x" startingAtIndex:0];
     store.failReplaceFile = YES;
     store.failHeaderWrites = 1;
@@ -3116,7 +3087,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 - (void)testJSONFileThatCouldNotBeDeletedIsDeletedByTheNextAppend {
     dispatch_block_t allowDeletion = [self writeUndeletableLegacyFlag:@"legacy" variant:@"1"];
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
-    // The upgrade write saves the imported flags, but cannot delete the JSON file
+    // The upgrade write saves imported flags but can't delete the JSON file
     [store replaceAllFlags:store.allFlags];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"]]));
     XCTAssertEqualObjects([self jsonFiles], @[@"legacy.json"]);
@@ -3142,8 +3113,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store replaceAllFlags:store.allFlags];
     XCTAssertEqualObjects([self jsonFiles], @[@"legacy.json"]);
 
-    // A larger file cannot be created, so a retry is scheduled, but the log is still written in place: the file is
-    // current when the retry runs
+    // A larger file can't be created, so a retry is scheduled, but the log is written in place and current when it runs
     NSString *variant = [@"" stringByPaddingToLength:(NSUInteger)(store.slotCapacity * 3 / 4) withString:@"x" startingAtIndex:0];
     store.failReplaceFile = YES;
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"large" variant:variant]]];
@@ -3173,7 +3143,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertTrue([NSData.data writeToFile:contents atomically:NO]);
     XCTAssertTrue([NSData.data writeToFile:file atomically:NO]);
 
-    // Only the regular file is deleted, and the folders are not returned as files still to delete
+    // Only the regular file is deleted; folders are not reported as still to delete
     XCTAssertEqualObjects(BSGRemoveLegacyFeatureFlagFiles(@[emptyFolder, folder, file, missing]), @[]);
     BOOL isDirectory = NO;
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:emptyFolder isDirectory:&isDirectory] && isDirectory);
@@ -3251,12 +3221,12 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [store addFeatureFlag:@"b" withVariant:@"2"];
     XCTAssertEqual(store.retryDelay, 0);
     XCTAssertLessThanOrEqual(store.retryTime, NSProcessInfo.processInfo.systemUptime + 60);
-    // A retry is scheduled after the retry interval rather than in an hour
+    // The retry comes after the retry interval, not in an hour
     XCTAssertEqual(scheduler.pendingRetries.count, 2);
     XCTAssertLessThanOrEqual(scheduler.delays.lastObject.doubleValue, 60);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 
-    // The earlier retry has been superseded and does nothing; the new one saves the flags
+    // The superseded retry does nothing; the new one saves the flags
     dispatch_block_t superseded = scheduler.pendingRetries.firstObject;
     [scheduler.pendingRetries removeObjectAtIndex:0];
     superseded();
@@ -3268,10 +3238,8 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 #pragma mark The lock is tried again
 
-/// A store created while featureflag.lock cannot be opened (as while protected data is unavailable), so that it takes
-/// the lock later. (A store that finds the lock held by another store never tries again.) featureflag.lock stays
-/// unreadable until BSGRestoreLockFile is called, which must not be before the store that holds the lock has released
-/// it.
+/// A store created while featureflag.lock can't be opened, so it takes the lock later (one finding it held never
+/// retries). Call BSGRestoreLockFile only after the lock holder releases it.
 - (BSGCountingPersistentFeatureFlagStore *)newStoreThatTakesTheLockLater {
     if (!BSGMakeLockFileUnopenable(self.directory)) {
         return nil;
@@ -3290,13 +3258,12 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
     BSGCountingPersistentFeatureFlagStore *second = [self newStoreThatTakesTheLockLater];
     XCTSkipUnless(second, @"File permissions are not enforced for root");
-    // Without the lock, the previous launch's flags are not read (so an OOM event for it has none)
+    // Without the lock the previous launch's flags aren't read (its OOM event has none)
     XCTAssertTrue(second.isEmpty);
     [second addFeatureFlag:@"second" withVariant:@"2"];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"previous", @"1"]]));
 
-    // The first store's lock is released; the second takes it at its next write after the retry interval, and
-    // replaces the earlier flags with its own
+    // With the first store gone, the second takes the lock at its next write after the interval and replaces the flags
     first = nil;
     BSGRestoreLockFile(self.directory);
     second.retryTime = 0;
@@ -3305,7 +3272,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqualObjects(BSGFlagsArray(second.allFlags), expected);
     XCTAssertEqualObjects([self reopenedFlags], expected);
 
-    // From then on it writes like any store that holds the lock
+    // From then on it writes like any lock holder
     [second clear:@"second"];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"third", @"3"]]));
     [second clear];
@@ -3324,7 +3291,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     store.retryTime = 0;
     [store addFeatureFlag:@"own" withVariant:nil];
     XCTAssertNotEqual(store.lockFd, -1);
-    // The JSON file and the file of the launch before are stale once this store writes its own flags
+    // The JSON file and the previous launch's file are stale once this store writes
     XCTAssertEqualObjects([self jsonFiles], @[]);
     store = nil;
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"own", NSNull.null]]));
@@ -3339,7 +3306,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     [scheduler attachToStore:second];
     second.retryTime = 0;
-    // As when Bugsnag starts: nothing changes the flags later, so only the retry saves them
+    // Nothing changes the flags after start, so only the retry saves them
     [second replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start" variant:@"2"]]];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"first", @"1"]]));
     XCTAssertEqual(scheduler.pendingRetries.count, 1);
@@ -3359,7 +3326,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     first = nil;
     BSGRestoreLockFile(self.directory);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"previous", @"1"]]));
-    // The earlier flags must not stay in the file once this store can write
+    // Earlier flags must go once this store can write
     second.retryTime = 0;
     [second clear];
     XCTAssertEqualObjects([self reopenedFlags], @[]);
@@ -3372,7 +3339,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTSkipUnless(second, @"File permissions are not enforced for root");
     first = nil;
     BSGRestoreLockFile(self.directory);
-    // Another process leaves an unusable file and a temporary file
+    // Another process left an unusable file and a temp file
     XCTAssertTrue([[@"not a feature flag file" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:self.filePath atomically:YES]);
     NSString *temporaryPath = [self.filePath stringByAppendingString:@".6F9619FF-8B86-D011-B42D-00CF4FC964FF.tmp"];
     XCTAssertTrue([NSData.data writeToFile:temporaryPath atomically:NO]);
@@ -3396,12 +3363,12 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
         [store addFeatureFlag:@"a" withVariant:@"1"];
         [store addFeatureFlag:@"b" withVariant:nil];
         [store clear:@"a"];
-        // The store proceeds as the only writer: it writes without retrying, and only tries to lock once
+        // The store acts as the only writer: one lock attempt, writes without retries
         XCTAssertEqual(gLockCallCount, 1, @"errno %@", error);
         XCTAssertEqual(scheduler.pendingRetries.count, 0, @"errno %@", error);
         XCTAssertEqualObjects([self files], (@[@"featureflag.bin", @"featureflag.lock"]));
         store = nil;
-        // The next launch reads them, and also writes without the lock
+        // The next launch reads them and also writes without the lock
         store = [self newStore];
         XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"b", NSNull.null]]), @"errno %@", error);
         [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"start"]]];
@@ -3411,8 +3378,8 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testFlagsAreNotPersistedWhileAnotherStoreHoldsTheLock {
-    // Unlike ENOTSUP, EWOULDBLOCK means that another store writes to the directory, so this one must not. That
-    // store keeps the lock for its lifetime, so the lock is tried once, logged once, and never tried again.
+    // Unlike ENOTSUP, EWOULDBLOCK means another store owns the directory for its lifetime, so the lock is tried and
+    // logged once.
     [self simulateLockFailure:EWOULDBLOCK];
     BSGPersistentFeatureFlagStore *store = [self newStore];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
@@ -3424,8 +3391,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(scheduler.pendingRetries.count, 0, @"The lock should not be tried again");
     XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"a", @"1"]]));
 
-    // Not by later changes, nor when Bugsnag starts, nor after the retry interval, nor when protected data becomes
-    // available, even once the lock could be taken
+    // Not on later changes, at start, after the interval or on unlock, even once lockable
     BSGSetFeatureFlagLockFunction(NULL);
     store.retryTime = 0;
     [store addFeatureFlag:@"b" withVariant:nil];
@@ -3543,7 +3509,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 }
 
 - (void)testProtectedDataBecomingAvailableRespectsTheBackoffForOtherFailures {
-    // A file that cannot be replaced for a reason other than protected data being unavailable
+    // A file that can't be replaced for a reason other than protected data
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     store.failReplaceFile = YES;
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
@@ -3569,7 +3535,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     first = nil;
     BSGRestoreLockFile(self.directory);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"first", @"1"]]));
-    // The retry interval has not passed, but the device being unlocked is a reason to try again
+    // Within the retry interval, but an unlock is reason to retry
     [second protectedDataDidBecomeAvailable];
     XCTAssertNotEqual(second.lockFd, -1);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"second", @"2"]]));
@@ -3587,7 +3553,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     [second replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"second" variant:@"2"]]];
     first = nil;
     BSGRestoreLockFile(self.directory);
-    // The save runs in the background, so the test waits for the store itself rather than opening the directory
+    // The save runs in the background, so wait on the store rather than open the directory
     [NSNotificationCenter.defaultCenter postNotificationName:@"UIApplicationProtectedDataDidBecomeAvailable" object:nil];
     XCTAssertTrue(BSGWaitUntilStoreHasSaved(second, 30));
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"second", @"2"]]));
@@ -3603,7 +3569,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     BSGSetFeatureFlagLockFunction(CountingLock);
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     NSString *huge = [@"" stringByPaddingToLength:2 * 1024 * 1024 withString:@"x" startingAtIndex:0];
-    // With no file, flags over the limit neither take the lock nor create anything
+    // With no file, over-limit flags take no lock and create nothing
     [store addFeatureFlag:@"huge" withVariant:huge];
     for (int i = 0; i < 10; i++) {
         [store addFeatureFlag:[NSString stringWithFormat:@"flag-%d", i] withVariant:nil];
@@ -3612,7 +3578,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(store.writeCount, 0);
     XCTAssertEqualObjects([self files], @[]);
 
-    // With a file, the log is emptied once, then nothing more is written while the flags stay over the limit
+    // With a file, the log is emptied once, then nothing is written while over the limit
     [store clear];
     [store addFeatureFlag:@"a" withVariant:@"1"];
     XCTAssertEqual(gLockCallCount, 1);
@@ -3625,7 +3591,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(store.writeCount, writes);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 
-    // Once they are under the limit again, they are saved
+    // Back under the limit, they are saved
     [store clear:@"huge"];
     XCTAssertEqual([self reopenedFlags].count, 10);
 }
@@ -3643,7 +3609,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
     BSGCountingPersistentFeatureFlagStore *store = [[BSGCountingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     XCTAssertEqual(store.writeCount, 0, @"Nothing is written when the store is created");
-    // As when Bugsnag starts with the flags the previous launch ended with
+    // Starting with the previous launch's flags
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"a" variant:@"2"], [BugsnagFeatureFlag flagWithName:@"b"]]];
     XCTAssertEqual(store.writeCount, 0);
     XCTAssertEqualObjects([NSData dataWithContentsOfFile:self.filePath], contents);
@@ -3652,7 +3618,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
     XCTAssertEqual(store.writeCount, 1);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"2"], @[@"b", NSNull.null], @[@"c", NSNull.null]]));
 
-    // Different flags, or the same flags in a different order, are written
+    // Different flags, or a new order, are written
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"b"], [BugsnagFeatureFlag flagWithName:@"a" variant:@"2"]]];
     XCTAssertEqual(store.writeCount, 2);
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"b", NSNull.null], @[@"a", @"2"]]));
@@ -3677,7 +3643,7 @@ static NSArray * BSGFlagsArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 #pragma mark featureflag.lock removed while it is created
 
-// How many times LockFileRemovingSetProtection has removed featureflag.lock, and the functions it stands in for
+// LockFileRemovingSetProtection's removal count and the functions it wraps
 #if defined(DEBUG) && DEBUG
 static NSUInteger gLockFileRemovals;
 static BSGFileProtectionFunctions gRealProtectionFunctions;
@@ -3688,7 +3654,7 @@ static BOOL IsTestLockFile(NSString *path) {
 }
 
 #if defined(DEBUG) && DEBUG
-/// Reports NSFileProtectionComplete for the test's featureflag.lock, so that it is reopened after its class is changed.
+/// Reports NSFileProtectionComplete for the test's featureflag.lock, so it is reopened after the class change.
 static NSString *_Nullable LockFileIsCompleteGetProtection(NSString *path) {
     if (IsTestLockFile(path)) {
         return NSURLFileProtectionComplete;
@@ -3696,8 +3662,8 @@ static NSString *_Nullable LockFileIsCompleteGetProtection(NSString *path) {
     return gRealProtectionFunctions.getProtection(path);
 }
 
-/// Removes the test's featureflag.lock the first time its class is changed, i.e. between the two opens in
-/// BSGOpenFileWithoutCompleteProtection, as when the directory is cleared at that moment.
+/// Removes the test's featureflag.lock on its first class change, between BSGOpenFileWithoutCompleteProtection's two
+/// opens, as if the directory were cleared then.
 static BOOL LockFileRemovingSetProtection(NSString *path, NSString *protection, NSError **error) {
     if (IsTestLockFile(path)) {
         if (gLockFileRemovals == 0) {
@@ -3711,7 +3677,7 @@ static BOOL LockFileRemovingSetProtection(NSString *path, NSString *protection, 
 
 - (void)testLockFileRemovedWhileItIsCreatedIsOpenedAgain {
     gLockFileRemovals = 0;
-    // Known before the simulated functions are installed, because other threads may call them straight away
+    // Set before installing the simulated functions, which other threads may call at once
     gRealProtectionFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
     gRealProtectionFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
         .getProtection = LockFileIsCompleteGetProtection,
@@ -3725,7 +3691,7 @@ static BOOL LockFileRemovingSetProtection(NSString *path, NSString *protection, 
     XCTAssertEqual(gLockFileRemovals, 1);
     XCTAssertNotEqual(store.lockFd, -1, @"The lock file should have been opened again at once, not retried later");
 
-    // The lock is held on the file at the path, not on the one that was removed, so no other store can take it
+    // The lock is on the file now at the path, not the removed one, so no other store can take it
     NSString *lockPath = [self.directory stringByAppendingPathComponent:@"featureflag.lock"];
     struct stat byDescriptor, byPath;
     XCTAssertEqual(fstat(store.lockFd, &byDescriptor), 0);
@@ -3765,7 +3731,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
 
 - (void)testChangesMakeNoProtectionClassCalls {
     gProtectionCallCount = 0;
-    // Known before the counting functions are installed, because other threads may call them straight away
+    // Set before installing the counting functions, which other threads may call at once
     gCountedProtectionFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
     gCountedProtectionFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
         .getProtection = CountingGetProtection,
@@ -3776,7 +3742,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     }];
     BSGPersistentFeatureFlagStore *store = [self newStore];
     [store addFeatureFlag:@"a" withVariant:@"1"];
-    // Creating featureflag.lock and the file is when the protection class is set
+    // The class is set when the files are created
     XCTAssertGreaterThan(gProtectionCallCount, 0);
     XCTAssertLessThanOrEqual(gProtectionCallCount, 2);
 
@@ -3788,7 +3754,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     [store addFeatureFlag:@"b" withVariant:nil];
     XCTAssertEqual(gProtectionCallCount, 0, @"Changes should not read or set protection classes");
 
-    // Nor does opening the file at the next launch: rename() kept the class set when it was created
+    // Nor on reopening next launch: rename() kept the class set at creation
     store = nil;
     store = [self newStore];
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"c"]]];
@@ -3798,8 +3764,8 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
 
 #pragma mark Symbolic links
 
-/// Creates a featureflag.bin holding flag "elsewhere" in another directory, and a symbolic link to it named
-/// featureflag.bin in the store's directory. Returns the file's contents.
+/// Creates featureflag.bin with flag "elsewhere" in another directory, symlinked from the store's. Returns its
+/// contents.
 - (NSData *)linkToFileElsewhere {
     NSString *elsewhere = [self.directory stringByAppendingPathComponent:@"elsewhere"];
     [NSFileManager.defaultManager createDirectoryAtPath:elsewhere withIntermediateDirectories:NO attributes:nil error:nil];
@@ -3823,7 +3789,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     XCTAssertTrue(store.isEmpty, @"The flags of the file the link points to must not be read");
     [store addFeatureFlag:@"a" withVariant:nil];
     XCTAssertEqualObjects([self contentsOfFileElsewhere], contents, @"The file the link points to must not be changed");
-    // The link is replaced by a file of this store's own
+    // The link is replaced by the store's own file
     struct stat st;
     XCTAssertEqual(lstat(self.filePath.fileSystemRepresentation, &st), 0);
     XCTAssertTrue(S_ISREG(st.st_mode));
@@ -3848,8 +3814,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
 }
 
 - (void)testSymbolicLinkIsNotTreatedAsAFileNextToJSONFiles {
-    // A link at the path cannot hold flags, so the JSON files next to it are imported rather than discarded as
-    // though both kinds of file had been found
+    // A link holds no flags, so the JSON files beside it are imported, not discarded as if both kinds existed
     NSData *contents = [self linkToFileElsewhere];
     [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
     BSGPersistentFeatureFlagStore *store = [self newStore];
@@ -3870,7 +3835,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"legacy", @"1"]]));
     [store replaceAllFlags:store.allFlags];
-    // The link is deleted with the other JSON files, but not the file it points to
+    // The link is deleted with the JSON files; its target is not
     XCTAssertEqualObjects([self jsonFiles], @[]);
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:target]);
 }
@@ -3883,7 +3848,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     int fd = open([self.directory stringByAppendingPathComponent:@"featureflag.lock"].fileSystemRepresentation, O_RDONLY | O_CREAT, 0600);
     XCTAssertNotEqual(fd, -1);
     close(fd);
-    // Neither the JSON files can be deleted nor featureflag.bin created
+    // JSON files can't be deleted nor featureflag.bin created
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertEqualObjects(BSGFlagsArray(store.allFlags), (@[@[@"legacy", @"1"]]));
@@ -3896,7 +3861,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     store.retryTime = 0;
     [store addFeatureFlag:@"b" withVariant:nil];
     store = nil;
-    // So the next launch does not find both kinds of file, and reports the flags
+    // So the next launch finds one kind of file and reports the flags
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"legacy", @"1"], @[@"a", NSNull.null], @[@"b", NSNull.null]]));
 }
 
@@ -3909,7 +3874,7 @@ static BOOL CountingSetProtection(NSString *path, NSString *protection, NSError 
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0500), 0);
     BSGPersistentFeatureFlagStore *store = [self newStore];
     XCTAssertEqual(chmod(self.directory.fileSystemRepresentation, 0700), 0);
-    // Clearing all flags also drops the imported ones, so nothing is left to write
+    // Clearing all flags drops the imported ones too; nothing to write
     [store clear];
     [store replaceAllFlags:@[]];
     XCTAssertEqualObjects([self files], (@[@"featureflag.lock"]));
