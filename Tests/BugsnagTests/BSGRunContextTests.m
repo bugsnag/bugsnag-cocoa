@@ -382,13 +382,19 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     // first time: adding them again would run each handler once more per call and leave more sources running
     NSString *path = self.runContextPath;
     BSGRunContextInit(path);
-    XCTAssertEqual(BSGRunContextObserverRegistrationCount(), 1u);
+    const unsigned registrations = BSGRunContextObserverRegistrationCount();
+    XCTAssertEqual(registrations, 2u, @"The observers and memory pressure source, and the timer, each added once");
     BSGRunContextInit(path);
     BSGRunContextInit(path);
-    XCTAssertEqual(BSGRunContextObserverRegistrationCount(), 1u);
+    XCTAssertEqual(BSGRunContextObserverRegistrationCount(), registrations);
 
-    // The values that the observers track are still read for each new file
-    XCTAssertEqual(bsg_runContext->thermalState, NSProcessInfo.processInfo.thermalState);
+#if TARGET_OS_IOS
+    // The values that the observers track are still read for each new file, which starts zeroed
+    UIDevice *device = UIDevice.currentDevice;
+    XCTAssertEqual(bsg_runContext->batteryLevel, device.batteryLevel);
+    XCTAssertEqual(bsg_runContext->batteryState, device.batteryState);
+    XCTAssertEqual(bsg_runContext->lastKnownOrientation, device.orientation);
+#endif
 }
 
 #endif // DEBUG
