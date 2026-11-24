@@ -15,6 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// way: adding a flag whose name is already present replaces its variant and keeps the flag in the position where that
 /// name was first added. For example, adding A:1, B, A:2 gives A:2, B. Clearing a name and adding it again puts it at
 /// the end.
+/// One exception: when a flag's latest variant cannot be converted to JSON (for example, a string that is not valid
+/// UTF-16), BSGAtomicFeatureFlagStore leaves the flag out of crash reports, and BSGPersistentFeatureFlagStore out of the
+/// file used for OOM and thermal kill events, rather than report a variant that the app has replaced, whether the
+/// earlier variant was given in the same call or an earlier one. BSGMemoryFeatureFlagStore keeps the flag as the app
+/// set it.
 @protocol BSGFeatureFlagStore
 
 @property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *allFlags;
