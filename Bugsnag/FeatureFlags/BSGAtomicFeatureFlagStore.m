@@ -98,9 +98,12 @@ static size_t g_retiredCount;
  *   not describe suspending a thread, so this relies on the writer's stores from before it was
  *   suspended being visible to the reader.
  * In both, the reader is expected to see some prefix of the writer's steps, each of which leaves the
- * list safe to walk. That depends on toolchain behaviour that C11 does not guarantee: the compiler
- * treating these sequentially consistent operations as barriers, so that it does not move the writer's
- * other stores (such as an item's contents) past them.
+ * list safe to walk. For the first case this is guaranteed by C11 itself: every store that publishes an
+ * item is preceded by atomic_signal_fence(memory_order_seq_cst) (BSGPublishFence), which orders the
+ * writer's earlier stores (such as the item's contents) before it for a signal handler on the same thread.
+ * It costs nothing at run time: it only stops the compiler moving stores past it. The second case relies
+ * on the Mach behaviour that KSCrash depends on throughout: a suspended thread's completed stores are
+ * visible to the thread that suspended it.
  *
  * If a reader never decrements the count, for example because the app crashes again while a report is
  * being written, no retired item is freed again before the process ends: memory is kept, never reused.
@@ -147,6 +150,12 @@ static void BSGFreeUnlinkedItem(struct bsg_feature_flag_list *list, struct bsg_f
     }
 }
 
+/// Called before each store that makes an item reachable: orders the item's contents before that store for a crash
+/// reader running in a signal handler on this thread (see the comment above BSGRetireItem).
+static inline void BSGPublishFence(void) {
+    atomic_signal_fence(memory_order_seq_cst);
+}
+
 /// Unlinks an item from a list, without freeing it.
 static void BSGListUnlink(struct bsg_feature_flag_list *list, struct bsg_feature_flag_list_item *item) {
     struct bsg_feature_flag_list_item *previous = item->previous;
@@ -174,6 +183,7 @@ static void BSGListSetItem(struct bsg_feature_flag_list *list, NSMutableDictiona
         struct bsg_feature_flag_list_item *next = atomic_load(&oldItem->next);
         newItem->previous = previous;
         atomic_store(&newItem->next, next);
+        BSGPublishFence();
         if (previous) {
             atomic_store(&previous->next, newItem);
         } else {
@@ -188,6 +198,7 @@ static void BSGListSetItem(struct bsg_feature_flag_list *list, NSMutableDictiona
     } else {
         struct bsg_feature_flag_list_item *tail = atomic_load(&list->tail);
         newItem->previous = tail;
+        BSGPublishFence();
         if (tail) {
             atomic_store(&tail->next, newItem);
         } else {
@@ -229,8 +240,15 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
     }
 }
 
+/// The list, its index and its lock are process-wide, because the crash handler reads one list, so there is one store:
+/// this returns the same instance every time.
 + (instancetype)store {
-    return [self new];
+    static BSGAtomicFeatureFlagStore *store;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        store = [self new];
+    });
+    return store;
 }
 
 #pragma mark - BSGFeatureFlagStore
@@ -291,6 +309,7 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
 
         // Publish the new list with a single pointer swap, then retire the old one, which is no longer reachable from
         // a published pointer, and free it if no crash-time reader is walking it.
+        BSGPublishFence();
         struct bsg_feature_flag_list_item *oldHead = atomic_exchange(&g_list.head, atomic_load(&newList.head));
         atomic_store(&g_list.tail, atomic_load(&newList.tail));
         nameToFlag = newNameToFlag;

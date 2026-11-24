@@ -527,9 +527,12 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
         }
     });
 
-    dispatch_group_wait(writerGroup, DISPATCH_TIME_FOREVER);
+    // Bounded waits, so that a regression fails the test rather than hanging the run
+    XCTAssertEqual(dispatch_group_wait(writerGroup, dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC)), 0,
+                   @"The writers did not finish");
     atomic_store(&done, true);
-    dispatch_group_wait(readerGroup, DISPATCH_TIME_FOREVER);
+    XCTAssertEqual(dispatch_group_wait(readerGroup, dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC)), 0,
+                   @"The reader did not finish");
 
     XCTAssertGreaterThan(reads, 0);
     XCTAssertEqual(emptyReads, 0, @"The crash-time reader saw an empty list during replaceAllFlags");
