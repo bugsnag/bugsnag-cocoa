@@ -593,8 +593,11 @@ static void LoadLastRunContext(int fd) {
 ///
 /// The file may have NSFileProtectionCompleteUnlessOpen, which only keeps it
 /// accessible while the device is locked as long as it is open, so this
-/// descriptor is never closed while the mapping is in use. The mapping is never
-/// unmapped, so in practice it stays open for the lifetime of the process.
+/// descriptor is kept open while the mapping is in use. The mapping is never
+/// unmapped, so it stays open for the lifetime of the process, unless
+/// BSGRunContextInit() runs again (only unit tests do this): the descriptor is
+/// then closed once the new file is mapped, although the old mapping remains
+/// (see ResizeAndMapFile).
 static int bsg_runContextFd = -1;
 
 /// Truncates or extends the file to the size of struct BSGRunContext,
