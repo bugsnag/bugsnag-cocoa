@@ -5,20 +5,18 @@ Changelog
 
 ### Enhancements
 
-* Feature flags for Out Of Memory and thermal kill events are now saved in one file instead of one file per flag, which
-  makes adding feature flags and starting Bugsnag much faster when many flags are used. Flags over 2 MB are no longer
-  saved for these events.
+* Feature flags for Out Of Memory and thermal kill events are now saved in a single file, making flag changes and
+  `Bugsnag.start()` much faster with many flags. Flags over 2 MB are not saved for these events.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ### Bug Fixes
 
-* Out Of Memory and thermal kill events could stop being detected after the device was locked.
+* Fixed Out Of Memory and thermal kill events not being detected after the device was locked.
   [#1982](https://github.com/bugsnag/bugsnag-cocoa/pull/1982)
 
-* A feature flag that is added again now keeps its position in all events, and is no longer reported twice in crash
-  reports. A flag that cannot be converted to JSON no longer makes a crash report invalid.
+* Fixed feature flags being duplicated or reordered when added again, and invalid crash reports caused by flags that
+  cannot be converted to JSON.
   [#1983](https://github.com/bugsnag/bugsnag-cocoa/pull/1983)
-  [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ## 7.0.0 (2026-11-06)
 
