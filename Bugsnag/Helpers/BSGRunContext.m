@@ -593,7 +593,7 @@ const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 /// NSFileProtectionComplete invalidates mappings 10 seconds after the device
 /// locks, so it is downgraded to NSFileProtectionCompleteUnlessOpen; the
 /// descriptor must stay open while the file is mapped. Retries once on EAGAIN
-/// (file replaced while opening). Failure is logged: OOM and thermal kill
+/// (file removed or replaced while opening). Failure is logged: OOM and thermal kill
 /// detection is then off for this launch.
 static int OpenFile(NSString *_Nonnull path) {
     int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);

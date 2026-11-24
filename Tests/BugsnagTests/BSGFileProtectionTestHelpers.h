@@ -40,7 +40,8 @@ static inline NSString *_Nullable BSGSetRealFileProtectionComplete(NSString *pat
 
 /// Why this host cannot change a real file from NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen, or nil.
 /// Tried on a scratch file holding `contents`. Some macOS versions (e.g. 26.7.2) refuse it with NSCocoaErrorDomain 513
-/// even when unlocked; BSGDisableNSFileProtectionComplete fails there too, so such hosts skip the test.
+/// even when unlocked. BSGDisableNSFileProtectionComplete failed there before this change too, so it is not a
+/// regression and such hosts skip the test.
 static inline NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *contents) {
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
     if (![contents writeToFile:path atomically:NO]) {
