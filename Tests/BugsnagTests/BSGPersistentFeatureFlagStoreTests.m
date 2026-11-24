@@ -47,6 +47,7 @@ static const size_t ActiveOffset = 16;
 @property (nonatomic) BOOL lockGivenUp;
 @property (nonatomic) uint64_t slotCapacity;
 @property (nonatomic, strong) NSArray<NSString *> *pendingLegacyPaths;
+@property (nonatomic) NSTimeInterval compactionRetryTime;
 @property (nonatomic) BOOL directoryAtFilePath;
 - (BOOL)hasPendingWork;
 - (void)protectedDataDidBecomeAvailable;
@@ -797,6 +798,36 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
     const uint64_t after = [self activeValue];
     XCTAssertNotEqual(after & 1, before & 1, @"Clearing all flags should switch slots");
     XCTAssertEqual(after >> 1, 0);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+}
+
+- (void)testClearingAnEmptyCurrentFileWritesNothing {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    [store clear];
+    const uint64_t empty = [self activeValue];
+    XCTAssertEqual(empty >> 1, 0);
+
+    // The file already holds an empty, current log, so clearing again doesn't switch slots
+    [store clear];
+    [store clear];
+    XCTAssertEqual([self activeValue], empty);
+    XCTAssertEqualObjects([self reopenedFlags], @[]);
+}
+
+- (void)testClearingAnEmptyFileStillDeletesPendingJSONFiles {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    [store clear];
+    // JSON files whose deletion failed earlier are still pending, so clearing is not skipped
+    [self writeLegacyFlag:@"legacy" variant:@"1" index:0];
+    NSString *legacyPath = [self.directory stringByAppendingPathComponent:@"legacy.json"];
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:legacyPath]);
+    store.pendingLegacyPaths = @[legacyPath];
+
+    [store clear];
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:legacyPath]);
+    XCTAssertEqualObjects(store.pendingLegacyPaths, @[]);
     XCTAssertEqualObjects([self reopenedFlags], @[]);
 }
 
@@ -2292,8 +2323,11 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     // There is nothing to save, so no retry is scheduled
     XCTAssertEqualObjects(scheduler.delays, @[]);
 
-    // Later changes are still saved
+    // Once the retry interval has passed, the next change compacts the log into slot 1
+    store.compactionRetryTime = 0;
     [store addFeatureFlag:@"c" withVariant:@"3"];
+    XCTAssertEqual([self activeValue] & 1, 1, @"The log should have been compacted into slot 1");
+    XCTAssertLessThan([self activeValue] >> 1, 256u, @"The compacted log should hold only the live flags");
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"], @[@"c", @"3"]]));
 
     // A later failure to save the flags is retried after the usual first delay, not a doubled one
