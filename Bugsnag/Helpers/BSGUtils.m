@@ -104,7 +104,7 @@ static BOOL BSGChangeProtectionComplete(NSString *path, BOOL *_Nullable changed,
 BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     NSError *error = nil;
     if (!BSGChangeProtectionComplete(path, changed, &error)) {
-        bsg_log_warn(@"BSGDisableFileProtection: %@", error);
+        bsg_log_warn(@"Could not change the protection class of %@: %@", path, error);
         return NO;
     }
     return YES;
