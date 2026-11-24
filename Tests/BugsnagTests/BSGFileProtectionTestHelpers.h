@@ -11,16 +11,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Real file protection classes
 
-/// Whether the tests that set NSFileProtectionComplete on real files must run rather than be skipped. Set
-/// BSG_REQUIRE_FILE_PROTECTION_TESTS=1 (TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 with xcodebuild) on a host
-/// whose screen is unlocked, so that those tests fail instead of silently skipping.
+/// Whether real-file protection tests must fail rather than skip. Set BSG_REQUIRE_FILE_PROTECTION_TESTS=1
+/// (TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 with xcodebuild) on a host whose screen is unlocked.
 static inline BOOL BSGFileProtectionTestsAreRequired(void) {
     return [NSProcessInfo.processInfo.environment[@"BSG_REQUIRE_FILE_PROTECTION_TESTS"] isEqualToString:@"1"];
 }
 
-/// Sets NSFileProtectionComplete on a real file, returning nil on success or why it could not be set. On Apple
-/// silicon Macs (and so in the simulator) and on devices, class A can only be set while the screen is unlocked;
-/// otherwise setting it fails with NSCocoaErrorDomain 513 (EPERM).
+/// Sets NSFileProtectionComplete on a real file, returning nil or why it failed. On devices and Apple silicon Macs
+/// (including the simulator) it needs an unlocked screen, else fails with NSCocoaErrorDomain 513.
 static inline NSString *_Nullable BSGSetRealFileProtectionComplete(NSString *path) {
     NSURL *url = [NSURL fileURLWithPath:path];
     NSError *error = nil;
@@ -40,11 +38,9 @@ static inline NSString *_Nullable BSGSetRealFileProtectionComplete(NSString *pat
     return nil;
 }
 
-/// Why this host cannot change a real file from NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen, or nil
-/// if it can. The change is tried on a scratch file holding `contents`, as the file the test uses does. Some macOS
-/// versions refuse it with NSCocoaErrorDomain 513 even while the screen is unlocked (seen on macOS 26.7.2), although
-/// NSFileProtectionComplete itself can be set. On such a host BSGDisableNSFileProtectionComplete fails in the same way
-/// without these changes, so the SDK behaves no differently there; the test is skipped rather than failed.
+/// Why this host cannot change a real file from NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen, or nil.
+/// Tried on a scratch file holding `contents`. Some macOS versions (e.g. 26.7.2) refuse it with NSCocoaErrorDomain 513
+/// even when unlocked; BSGDisableNSFileProtectionComplete fails there too, so such hosts skip the test.
 static inline NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *contents) {
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
     if (![contents writeToFile:path atomically:NO]) {
@@ -61,8 +57,7 @@ static inline NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *con
     return reason;
 }
 
-/// Skips the test, or fails it if BSG_REQUIRE_FILE_PROTECTION_TESTS=1, when real protection classes cannot be tested on
-/// this host (NSFileProtectionComplete could not be set, or could not be changed; `reason` says which).
+/// If `reason` is set, skips the test (or fails it with BSG_REQUIRE_FILE_PROTECTION_TESTS=1).
 #define BSGSkipUnlessFileProtectionComplete(reason, path) \
     if (reason) { \
         [NSFileManager.defaultManager removeItemAtPath:(path) error:nil]; \

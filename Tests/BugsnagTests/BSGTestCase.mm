@@ -69,10 +69,8 @@ using namespace bugsnag;
 @end
 
 
-/// Code such as +[BSG_KSSystemInfo systemInfo] (called when a session starts) updates the crash state, which only
-/// exists once crash reporting has been installed. A test that runs before any test has started a client (when tests
-/// run in a different order, or in the new process that XCTest starts after a test crashes) would otherwise crash on
-/// a NULL state. Tests that start a client still install the client's own state.
+/// Code such as +[BSG_KSSystemInfo systemInfo] updates the crash state, which is NULL until a client starts. Gives
+/// tests that run before any client (e.g. reordered, or after an XCTest relaunch) a state so they do not crash.
 static void BSGEnsureCrashStateExists(void) {
     if (bsg_kscrashstate_currentState()) {
         return;

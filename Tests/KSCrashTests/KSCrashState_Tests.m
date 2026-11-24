@@ -40,9 +40,8 @@
 
 - (void)tearDown
 {
-    // Each test passes bsg_kscrashstate_init a state on its stack and a path that it frees, and the crash state keeps
-    // pointers to both. Later tests that update the crash state (e.g. by starting a session) would then write to
-    // freed stack memory, and crash or corrupt whatever is there. Point it at storage that outlives the test instead.
+    // Tests give bsg_kscrashstate_init a stack state and a freed path, which later tests would write through.
+    // Repoint the crash state at static storage.
     static BSG_KSCrash_State state;
     static char *path;
     if (!path) {
