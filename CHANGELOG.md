@@ -5,27 +5,19 @@ Changelog
 
 ### Enhancements
 
-* Feature flags for OOM and thermal kill events are now persisted in a single binary file (`featureflag.bin`) instead of one file
-  per flag, which makes adding and clearing flags, and starting Bugsnag, faster when many flags are used. Each update is atomic, so
-  the app being terminated part way through an update never leaves a partial set of flags. If the flags take up more than 2 MB, none
-  of them are persisted: they remain in memory and are still included in handled events and crash reports, but not in OOM or thermal
-  kill events. On the first launch after upgrading, the flags saved by an earlier version are copied into `featureflag.bin`, ahead of
-  the app's own flags, and the old files are deleted.
+* Feature flags for Out Of Memory and thermal kill events are now saved in one file instead of one file per flag, which
+  makes adding feature flags and starting Bugsnag much faster when many flags are used. Flags over 2 MB are no longer
+  saved for these events.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ### Bug Fixes
 
-* The memory-mapped run context file, used to detect Out Of Memory and thermal kill events, could become inaccessible after the device was locked if it had `NSFileProtectionCompleteUnlessOpen`, or `NSFileProtectionComplete` (which the SDK already changes to `NSFileProtectionCompleteUnlessOpen`), because its descriptor was closed as soon as the file was mapped and that protection class is only documented to keep a file accessible while it is open. The descriptor is now kept open while the file is mapped.
-  A symbolic link at the run context file's path is now refused rather than followed.
+* Out Of Memory and thermal kill events could stop being detected after the device was locked.
   [#1982](https://github.com/bugsnag/bugsnag-cocoa/pull/1982)
 
-* A feature flag that is added again now keeps its original position in crash reports instead of moving to the end, and a name
-  that is repeated in a call to `addFeatureFlags:` no longer appears twice in crash reports. A feature flag whose name or
-  variant cannot be converted to JSON is now left out of crash reports; before, it could make the crash report invalid.
+* A feature flag that is added again now keeps its position in all events, and is no longer reported twice in crash
+  reports. A flag that cannot be converted to JSON no longer makes a crash report invalid.
   [#1983](https://github.com/bugsnag/bugsnag-cocoa/pull/1983)
-
-* A feature flag that is added again now keeps its original position in Out Of Memory and thermal kill events instead of moving to
-  the end, as it already did in handled events.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ## 7.0.0 (2026-11-06)
