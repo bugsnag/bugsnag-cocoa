@@ -5,8 +5,9 @@ Changelog
 
 ### Enhancements
 
-* Feature flags for Out Of Memory and thermal kill events are now saved in a single file, making flag changes and
-  `Bugsnag.start()` much faster with many flags. Flags over 2 MB are not saved for these events.
+* Feature flags for Out Of Memory and thermal kill events are now saved in one binary file instead of one JSON file
+  per flag, making flag changes and `Bugsnag.start()` much faster with many flags. Flags saved by earlier versions are
+  migrated automatically.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ### Bug Fixes

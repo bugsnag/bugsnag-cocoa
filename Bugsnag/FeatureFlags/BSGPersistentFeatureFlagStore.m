@@ -185,8 +185,9 @@ static BOOL BSGFeatureFlagFileReadHeader(int fd, struct bsg_feature_flag_file_he
 /// Reads `length` bytes into a new buffer, returning nil if they cannot all be read. errno is then 0 if the file is too
 /// short, or the error if it could not be read.
 static NSData * BSGFeatureFlagFileReadData(int fd, uint64_t length, uint64_t offset) {
-    errno = 0;
     void *bytes = malloc(MAX((size_t)length, 1));
+    // Set after malloc, so that only the read can change it
+    errno = 0;
     if (!bytes || !BSGFeatureFlagFileRead(fd, bytes, length, offset)) {
         const int error = bytes ? errno : ENOMEM;
         free(bytes);
