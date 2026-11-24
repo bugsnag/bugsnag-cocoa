@@ -5,6 +5,13 @@
 //  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 
+// DEBUG is checked here, before BSG_KSLogger.h (imported below) redefines it
+#if defined(DEBUG) && DEBUG
+#define BSG_RUN_CONTEXT_TEST_HOOKS 1
+#else
+#define BSG_RUN_CONTEXT_TEST_HOOKS 0
+#endif
+
 #import "BSGRunContext.h"
 
 #import "BSGAppKit.h"
@@ -45,13 +52,14 @@ static UIApplication * GetUIApplication(void);
 #endif
 static void InstallTimer(void);
 
-// For unit tests (see BSGRunContextObserverRegistrationCount). Not limited to debug builds because DEBUG is redefined
-// by the KSCrash logging header in this file.
+#if BSG_RUN_CONTEXT_TEST_HOOKS
+// For unit tests only (see BSGRunContextObserverRegistrationCount)
 static _Atomic unsigned bsg_observerRegistrationCount;
 
 unsigned BSGRunContextObserverRegistrationCount(void) {
     return atomic_load(&bsg_observerRegistrationCount);
 }
+#endif
 
 
 #pragma mark - Initial setup
@@ -230,7 +238,9 @@ static UIApplication * GetUIApplication(void) {
 static void InstallTimer(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+#if BSG_RUN_CONTEXT_TEST_HOOKS
         atomic_fetch_add(&bsg_observerRegistrationCount, 1);
+#endif
         static dispatch_source_t timer;
         
         dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
@@ -373,7 +383,9 @@ static void ObserveMemoryPressure(void) {
 
 /// Adds the notification observers and the memory pressure source. Called once per process (see AddObservers).
 static void RegisterObservers(void) {
+#if BSG_RUN_CONTEXT_TEST_HOOKS
     atomic_fetch_add(&bsg_observerRegistrationCount, 1);
+#endif
     CFNotificationCenterRef center = CFNotificationCenterGetLocalCenter();
     
 #define OBSERVE(name, function) CFNotificationCenterAddObserver(\

@@ -56,12 +56,11 @@ int BSGOpenFileWithoutFollowingLinks(NSString *path, int flags);
 /// compared by device and inode number), the descriptors are closed and -1 is returned with errno set to EAGAIN, so that
 /// the caller can try again rather than use a file that is no longer at the path or whose protection class was not
 /// checked. If it cannot be reopened for another reason (for example because the device locked between the two opens),
-/// the first descriptor is returned instead, and a warning is logged: it was opened under NSFileProtectionComplete, so
-/// reads and writes through it can start failing once the device is locked, and callers must handle a later read or
-/// write failure. The file is opened as BSGOpenFileWithoutFollowingLinks opens it, so a symbolic link at the path is
-/// refused (ELOOP). A file created here with O_EXCL is deleted if it cannot be set up. If the protection class cannot be
-/// changed, errno is the POSIX error that caused it, or EPERM if there is none. Other failures are not logged here;
-/// callers log them.
+/// -1 is returned with that error: the first descriptor was opened under NSFileProtectionComplete, so it may stop
+/// working (or make a mapping of the file fault) once the device is locked. The file is opened as
+/// BSGOpenFileWithoutFollowingLinks opens it, so a symbolic link at the path is refused (ELOOP). A file created here
+/// with O_EXCL is deleted if it cannot be set up. If the protection class cannot be changed, errno is the POSIX error
+/// that caused it, or EPERM if there is none. Nothing is logged here; callers log failures.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
 /// The protection class that BSGCreateFileWithoutCompleteProtection asks for when it creates a file in `directory`:

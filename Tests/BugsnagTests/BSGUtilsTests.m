@@ -500,31 +500,21 @@ static BOOL IsMarked(int fd) {
     XCTAssertEqualObjects(gSimulatedProtection[existing], NSURLFileProtectionComplete);
 }
 
-- (void)testFirstDescriptorIsKeptIfTheFileCannotBeReopened {
+- (void)testFileThatCannotBeReopenedIsNotUsed {
     [self simulateProtection];
     NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
     gSimulatedProtection[path] = NSURLFileProtectionComplete;
 
-    // The first descriptor holds an exclusive lock, so reopening with O_EXLOCK | O_NONBLOCK fails (EWOULDBLOCK) and
-    // the descriptor that was opened first, whose file now has the changed class, is returned instead
-    const int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK);
-    XCTAssertNotEqual(fd, -1);
-    if (fd == -1) {
-        return;
-    }
+    // The first descriptor holds an exclusive lock, so reopening with O_EXLOCK | O_NONBLOCK fails (EWOULDBLOCK). The
+    // first descriptor was opened under NSFileProtectionComplete, so it is closed rather than returned: a mapping of
+    // the file could fault once the device is locked
+    errno = 0;
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK), -1);
+    XCTAssertEqual(errno, EWOULDBLOCK, @"The reopen's error should be returned");
     XCTAssertEqualObjects(gSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]),
                           @"The class must have been changed, so that the file was reopened");
-    XCTAssertTrue(fcntl(fd, F_GETFD) & FD_CLOEXEC);
-    XCTAssertEqual(pwrite(fd, "abc", 3, 0), 3);
-    // The lock is still held by the returned descriptor
-    errno = 0;
-    XCTAssertEqual(open(path.fileSystemRepresentation, O_RDONLY | O_EXLOCK | O_NONBLOCK), -1);
-    XCTAssertEqual(errno, EWOULDBLOCK);
-    struct stat st;
-    XCTAssertEqual(fstat(fd, &st), 0);
-    XCTAssertEqualObjects(DescriptorsForFile(st.st_dev, st.st_ino), @[@(fd)], @"Nothing else should be left open");
-    close(fd);
-    XCTAssertEqualObjects([NSData dataWithContentsOfFile:path], [@"abc" dataUsingEncoding:NSUTF8StringEncoding]);
+    // The file was created by the call (O_EXCL), so it is deleted, and nothing is left open
+    XCTAssertFalse([NSFileManager.defaultManager fileExistsAtPath:path]);
 }
 #endif
 
