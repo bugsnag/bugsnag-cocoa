@@ -45,6 +45,14 @@ static UIApplication * GetUIApplication(void);
 #endif
 static void InstallTimer(void);
 
+// For unit tests (see BSGRunContextObserverRegistrationCount). Not limited to debug builds because DEBUG is redefined
+// by the KSCrash logging header in this file.
+static _Atomic unsigned bsg_observerRegistrationCount;
+
+unsigned BSGRunContextObserverRegistrationCount(void) {
+    return atomic_load(&bsg_observerRegistrationCount);
+}
+
 
 #pragma mark - Initial setup
 
@@ -217,23 +225,29 @@ static UIApplication * GetUIApplication(void) {
 
 #endif
 
+/// Installed once per process: the timer writes through bsg_runContext, so it keeps working when BSGRunContextInit()
+/// runs again and maps a new file. Creating one on every call would leave the previous timers running.
 static void InstallTimer(void) {
-    static dispatch_source_t timer;
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
-    
-    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    
-    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW,
-                              /* interval */ NSEC_PER_SEC / 2,
-                              /* leeway */   NSEC_PER_SEC / 4);
-    
-    dispatch_source_set_event_handler(timer, ^{
-        BSGRunContextUpdateTimestamp();
-        BSGRunContextUpdateMemory();
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        atomic_fetch_add(&bsg_observerRegistrationCount, 1);
+        static dispatch_source_t timer;
+        
+        dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
+        
+        timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+        
+        dispatch_source_set_timer(timer, DISPATCH_TIME_NOW,
+                                  /* interval */ NSEC_PER_SEC / 2,
+                                  /* leeway */   NSEC_PER_SEC / 4);
+        
+        dispatch_source_set_event_handler(timer, ^{
+            BSGRunContextUpdateTimestamp();
+            BSGRunContextUpdateMemory();
+        });
+        
+        dispatch_resume(timer);
     });
-    
-    dispatch_resume(timer);
 }
 
 
@@ -356,13 +370,6 @@ static void ObserveMemoryPressure(void) {
 
 #endif
 
-// For unit tests (see BSGRunContextObserverRegistrationCount). Not limited to debug builds because DEBUG is redefined
-// by the KSCrash logging header in this file.
-static _Atomic unsigned bsg_observerRegistrationCount;
-
-unsigned BSGRunContextObserverRegistrationCount(void) {
-    return atomic_load(&bsg_observerRegistrationCount);
-}
 
 /// Adds the notification observers and the memory pressure source. Called once per process (see AddObservers).
 static void RegisterObservers(void) {
@@ -408,7 +415,7 @@ static void RegisterObservers(void) {
 }
 
 /// The observers and the memory pressure source write through bsg_runContext, so they keep working when
-/// BSGRunContextInit() runs again and maps a new file (only unit tests do this). They are therefore added once per
+/// BSGRunContextInit() runs again and maps a new file (it runs each time a client starts). They are therefore added once per
 /// process: adding them on every call would run each handler once more per call, and leave another memory pressure
 /// source running each time. The values they track are read on every call, because each new file starts zeroed.
 static void AddObservers(void) {
@@ -621,7 +628,7 @@ static void LoadLastRunContext(int fd) {
 /// accessible while the device is locked as long as it is open, so this
 /// descriptor is kept open while the mapping is in use. The mapping is never
 /// unmapped, so it stays open for the lifetime of the process, unless
-/// BSGRunContextInit() runs again (only unit tests do this): the descriptor is
+/// BSGRunContextInit() runs again (each time a client starts): the descriptor is
 /// then closed once the new file is mapped, although the old mapping remains
 /// (see ResizeAndMapFile).
 static int bsg_runContextFd = -1;
@@ -655,8 +662,8 @@ static void ResizeAndMapFile(int fd) {
     bsg_runContextFd = fd;
     bsg_runContext = ptr;
 
-    // Only reached if BSGRunContextInit() is called more than once (e.g. by
-    // unit tests.) The previous mapping is left in place, as before, because
+    // Only reached if BSGRunContextInit() is called more than once (each time
+    // a client starts, e.g. in unit tests.) The previous mapping is left in place, as before, because
     // other threads may still hold its address, but nothing writes to it via
     // bsg_runContext any more. When the same path is reinitialised, the file
     // stays open through the new descriptor.
