@@ -377,6 +377,20 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xB1E5UL);
 }
 
+- (void)testObserversAreAddedOncePerProcess {
+    // Every call maps a new file, but the notification observers and the memory pressure source are only added the
+    // first time: adding them again would run each handler once more per call and leave more sources running
+    NSString *path = self.runContextPath;
+    BSGRunContextInit(path);
+    XCTAssertEqual(BSGRunContextObserverRegistrationCount(), 1u);
+    BSGRunContextInit(path);
+    BSGRunContextInit(path);
+    XCTAssertEqual(BSGRunContextObserverRegistrationCount(), 1u);
+
+    // The values that the observers track are still read for each new file
+    XCTAssertEqual(bsg_runContext->thermalState, NSProcessInfo.processInfo.thermalState);
+}
+
 #endif // DEBUG
 
 #pragma mark Real protection classes

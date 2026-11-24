@@ -356,7 +356,17 @@ static void ObserveMemoryPressure(void) {
 
 #endif
 
-static void AddObservers(void) {
+// For unit tests (see BSGRunContextObserverRegistrationCount). Not limited to debug builds because DEBUG is redefined
+// by the KSCrash logging header in this file.
+static _Atomic unsigned bsg_observerRegistrationCount;
+
+unsigned BSGRunContextObserverRegistrationCount(void) {
+    return atomic_load(&bsg_observerRegistrationCount);
+}
+
+/// Adds the notification observers and the memory pressure source. Called once per process (see AddObservers).
+static void RegisterObservers(void) {
+    atomic_fetch_add(&bsg_observerRegistrationCount, 1);
     CFNotificationCenterRef center = CFNotificationCenterGetLocalCenter();
     
 #define OBSERVE(name, function) CFNotificationCenterAddObserver(\
@@ -383,14 +393,10 @@ static void AddObservers(void) {
     
 #if BSG_HAVE_BATTERY
     BSGGetDevice().batteryMonitoringEnabled = YES;
-    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
-    bsg_runContext->batteryState = BSGGetDevice().batteryState;
 #endif
 
 #if TARGET_OS_IOS
-    UIDevice *currentDevice = [UIDEVICE currentDevice];
-    [currentDevice beginGeneratingDeviceOrientationNotifications];
-    bsg_runContext->lastKnownOrientation = currentDevice.orientation;
+    [[UIDEVICE currentDevice] beginGeneratingDeviceOrientationNotifications];
     OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);
     OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
     OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
@@ -398,6 +404,26 @@ static void AddObservers(void) {
 
 #if BSG_HAVE_OOM_DETECTION
     ObserveMemoryPressure();
+#endif
+}
+
+/// The observers and the memory pressure source write through bsg_runContext, so they keep working when
+/// BSGRunContextInit() runs again and maps a new file (only unit tests do this). They are therefore added once per
+/// process: adding them on every call would run each handler once more per call, and leave another memory pressure
+/// source running each time. The values they track are read on every call, because each new file starts zeroed.
+static void AddObservers(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        RegisterObservers();
+    });
+
+#if BSG_HAVE_BATTERY
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
+#endif
+
+#if TARGET_OS_IOS
+    bsg_runContext->lastKnownOrientation = [UIDEVICE currentDevice].orientation;
 #endif
 }
 
