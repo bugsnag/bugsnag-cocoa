@@ -2232,6 +2232,39 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"c", @"3"]]));
 }
 
+- (void)testCompactionFailureKeepsTheCurrentLog {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    [store addFeatureFlag:@"b" withVariant:@"2"];
+    XCTAssertEqual([self activeValue] & 1, 0);
+    const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
+    // The log is compacted once it is 4,096 bytes longer than the flags; slot 0 must have room for that
+    if (slotCapacity < 4096 + 1024) {
+        XCTSkip(@"The file's slots (%u bytes) fill up before the log would be compacted", slotCapacity);
+    }
+
+    // Changing a flag appends to the log in slot 0 until it is long enough to be compacted into slot 1, which is past
+    // the limit, as when the disk is full
+    __block NSString *variant = nil;
+    XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + slotCapacity, ^{
+        for (int i = 0; i < 1000 && ([self activeValue] >> 1) <= 4096 + 256; i++) {
+            variant = [NSString stringWithFormat:@"%d", i];
+            [store addFeatureFlag:@"a" withVariant:variant];
+        }
+    }));
+    XCTAssertEqual([self activeValue] & 1, 0, @"Slot 0 should still be the active one");
+    XCTAssertGreaterThan([self activeValue] >> 1, 4096, @"The log should have been kept");
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"]]),
+                          @"The file should still hold the current flags");
+
+    // Later changes are still saved
+    [store addFeatureFlag:@"c" withVariant:@"3"];
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"], @[@"c", @"3"]]));
+    (void)scheduler;
+}
+
 - (void)testHeaderWriteFailureDeletesTheFile {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];

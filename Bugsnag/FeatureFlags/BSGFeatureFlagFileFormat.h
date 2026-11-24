@@ -123,10 +123,7 @@ NSData * _Nullable BSGFeatureFlagEncode(NSString *name, NSString * _Nullable var
 NSData * _Nullable BSGFeatureFlagEncodeRemoval(NSString *name);
 
 /// Calls the block with each record in a log: the flag it adds and its encoded record, or the name of
-/// the flag it removes. Returns NO if the log is corrupt.
-///
-/// The records are not copied: each one refers to its range of the log's bytes and keeps the log allocated, so the
-/// log must not be changed afterwards, and it is freed once the last record decoded from it is.
+/// the flag it removes. Returns NO if the log is corrupt. Each record is a copy of its bytes in the log.
 BOOL BSGFeatureFlagsDecode(NSData *log,
                            void (^ block)(NSString *name, NSString * _Nullable variant, BOOL removed, NSData *record));
 

@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGCompositeFeatureFlagStore ()
 
+/// The flags in the persistent store, decoded from its records each time. For unit tests only: the SDK uses
+/// previousLaunchFlags for OOM and thermal kill events.
 @property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *persistedFlags;
 
 /// The flags of the previous launch, for its OOM or thermal kill event: those the persistent store read when it was

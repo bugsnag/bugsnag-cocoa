@@ -134,15 +134,8 @@ static BOOL BSGFeatureFlagsDecodeBytes(const uint8_t *bytes, uint64_t length,
 /// the flag it removes. Returns NO if the log is corrupt.
 BOOL BSGFeatureFlagsDecode(NSData *log,
                            void (^ block)(NSString *name, NSString *variant, BOOL removed, NSData *record)) {
-    const uint8_t *bytes = log.bytes;
-    return BSGFeatureFlagsDecodeBytes(bytes, log.length, ^(NSString *name, NSString *variant, BOOL removed, NSRange range) {
-        // The record refers to the log's bytes rather than copying them; the log stays allocated for as long as
-        // any record does.
-        NSData *record = [[NSData alloc] initWithBytesNoCopy:(void *)(uintptr_t)(bytes + range.location) length:range.length
-                                                 deallocator:^(__unused void *recordBytes, __unused NSUInteger recordLength) {
-            (void)log;
-        }];
-        block(name, variant, removed, record);
+    return BSGFeatureFlagsDecodeBytes(log.bytes, log.length, ^(NSString *name, NSString *variant, BOOL removed, NSRange range) {
+        block(name, variant, removed, [log subdataWithRange:range]);
     });
 }
 
