@@ -2259,10 +2259,19 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"]]),
                           @"The file should still hold the current flags");
 
+    // There is nothing to save, so no retry is scheduled
+    XCTAssertEqualObjects(scheduler.delays, @[]);
+
     // Later changes are still saved
     [store addFeatureFlag:@"c" withVariant:@"3"];
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", variant], @[@"b", @"2"], @[@"c", @"3"]]));
-    (void)scheduler;
+
+    // A later failure to save the flags is retried after the usual first delay, not a doubled one
+    XCTAssertTrue(BSGWithFileSizeLimit(ActiveOffset, ^{
+        [store addFeatureFlag:@"d" withVariant:nil];
+    }));
+    XCTAssertEqual(scheduler.delays.count, 1u);
+    XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, store.retryInterval, 1);
 }
 
 - (void)testHeaderWriteFailureDeletesTheFile {

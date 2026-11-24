@@ -123,8 +123,10 @@
 //   tooLargeToPersist  The flags were last over BSGFeatureFlagMaxPersistedLength (so that is only logged once).
 //   retryTime,         After a failure, the uptime before which the file is not replaced, the lock not tried and a
 //   retryDelay,        file that could not be opened not opened again; the delay used (doubling up to the maximum);
-//   retryGeneration    and which scheduled retry is current. Reset by a success; the delay is shortened by a change to
-//                      the flags (flagsDidChange), and replaceAllFlags (Bugsnag starting) tries again at once.
+//   retryGeneration    and which scheduled retry is current. Reset when the file is replaced or the lock is taken, not
+//                      by a write in place, because a larger file may still be needed (e.g. while the device is
+//                      locked); the delay is shortened by a change to the flags (flagsDidChange), and replaceAllFlags
+//                      (Bugsnag starting) tries again at once.
 //   waitingForProtectedData  The last failure was EACCES or EPERM, as while protected data is unavailable, so that
 //                      UIApplicationProtectedDataDidBecomeAvailable tries again before the retry time.
 //
@@ -164,22 +166,31 @@ static int BSGFeatureFlagLock(int fd, int operation) {
 #endif
 
 /// Reads the header of an open featureflag.bin, returning whether it is valid and the file is large enough for it.
+/// Reads and checks the header. On failure errno is 0 if the header is invalid (including a file too short to hold
+/// one), or the error if it could not be read (e.g. EIO): the file may then still be valid, so it must not be deleted.
 static BOOL BSGFeatureFlagFileReadHeader(int fd, struct bsg_feature_flag_file_header *header) {
     struct stat st;
-    return (fstat(fd, &st) == 0 &&
-            BSGFeatureFlagFileRead(fd, header, sizeof(*header), 0) &&
-            header->magic == BSGFeatureFlagFileMagic &&
+    errno = 0;
+    if (fstat(fd, &st) != 0 || !BSGFeatureFlagFileRead(fd, header, sizeof(*header), 0)) {
+        return NO;
+    }
+    errno = 0;
+    return (header->magic == BSGFeatureFlagFileMagic &&
             header->version == BSGFeatureFlagFileVersion &&
             header->slotCapacity > 0 &&
             header->slotCapacity <= BSGFeatureFlagMaxReadableSlotCapacity &&
             (uint64_t)st.st_size >= BSGFeatureFlagFileSize(header->slotCapacity));
 }
 
-/// Reads `length` bytes into a new buffer, returning nil if they cannot all be read.
+/// Reads `length` bytes into a new buffer, returning nil if they cannot all be read. errno is then 0 if the file is too
+/// short, or the error if it could not be read.
 static NSData * BSGFeatureFlagFileReadData(int fd, uint64_t length, uint64_t offset) {
+    errno = 0;
     void *bytes = malloc(MAX((size_t)length, 1));
     if (!bytes || !BSGFeatureFlagFileRead(fd, bytes, length, offset)) {
+        const int error = bytes ? errno : ENOMEM;
         free(bytes);
+        errno = error;
         return nil;
     }
     return [NSData dataWithBytesNoCopy:bytes length:(NSUInteger)length freeWhenDone:YES];
@@ -254,6 +265,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// Set while a log that is complete and current is being rewritten only to make it smaller (see appendRecords:), so
 /// that a failure keeps that log rather than emptying it.
 @property (nonatomic) BOOL compactingCurrentLog;
+/// After compacting a current log failed, compaction is not tried again until this time (see deferCompaction).
+@property (nonatomic) NSTimeInterval compactionRetryTime;
 @property (nonatomic) BOOL tooLargeToPersist;
 @property (nonatomic) NSTimeInterval retryTime;
 // The delay after the first failure, and the largest delay after consecutive failures
@@ -599,7 +612,16 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     }
     struct bsg_feature_flag_file_header header;
     if (!BSGFeatureFlagFileReadHeader(fd, &header)) {
+        const int error = errno;
         close(fd);
+        if (error) {
+            // It could not be read (e.g. an I/O error), so it may hold good flags: it is kept and tried again later
+            bsg_log_warn(@"Could not read %@ (%d); it is kept and will be tried again later",
+                         self.filePath.lastPathComponent, error);
+            [self recordFailure:error];
+            self.staleFileMayExist = YES;
+            return;
+        }
         self.staleFileMayExist = unlink(self.filePath.fileSystemRepresentation) != 0 && errno != ENOENT;
         return;
     }
@@ -815,6 +837,12 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     }
     struct bsg_feature_flag_file_header header;
     const BSGFeatureFlagFileState state = [self readLogInFile:fd header:&header];
+    if (state == BSGFeatureFlagFileUnavailable) {
+        const int error = errno;
+        bsg_log_warn(@"Could not read %@ (%d); the persisted feature flags are not available for this launch",
+                     self.filePath.lastPathComponent, error);
+        [self recordFailure:error];
+    }
     if (state == BSGFeatureFlagFileInvalid) {
         bsg_log_err(@"Persisted feature flags are corrupt or in an unknown format; discarding them");
     }
@@ -832,7 +860,8 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
 /// Reads and decodes the active log, and on success replaces the flags in memory with its flags.
 - (BSGFeatureFlagFileState)readLogInFile:(int)fd header:(struct bsg_feature_flag_file_header *)header {
     if (!BSGFeatureFlagFileReadHeader(fd, header)) {
-        return BSGFeatureFlagFileInvalid;
+        // A file that could not be read may still hold good flags, so only an invalid header makes it Invalid
+        return errno ? BSGFeatureFlagFileUnavailable : BSGFeatureFlagFileInvalid;
     }
     const uint64_t length = header->active >> 1;
     const uint64_t offset = BSGFeatureFlagSlotOffset(header->slotCapacity, header->active & 1);
@@ -842,6 +871,9 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     }
     // Only the active log is read; its length is limited by the slot capacity, which was checked above
     NSData *log = BSGFeatureFlagFileReadData(fd, length, offset);
+    if (!log && errno) {
+        return BSGFeatureFlagFileUnavailable;
+    }
     NSMutableOrderedSet<NSString *> *names = [NSMutableOrderedSet orderedSet];
     NSMutableDictionary<NSString *, NSData *> *records = [NSMutableDictionary dictionary];
     const BOOL decoded = log && BSGFeatureFlagsDecode(log, ^(NSString *name, __unused NSString *variant, BOOL removed, NSData *record) {
@@ -982,7 +1014,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         return NO;
     }
     if (length + records.length > self.liveLength + MAX(self.liveLength, BSGFeatureFlagMinimumCompactionSize) &&
-        NSProcessInfo.processInfo.systemUptime >= self.retryTime) {
+        NSProcessInfo.processInfo.systemUptime >= self.compactionRetryTime) {
         // Rewriting the log only after it has doubled keeps the cost of each change constant on average. The log is
         // already complete and current, so this is only an optimisation: if the rewrite fails (e.g. the disk is full),
         // the log is kept, so an OOM or thermal kill still reports the current flags, and a later change tries again
@@ -1107,7 +1139,11 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         }
         if (!self.directoryAtFilePath) {
             // (A directory that is not empty at the path is not retried)
-            [self retryLater];
+            if (self.compactingCurrentLog) {
+                [self deferCompaction];
+            } else {
+                [self retryLater];
+            }
             retryScheduled = YES;
         }
     }
@@ -1156,10 +1192,7 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         // Only the inactive slot, or the header that would have made it active, could not be written, so the active
         // log is still complete and current, and it is kept
         bsg_log_warn(@"Unable to compact persisted feature flags: %d", error);
-        [self recordFailure:error];
-        if (scheduleRetry) {
-            [self retryLater];
-        }
+        [self deferCompaction];
         return;
     }
     bsg_log_err(@"Unable to save feature flags: %d", error);
@@ -1173,6 +1206,14 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     if (scheduleRetry) {
         [self retryLater];
     }
+}
+
+/// Called when compacting a log that is complete and current failed. The log is kept, so there is nothing to save:
+/// no retry is scheduled (it would find no work to do), and the retry delay used for failures to save the flags is
+/// left as it is, so a later failure to save them is not retried any later because of this one. Compaction is tried
+/// again by a later change, once the retry interval has passed.
+- (void)deferCompaction {
+    self.compactionRetryTime = NSProcessInfo.processInfo.systemUptime + self.retryInterval;
 }
 
 /// Records the error of a failure, so that UIApplicationProtectedDataDidBecomeAvailable tries again if it was one
@@ -1339,7 +1380,10 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
         const int error = errno;
         bsg_log_warn(@"Could not create %@ (%d); saving feature flags will be tried again later",
                      tempPath.lastPathComponent, error);
-        [self recordFailure:error];
+        if (!self.compactingCurrentLog) {
+            // A failed compaction leaves the retry state alone (see deferCompaction)
+            [self recordFailure:error];
+        }
         return NO;
     }
     const BOOL written = (ftruncate(fd, (off_t)BSGFeatureFlagFileSize(slotCapacity)) == 0 &&
@@ -1349,7 +1393,9 @@ typedef NS_ENUM(NSInteger, BSGFeatureFlagFileState) {
     if (!written) {
         const int error = errno;
         bsg_log_err(@"Unable to save feature flags: %d", error);
-        [self recordFailure:error];
+        if (!self.compactingCurrentLog) {
+            [self recordFailure:error];
+        }
         close(fd);
         unlink(tempPath.fileSystemRepresentation);
         return NO;
