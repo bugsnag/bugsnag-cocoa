@@ -25,13 +25,9 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     return object[@"featureFlags"];
 }
 
-/// Stands in for the persistent store in the composite store tests: a memory store that can also replace all of its
-/// flags. BSGPersistentFeatureFlagStore implements BSGReplaceableFeatureFlagStore once the binary feature flag file is
-/// added, and the composite store then calls replaceAllFlags: on it, which a plain BSGMemoryFeatureFlagStore does not
-/// have; with this stand-in the tests work whichever version of the composite store they run against.
-/// Being a memory store, it orders flags as BSGMemoryFeatureFlagStore does, so the tests that use it do not cover the
-/// persistent store's own order (see
-/// testCompositeStoreWithPersistentStoreKeepsAFlagThatIsAddedAgainInItsFirstPosition for that).
+/// Stands in for the persistent store in the composite store tests: a memory store that also implements
+/// BSGReplaceableFeatureFlagStore. It orders flags as BSGMemoryFeatureFlagStore does; the persistent store's own order
+/// is covered by testCompositeStoreWithPersistentStoreKeepsAFlagThatIsAddedAgainInItsFirstPosition.
 @interface BSGReplaceablePersistentStoreStandIn : BSGMemoryFeatureFlagStore <BSGReplaceableFeatureFlagStore>
 @end
 
@@ -342,11 +338,10 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     [store addFeatureFlag:@"exp" withVariant:@"control"];
     [store addFeatureFlag:@"exp" withVariant:unencodable];
 
-    // Crash reports leave the flag out rather than report "control", a variant that the app has replaced
+    // Crash reports leave the flag out rather than report the replaced variant "control"
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"other", @"variant": @"1"}]));
 
-    // The memory store is the source for handled events and keeps every flag as the app set it, so it still holds
-    // exp with the new variant; it does not serialize flags itself.
+    // The memory store, the source for handled events, does not serialize flags and keeps exp as the app set it
     NSArray<BugsnagFeatureFlag *> *memoryFlags = memoryStore.allFlags;
     XCTAssertEqualObjects([memoryFlags valueForKey:@"name"], (@[@"other", @"exp"]));
     XCTAssertEqualObjects(memoryFlags.lastObject.variant, unencodable);
@@ -376,8 +371,7 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
 
 - (void)testCompositeStoreKeepsTheMemoryStoreAndCrashReportsInAgreement {
     BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
-    // A memory store standing in for the persistent store: checking it only shows that the composite store passes
-    // every change on to it. The real persistent store's order is checked in the next test.
+    // Checking the stand-in shows only that every change is passed on; the next test checks the real store's order
     BSGReplaceablePersistentStoreStandIn *persistentStore = [BSGReplaceablePersistentStoreStandIn new];
     BSGCompositeFeatureFlagStore *store = [BSGCompositeFeatureFlagStore storeWithMemoryStore:memoryStore
                                                                              persistentStore:persistentStore
@@ -429,8 +423,7 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
                                                                              persistentStore:persistentStore
                                                                                  atomicStore:[BSGAtomicFeatureFlagStore store]];
 
-    // As BSGFeatureFlagStore.h describes: the memory store, crash reports and the persistent store, whose flags are
-    // reported with OOM and thermal kill events, all keep A where it was first added
+    // Per BSGFeatureFlagStore.h: the memory store, crash reports and the persistent store all keep A where first added
     [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"A" variant:@"1"],
                              [BugsnagFeatureFlag flagWithName:@"B"],
                              [BugsnagFeatureFlag flagWithName:@"A" variant:@"2"]]];
@@ -440,7 +433,7 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     XCTAssertEqualObjects([store.persistedFlags valueForKey:@"name"], (@[@"A", @"B"]));
     XCTAssertEqualObjects([store.persistedFlags valueForKey:@"variant"], (@[@"2", NSNull.null]));
 
-    // As when Bugsnag starts: the memory store's flags are copied to the other stores, and the order stays the same
+    // As when Bugsnag starts: copying the memory store's flags keeps the same order
     [store synchronizeFlagsWithMemoryStore];
     XCTAssertEqualObjects(AtomicStoreFlags(), firstPosition);
     XCTAssertEqualObjects([store.persistedFlags valueForKey:@"name"], (@[@"A", @"B"]));
@@ -486,8 +479,8 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
     dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
     dispatch_semaphore_t readerStarted = dispatch_semaphore_create(0);
 
-    // A single reader, acting like the crash handler. It reads at least once after the writers have finished too, so
-    // the test never depends on the reader being scheduled while they run.
+    // One reader, acting as the crash handler. It also reads once after the writers finish, so the test never
+    // depends on it being scheduled while they run.
     dispatch_group_async(readerGroup, queue, ^{
         BOOL finished;
         do {
@@ -584,7 +577,7 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
                              [BugsnagFeatureFlag flagWithName:@"E" variant:unencodable]]];
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"D", @"variant": @"4"}]));
 
-    // Only flags that cannot be serialized gives an empty list
+    // Only unserializable flags give an empty list
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:unencodable]]];
     XCTAssertTrue(store.isEmpty);
     XCTAssertEqualObjects(AtomicStoreFlags(), @[]);
@@ -606,21 +599,19 @@ static BOOL HasDuplicateNames(NSArray<NSDictionary *> *flags) {
 #pragma mark - Several crash-time readers at once
 
 typedef void (*BSGAddJSONElementFunction)(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement);
-// The original addJSONElement of the writer used by the readers in the test below. Atomic, because every reader thread
-// stores it and every reader thread loads it.
+// The readers' original addJSONElement. Atomic, as every reader thread stores and loads it.
 static _Atomic(BSGAddJSONElementFunction) g_originalAddJSONElement;
 // Set to let paused readers write their remaining elements without stopping
 static atomic_bool g_pausingDisabled;
 // Every reader started by the running test, so that tearDown can wait until they have all finished
 static dispatch_group_t g_allReaders;
-// The "proceed" semaphores of the readers started by the running test, so that tearDown can release a reader that a
-// failed test left paused. Otherwise it would stay paused, counted as a reader, and break the tests that run after it.
+// The running test's "proceed" semaphores, so that tearDown can release a reader a failed test left paused, which
+// would otherwise stay counted and break later tests.
 static NSMutableArray<dispatch_semaphore_t> *g_proceedSemaphores;
 // How long a paused reader waits at each element before it carries on by itself, so that it can never be stuck for good
 static const int64_t BSGPausedReaderTimeout = (int64_t)(120 * NSEC_PER_SEC);
 
-/// Lets the test pause a crash-time reader while it is walking the list: signals the thread's
-/// "entered" semaphore and waits on its "proceed" semaphore before writing each element.
+/// Pauses a crash-time reader: before each element, signals the thread's "entered" and waits on its "proceed".
 static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, const char *name, const char *jsonElement) {
     NSMutableDictionary *threadDictionary = NSThread.currentThread.threadDictionary;
     dispatch_semaphore_t entered = threadDictionary[@"BSGReaderEntered"];
@@ -653,8 +644,7 @@ static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, cons
             dispatch_semaphore_signal(proceed);
         }
     }
-    // A reader still counted when the next test starts would keep that test's retired items from being freed, so a
-    // failure here would show up as a misleading failure in the next test instead
+    // A reader still counted would keep the next test's retired items from being freed and fail it misleadingly
     XCTAssertEqual(dispatch_group_wait(g_allReaders, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0,
                    @"A reader started by this test did not finish");
     [[BSGAtomicFeatureFlagStore store] clear];
@@ -698,8 +688,7 @@ static void BSGStartPausedReader(dispatch_group_t group, dispatch_semaphore_t en
     XCTAssertEqual(dispatch_semaphore_wait(entered, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
 }
 
-// BSGAtomicFeatureFlagStoreRetiredItemCount exists only in debug builds, so only the checks on the number of retired
-// items are left out of release builds; the rest of each of these tests runs in both.
+// BSGAtomicFeatureFlagStoreRetiredItemCount is debug-only, so release builds skip just these checks.
 #if defined(DEBUG) && DEBUG
 #define AssertRetiredItemCount(expected, ...) \
     XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), (size_t)(expected), ##__VA_ARGS__)
@@ -790,8 +779,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
                    @"Writers must not wait for a reader that never finishes");
     AssertSomeItemsAreRetired(@"Retired items stay pending");
 
-    // Lets the reader finish, so that the test leaves nothing behind; the next write frees everything. The item it is
-    // on may lead to items added after it, so it no longer stops before each of them.
+    // Let the reader finish without pausing: its item may now lead to items added later. The next write frees all.
     atomic_store(&g_pausingDisabled, true);
     dispatch_semaphore_signal(proceed);
     XCTAssertEqual(dispatch_group_wait(readers, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
@@ -814,8 +802,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     [store clear];
     AssertRetiredItemCount(0);
 
-    // Items retired while a reader is walking the list are all freed by the first write after it finishes, even after
-    // many writes
+    // Everything retired while a reader walks the list is freed by the first write after it finishes
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"D"]]];
     NSMutableArray *results = [NSMutableArray array];
     dispatch_group_t readers = dispatch_group_create();
