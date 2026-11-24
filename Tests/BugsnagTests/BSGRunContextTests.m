@@ -21,8 +21,7 @@
 
 @interface BSGRunContextTests : BSGTestCase
 
-/// A run context file in a directory of its own, so that tests which map, replace or reopen it don't depend on the
-/// SDK's storage folder, which other tests in the same process may delete.
+/// A run context file in its own directory, independent of the SDK's storage folder that other tests may delete.
 @property (nonatomic) NSString *runContextPath;
 
 @end
@@ -31,9 +30,7 @@
 
 - (void)setUp {
     [super setUp];
-    // bsg_runContext is never NULL: before BSGRunContextInit() is called it points to a zeroed fallback, whose
-    // structVersion is not set. It is initialised here when this test case runs on its own; in the full suite
-    // an earlier test (e.g. one that starts Bugsnag) may already have done it.
+    // Before BSGRunContextInit() bsg_runContext is a zeroed fallback; an earlier test may already have initialised it
     if (bsg_runContext->structVersion != BSGRUNCONTEXT_VERSION) {
         BSGRunContextInit(BSGFileLocations.current.runContext);
     }
@@ -43,7 +40,7 @@
 }
 
 - (void)tearDown {
-    // Map the SDK's own run context file again, as the other tests in this process expect
+    // Remap the SDK's own run context file for the other tests
     NSString *path = BSGFileLocations.current.runContext;
     [NSFileManager.defaultManager createDirectoryAtPath:path.stringByDeletingLastPathComponent
                             withIntermediateDirectories:YES attributes:nil error:nil];
@@ -118,10 +115,8 @@ static NSString * DescribeOpenDescriptorsForPath(NSString *path) {
     return [descriptions componentsJoinedByString:@", "];
 }
 
-/// Returns the number of open descriptors that refer to `path` once it is `expected`, or after `timeout` seconds if
-/// it never is. Something else in the process (e.g. Foundation reading the file's attributes on another thread) can
-/// hold a descriptor for the file for a moment; a descriptor that the run context leaked would still be open when the
-/// timeout expires.
+/// Waits up to `timeout` seconds for `expected` descriptors on `path`, returning the final count. Other code (e.g.
+/// Foundation reading attributes) can hold one briefly; a leaked one is still open at the timeout.
 static int WaitForOpenDescriptorCount(NSString *path, int expected, NSTimeInterval timeout) {
     NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeout];
     int count = CountOpenDescriptorsForPath(path);
@@ -142,8 +137,7 @@ static int WaitForOpenDescriptorCount(NSString *path, int expected, NSTimeInterv
     NSString *path = self.runContextPath;
 
     BSGRunContextInit(path);
-    // The descriptor must stay open so that NSFileProtectionCompleteUnlessOpen
-    // keeps the mapped file accessible while the device is locked.
+    // Kept open so NSFileProtectionCompleteUnlessOpen keeps the mapping usable while locked.
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
 
     // Writes through the mapping must reach the file.
@@ -156,19 +150,17 @@ static int WaitForOpenDescriptorCount(NSString *path, int expected, NSTimeInterv
     }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0x5EEDUL);
 
-    // Reinitialising replaces the descriptor rather than leaking it. The previous descriptor is closed although its
-    // mapping is left in place (see ResizeAndMapFile), so code still holding the old address would lose the guarantee
-    // that the file stays accessible while the device is locked. Only tests call BSGRunContextInit more than once.
+    // Reinitialising replaces the descriptor without leaking it; the old mapping stays but loses the lock-time
+    // guarantee (only tests reinitialise).
     BSGRunContextInit(path);
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
 }
 
 #if defined(DEBUG) && DEBUG
-// BSGSetFileProtectionFunctions only exists in debug builds, so these tests, and the helpers only they use, do too.
+// BSGSetFileProtectionFunctions is debug-only, so these tests and their helpers are too.
 
-/// Sets O_NONBLOCK on the open file description of each descriptor that refers to the file at `path`, so that a
-/// descriptor opened before this was called can be told apart from one opened afterwards (which has its own
-/// description, without the flag). Returns the descriptors that were marked.
+/// Marks each descriptor for `path` with O_NONBLOCK so it can be told apart from later opens, which get their own
+/// file description. Returns the marked descriptors.
 static NSArray<NSNumber *> * MarkDescriptorsForPath(NSString *path) {
     NSMutableArray<NSNumber *> *marked = [NSMutableArray array];
     struct stat byPath;
@@ -203,24 +195,23 @@ static NSDictionary<NSNumber *, NSNumber *> * DescriptorsForPath(NSString *path)
     return descriptors;
 }
 
-// Simulated protection classes (see BSGSetFileProtectionFunctions), so that the run context's handling of
-// NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator
+// Simulated protection classes, so NSFileProtectionComplete handling is tested on any host, locked or headless
 static NSString *gRunContextPath;
 static NSString *gRunContextProtection;
 static NSMutableArray<NSArray<NSString *> *> *gRunContextSetProtectionCalls;
 static BOOL gRunContextSetProtectionFails;
 static NSArray<NSNumber *> *gRunContextMarkedDescriptors;
 static BSGFileProtectionFunctions gRunContextPreviousFunctions;
-// If set, this file is renamed over the run context file when its protection class is first changed
+// If set, renamed over the run context file on the first protection change
 static NSString *gRunContextReplacement;
-// If set, the run context file is removed when its protection class is first changed
+// If set, the run context file is removed on the first protection change
 static BOOL gRunContextRemove;
 
 static NSString *_Nullable RunContextGetProtection(NSString *path) {
     if (![path isEqualToString:gRunContextPath]) {
         return gRunContextPreviousFunctions.getProtection(path);
     }
-    // Called after the file has been opened for the first time
+    // Called after the first open
     gRunContextMarkedDescriptors = MarkDescriptorsForPath(path);
     return gRunContextProtection;
 }
@@ -255,10 +246,8 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     gRunContextSetProtectionCalls = [NSMutableArray array];
     gRunContextSetProtectionFails = setProtectionFails;
     gRunContextMarkedDescriptors = nil;
-    // Called twice on purpose. The simulated functions pass every other path to gRunContextPreviousFunctions, and
-    // other threads can call them as soon as they are installed, before the second call returns. The first call (with
-    // no functions, which installs the defaults) therefore sets gRunContextPreviousFunctions before they are
-    // installed; the second installs them and returns the same defaults.
+    // Called twice: other threads may call the simulated functions (which forward other paths to
+    // gRunContextPreviousFunctions) as soon as they are installed, so the defaults must be stored first.
     gRunContextPreviousFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
     gRunContextPreviousFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
         .getProtection = RunContextGetProtection,
@@ -275,15 +264,13 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
 
     XCTAssertEqualObjects(gRunContextSetProtectionCalls, (@[@[path, NSURLFileProtectionCompleteUnlessOpen]]));
     XCTAssertGreaterThan(gRunContextMarkedDescriptors.count, 0, @"The file should have been opened before its class was read");
-    // The descriptor kept open while the file is mapped is the one opened after the change; the first one, opened
-    // under NSFileProtectionComplete, and the one used before reinitialising, are closed
-    // (Waits first, because something else in the process can hold a descriptor for the file for a moment)
+    // Only the descriptor opened after the change stays open (waits, as others may hold one briefly)
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
     NSDictionary *descriptors = DescriptorsForPath(path);
     XCTAssertEqual(descriptors.count, 1);
     XCTAssertEqualObjects(descriptors.allValues.firstObject, @NO, @"The descriptor kept open should have been reopened");
 
-    // The file is mapped through it
+    // Mapped through it
     bsg_runContext->unhandledCount = 0xC1A55;
     XCTAssertEqual(msync(bsg_runContext, sizeof(struct BSGRunContext), MS_SYNC), 0);
     NSData *data = [NSData dataWithContentsOfFile:path];
@@ -314,8 +301,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, YES);
 
     XCTAssertEqual(gRunContextSetProtectionCalls.count, 1);
-    // A file that would not stay accessible while the device is locked is not mapped; the previous mapping, and its
-    // descriptor, are kept, and the descriptor opened for the failed attempt is closed
+    // Not mapped; the previous mapping and descriptor are kept, and the new descriptor is closed
     XCTAssertEqual(bsg_runContext, mapped);
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path], @"The run context file must not be deleted");
@@ -328,7 +314,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertTrue([NSData.data writeToFile:replacement atomically:NO]);
     struct stat replaced;
     XCTAssertEqual(lstat(replacement.fileSystemRepresentation, &replaced), 0);
-    // The file is replaced between the two opens, so the descriptor kept open is the one for the file now at the path
+    // Replaced between the two opens; the retry maps the file now at the path
     gRunContextReplacement = replacement;
     InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, NO);
     gRunContextReplacement = nil;
@@ -355,8 +341,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     BSGRunContextInit(path);
     struct stat original;
     XCTAssertEqual(lstat(path.fileSystemRepresentation, &original), 0);
-    // The file is removed between the two opens of the first attempt, which therefore fails; the second creates it
-    // again and succeeds
+    // Removed between the two opens: the first attempt fails, the retry recreates it
     gRunContextRemove = YES;
     InitRunContextWithSimulatedProtection(path, NSURLFileProtectionComplete, NO);
     gRunContextRemove = NO;
@@ -378,8 +363,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
 }
 
 - (void)testObserversAreAddedOncePerProcess {
-    // Every call maps a new file, but the notification observers and the memory pressure source are only added the
-    // first time: adding them again would run each handler once more per call and leave more sources running
+    // Each call maps a new file, but observers are added once, so handlers do not multiply
     NSString *path = self.runContextPath;
     BSGRunContextInit(path);
     const unsigned registrations = BSGRunContextObserverRegistrationCount();
@@ -389,7 +373,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertEqual(BSGRunContextObserverRegistrationCount(), registrations);
 
 #if TARGET_OS_IOS
-    // The values that the observers track are still read for each new file, which starts zeroed
+    // Observed values are still read into each new (zeroed) file
     UIDevice *device = UIDevice.currentDevice;
     XCTAssertEqual(bsg_runContext->batteryLevel, device.batteryLevel);
     XCTAssertEqual(bsg_runContext->batteryState, device.batteryState);
@@ -406,9 +390,7 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertTrue([NSData.data writeToFile:path atomically:NO]);
     NSURL *url = [NSURL fileURLWithPath:path];
 
-    // On Apple silicon Macs (and so in the simulator) and on devices, NSFileProtectionComplete can only be set
-    // while the screen is unlocked. The change this test checks is tried first on a scratch file, because some
-    // hosts refuse it.
+    // Needs an unlocked screen; the change is tried on a scratch file first, as some hosts refuse it.
     NSString *reason = BSGRealCompleteFileCannotBeChanged(NSData.data) ?: BSGSetRealFileProtectionComplete(path);
     BSGSkipUnlessFileProtectionComplete(reason, path);
     XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));

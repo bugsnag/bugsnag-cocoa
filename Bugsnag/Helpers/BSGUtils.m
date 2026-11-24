@@ -49,10 +49,8 @@ static BOOL BSGSetFileProtection(NSString *path, NSString *protection, NSError *
 }
 
 #if defined(DEBUG) && DEBUG
-// In debug builds the protection class is read and changed through these functions so that unit tests can stand in for
-// the file system: NSFileProtectionComplete can only be set while the device (or the Mac's console) is unlocked, so the
-// code that handles it could not otherwise be tested on a locked or headless host or in the simulator. They are atomic
-// because a test replaces them while other threads (e.g. BSGCrashSentry setting up its directory) may be calling them.
+// Replaceable so tests can simulate NSFileProtectionComplete, which can only be set while the device is unlocked.
+// Atomic because tests swap them while other threads (e.g. BSGCrashSentry) may call them.
 typedef NSString *_Nullable (*BSGGetProtectionFunction)(NSString *path);
 typedef BOOL (*BSGSetProtectionFunction)(NSString *path, NSString *protection, NSError **error);
 static _Atomic(BSGGetProtectionFunction) bsg_getProtection = BSGGetFileProtection;
@@ -82,8 +80,7 @@ static BOOL BSGSetProtection(NSString *path, NSString *protection, NSError **err
 }
 #endif
 
-/// Changes NSFileProtectionComplete as BSGChangeNSFileProtectionComplete does, but does not log a failure: `error` is
-/// set instead, so that a caller that logs the failure itself does not log it twice.
+/// As BSGChangeNSFileProtectionComplete, but sets `error` instead of logging, for callers that log themselves.
 static BOOL BSGChangeProtectionComplete(NSString *path, BOOL *_Nullable changed, NSError **error) {
     if (changed) {
         *changed = NO;
@@ -104,14 +101,13 @@ static BOOL BSGChangeProtectionComplete(NSString *path, BOOL *_Nullable changed,
 BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *changed) {
     NSError *error = nil;
     if (!BSGChangeProtectionComplete(path, changed, &error)) {
-        bsg_log_warn(@"Could not change the protection class of %@: %@", path, error);
+        bsg_log_warn(@"Could not change the protection class of %@: %@", path.lastPathComponent, error);
         return NO;
     }
     return YES;
 }
 
-/// The errno for a failure to change a protection class: the POSIX error that caused it, if the error (or one that it
-/// wraps) has one, otherwise EPERM, as for NSCocoaErrorDomain 513 (NSFileWriteNoPermissionError) without one.
+/// The POSIX error in `error` or its underlying errors, otherwise EPERM (as for NSFileWriteNoPermissionError).
 static int BSGErrnoForProtectionError(NSError *_Nullable error) {
     for (NSError *e = error; e; e = e.userInfo[NSUnderlyingErrorKey]) {
         if ([e.domain isEqualToString:NSPOSIXErrorDomain] && e.code > 0) {
@@ -123,32 +119,27 @@ static int BSGErrnoForProtectionError(NSError *_Nullable error) {
 
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
     const char *fileSystemPath = path.fileSystemRepresentation;
-    // O_NOFOLLOW: a symbolic link at the path is refused rather than followed, so the descriptor always refers to the
-    // file at the path itself. O_CLOEXEC: a descriptor that is kept open must not leak into child processes.
+    // O_NOFOLLOW: refuse symbolic links. O_CLOEXEC: a long-lived descriptor must not leak into child processes.
     const int fd = open(fileSystemPath, flags | O_CLOEXEC | O_NOFOLLOW, 0600);
     if (fd == -1) {
         return -1;
     }
-    // The protection class is read and changed by path, but the file is used through the descriptor, so the checks
-    // below make sure that both refer to the same file. The file is in the app's own container, but it is not only
-    // this process that can replace it: another instance of a macOS app shares the container, and the app itself can
-    // delete or replace files in it (e.g. while clearing its data). Without the checks the descriptor kept open could
-    // refer to a file whose NSFileProtectionComplete was never changed, which stops working once the device is locked.
+    // Protection is changed by path but the file is used by descriptor, so the checks below ensure both are the same
+    // file. Another app instance (macOS) or the app itself can replace it; otherwise the descriptor could refer to a
+    // file still under NSFileProtectionComplete, which stops working once the device locks.
 
-    // Files opened with low-level APIs do not get Bugsnag's Apple backup policy from the JSON helpers
+    // Low-level files do not get the backup policy from the JSON helpers
     [BSGFilesystem applyFileBackupSupportToPath:path];
     BOOL changed = NO;
     NSError *protectionError = nil;
     if (!BSGChangeProtectionComplete(path, &changed, &protectionError)) {
         close(fd);
-        // Not logged here: the caller logs the failure, with its own context
+        // The caller logs
         errno = BSGErrnoForProtectionError(protectionError);
         return -1;
     }
     if (!changed) {
-        // The protection class was read from the file at the path, so it only applies to the descriptor if that is
-        // still the file it refers to. If the file was removed or replaced after it was opened, the descriptor refers to
-        // a file whose protection class was never checked.
+        // The protection class read by path only applies if the descriptor still refers to the file at the path
         struct stat byDescriptor, byPath;
         if (fstat(fd, &byDescriptor) != 0 || lstat(fileSystemPath, &byPath) != 0 ||
             byDescriptor.st_dev != byPath.st_dev || byDescriptor.st_ino != byPath.st_ino) {
@@ -156,30 +147,26 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
             errno = EAGAIN;
             return -1;
         }
-        // The descriptor was not opened under NSFileProtectionComplete, so it is kept as it is
+        // Not opened under NSFileProtectionComplete, so no reopen is needed
         return fd;
     }
-    // Reopen so that the descriptor that is kept open was opened after the protection class was changed. The file
-    // exists now, so it is not created or truncated again.
+    // Reopen so the kept descriptor postdates the protection change; without O_CREAT/O_EXCL/O_TRUNC this time.
     const int reopened = open(fileSystemPath, (flags & ~(O_CREAT | O_EXCL | O_TRUNC)) | O_CLOEXEC | O_NOFOLLOW);
     if (reopened == -1) {
         if (errno == ENOENT) {
-            // The file was removed (or renamed away) after it was opened, so the first descriptor refers to a file that
-            // is no longer at the path
+            // Removed or renamed away since the first open
             close(fd);
             errno = EAGAIN;
             return -1;
         }
-        // The first descriptor was opened under NSFileProtectionComplete, so it may stop working once the device is
-        // locked, and a memory-mapped file would then fault (SIGBUS) when it is accessed. It is not used: the caller
-        // goes without the file rather than risk crashing the app.
+        // Not falling back to the first descriptor: opened under NSFileProtectionComplete, a mapping of it would fault
+        // (SIGBUS) once the device locks. The caller goes without the file instead.
         const int reopenError = errno;
         close(fd);
         errno = reopenError;
         return -1;
     }
-    // A different file could have been put at the path between the two opens, in which case the reopened descriptor
-    // refers to a file whose protection class was never checked, so both descriptors must refer to the same file
+    // The file may have been replaced between the two opens; both descriptors must refer to the same file
     struct stat first, second;
     if (fstat(fd, &first) != 0 || fstat(reopened, &second) != 0 ||
         first.st_dev != second.st_dev || first.st_ino != second.st_ino) {

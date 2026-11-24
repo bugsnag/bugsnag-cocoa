@@ -233,8 +233,8 @@ static UIApplication * GetUIApplication(void) {
 
 #endif
 
-/// Installed once per process: the timer writes through bsg_runContext, so it keeps working when BSGRunContextInit()
-/// runs again and maps a new file. Creating one on every call would leave the previous timers running.
+/// Installed once per process: the timer writes through bsg_runContext, so it survives a remap; one per call would leak
+/// running timers.
 static void InstallTimer(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -381,7 +381,7 @@ static void ObserveMemoryPressure(void) {
 #endif
 
 
-/// Adds the notification observers and the memory pressure source. Called once per process (see AddObservers).
+/// Adds the notification observers and memory pressure source. Called once per process.
 static void RegisterObservers(void) {
 #if BSG_RUN_CONTEXT_TEST_HOOKS
     atomic_fetch_add(&bsg_observerRegistrationCount, 1);
@@ -426,10 +426,8 @@ static void RegisterObservers(void) {
 #endif
 }
 
-/// The observers and the memory pressure source write through bsg_runContext, so they keep working when
-/// BSGRunContextInit() runs again and maps a new file (it runs each time a client starts). They are therefore added once per
-/// process: adding them on every call would run each handler once more per call, and leave another memory pressure
-/// source running each time. The values they track are read on every call, because each new file starts zeroed.
+/// Observers are added once per process: they write through bsg_runContext, so they survive a remap, and adding them
+/// per call would duplicate handlers. The tracked values are read on every call because each new file starts zeroed.
 static void AddObservers(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -592,25 +590,18 @@ const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 
 /// Opens the file and disables content protection, returning -1 on error.
 ///
-/// NSFileProtectionComplete invalidates mappings 10 seconds after device is
-/// locked, so must be disabled to prevent segfaults when accessing
-/// bsg_runContext. It is downgraded to NSFileProtectionCompleteUnlessOpen,
-/// which only keeps the file accessible while the device is locked for as
-/// long as it stays open, so the descriptor returned here must be kept open
-/// for as long as the file is mapped (see ResizeAndMapFile.)
-///
-/// A symbolic link at the path is refused. If the file is removed or renamed
-/// away while it is being opened (EAGAIN, see
-/// BSGOpenFileWithoutCompleteProtection) it is opened once more. If it still
-/// cannot be opened, that is logged, because OOM and thermal kill detection
-/// then does not work for this launch.
+/// NSFileProtectionComplete invalidates mappings 10 seconds after the device
+/// locks, so it is downgraded to NSFileProtectionCompleteUnlessOpen; the
+/// descriptor must stay open while the file is mapped. Retries once on EAGAIN
+/// (file replaced while opening). Failure is logged: OOM and thermal kill
+/// detection is then off for this launch.
 static int OpenFile(NSString *_Nonnull path) {
     int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
     if (fd == -1 && errno == EAGAIN) {
         fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
     }
     if (fd == -1) {
-        // Saved before logging, which can change errno (unused when logging is compiled out)
+        // Saved because logging can change errno
         const int openError __unused = errno;
         bsg_log_warn(@"Could not open the run context file (errno %d); OOM and thermal kill detection is disabled "
                      "for this launch", openError);
@@ -636,20 +627,15 @@ static void LoadLastRunContext(int fd) {
 
 /// The descriptor of the file currently mapped at `bsg_runContext`, or -1.
 ///
-/// The file may have NSFileProtectionCompleteUnlessOpen, which only keeps it
-/// accessible while the device is locked as long as it is open, so this
-/// descriptor is kept open while the mapping is in use. The mapping is never
-/// unmapped, so it stays open for the lifetime of the process, unless
-/// BSGRunContextInit() runs again (each time a client starts): the descriptor is
-/// then closed once the new file is mapped, although the old mapping remains
-/// (see ResizeAndMapFile).
+/// Kept open so the file stays accessible while the device is locked
+/// (NSFileProtectionCompleteUnlessOpen). Closed only when BSGRunContextInit()
+/// maps a new file; the old mapping remains.
 static int bsg_runContextFd = -1;
 
 /// Truncates or extends the file to the size of struct BSGRunContext,
 /// maps it into memory, and sets the `bsg_runContext` pointer.
 ///
-/// Takes ownership of `fd`: it is either kept open alongside the mapping or
-/// closed if the file could not be mapped.
+/// Takes ownership of `fd`: kept open with the mapping, or closed on failure.
 static void ResizeAndMapFile(int fd) {
     // Note: ftruncate fills the file with zeros when extending.
     if (ftruncate(fd, SIZEOF_STRUCT) != 0) {
@@ -674,11 +660,8 @@ static void ResizeAndMapFile(int fd) {
     bsg_runContextFd = fd;
     bsg_runContext = ptr;
 
-    // Only reached if BSGRunContextInit() is called more than once (each time
-    // a client starts, e.g. in unit tests.) The previous mapping is left in place, as before, because
-    // other threads may still hold its address, but nothing writes to it via
-    // bsg_runContext any more. When the same path is reinitialised, the file
-    // stays open through the new descriptor.
+    // Only when BSGRunContextInit() runs again (each client start). The old
+    // mapping stays because other threads may hold its address.
     if (previousFd != -1) {
         close(previousFd);
     }
@@ -688,7 +671,7 @@ void BSGRunContextInit(NSString *_Nonnull path) {
     int fd = OpenFile(path);
     if (fd != -1) {
         LoadLastRunContext(fd);
-        // Takes ownership of fd, which stays open while the file is mapped.
+        // Takes ownership of fd
         ResizeAndMapFile(fd);
     }
     InitRunContext();

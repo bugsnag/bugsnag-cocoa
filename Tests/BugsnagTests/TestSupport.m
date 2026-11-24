@@ -21,12 +21,8 @@
 + (void) purgePersistentData {
     dispatch_sync(BSGGetFileSystemQueue(), ^{
         NSString *dir = [[BSGFileLocations current].events stringByDeletingLastPathComponent];
-        // Not every file in the directory is written on this queue (e.g. by clients that earlier tests started), so a
-        // file can be created while the directory is being deleted, which then fails because it is not empty. That
-        // is a race with work that is still finishing, so the deletion is tried again rather than failing the test.
-        // Each attempt waits 100 ms, so this can hold the file system queue for up to 5 s; that only happens when an
-        // earlier test left work running, which is what should be fixed in that test.
-        // Retries are logged, so that the earlier test that left work running can be found.
+        // Work left running by earlier tests can write files off this queue, making the delete fail as not empty.
+        // Retry every 100 ms (up to 5 s on this queue) and log, so the offending test can be found and fixed.
         NSError *error = nil;
         int attempt = 0;
         for (; attempt < 50; attempt++) {

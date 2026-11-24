@@ -70,9 +70,8 @@ void BSGRunContextInit(NSString *_Nonnull path);
 #endif
 
 #ifdef DEBUG
-/// For unit tests only (debug builds): how many times the notification observers, the memory pressure source and the
-/// timer have been added. BSGRunContextInit() adds each of them once per process, however many times it is called.
-/// #ifdef rather than #if: BSG_KSLogger.h leaves DEBUG defined but not usable in #if in files that include it.
+/// Unit tests only: how many times the observers, memory pressure source and timer were added (once per process).
+/// #ifdef, not #if: BSG_KSLogger.h leaves DEBUG defined but unusable in #if.
 unsigned BSGRunContextObserverRegistrationCount(void);
 #endif
 
