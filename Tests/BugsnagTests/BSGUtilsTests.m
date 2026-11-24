@@ -8,76 +8,14 @@
 
 #import "BSGTestCase.h"
 
+#import "BSGFileProtectionTestHelpers.h"
+
 #import "BSGUtils.h"
 
 #import <fcntl.h>
 #import <sys/param.h>
 #import <sys/stat.h>
 #import <unistd.h>
-
-#pragma mark - Real file protection classes
-
-/// Whether the tests that set NSFileProtectionComplete on real files must run rather than be skipped. Set
-/// BSG_REQUIRE_FILE_PROTECTION_TESTS=1 (TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 with xcodebuild) on a host
-/// whose screen is unlocked, so that those tests fail instead of silently skipping.
-static BOOL BSGFileProtectionTestsAreRequired(void) {
-    return [NSProcessInfo.processInfo.environment[@"BSG_REQUIRE_FILE_PROTECTION_TESTS"] isEqualToString:@"1"];
-}
-
-/// Sets NSFileProtectionComplete on a real file, returning nil on success or why it could not be set. On Apple
-/// silicon Macs (and so in the simulator) and on devices, class A can only be set while the screen is unlocked;
-/// otherwise setting it fails with NSCocoaErrorDomain 513 (EPERM).
-static NSString *_Nullable BSGSetRealFileProtectionComplete(NSString *path) {
-    NSURL *url = [NSURL fileURLWithPath:path];
-    NSError *error = nil;
-    if (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:&error]) {
-        return [NSString stringWithFormat:@"setting it failed with %@ %ld (%@); is the screen locked?",
-                error.domain, (long)error.code, error.localizedDescription];
-    }
-    NSURLFileProtectionType protection = nil;
-    [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
-    if (![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:&error]) {
-        return [NSString stringWithFormat:@"reading it failed with %@ %ld (%@)",
-                error.domain, (long)error.code, error.localizedDescription];
-    }
-    if (![protection isEqual:NSURLFileProtectionComplete]) {
-        return [NSString stringWithFormat:@"the file has %@ after setting it", protection];
-    }
-    return nil;
-}
-
-/// Why this host cannot change a real file from NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen, or nil
-/// if it can. The change is tried on a scratch file holding `contents`, as the file the test uses does. Some macOS
-/// versions refuse it with NSCocoaErrorDomain 513 even while the screen is unlocked (seen on macOS 26.7.2), although
-/// NSFileProtectionComplete itself can be set. On such a host BSGDisableNSFileProtectionComplete fails in the same way
-/// without these changes, so the SDK behaves no differently there; the test is skipped rather than failed.
-static NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *contents) {
-    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
-    if (![contents writeToFile:path atomically:NO]) {
-        return @"a scratch file could not be written";
-    }
-    NSString *reason = BSGSetRealFileProtectionComplete(path);
-    NSError *error = nil;
-    if (!reason && ![[NSURL fileURLWithPath:path] setResourceValue:NSURLFileProtectionCompleteUnlessOpen
-                                                             forKey:NSURLFileProtectionKey error:&error]) {
-        reason = [NSString stringWithFormat:@"changing NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen "
-                  "failed with %@ %ld (%@)", error.domain, (long)error.code, error.localizedDescription];
-    }
-    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-    return reason;
-}
-
-/// Skips the test, or fails it if BSG_REQUIRE_FILE_PROTECTION_TESTS=1, when real protection classes cannot be tested on
-/// this host (NSFileProtectionComplete could not be set, or could not be changed; `reason` says which).
-#define BSGSkipUnlessFileProtectionComplete(reason, path) \
-    if (reason) { \
-        [NSFileManager.defaultManager removeItemAtPath:(path) error:nil]; \
-        if (BSGFileProtectionTestsAreRequired()) { \
-            XCTFail(@"Real protection classes cannot be tested on this host: %@", reason); \
-            return; \
-        } \
-        XCTSkip(@"Real protection classes cannot be tested on this host: %@", reason); \
-    }
 
 @interface BSGUtilsTests : BSGTestCase
 @end
@@ -227,31 +165,25 @@ static NSString *_Nullable BSGRealCompleteFileCannotBeChanged(NSData *contents) 
 }
 
 - (void)testOpenFileWithoutCompleteProtectionFailsIfTheProtectionCannotBeChanged {
-#if !TARGET_OS_OSX || defined(__MAC_11_0)
-    if (@available(macOS 11.0, *)) {
-        NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
-        XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
-        NSURL *url = [NSURL fileURLWithPath:path];
-        NSURLFileProtectionType protection = nil;
-        NSString *reason = BSGSetRealFileProtectionComplete(path);
-        BSGSkipUnlessFileProtectionComplete(reason, path);
-        // An immutable file can be opened for reading, but its protection class cannot be changed
-        XCTAssertEqual(chflags(path.fileSystemRepresentation, UF_IMMUTABLE), 0);
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSURLFileProtectionType protection = nil;
+    NSString *reason = BSGSetRealFileProtectionComplete(path);
+    BSGSkipUnlessFileProtectionComplete(reason, path);
+    // An immutable file can be opened for reading, but its protection class cannot be changed
+    XCTAssertEqual(chflags(path.fileSystemRepresentation, UF_IMMUTABLE), 0);
 
-        XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
-        // A file that was not created by the call is not deleted
-        XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path]);
-        protection = nil;
-        [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
-        XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
-        XCTAssertEqualObjects(protection, NSURLFileProtectionComplete);
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
+    // A file that was not created by the call is not deleted
+    XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path]);
+    protection = nil;
+    [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+    XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+    XCTAssertEqualObjects(protection, NSURLFileProtectionComplete);
 
-        chflags(path.fileSystemRepresentation, 0);
-        [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-        return;
-    }
-#endif
-    XCTSkip(@"NSURLFileProtectionKey is unavailable");
+    chflags(path.fileSystemRepresentation, 0);
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
 }
 
 @end
@@ -443,6 +375,28 @@ static BOOL IsMarked(int fd) {
     XCTAssertFalse(BSGChangeNSFileProtectionComplete(path, &changed));
     XCTAssertFalse(changed);
     XCTAssertFalse(BSGDisableNSFileProtectionComplete(path));
+    XCTAssertEqualObjects(gSimulatedProtection[path], NSURLFileProtectionComplete);
+}
+
+- (void)testOpenFileReportsWhyTheProtectionCouldNotBeChanged {
+    [self simulateProtection];
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    gSimulatedProtection[path] = NSURLFileProtectionComplete;
+
+    // The POSIX error that caused the failure is passed on, so that it is not mistaken for a locked device (EPERM)
+    NSError *posixError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOSPC userInfo:nil];
+    gSetProtectionError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteOutOfSpaceError
+                                          userInfo:@{NSUnderlyingErrorKey: posixError}];
+    errno = 0;
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR), -1);
+    XCTAssertEqual(errno, ENOSPC);
+
+    // Without one, the failure is reported as EPERM
+    gSetProtectionError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteNoPermissionError userInfo:nil];
+    errno = 0;
+    XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR), -1);
+    XCTAssertEqual(errno, EPERM);
     XCTAssertEqualObjects(gSimulatedProtection[path], NSURLFileProtectionComplete);
 }
 
@@ -951,63 +905,57 @@ static BOOL FailingCreateFile(__unused NSString *path) {
     // NSFileProtectionCompleteUntilFirstUserAuthentication and NSFileProtectionCompleteUnlessOpen, unlike
     // NSFileProtectionComplete, can be set while the screen is locked, so this runs on a locked or headless host
     // too. Only reading NSFileProtectionComplete itself is left to the tests that set it on a real file.
-#if !TARGET_OS_OSX || defined(__MAC_11_0)
-    if (@available(macOS 11.0, *)) {
-        // Passing no functions keeps the defaults and returns them
-        const BSGFileProtectionFunctions defaults = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
-        XCTAssertTrue(defaults.getProtection != NULL && defaults.setProtection != NULL);
-        if (!defaults.getProtection || !defaults.setProtection) {
-            return;
-        }
-        NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
-        XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
-        NSURL *url = [NSURL fileURLWithPath:path];
-        NSError *error = nil;
-        if (![url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
-                            forKey:NSURLFileProtectionKey error:&error] ||
-            ![defaults.getProtection(path) isEqual:NSURLFileProtectionCompleteUntilFirstUserAuthentication]) {
-            NSString *reason = [NSString stringWithFormat:@"the file has %@ (%@ %ld)", defaults.getProtection(path),
-                                error.domain, (long)error.code];
-            if (BSGFileProtectionTestsAreRequired()) {
-                XCTFail(@"Protection classes are not supported on this host: %@", reason);
-                return;
-            }
-            XCTSkip(@"Protection classes are not supported on this host: %@", reason);
-        }
-
-        // A class other than NSFileProtectionComplete is read as it is and left alone
-        BOOL changed = YES;
-        XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
-        XCTAssertFalse(changed);
-        XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUntilFirstUserAuthentication);
-
-        // The class that BSGChangeNSFileProtectionComplete sets is written to the file, and read back
-        error = nil;
-        XCTAssertTrue(defaults.setProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error), @"%@", error);
-        XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUnlessOpen);
-        NSURLFileProtectionType protection = nil;
-        [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
-        XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
-        XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
-
-        // A failure is reported with an error, and the class is not changed. This uses a new file: while the screen
-        // is locked, the first file's class cannot be changed back from NSFileProtectionCompleteUnlessOpen, so
-        // changing it back would make the test depend on whether the host's screen is locked.
-        NSString *immutablePath = [self.directory stringByAppendingPathComponent:@"immutable"];
-        XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:immutablePath atomically:NO]);
-        error = nil;
-        XCTAssertTrue([[NSURL fileURLWithPath:immutablePath] setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
-                                                                       forKey:NSURLFileProtectionKey error:&error], @"%@", error);
-        XCTAssertEqual(chflags(immutablePath.fileSystemRepresentation, UF_IMMUTABLE), 0);
-        error = nil;
-        XCTAssertFalse(defaults.setProtection(immutablePath, NSURLFileProtectionCompleteUnlessOpen, &error));
-        XCTAssertNotNil(error);
-        XCTAssertEqualObjects(defaults.getProtection(immutablePath), NSURLFileProtectionCompleteUntilFirstUserAuthentication);
-        chflags(immutablePath.fileSystemRepresentation, 0);
+    // Passing no functions keeps the defaults and returns them
+    const BSGFileProtectionFunctions defaults = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
+    XCTAssertTrue(defaults.getProtection != NULL && defaults.setProtection != NULL);
+    if (!defaults.getProtection || !defaults.setProtection) {
         return;
     }
-#endif
-    XCTSkip(@"NSURLFileProtectionKey is unavailable");
+    NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSError *error = nil;
+    if (![url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
+                        forKey:NSURLFileProtectionKey error:&error] ||
+        ![defaults.getProtection(path) isEqual:NSURLFileProtectionCompleteUntilFirstUserAuthentication]) {
+        NSString *reason = [NSString stringWithFormat:@"the file has %@ (%@ %ld)", defaults.getProtection(path),
+                            error.domain, (long)error.code];
+        if (BSGFileProtectionTestsAreRequired()) {
+            XCTFail(@"Protection classes are not supported on this host: %@", reason);
+            return;
+        }
+        XCTSkip(@"Protection classes are not supported on this host: %@", reason);
+    }
+
+    // A class other than NSFileProtectionComplete is read as it is and left alone
+    BOOL changed = YES;
+    XCTAssertTrue(BSGChangeNSFileProtectionComplete(path, &changed));
+    XCTAssertFalse(changed);
+    XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUntilFirstUserAuthentication);
+
+    // The class that BSGChangeNSFileProtectionComplete sets is written to the file, and read back
+    error = nil;
+    XCTAssertTrue(defaults.setProtection(path, NSURLFileProtectionCompleteUnlessOpen, &error), @"%@", error);
+    XCTAssertEqualObjects(defaults.getProtection(path), NSURLFileProtectionCompleteUnlessOpen);
+    NSURLFileProtectionType protection = nil;
+    [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+    XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+    XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
+
+    // A failure is reported with an error, and the class is not changed. This uses a new file: while the screen
+    // is locked, the first file's class cannot be changed back from NSFileProtectionCompleteUnlessOpen, so
+    // changing it back would make the test depend on whether the host's screen is locked.
+    NSString *immutablePath = [self.directory stringByAppendingPathComponent:@"immutable"];
+    XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:immutablePath atomically:NO]);
+    error = nil;
+    XCTAssertTrue([[NSURL fileURLWithPath:immutablePath] setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
+                                                                   forKey:NSURLFileProtectionKey error:&error], @"%@", error);
+    XCTAssertEqual(chflags(immutablePath.fileSystemRepresentation, UF_IMMUTABLE), 0);
+    error = nil;
+    XCTAssertFalse(defaults.setProtection(immutablePath, NSURLFileProtectionCompleteUnlessOpen, &error));
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(defaults.getProtection(immutablePath), NSURLFileProtectionCompleteUntilFirstUserAuthentication);
+    chflags(immutablePath.fileSystemRepresentation, 0);
 }
 #endif
 

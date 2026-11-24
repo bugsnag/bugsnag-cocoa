@@ -7,6 +7,7 @@
 //
 
 #import "BSGTestCase.h"
+#import "BSGFileProtectionTestHelpers.h"
 
 #import "BSGFileLocations.h"
 #import "BSGRunContext.h"
@@ -162,6 +163,9 @@ static int WaitForOpenDescriptorCount(NSString *path, int expected, NSTimeInterv
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
 }
 
+#if defined(DEBUG) && DEBUG
+// BSGSetFileProtectionFunctions only exists in debug builds, so these tests, and the helpers only they use, do too.
+
 /// Sets O_NONBLOCK on the open file description of each descriptor that refers to the file at `path`, so that a
 /// descriptor opened before this was called can be told apart from one opened afterwards (which has its own
 /// description, without the flag). Returns the descriptors that were marked.
@@ -199,8 +203,6 @@ static NSDictionary<NSNumber *, NSNumber *> * DescriptorsForPath(NSString *path)
     return descriptors;
 }
 
-#if defined(DEBUG) && DEBUG
-// BSGSetFileProtectionFunctions only exists in debug builds, so these tests do too.
 // Simulated protection classes (see BSGSetFileProtectionFunctions), so that the run context's handling of
 // NSFileProtectionComplete is tested on any host, including a locked or headless one and the simulator
 static NSString *gRunContextPath;
@@ -253,7 +255,10 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     gRunContextSetProtectionCalls = [NSMutableArray array];
     gRunContextSetProtectionFails = setProtectionFails;
     gRunContextMarkedDescriptors = nil;
-    // Known before the simulated functions are installed, because other threads may call them straight away
+    // Called twice on purpose. The simulated functions pass every other path to gRunContextPreviousFunctions, and
+    // other threads can call them as soon as they are installed, before the second call returns. The first call (with
+    // no functions, which installs the defaults) therefore sets gRunContextPreviousFunctions before they are
+    // installed; the second installs them and returns the same defaults.
     gRunContextPreviousFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
     gRunContextPreviousFunctions = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){
         .getProtection = RunContextGetProtection,
@@ -287,8 +292,6 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
         return;
     }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xC1A55UL);
-
-    BSGRunContextInit(path);
 }
 
 - (void)testRunContextFileWithAnotherProtectionClassIsNotReopened {
@@ -300,8 +303,6 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     NSDictionary *descriptors = DescriptorsForPath(path);
     XCTAssertEqual(descriptors.count, 1);
     XCTAssertEqualObjects(descriptors.allValues.firstObject, @YES, @"The first descriptor should have been kept");
-
-    BSGRunContextInit(path);
 }
 
 - (void)testRunContextIsNotRemappedIfTheProtectionCannotBeChanged {
@@ -318,8 +319,6 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     XCTAssertEqual(bsg_runContext, mapped);
     XCTAssertEqual(WaitForOpenDescriptorCount(path, 1, 10), 1, @"%@", DescribeOpenDescriptorsForPath(path));
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path], @"The run context file must not be deleted");
-
-    BSGRunContextInit(path);
 }
 
 - (void)testRunContextFileReplacedWhileItIsOpenedIsOpenedAgain {
@@ -349,8 +348,6 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
         return;
     }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xA6A1UL);
-
-    BSGRunContextInit(path);
 }
 
 - (void)testRunContextFileRemovedWhileItIsOpenedIsOpenedAgain {
@@ -378,92 +375,39 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
         return;
     }
     XCTAssertEqual(((const struct BSGRunContext *)data.bytes)->unhandledCount, 0xB1E5UL);
-
-    BSGRunContextInit(path);
 }
 
 #endif // DEBUG
 
 #pragma mark Real protection classes
 
-/// Whether the tests that set NSFileProtectionComplete on real files must run rather than be skipped. Set
-/// BSG_REQUIRE_FILE_PROTECTION_TESTS=1 (TEST_RUNNER_BSG_REQUIRE_FILE_PROTECTION_TESTS=1 with xcodebuild) on a host
-/// whose screen is unlocked, so that this test fails instead of silently skipping.
-static BOOL FileProtectionTestsAreRequired(void) {
-    return [NSProcessInfo.processInfo.environment[@"BSG_REQUIRE_FILE_PROTECTION_TESTS"] isEqualToString:@"1"];
-}
-
-/// Why this host cannot change a real (empty) file from NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen,
-/// or nil if it can. Some macOS versions refuse that change with NSCocoaErrorDomain 513 even while the screen is
-/// unlocked (seen on macOS 26.7.2), although NSFileProtectionComplete itself can be set. On such a host
-/// BSGDisableNSFileProtectionComplete fails in the same way without these changes, so the test is skipped there.
-static API_AVAILABLE(macos(11.0)) NSString *_Nullable RealCompleteFileCannotBeChanged(void) {
-    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
-    if (![NSData.data writeToFile:path atomically:NO]) {
-        return @"a scratch file could not be written";
-    }
-    NSURL *url = [NSURL fileURLWithPath:path];
-    NSError *error = nil;
-    NSString *reason = nil;
-    if (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:&error]) {
-        reason = [NSString stringWithFormat:@"setting NSFileProtectionComplete failed with %@ %ld (%@); is the screen "
-                  "locked?", error.domain, (long)error.code, error.localizedDescription];
-    } else if (![url setResourceValue:NSURLFileProtectionCompleteUnlessOpen forKey:NSURLFileProtectionKey error:&error]) {
-        reason = [NSString stringWithFormat:@"changing NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen "
-                  "failed with %@ %ld (%@)", error.domain, (long)error.code, error.localizedDescription];
-    }
-    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-    return reason;
-}
-
 - (void)testDisableNSFileProtectionComplete {
-#if !TARGET_OS_OSX || defined(__MAC_11_0)
-    if (@available(macOS 11.0, *)) {
-        NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
-        XCTAssertTrue([NSData.data writeToFile:path atomically:NO]);
-        NSURL *url = [NSURL fileURLWithPath:path];
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
+    XCTAssertTrue([NSData.data writeToFile:path atomically:NO]);
+    NSURL *url = [NSURL fileURLWithPath:path];
 
-        // On Apple silicon Macs (and so in the simulator) and on devices, NSFileProtectionComplete can only be set
-        // while the screen is unlocked; otherwise this fails with NSCocoaErrorDomain 513 (EPERM). The change this test
-        // checks is tried first on a scratch file, because some hosts refuse it.
-        NSError *error = nil;
-        NSURLFileProtectionType protection = nil;
-        NSString *reason = RealCompleteFileCannotBeChanged();
-        if (!reason &&
-            (![url setResourceValue:NSURLFileProtectionComplete forKey:NSURLFileProtectionKey error:&error] ||
-             ![url getResourceValue:&protection forKey:NSURLFileProtectionKey error:&error] ||
-             ![protection isEqual:NSURLFileProtectionComplete])) {
-            reason = [NSString stringWithFormat:@"the file has %@ (%@ %ld: %@); is the screen locked?",
-                      protection, error.domain, (long)error.code, error.localizedDescription];
-        }
-        if (reason) {
-            [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-            if (FileProtectionTestsAreRequired()) {
-                XCTFail(@"Real protection classes cannot be tested on this host: %@", reason);
-                return;
-            }
-            XCTSkip(@"Real protection classes cannot be tested on this host: %@", reason);
-        }
-        XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
-        protection = nil;
-        [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
-        XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
-        XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
+    // On Apple silicon Macs (and so in the simulator) and on devices, NSFileProtectionComplete can only be set
+    // while the screen is unlocked. The change this test checks is tried first on a scratch file, because some
+    // hosts refuse it.
+    NSString *reason = BSGRealCompleteFileCannotBeChanged(NSData.data) ?: BSGSetRealFileProtectionComplete(path);
+    BSGSkipUnlessFileProtectionComplete(reason, path);
+    NSURLFileProtectionType protection = nil;
+    XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
+    protection = nil;
+    [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+    XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+    XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);
 
-        // Other protection classes are left alone.
-        XCTAssertTrue([url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
-                                     forKey:NSURLFileProtectionKey error:nil]);
-        XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
-        protection = nil;
-        [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
-        XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
-        XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUntilFirstUserAuthentication);
+    // Other protection classes are left alone.
+    XCTAssertTrue([url setResourceValue:NSURLFileProtectionCompleteUntilFirstUserAuthentication
+                                 forKey:NSURLFileProtectionKey error:nil]);
+    XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
+    protection = nil;
+    [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
+    XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
+    XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUntilFirstUserAuthentication);
 
-        [NSFileManager.defaultManager removeItemAtPath:path error:nil];
-        return;
-    }
-#endif
-    XCTSkip(@"NSURLFileProtectionKey is unavailable");
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
 }
 
 @end

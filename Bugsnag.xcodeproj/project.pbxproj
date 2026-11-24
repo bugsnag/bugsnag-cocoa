@@ -2004,6 +2004,7 @@
 		3A700A9324A63A8E0068CD1B /* BugsnagMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetadata.h; sourceTree = "<group>"; };
 		3B48CC7952FB6263811E1546 /* BSGPersistentFeatureFlagStoreTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStoreTests.m; sourceTree = "<group>"; };
 		561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BSGPersistentFeatureFlagStoreStressTests.m; sourceTree = "<group>"; };
+		4304415EC38C448869F305E3 /* BSGFileProtectionTestHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGFileProtectionTestHelpers.h; sourceTree = "<group>"; };
 		9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAtomicFeatureFlagStoreTests.m; sourceTree = "<group>"; };
 		9627A1392D92200300696E3C /* WriterTestsSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WriterTestsSupport.h; sourceTree = "<group>"; };
 		9627A13A2D92201B00696E3C /* WriterTestsSupport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WriterTestsSupport.m; sourceTree = "<group>"; };
@@ -2563,6 +2564,7 @@
 				A171C28C1F1185A29FBB05C1 /* BSGLegacyJSONFeatureFlagStore.h */,
 				561469EF1A7DB4607CEDE9F7 /* BSGPersistentFeatureFlagStoreStressTests.m */,
 				29972A4AEDCB2056AA1B886A /* BSGFeatureFlagStoreSwitchingTests.m */,
+				4304415EC38C448869F305E3 /* BSGFileProtectionTestHelpers.h */,
 			);
 			path = BugsnagTests;
 			sourceTree = "<group>";

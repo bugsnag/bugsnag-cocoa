@@ -26,15 +26,24 @@
         // is a race with work that is still finishing, so the deletion is tried again rather than failing the test.
         // Each attempt waits 100 ms, so this can hold the file system queue for up to 5 s; that only happens when an
         // earlier test left work running, which is what should be fixed in that test.
+        // Retries are logged, so that the earlier test that left work running can be found.
         NSError *error = nil;
-        for (int attempt = 0; attempt < 50; attempt++) {
+        int attempt = 0;
+        for (; attempt < 50; attempt++) {
             error = nil;
             if ([NSFileManager.defaultManager removeItemAtPath:dir error:&error] ||
                 ([error.domain isEqual:NSCocoaErrorDomain] && error.code == NSFileNoSuchFileError)) {
                 error = nil;
                 break;
             }
+            if (attempt == 0) {
+                NSLog(@"TestSupport: could not delete %@, retrying every 100 ms (an earlier test left work running): %@",
+                      dir, error);
+            }
             [NSThread sleepForTimeInterval:0.1];
+        }
+        if (attempt > 0 && !error) {
+            NSLog(@"TestSupport: deleted %@ after %d retries", dir, attempt);
         }
         if (error) {
             [NSException raise:NSInternalInconsistencyException format:@"Could not delete %@: %@", dir, error];

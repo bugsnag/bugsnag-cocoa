@@ -48,17 +48,20 @@ int BSGOpenFileWithoutFollowingLinks(NSString *path, int flags);
 /// (with errno set).
 ///
 /// Applies Bugsnag's backup policy to the file and changes NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen
-/// (see BSGDisableNSFileProtectionComplete). If the protection class was changed, the file is reopened, so that the
-/// descriptor returned is normally one opened after the change rather than under NSFileProtectionComplete. If the file
-/// is no longer at the path by then (it was removed or renamed away after the first open), or a different file is at
-/// the path (the two descriptors are compared by device and inode number), the descriptors are closed and -1 is
-/// returned with errno set to EAGAIN, so that the caller can try again rather than use a file that is no longer at the
-/// path or whose protection class was not checked. If it cannot be reopened for another reason (for example because the device locked between
-/// the two opens), the first descriptor is returned instead: it was opened under NSFileProtectionComplete, so reads and
-/// writes through it can start failing once the device is locked, and callers must handle a later read or write
-/// failure. The file is opened as BSGOpenFileWithoutFollowingLinks opens it, so a symbolic link at the path is refused
-/// (ELOOP). A file created here with O_EXCL is deleted if it cannot be set up; if the protection class cannot be
-/// changed, errno is EPERM. Nothing is logged here; callers log failures.
+/// (see BSGDisableNSFileProtectionComplete). If the protection class was not changed, the descriptor is returned only if
+/// it still refers to the file at the path (compared by device and inode number); otherwise -1 is returned with errno set
+/// to EAGAIN. If the protection class was changed, the file is reopened, so that the descriptor returned is normally one
+/// opened after the change rather than under NSFileProtectionComplete. If the file is no longer at the path by then (it
+/// was removed or renamed away after the first open), or a different file is at the path (the two descriptors are
+/// compared by device and inode number), the descriptors are closed and -1 is returned with errno set to EAGAIN, so that
+/// the caller can try again rather than use a file that is no longer at the path or whose protection class was not
+/// checked. If it cannot be reopened for another reason (for example because the device locked between the two opens),
+/// the first descriptor is returned instead, and a warning is logged: it was opened under NSFileProtectionComplete, so
+/// reads and writes through it can start failing once the device is locked, and callers must handle a later read or
+/// write failure. The file is opened as BSGOpenFileWithoutFollowingLinks opens it, so a symbolic link at the path is
+/// refused (ELOOP). A file created here with O_EXCL is deleted if it cannot be set up. If the protection class cannot be
+/// changed, errno is the POSIX error that caused it, or EPERM if there is none. Other failures are not logged here;
+/// callers log them.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
 /// The protection class that BSGCreateFileWithoutCompleteProtection asks for when it creates a file in `directory`:
@@ -113,8 +116,8 @@ typedef struct {
 } BSGFileProtectionFunctions;
 
 /// Replaces the functions used to read and change protection classes (and to create files) and returns the ones that
-/// were in use. A NULL member restores the default for that function. For unit tests only; not thread safe. Only in
-/// debug builds.
+/// were in use. A NULL member restores the default for that function. Each function is replaced atomically, so other
+/// threads may call them meanwhile. For unit tests only. Only in debug builds.
 BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions);
 #endif
 
