@@ -39,7 +39,7 @@
 
 - (void)synchronizeFlagsWithMemoryStore {
     NSArray<BugsnagFeatureFlag *> *featureFlags = [self.memoryStore allFlags];
-    // Replaced with a single pointer swap, so that a crash report written meanwhile never has an empty or partial set
+    // Atomic, unlike clear + add (see BSGReplaceableFeatureFlagStore)
     [self.atomicStore replaceAllFlags:featureFlags];
     [self.persistentStore clear];
     [self.persistentStore addFeatureFlags:featureFlags];
