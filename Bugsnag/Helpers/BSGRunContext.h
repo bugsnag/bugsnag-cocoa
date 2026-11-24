@@ -69,10 +69,12 @@ extern const struct BSGRunContext *_Nullable bsg_lastRunContext;
 void BSGRunContextInit(NSString *_Nonnull path);
 #endif
 
-/// For unit tests only (defined in debug builds only): how many times the notification observers, the memory pressure
-/// source and the timer have been added. BSGRunContextInit() adds each of them once per process, however many times it
-/// is called. Declared unconditionally because some files that include this header redefine DEBUG.
+#ifdef DEBUG
+/// For unit tests only (debug builds): how many times the notification observers, the memory pressure source and the
+/// timer have been added. BSGRunContextInit() adds each of them once per process, however many times it is called.
+/// #ifdef rather than #if: BSG_KSLogger.h leaves DEBUG defined but not usable in #if in files that include it.
 unsigned BSGRunContextObserverRegistrationCount(void);
+#endif
 
 #pragma mark -
 
