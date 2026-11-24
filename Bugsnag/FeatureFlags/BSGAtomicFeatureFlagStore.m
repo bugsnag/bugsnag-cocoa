@@ -53,8 +53,8 @@ static size_t g_retiredCount;
  * The crash-time reader (BugsnagFeatureFlagsWriteCrashReport) takes no locks and allocates nothing. Writers, holding
  * g_lock, keep these invariants so that it never reads a partly built or freed item:
  *
- * 1. Every published pointer (the head or an item's next) points at a fully built item, and each publishing store is
- *    preceded by BSGPublishFence.
+ * 1. Every published pointer (the head or an item's next) points at a fully built item, and each store that makes a
+ *    new item reachable is preceded by BSGPublishFence.
  * 2. An unlinked item's next is never changed, and no write stores a pointer to an already unlinked item.
  * 3. Items unlinked from g_list are retired (BSGRetireItem), not freed. Each write ends with
  *    BSGFreeRetiredItemsIfNoReaders, which loads g_crash_report_readers after the unlinking stores of this and every
@@ -70,13 +70,16 @@ static size_t g_retiredCount;
  * cleared (or dropped as unserializable) and added again during a read can appear twice. The crash handler stops
  * other threads while writing, so this needs two simultaneous crashes.
  *
- * The argument above covers only readers on other threads. Two cases are outside C11; in both the reader sees a
- * prefix of the writer's steps, each of which leaves the list safe to walk:
- * - A signal handler interrupting a writer on its own thread. C11 does not order a thread with its own handler, but
- *   atomic_signal_fence (BSGPublishFence) does order the item's contents before the publishing store for it. The
- *   fence only constrains the compiler and costs nothing at run time.
- * - A writer suspended mid-write by the crash handler. This relies on the Mach behaviour KSCrash depends on
- *   throughout: a suspended thread's completed stores are visible to the thread that suspended it.
+ * The argument above uses C11's rules for threads, so it covers readers on other threads. Two cases fall outside
+ * them; in both the reader is expected to see a prefix of the writer's steps, each of which leaves the list safe to
+ * walk:
+ * - A signal handler interrupting a writer on its own thread. C11 does not order a thread's operations with its own
+ *   handler (and leaves non-atomic values unspecified there), but atomic_signal_fence (BSGPublishFence) guarantees
+ *   that the item's contents are ordered before the publishing store for it. The fence only constrains the compiler
+ *   and costs nothing at run time.
+ * - A writer suspended mid-write by the crash handler. C11 does not describe suspending a thread, so this is not
+ *   formally covered; it relies on the Mach behaviour KSCrash depends on throughout: a suspended thread's completed
+ *   stores are visible to the thread that suspended it.
  *
  * If a reader never decrements (e.g. the app crashes again while writing a report), retired items are never freed:
  * memory is kept until exit, never reused.

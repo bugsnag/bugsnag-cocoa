@@ -26,8 +26,10 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
 }
 
 /// Stands in for the persistent store in the composite store tests: a memory store that also implements
-/// BSGReplaceableFeatureFlagStore. It orders flags as BSGMemoryFeatureFlagStore does; the persistent store's order is
-/// covered by testCompositeStoreWithPersistentStoreMovesAFlagThatIsAddedAgainToTheEnd.
+/// BSGReplaceableFeatureFlagStore, so the tests work whether or not the composite store calls replaceAllFlags: on its
+/// persistent store (a persistent store that implements it gets that call). It orders flags as
+/// BSGMemoryFeatureFlagStore does; the persistent store's order is covered by
+/// testCompositeStoreWithPersistentStoreMovesAFlagThatIsAddedAgainToTheEnd.
 @interface BSGReplaceablePersistentStoreStandIn : BSGMemoryFeatureFlagStore <BSGReplaceableFeatureFlagStore>
 @end
 
