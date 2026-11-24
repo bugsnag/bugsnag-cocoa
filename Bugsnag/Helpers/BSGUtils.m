@@ -198,6 +198,8 @@ static int BSGReopenWithoutCompleteProtection(NSString *path, int fd, int flags,
         if (fstat(fd, &byDescriptor) != 0 || lstat(fileSystemPath, &byPath) != 0 ||
             byDescriptor.st_dev != byPath.st_dev || byDescriptor.st_ino != byPath.st_ino) {
             close(fd);
+            // A file created here and then renamed away is not deleted: it can't be safely unlinked by path. The feature
+            // flag store deletes leftover featureflag.bin.*.tmp files when it reads the directory or takes the lock.
             errno = EAGAIN;
             return -1;
         }
