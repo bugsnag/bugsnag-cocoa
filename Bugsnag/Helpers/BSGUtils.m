@@ -170,13 +170,13 @@ int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags) {
             errno = EAGAIN;
             return -1;
         }
-        // The first descriptor still refers to the file, whose protection class has been changed, but it was opened
-        // under NSFileProtectionComplete and so may stop working once the device is locked. It is still kept: without
-        // it the file could not be used at all for this launch. Logged as a warning so that release builds show it.
-        const int reopenError __unused = errno; // Unused when logging is compiled out
-        bsg_log_warn(@"Could not reopen %@ after changing its protection class (errno %d); it may become inaccessible "
-                     @"while the device is locked", path, reopenError);
-        return fd;
+        // The first descriptor was opened under NSFileProtectionComplete, so it may stop working once the device is
+        // locked, and a memory-mapped file would then fault (SIGBUS) when it is accessed. It is not used: the caller
+        // goes without the file rather than risk crashing the app.
+        const int reopenError = errno;
+        close(fd);
+        errno = reopenError;
+        return -1;
     }
     // A different file could have been put at the path between the two opens, in which case the reopened descriptor
     // refers to a file whose protection class was never checked, so both descriptors must refer to the same file

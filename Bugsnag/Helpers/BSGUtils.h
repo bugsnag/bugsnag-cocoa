@@ -47,8 +47,9 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 /// (compared by device and inode number); otherwise -1 is returned with errno set to EAGAIN. If the protection class
 /// was changed, the file is reopened, so that the descriptor returned was opened after the change. If the file is no
 /// longer at the path by then, or a different file is at the path (the two descriptors are compared by device and inode
-/// number), -1 is returned with errno set to EAGAIN; if it cannot be reopened for another reason, the first descriptor
-/// is returned. In each EAGAIN case the caller can try again.
+/// number), -1 is returned with errno set to EAGAIN; if it cannot be reopened for another reason, -1 is returned with
+/// that error, because the first descriptor was opened under NSFileProtectionComplete and may stop working (or make a
+/// mapping of the file fault) once the device is locked. In each EAGAIN case the caller can try again.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
 #if defined(DEBUG) && DEBUG
