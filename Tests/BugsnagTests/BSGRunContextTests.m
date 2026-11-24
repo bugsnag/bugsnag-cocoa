@@ -405,9 +405,8 @@ static void InitRunContextWithSimulatedProtection(NSString *path, NSString *prot
     // hosts refuse it.
     NSString *reason = BSGRealCompleteFileCannotBeChanged(NSData.data) ?: BSGSetRealFileProtectionComplete(path);
     BSGSkipUnlessFileProtectionComplete(reason, path);
-    NSURLFileProtectionType protection = nil;
     XCTAssertTrue(BSGDisableNSFileProtectionComplete(path));
-    protection = nil;
+    NSURLFileProtectionType protection = nil;
     [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
     XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
     XCTAssertEqualObjects(protection, NSURLFileProtectionCompleteUnlessOpen);

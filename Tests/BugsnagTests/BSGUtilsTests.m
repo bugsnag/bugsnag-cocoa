@@ -168,7 +168,6 @@
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
     XCTAssertTrue([[@"abc" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path atomically:NO]);
     NSURL *url = [NSURL fileURLWithPath:path];
-    NSURLFileProtectionType protection = nil;
     NSString *reason = BSGSetRealFileProtectionComplete(path);
     BSGSkipUnlessFileProtectionComplete(reason, path);
     // An immutable file can be opened for reading, but its protection class cannot be changed
@@ -177,7 +176,7 @@
     XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDONLY), -1);
     // A file that was not created by the call is not deleted
     XCTAssertTrue([NSFileManager.defaultManager fileExistsAtPath:path]);
-    protection = nil;
+    NSURLFileProtectionType protection = nil;
     [url removeCachedResourceValueForKey:NSURLFileProtectionKey];
     XCTAssertTrue([url getResourceValue:&protection forKey:NSURLFileProtectionKey error:nil]);
     XCTAssertEqualObjects(protection, NSURLFileProtectionComplete);
