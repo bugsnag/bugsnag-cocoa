@@ -99,10 +99,7 @@ static size_t g_retiredCount;
  * In both, the reader is expected to see some prefix of the writer's steps, each of which leaves the
  * list safe to walk. That depends on toolchain behaviour that C11 does not guarantee: the compiler
  * treating these sequentially consistent operations as barriers, so that it does not move the writer's
- * other stores (such as an item's contents) past them. Separately, and in every case, an item added at
- * the end of a list has its next pointer set to NULL by calloc's zero fill rather than by atomic_init,
- * which assumes that a lock-free atomic pointer is represented like a plain one and that all-zero bits
- * are NULL, as on Apple platforms.
+ * other stores (such as an item's contents) past them.
  *
  * If a reader never decrements the count, for example because the app crashes again while a report is
  * being written, no retired item is freed again before the process ends: memory is kept, never reused.
@@ -312,6 +309,7 @@ static void BSGRetireList(struct bsg_feature_flag_list_item *item) {
     if (!item) {
         return NULL;
     }
+    atomic_init(&item->next, NULL);
     [data getBytes:item->jsonData length:data.length];
     return item;
 }

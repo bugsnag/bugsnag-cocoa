@@ -16,6 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// example, adding A:1, B, A:2 gives A:2, B. Clearing a name and adding it again puts it at the end.
 /// BSGPersistentFeatureFlagStore, whose flags are reported with OOM and thermal kill events, does not follow this rule
 /// yet: a flag that is added again moves to the end there.
+/// One exception: when a flag's latest variant cannot be converted to JSON (for example, a string that is not valid
+/// UTF-16), BSGAtomicFeatureFlagStore leaves the flag out of crash reports rather than report a variant that the app
+/// has replaced, whether the earlier variant was given in the same call or an earlier one. BSGMemoryFeatureFlagStore
+/// keeps the flag as the app set it.
 @protocol BSGFeatureFlagStore
 
 @property(nonatomic,nonnull,readonly) NSArray<BugsnagFeatureFlag *> *allFlags;

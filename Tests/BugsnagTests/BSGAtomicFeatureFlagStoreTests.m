@@ -352,6 +352,28 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     XCTAssertEqualObjects(memoryFlags.lastObject.variant, unencodable);
 }
 
+- (void)testVariantThatCannotBeSerializedRemovesTheFlagWhenAddedTwiceInOneCall {
+    // As above, but both values are given in one call
+    const unichar loneSurrogate = 0xD800;
+    NSString *unencodable = [NSString stringWithCharacters:&loneSurrogate length:1];
+    BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
+    BSGCompositeFeatureFlagStore *store = [BSGCompositeFeatureFlagStore storeWithMemoryStore:memoryStore
+                                                                             persistentStore:[BSGReplaceablePersistentStoreStandIn new]
+                                                                                 atomicStore:[BSGAtomicFeatureFlagStore store]];
+    [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"other" variant:@"1"],
+                             [BugsnagFeatureFlag flagWithName:@"exp" variant:@"control"],
+                             [BugsnagFeatureFlag flagWithName:@"exp" variant:unencodable]]];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"other", @"variant": @"1"}]));
+    XCTAssertEqualObjects([memoryStore.allFlags valueForKey:@"name"], (@[@"other", @"exp"]));
+    XCTAssertEqualObjects(memoryStore.allFlags.lastObject.variant, unencodable);
+
+    // The same through replaceAllFlags:, which builds its new list the same way
+    [[BSGAtomicFeatureFlagStore store] replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"exp" variant:@"control"],
+                                                         [BugsnagFeatureFlag flagWithName:@"exp" variant:unencodable],
+                                                         [BugsnagFeatureFlag flagWithName:@"other" variant:@"1"]]];
+    XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"other", @"variant": @"1"}]));
+}
+
 - (void)testCompositeStoreKeepsTheMemoryStoreAndCrashReportsInAgreement {
     BSGMemoryFeatureFlagStore *memoryStore = [BSGMemoryFeatureFlagStore new];
     // A memory store standing in for the persistent store: checking it only shows that the composite store passes
@@ -664,9 +686,17 @@ static void BSGStartPausedReader(dispatch_group_t group, dispatch_semaphore_t en
     XCTAssertEqual(dispatch_semaphore_wait(entered, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
 }
 
-// These tests use BSGAtomicFeatureFlagStoreRetiredItemCount, which exists only in debug builds. BSGFinishReader is
-// only used by them, so it is inside the same condition.
+// BSGAtomicFeatureFlagStoreRetiredItemCount exists only in debug builds, so only the checks on the number of retired
+// items are left out of release builds; the rest of each of these tests runs in both.
 #if defined(DEBUG) && DEBUG
+#define AssertRetiredItemCount(expected, ...) \
+    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), (size_t)(expected), ##__VA_ARGS__)
+#define AssertSomeItemsAreRetired(...) XCTAssertGreaterThan(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0, ##__VA_ARGS__)
+#else
+#define AssertRetiredItemCount(expected, ...) do {} while (0)
+#define AssertSomeItemsAreRetired(...) do {} while (0)
+#endif
+
 /// Lets a paused reader write every remaining element without stopping.
 static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t proceed, NSUInteger remainingElements) {
     for (NSUInteger i = 0; i < remainingElements; i++) {
@@ -681,7 +711,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
     [store addFeatureFlag:@"first" withVariant:@"1"];
     [store addFeatureFlag:@"second" withVariant:@"2"];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0);
+    AssertRetiredItemCount(0);
 
     NSMutableArray *results = [NSMutableArray array];
     dispatch_group_t readers = dispatch_group_create();
@@ -696,12 +726,12 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     [store addFeatureFlag:@"first" withVariant:@"changed"];
     [store clear];
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"third" variant:@"3"]]];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 3, @"first:1, first:changed and second");
+    AssertRetiredItemCount(3, @"first:1, first:changed and second");
 
     // Reader A finishes while reader B is still on the first item; B still keeps the items from being freed
     BSGFinishReader(enteredA, proceedA, 2);
     [store addFeatureFlag:@"fourth" withVariant:@"4"];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 3);
+    AssertRetiredItemCount(3);
 
     // Both readers saw the list as it was when they started, complete
     BSGFinishReader(enteredB, proceedB, 2);
@@ -711,7 +741,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
 
     // Once neither reader is walking the list, the next write frees the retired items
     [store addFeatureFlag:@"fifth" withVariant:nil];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0);
+    AssertRetiredItemCount(0);
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"third", @"variant": @"3"},
                                                  @{@"featureFlag": @"fourth", @"variant": @"4"},
                                                  @{@"featureFlag": @"fifth"}]));
@@ -745,7 +775,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     }
     XCTAssertEqual(dispatch_group_wait(writers, dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC)), 0,
                    @"Writers must not wait for a reader that never finishes");
-    XCTAssertGreaterThan(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0, @"Retired items stay pending");
+    AssertSomeItemsAreRetired(@"Retired items stay pending");
 
     // Lets the reader finish, so that the test leaves nothing behind; the next write frees everything. The item it is
     // on may lead to items added after it, so it no longer stops before each of them.
@@ -756,7 +786,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     XCTAssertEqual(results.count, 1);
     XCTAssertEqualObjects([results.firstObject firstObject], @{@"featureFlag": @"stuck"});
     [store clear];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0);
+    AssertRetiredItemCount(0);
 }
 
 - (void)testRetiredItemsAreFreed {
@@ -764,12 +794,12 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     // Without a reader, every write frees the items it unlinks straight away
     [store addFeatureFlag:@"A" withVariant:@"1"];
     [store addFeatureFlag:@"A" withVariant:@"2"];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0);
+    AssertRetiredItemCount(0);
     [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"B"], [BugsnagFeatureFlag flagWithName:@"B" variant:@"3"]]];
     [store clear:@"A"];
     [store replaceAllFlags:@[[BugsnagFeatureFlag flagWithName:@"C"]]];
     [store clear];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0);
+    AssertRetiredItemCount(0);
 
     // Items retired while a reader is walking the list are all freed by the first write after it finishes, even after
     // many writes
@@ -781,15 +811,14 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     for (int i = 0; i < 1000; i++) {
         [store addFeatureFlag:@"D" withVariant:[NSString stringWithFormat:@"%d", i]];
     }
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 1000);
+    AssertRetiredItemCount(1000);
     BSGFinishReader(entered, proceed, 1);
     XCTAssertEqual(dispatch_group_wait(readers, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0);
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 1000, @"Nothing is freed until the next write");
+    AssertRetiredItemCount(1000, @"Nothing is freed until the next write");
     [store addFeatureFlag:@"E" withVariant:nil];
-    XCTAssertEqual(BSGAtomicFeatureFlagStoreRetiredItemCount(), 0);
+    AssertRetiredItemCount(0);
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"D", @"variant": @"999"}, @{@"featureFlag": @"E"}]));
     XCTAssertEqualObjects(results, (@[@[@{@"featureFlag": @"D"}]]));
 }
 
-#endif
 @end
