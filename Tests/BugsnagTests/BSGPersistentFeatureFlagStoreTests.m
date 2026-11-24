@@ -2232,6 +2232,36 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     XCTAssertEqualObjects([self reopenedFlags], (@[@[@"c", @"3"]]));
 }
 
+- (void)testVersion1FileWrittenByHandIsRead {
+    // A version 1 file built byte by byte, not with the encoder, so that a change to the format that would stop
+    // released files being read fails this test. Integers are little-endian.
+    const uint8_t header[32] = {
+        'B', 'S', 'F', 'F',                         // magic
+        0x01, 0x00, 0x00, 0x00,                     // version 1
+        0x40, 0x00, 0x00, 0x00,                     // slot capacity: 64 bytes
+        0x00, 0x00, 0x00, 0x00,                     // reserved
+        0x63, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // active: length 49 << 1 | slot 1
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // reserved
+    };
+    const uint8_t log[49] = {
+        0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 'a', '1',      // add a, variant "1"
+        0x01, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 'b',           // add b, no variant
+        0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 'a', '2', '2', // a again, variant "22"
+        0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 'c', 'x',      // add c, variant "x"
+        0x01, 0x00, 0x00, 0x00, 0xFE, 0xFF, 0xFF, 0xFF, 'b',           // remove b
+    };
+    // Slot 0 holds a valid log too, which must be ignored because slot 1 is active
+    const uint8_t inactive[10] = {0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 'z', 'z'};
+    NSMutableData *file = [NSMutableData dataWithLength:32 + 2 * 64];
+    [file replaceBytesInRange:NSMakeRange(0, sizeof(header)) withBytes:header];
+    [file replaceBytesInRange:NSMakeRange(32, sizeof(inactive)) withBytes:inactive];
+    [file replaceBytesInRange:NSMakeRange(32 + 64, sizeof(log)) withBytes:log];
+    XCTAssertTrue([file writeToFile:[self.directory stringByAppendingPathComponent:@"featureflag.bin"] atomically:NO]);
+
+    // A flag added again keeps its first position with its last variant, and a removed flag is gone
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"22"], @[@"c", @"x"]]));
+}
+
 - (void)testCompactionFailureKeepsTheCurrentLog {
     BSGPersistentFeatureFlagStore *store = [self newStore];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];

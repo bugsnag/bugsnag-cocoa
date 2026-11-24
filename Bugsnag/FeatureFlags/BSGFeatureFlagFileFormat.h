@@ -41,6 +41,7 @@
 //   hold values that are fixed when the file is created (a file is always created whole and
 //   renamed into place), because an older version that appends to a newer version's file leaves
 //   them unchanged. Anything that describes the log needs a new version.
+// - All integers in the file are little-endian (checked when building, see below).
 // - Any other change (header layout, record layout, the meaning of a length or of the special
 //   variant lengths) needs a new version number. A version that writes format N+1 must still
 //   read every earlier version, so that flags survive an upgrade.
@@ -90,6 +91,11 @@ struct bsg_feature_flag_file_header {
 // The layout is part of the file format, so it must be the same on every architecture (e.g. arm64_32).
 _Static_assert(sizeof(struct bsg_feature_flag_file_header) == 32, "Feature flag file header size");
 _Static_assert(offsetof(struct bsg_feature_flag_file_header, active) == 16, "Feature flag file header layout");
+// Integers are read and written in the host's byte order, so the format is little-endian only because every platform
+// the SDK supports is. A big-endian build must convert them first, rather than write files in another byte order.
+#ifndef __LITTLE_ENDIAN__
+#error "The feature flag file format is little-endian: convert its integers before building for a big-endian target"
+#endif
 // The macros are used because older compilers don't treat static const variables as constant
 // expressions in C.
 _Static_assert(BSG_FEATURE_FLAG_MAX_SLOT_CAPACITY <= BSG_FEATURE_FLAG_MAX_READABLE_SLOT_CAPACITY, "Files that are written must be readable");
