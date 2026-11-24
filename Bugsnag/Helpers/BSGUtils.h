@@ -37,10 +37,10 @@ BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 
 /// Opens (or, with O_CREAT, creates) a file to keep open while it is used, changing NSFileProtectionComplete to
 /// NSFileProtectionCompleteUnlessOpen and applying Bugsnag's backup policy. Uses O_CLOEXEC | O_NOFOLLOW; new files get
-/// mode 0600. Does not log; the caller logs failures.
+/// mode 0600. If the class was changed, the file is reopened, so the descriptor returned was opened after the change.
+/// Does not log; the caller logs failures.
 ///
-/// Returns the descriptor, or -1 with errno:
-/// - ELOOP: a symbolic link is at the path.
+/// Returns the descriptor, or -1 with errno set to open()'s own error (ELOOP if a symbolic link is at the path), or:
 /// - EAGAIN: the file at the path was removed or replaced while opening (checked by device and inode); retry.
 /// - The POSIX error from changing the protection class, or EPERM if there is none.
 /// - The reopen error, if the file cannot be reopened after its protection class changed. The first descriptor was

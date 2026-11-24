@@ -470,8 +470,9 @@ static BOOL IsMarked(int fd) {
     NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
     gSimulatedProtection[path] = NSURLFileProtectionComplete;
 
-    // The first descriptor's O_EXLOCK makes the reopen fail (EWOULDBLOCK). The first one, opened under
-    // NSFileProtectionComplete, is closed rather than returned: a mapping could fault once the device locks
+    // The reopen keeps O_EXLOCK | O_NONBLOCK, so the first descriptor's lock makes it fail with EWOULDBLOCK. The first
+    // one, opened under NSFileProtectionComplete, is closed rather than returned: a mapping could fault once the device
+    // locks
     errno = 0;
     XCTAssertEqual(BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK), -1);
     XCTAssertEqual(errno, EWOULDBLOCK, @"The reopen's error should be returned");
@@ -706,8 +707,9 @@ static int BSGLowestFreeDescriptor(void) {
 
 #if defined(DEBUG) && DEBUG
 - (void)testDefaultProtectionFunctionsReadAndChangeARealFile {
-    // Checks the real functions that the tests above replace. Uses classes other than NSFileProtectionComplete, which
-    // can be set while locked, so it runs on locked or headless hosts too.
+    // Checks the real functions that the tests above replace. Uses CompleteUntilFirstUserAuthentication and
+    // CompleteUnlessOpen, which (unlike Complete) can be set while locked, so it runs on locked or headless hosts too.
+    // Reading Complete itself is left to the real-file tests.
     // Passing no functions keeps the defaults and returns them
     const BSGFileProtectionFunctions defaults = BSGSetFileProtectionFunctions((BSGFileProtectionFunctions){0});
     XCTAssertTrue(defaults.getProtection != NULL && defaults.setProtection != NULL);
