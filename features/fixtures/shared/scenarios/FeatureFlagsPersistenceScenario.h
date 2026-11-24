@@ -49,7 +49,7 @@ NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count);
 /// Sends a handled error with the current flags directory summary in metadata.
 - (void)notifyHandledError;
 
-/// Kills the app with SIGKILL once state is flushed; the next launch detects an OOM.
+/// Kills the app with SIGKILL after a 1 s delay to let state be flushed; the next launch detects an OOM.
 - (void)fakeOutOfMemoryAfterDelay;
 
 @end

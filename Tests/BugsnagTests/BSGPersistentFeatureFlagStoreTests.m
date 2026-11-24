@@ -1271,7 +1271,7 @@ static NSArray * FlagsToArray(NSArray<BugsnagFeatureFlag *> *flags) {
 
 #if defined(DEBUG) && DEBUG
 - (void)testFailedWriteIsRetriedAfterTheRetryInterval {
-    // Flags set only at start must still be saved
+    // As at Bugsnag start: flags set only then must be saved by the retry, since nothing changes them later
     BSGFailingPersistentFeatureFlagStore *store = [[BSGFailingPersistentFeatureFlagStore alloc] initWithStorageDirectory:self.directory];
     BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
     [scheduler attachToStore:store];

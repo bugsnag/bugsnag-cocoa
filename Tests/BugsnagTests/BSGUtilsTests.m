@@ -516,7 +516,6 @@ static BOOL IsMarked(int fd) {
 #pragma mark Real files
 
 #if defined(DEBUG) && DEBUG
-/// The lowest free descriptor number, which open() returns next.
 - (void)testFileRemovedBeforeItIsReopenedCanBeOpenedAgain {
     [self simulateProtection];
     NSString *path = [self.directory stringByAppendingPathComponent:@"file"];
@@ -585,6 +584,7 @@ static BOOL IsMarked(int fd) {
 }
 #endif
 
+/// The lowest free descriptor number, which open() returns next.
 static int BSGLowestFreeDescriptor(void) {
     int fd = dup(STDIN_FILENO);
     if (fd != -1) {

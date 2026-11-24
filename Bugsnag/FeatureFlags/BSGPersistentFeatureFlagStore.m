@@ -60,8 +60,9 @@
 // - Something else at the path is replaced at the next save. A directory is removed with rmdir() only if empty; while
 //   a non-empty one is there, nothing is saved this launch (logged once, not retried; see removeDirectoryAtFilePath).
 // - A file that cannot be opened (EMFILE, ENFILE, EINTR, EAGAIN, or EACCES/EPERM while protected data is unavailable)
-//   may hold good flags: it is kept, its flags are not reported, and a retry reopens it. Then it is replaced if there
-//   are flags to save, else emptied in place. If it never opens this launch, the next launch can read the flags of the
+//   may hold good flags: it is kept, its flags are not reported, and a retry tries to reopen it. If there are flags to
+//   save, a new file is renamed over it as usual (or, once reopened, its log is rewritten in place); if there are none,
+//   it is emptied in place once it opens. If it never opens this launch, the next launch can read the flags of the
 //   launch before. Accepted: usually protected data stays unavailable, so BSGRunContext cannot save this launch's run
 //   context either; the other causes clear quickly.
 //
@@ -70,7 +71,8 @@
 //                      closed in dealloc.
 //   lockGivenUp        The lock will never be taken: EWOULDBLOCK, or an open error that does not clear (e.g. a symbolic
 //                      link, or a missing directory that cannot be created). Never cleared; logged once.
-//   fd                 featureflag.bin open for writing (only with the lock), else -1. Set by openExistingFile or
+//   fd                 featureflag.bin open for writing (only with the lock), else -1. Set by readExistingFile (at
+//                      creation), openExistingFile (lock taken later, or a file that could not be opened retried) or
 //                      replaceFileWithSnapshot; cleared by a write failure or a failure to empty the log.
 //   slotCapacity, activeSlot, activeLength  As last read or written; meaningful only while fd is not -1.
 //   fileIsCurrent      Replaying the log gives exactly the encodable flags, so records can be appended. Set by reading

@@ -82,8 +82,9 @@ static void FeatureFlagsRemoveTemporaryFiles(void) {
 
 #pragma mark - 8. Upgrade from an SDK that stored flags as JSON files
 
-/// An app OOM-killed on an SDK that used JSON files: after start, featureflag.bin is replaced with legacy JSON files
-/// and the app killed. The next OOM event must report the JSON flags, which are then deleted.
+/// An app OOM-killed on an SDK that used JSON files: after start (so OOM detection state exists), featureflag.bin is
+/// replaced with legacy JSON files and the app killed. The next OOM event must report the JSON flags, which are then
+/// deleted.
 @interface FeatureFlagsLegacyUpgradeOOMScenario : FeatureFlagsPersistenceScenario
 @end
 
