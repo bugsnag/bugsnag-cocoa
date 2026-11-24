@@ -608,6 +608,8 @@ typedef void (*BSGAddJSONElementFunction)(const BSG_KSCrashReportWriter *writer,
 static _Atomic(BSGAddJSONElementFunction) g_originalAddJSONElement;
 // Set to let paused readers write their remaining elements without stopping
 static atomic_bool g_pausingDisabled;
+// Every reader started by the running test, so that tearDown can wait until they have all finished
+static dispatch_group_t g_allReaders;
 // The "proceed" semaphores of the readers started by the running test, so that tearDown can release a reader that a
 // failed test left paused. Otherwise it would stay paused, counted as a reader, and break the tests that run after it.
 static NSMutableArray<dispatch_semaphore_t> *g_proceedSemaphores;
@@ -636,6 +638,7 @@ static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, cons
     [super setUp];
     atomic_store(&g_pausingDisabled, false);
     g_proceedSemaphores = [NSMutableArray array];
+    g_allReaders = dispatch_group_create();
     [[BSGAtomicFeatureFlagStore store] clear];
 }
 
@@ -647,6 +650,10 @@ static void BSGPausingAddJSONElement(const BSG_KSCrashReportWriter *writer, cons
             dispatch_semaphore_signal(proceed);
         }
     }
+    // A reader still counted when the next test starts would keep that test's retired items from being freed, so a
+    // failure here would show up as a misleading failure in the next test instead
+    XCTAssertEqual(dispatch_group_wait(g_allReaders, dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC)), 0,
+                   @"A reader started by this test did not finish");
     [[BSGAtomicFeatureFlagStore store] clear];
     [super tearDown];
 }
@@ -658,6 +665,8 @@ static void BSGStartPausedReader(dispatch_group_t group, dispatch_semaphore_t en
     @synchronized (proceedSemaphores) {
         [proceedSemaphores addObject:proceed];
     }
+    dispatch_group_t allReaders = g_allReaders;
+    dispatch_group_enter(allReaders);
     dispatch_group_async(group, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSMutableDictionary *threadDictionary = NSThread.currentThread.threadDictionary;
         threadDictionary[@"BSGReaderEntered"] = entered;
@@ -675,6 +684,7 @@ static void BSGStartPausedReader(dispatch_group_t group, dispatch_semaphore_t en
         @synchronized (results) {
             [results addObject:object[@"featureFlags"] ?: @[]];
         }
+        dispatch_group_leave(allReaders);
     });
 }
 

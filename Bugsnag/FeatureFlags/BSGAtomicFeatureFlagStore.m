@@ -61,8 +61,9 @@ static size_t g_retiredCount;
  * item. It does not always see one consistent list, though: a reader on an item that is being
  * unlinked keeps following that item's next pointer, which is never changed once it has been
  * unlinked, so if a flag is cleared and added again while a report is being read, that report can
- * show the flag twice (the old item and the new one at the tail). The crash handler stops the other
- * threads while it writes a report, so this can only happen when two crashes happen at once.
+ * show the flag twice (the old item and the new one at the tail). The same applies to a flag that is
+ * removed because its new variant cannot be serialised and then added again. The crash handler stops
+ * the other threads while it writes a report, so this can only happen when two crashes happen at once.
  *
  * Unlinked items are not freed straight away but retired (BSGRetireItem), and each write ends by
  * freeing the retired items if no crash-time reader is counted (BSGFreeRetiredItemsIfNoReaders), so
