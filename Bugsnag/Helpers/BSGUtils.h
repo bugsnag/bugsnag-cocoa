@@ -24,7 +24,42 @@ char *_Nullable BSGCStringWithData(NSData *_Nullable data);
 /// Files with NSFileProtectionComplete cannot be read from or written to while the device is locked or booting.
 ///
 /// Files with NSFileProtectionCompleteUnlessOpen can be created while the device is locked, but once closed, cannot be opened again until the device is unlocked.
+/// So a file that must stay accessible while locked (e.g. memory mapped) must be opened after this call, and its
+/// descriptor kept open while it is used, even while a mapping remains.
 BOOL BSGDisableNSFileProtectionComplete(NSString *path);
+
+/// As BSGDisableNSFileProtectionComplete; also sets `changed` (if not NULL) to whether the file had
+/// NSFileProtectionComplete. `changed` is NO on error.
+///
+/// An unreadable protection class is treated as not NSFileProtectionComplete; if it really is, I/O on the file can
+/// fail once the device locks, which callers handle like any other I/O failure.
+BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
+
+/// Opens (or, with O_CREAT, creates) a file to keep open while it is used, changing NSFileProtectionComplete to
+/// NSFileProtectionCompleteUnlessOpen and applying Bugsnag's backup policy. Uses O_CLOEXEC | O_NOFOLLOW; new files get
+/// mode 0600. If the class was changed, the file is reopened, so the descriptor returned was opened after the change.
+/// Does not log; the caller logs failures.
+///
+/// Returns the descriptor, or -1 with errno set to open()'s own error (ELOOP if a symbolic link is at the path), or:
+/// - EAGAIN: the file at the path was removed or replaced while opening (checked by device and inode); retry.
+/// - The POSIX error from changing the protection class, or EPERM if there is none.
+/// - The reopen error, if the file cannot be reopened after its protection class changed. The first descriptor was
+///   opened under NSFileProtectionComplete and could fail (or make a mapping fault) once the device locks.
+int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
+
+#if defined(DEBUG) && DEBUG
+/// The functions BSGChangeNSFileProtectionComplete uses to read and set a protection class. Unit tests replace them
+/// to simulate classes the host cannot set, e.g. NSFileProtectionComplete while locked.
+typedef struct {
+    /// Returns the file's protection class, or nil if it has none or it cannot be read.
+    NSString *_Nullable (*_Nullable getProtection)(NSString *path);
+    /// Sets the file's protection class, returning NO and setting `error` on failure.
+    BOOL (*_Nullable setProtection)(NSString *path, NSString *protection, NSError *_Nullable *_Nullable error);
+} BSGFileProtectionFunctions;
+
+/// Unit tests only: atomically replaces the protection functions, returning the previous ones. NULL restores a default.
+BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions);
+#endif
 
 dispatch_queue_t BSGGetFileSystemQueue(void);
 

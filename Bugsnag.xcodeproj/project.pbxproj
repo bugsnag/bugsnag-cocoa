@@ -1962,6 +1962,7 @@
 		3A700A9124A63A8E0068CD1B /* BugsnagError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagError.h; sourceTree = "<group>"; };
 		3A700A9224A63A8E0068CD1B /* BugsnagDeviceWithState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagDeviceWithState.h; sourceTree = "<group>"; };
 		3A700A9324A63A8E0068CD1B /* BugsnagMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagMetadata.h; sourceTree = "<group>"; };
+		4304415EC38C448869F305E3 /* BSGFileProtectionTestHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGFileProtectionTestHelpers.h; sourceTree = "<group>"; };
 		9627A1342D91CF9300696E3C /* BSGAtomicFeatureFlagStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGAtomicFeatureFlagStoreTests.m; sourceTree = "<group>"; };
 		9627A1392D92200300696E3C /* WriterTestsSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WriterTestsSupport.h; sourceTree = "<group>"; };
 		9627A13A2D92201B00696E3C /* WriterTestsSupport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WriterTestsSupport.m; sourceTree = "<group>"; };
@@ -2509,6 +2510,7 @@
 				CB6419B325A7419400613D25 /* v0_files */,
 				9627A1392D92200300696E3C /* WriterTestsSupport.h */,
 				9627A13A2D92201B00696E3C /* WriterTestsSupport.m */,
+				4304415EC38C448869F305E3 /* BSGFileProtectionTestHelpers.h */,
 			);
 			path = BugsnagTests;
 			sourceTree = "<group>";

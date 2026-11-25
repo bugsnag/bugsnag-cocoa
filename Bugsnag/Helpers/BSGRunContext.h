@@ -69,6 +69,12 @@ extern const struct BSGRunContext *_Nullable bsg_lastRunContext;
 void BSGRunContextInit(NSString *_Nonnull path);
 #endif
 
+#ifdef DEBUG
+/// Unit tests only: how many times the observers, memory pressure source and timer were added (once per process).
+/// #ifdef, not #if: BSG_KSLogger.h leaves DEBUG defined but unusable in #if.
+unsigned BSGRunContextObserverRegistrationCount(void);
+#endif
+
 #pragma mark -
 
 size_t bsg_getHostMemory(void);

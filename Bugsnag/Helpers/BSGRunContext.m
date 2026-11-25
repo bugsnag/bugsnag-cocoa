@@ -5,10 +5,16 @@
 //  Copyright © 2022 Bugsnag Inc. All rights reserved.
 //
 
+// DEBUG is checked here, before BSG_KSLogger.h (imported below) redefines it
+#if defined(DEBUG) && DEBUG
+#define BSG_RUN_CONTEXT_TEST_HOOKS 1
+#else
+#define BSG_RUN_CONTEXT_TEST_HOOKS 0
+#endif
+
 #import "BSGRunContext.h"
 
 #import "BSGAppKit.h"
-#import "BSGFilesystem.h"
 #import "BSGHardware.h"
 #import "BSGUIKit.h"
 #import "BSGUtils.h"
@@ -45,6 +51,15 @@ static bool GetIsForeground(void);
 static UIApplication * GetUIApplication(void);
 #endif
 static void InstallTimer(void);
+
+#if BSG_RUN_CONTEXT_TEST_HOOKS
+// For unit tests only (see BSGRunContextObserverRegistrationCount)
+static _Atomic unsigned bsg_observerRegistrationCount;
+
+unsigned BSGRunContextObserverRegistrationCount(void) {
+    return atomic_load(&bsg_observerRegistrationCount);
+}
+#endif
 
 
 #pragma mark - Initial setup
@@ -218,23 +233,31 @@ static UIApplication * GetUIApplication(void) {
 
 #endif
 
+/// Installed once per process: the timer writes through bsg_runContext, so it survives a remap; one per call would leak
+/// running timers.
 static void InstallTimer(void) {
-    static dispatch_source_t timer;
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
-    
-    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-    
-    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW,
-                              /* interval */ NSEC_PER_SEC / 2,
-                              /* leeway */   NSEC_PER_SEC / 4);
-    
-    dispatch_source_set_event_handler(timer, ^{
-        BSGRunContextUpdateTimestamp();
-        BSGRunContextUpdateMemory();
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+#if BSG_RUN_CONTEXT_TEST_HOOKS
+        atomic_fetch_add(&bsg_observerRegistrationCount, 1);
+#endif
+        static dispatch_source_t timer;
+        
+        dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
+        
+        timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+        
+        dispatch_source_set_timer(timer, DISPATCH_TIME_NOW,
+                                  /* interval */ NSEC_PER_SEC / 2,
+                                  /* leeway */   NSEC_PER_SEC / 4);
+        
+        dispatch_source_set_event_handler(timer, ^{
+            BSGRunContextUpdateTimestamp();
+            BSGRunContextUpdateMemory();
+        });
+        
+        dispatch_resume(timer);
     });
-    
-    dispatch_resume(timer);
 }
 
 
@@ -357,7 +380,12 @@ static void ObserveMemoryPressure(void) {
 
 #endif
 
-static void AddObservers(void) {
+
+/// Adds the notification observers and memory pressure source. Called once per process.
+static void RegisterObservers(void) {
+#if BSG_RUN_CONTEXT_TEST_HOOKS
+    atomic_fetch_add(&bsg_observerRegistrationCount, 1);
+#endif
     CFNotificationCenterRef center = CFNotificationCenterGetLocalCenter();
     
 #define OBSERVE(name, function) CFNotificationCenterAddObserver(\
@@ -384,14 +412,10 @@ static void AddObservers(void) {
     
 #if BSG_HAVE_BATTERY
     BSGGetDevice().batteryMonitoringEnabled = YES;
-    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
-    bsg_runContext->batteryState = BSGGetDevice().batteryState;
 #endif
 
 #if TARGET_OS_IOS
-    UIDevice *currentDevice = [UIDEVICE currentDevice];
-    [currentDevice beginGeneratingDeviceOrientationNotifications];
-    bsg_runContext->lastKnownOrientation = currentDevice.orientation;
+    [[UIDEVICE currentDevice] beginGeneratingDeviceOrientationNotifications];
     OBSERVE(UIDeviceOrientationDidChangeNotification, NoteOrientation);
     OBSERVE(UIDeviceBatteryLevelDidChangeNotification, NoteBatteryLevel);
     OBSERVE(UIDeviceBatteryStateDidChangeNotification, NoteBatteryState);
@@ -399,6 +423,24 @@ static void AddObservers(void) {
 
 #if BSG_HAVE_OOM_DETECTION
     ObserveMemoryPressure();
+#endif
+}
+
+/// Observers are added once per process: they write through bsg_runContext, so they survive a remap, and adding them
+/// per call would duplicate handlers. The tracked values are read on every call because each new file starts zeroed.
+static void AddObservers(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        RegisterObservers();
+    });
+
+#if BSG_HAVE_BATTERY
+    bsg_runContext->batteryLevel = BSGGetDevice().batteryLevel;
+    bsg_runContext->batteryState = BSGGetDevice().batteryState;
+#endif
+
+#if TARGET_OS_IOS
+    bsg_runContext->lastKnownOrientation = [UIDEVICE currentDevice].orientation;
 #endif
 }
 
@@ -547,24 +589,23 @@ static struct BSGRunContext bsg_lastRunContext_fallback = {
 const struct BSGRunContext *bsg_lastRunContext = &bsg_lastRunContext_fallback;
 
 /// Opens the file and disables content protection, returning -1 on error.
+///
+/// NSFileProtectionComplete invalidates mappings 10 seconds after the device
+/// locks, so it is downgraded to NSFileProtectionCompleteUnlessOpen; the
+/// descriptor must stay open while the file is mapped. Retries once on EAGAIN
+/// (file removed or replaced while opening). Failure is logged: OOM and thermal kill
+/// detection is then off for this launch.
 static int OpenFile(NSString *_Nonnull path) {
-    int fd = open(path.fileSystemRepresentation, O_RDWR | O_CREAT, 0600);
+    int fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    if (fd == -1 && errno == EAGAIN) {
+        fd = BSGOpenFileWithoutCompleteProtection(path, O_RDWR | O_CREAT);
+    }
     if (fd == -1) {
-        bsg_log_warn(@"Could not open %@", path);
-        return -1;
+        // Saved because logging can change errno
+        const int openError __unused = errno;
+        bsg_log_warn(@"Could not open the run context file (errno %d); OOM and thermal kill detection is disabled "
+                     "for this launch", openError);
     }
-    // This file is created with low-level APIs for memory mapping, so apply
-    // Bugsnag's Apple backup policy here instead of relying on JSON helpers.
-    [BSGFilesystem applyFileBackupSupportToPath:path];
-    
-    // NSFileProtectionComplete invalidates mappings 10 seconds after device is
-    // locked, so must be disabled to prevent segfaults when accessing 
-    // bsg_runContext
-    if (!BSGDisableNSFileProtectionComplete(path)) {
-        close(fd);
-        return -1;
-    }
-    
     return fd;
 }
 
@@ -584,12 +625,22 @@ static void LoadLastRunContext(int fd) {
     }
 }
 
+/// The descriptor of the file currently mapped at `bsg_runContext`, or -1.
+///
+/// Kept open so the file stays accessible while the device is locked
+/// (NSFileProtectionCompleteUnlessOpen). Closed only when BSGRunContextInit()
+/// maps a new file; the old mapping remains.
+static int bsg_runContextFd = -1;
+
 /// Truncates or extends the file to the size of struct BSGRunContext,
 /// maps it into memory, and sets the `bsg_runContext` pointer.
+///
+/// Takes ownership of `fd`: kept open with the mapping, or closed on failure.
 static void ResizeAndMapFile(int fd) {
     // Note: ftruncate fills the file with zeros when extending.
     if (ftruncate(fd, SIZEOF_STRUCT) != 0) {
         bsg_log_warn(@"ftruncate failed: %d", errno);
+        close(fd);
         return;
     }
     
@@ -598,21 +649,32 @@ static void ResizeAndMapFile(int fd) {
     void *ptr = mmap(0, SIZEOF_STRUCT, prot, flags, fd, 0);
     if (ptr == MAP_FAILED) {
         bsg_log_warn(@"mmap failed: %d", errno);
+        close(fd);
         return;
     }
     
     memset(ptr, 0, SIZEOF_STRUCT);
     mlock(ptr, SIZEOF_STRUCT);
+
+    const int previousFd = bsg_runContextFd;
+    bsg_runContextFd = fd;
     bsg_runContext = ptr;
+
+    // Only when BSGRunContextInit() runs again, which only unit tests do:
+    // production calls it once, from -[BugsnagClient start] via Bugsnag.start.
+    // The old mapping stays because other threads may hold its address.
+    if (previousFd != -1) {
+        close(previousFd);
+    }
 }
 
 void BSGRunContextInit(NSString *_Nonnull path) {
     int fd = OpenFile(path);
-    LoadLastRunContext(fd);
-    ResizeAndMapFile(fd);
+    if (fd != -1) {
+        LoadLastRunContext(fd);
+        // Takes ownership of fd
+        ResizeAndMapFile(fd);
+    }
     InitRunContext();
     AddObservers();
-    if (fd > 0) {
-        close(fd);
-    }
 }
