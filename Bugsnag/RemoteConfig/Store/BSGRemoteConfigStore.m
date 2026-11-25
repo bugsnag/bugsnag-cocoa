@@ -110,23 +110,26 @@ static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress"
     return saved ? configuration : nil;
 }
 
-- (BSGRemoteConfiguration *)updateExpiryDate:(NSDate *)expiryDate
-                            configurationTag:(NSString *)configurationTag {
+- (BSGRemoteConfigExpiryUpdateResult)updateExpiryDate:(NSDate *)expiryDate
+                                     configurationTag:(NSString *)configurationTag
+                                        configuration:(BSGRemoteConfiguration *__autoreleasing *)revalidatedConfiguration {
+    *revalidatedConfiguration = nil;
     BSGRemoteConfiguration *configuration = [self loadConfiguration];
+    if (configuration == nil) {
+        return BSGRemoteConfigExpiryUpdateResultMissing;
+    }
     NSString *storedTag = BSGNormalizeETag(configuration.configurationTag);
     NSString *incomingTag = BSGNormalizeETag(configurationTag);
     if (storedTag != nil && incomingTag != nil && ![storedTag isEqualToString:incomingTag]) {
-        return nil;
+        return BSGRemoteConfigExpiryUpdateResultTagMismatch;
     }
-    if (configuration != nil) {
-        NSDate *previousExpiryDate = configuration.expiryDate;
-        configuration.expiryDate = expiryDate;
-        if ([self saveConfiguration:configuration]) {
-            return configuration;
-        }
-        configuration.expiryDate = previousExpiryDate;
+    configuration.expiryDate = expiryDate;
+    *revalidatedConfiguration = configuration;
+    if (![self saveConfiguration:configuration]) {
+        // The server confirmed this config, so it stays usable; only the new expiry is not persisted.
+        return BSGRemoteConfigExpiryUpdateResultWriteFailed;
     }
-    return nil;
+    return BSGRemoteConfigExpiryUpdateResultUpdated;
 }
 
 - (BSGRemoteConfiguration *)loadConfiguration {

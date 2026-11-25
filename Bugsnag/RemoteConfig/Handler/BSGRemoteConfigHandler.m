@@ -169,7 +169,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     @synchronized (self) {
         // Persisted before the request so an attempt interrupted by process death is counted as a failure on next launch.
         self.fetchState.attemptInProgress = YES;
-        [self.store saveFetchState:self.fetchState];
+        [self persistFetchState];
 
         currentTag = self.remoteConfig.configurationTag;
         if (currentTag == nil) {
@@ -213,19 +213,34 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
                     break;
                 case BSGRemoteConfigServiceResponseTypeNotModified: {
                     NSString *configurationTag = response.configurationTag ?: currentTag;
-                    self.remoteConfig = [self.store updateExpiryDate:response.expiryDate
-                                                    configurationTag:configurationTag];
-                    if (self.remoteConfig) {
-                        didSucceed = YES;
-                    } else {
-                        // The cached config no longer matches the server's validator (or is missing),
-                        // so drop it and immediately request a full response once.
-                        bsg_log_debug(@"Unable to revalidate cached remote config");
-                        [self.store clear];
-                        if (currentTag && allowsUnconditionalRetry) {
-                            [self loadRemoteConfigWithCurrentTag:nil allowsUnconditionalRetry:NO];
-                            return;
-                        }
+                    BSGRemoteConfiguration *revalidatedConfiguration = nil;
+                    BSGRemoteConfigExpiryUpdateResult result = [self.store updateExpiryDate:response.expiryDate
+                                                                          configurationTag:configurationTag
+                                                                             configuration:&revalidatedConfiguration];
+                    switch (result) {
+                        case BSGRemoteConfigExpiryUpdateResultUpdated:
+                            self.remoteConfig = revalidatedConfiguration;
+                            didSucceed = YES;
+                            break;
+                        case BSGRemoteConfigExpiryUpdateResultWriteFailed:
+                            // The server confirmed the cached config; only saving its new expiry failed.
+                            // Keep it for this process rather than discarding it and fetching it again.
+                            bsg_log_warn(@"Unable to persist revalidated remote config; it will be used until the app exits");
+                            self.remoteConfig = revalidatedConfiguration;
+                            didSucceed = YES;
+                            break;
+                        case BSGRemoteConfigExpiryUpdateResultMissing:
+                        case BSGRemoteConfigExpiryUpdateResultTagMismatch:
+                            // The cached config no longer matches the server's validator (or is missing),
+                            // so drop it and immediately request a full response once.
+                            bsg_log_debug(@"Unable to revalidate cached remote config");
+                            self.remoteConfig = nil;
+                            [self.store clear];
+                            if (currentTag && allowsUnconditionalRetry) {
+                                [self loadRemoteConfigWithCurrentTag:nil allowsUnconditionalRetry:NO];
+                                return;
+                            }
+                            break;
                     }
                     break;
                 }
@@ -275,12 +290,16 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
 
     if (state.attemptInProgress) {
         // The previous process ended before the attempt's outcome was recorded (e.g. a crash during the fetch).
-        [self recordFetchFailureWithRetryAfter:0];
+        if (![self recordFetchFailureWithRetryAfter:0]) {
+            // The file still says an attempt is in progress, so every launch would count this same attempt
+            // again and start in a cooldown. Remove it; the backoff recorded above still applies to this run.
+            [self.store clearFetchState];
+        }
     } else if (state.nextAllowedFetchAt &&
                [state.nextAllowedFetchAt timeIntervalSinceNow] > BSGRemoteConfigBackoffCap) {
         // Guards against the device clock having been ahead when the cooldown was stored.
         state.nextAllowedFetchAt = [NSDate dateWithTimeIntervalSinceNow:BSGRemoteConfigBackoffCap];
-        [self.store saveFetchState:state];
+        [self persistFetchState];
     }
 }
 
@@ -330,10 +349,14 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     self.fetchState.fetchFailureCount = 0;
     self.fetchState.nextAllowedFetchAt = nil;
     self.fetchState.attemptInProgress = NO;
-    [self.store saveFetchState:self.fetchState];
+    if (![self persistFetchState]) {
+        // Otherwise the file may still say an attempt is in progress, and the next launch would count
+        // this successful fetch as a failure.
+        [self.store clearFetchState];
+    }
 }
 
-- (void)recordFetchFailureWithRetryAfter:(NSTimeInterval)retryAfter {
+- (BOOL)recordFetchFailureWithRetryAfter:(NSTimeInterval)retryAfter {
     NSUInteger failureIndex = self.fetchState.fetchFailureCount;
     double randomFraction = (double)arc4random() / (double)UINT32_MAX;
     NSTimeInterval wait = [[self class] backoffWaitForFailureIndex:failureIndex randomFraction:randomFraction];
@@ -342,14 +365,26 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     self.fetchState.nextAllowedFetchAt = [NSDate dateWithTimeIntervalSinceNow:wait];
     self.fetchState.fetchFailureCount = failureIndex + 1;
     self.fetchState.attemptInProgress = NO;
-    [self.store saveFetchState:self.fetchState];
+    return [self persistFetchState];
 }
 
 // Being offline is not a config service failure, so retry soon without advancing the backoff.
 - (void)recordNetworkUnavailable {
     self.fetchState.nextAllowedFetchAt = [NSDate dateWithTimeIntervalSinceNow:BSGRemoteConfigNetworkUnavailableRetryInterval];
     self.fetchState.attemptInProgress = NO;
-    [self.store saveFetchState:self.fetchState];
+    if (![self persistFetchState]) {
+        // Being offline is not a failure, so do not leave an in-progress attempt for the next launch to count.
+        [self.store clearFetchState];
+    }
+}
+
+// The in-memory fetch state always governs this process; the file only carries it to the next launch.
+- (BOOL)persistFetchState {
+    if ([self.store saveFetchState:self.fetchState]) {
+        return YES;
+    }
+    bsg_log_warn(@"Unable to save remote config retry state; the retry backoff applies until the app exits but will not carry over to the next launch");
+    return NO;
 }
 
 - (void)removeLegacyCooldownPreferences {

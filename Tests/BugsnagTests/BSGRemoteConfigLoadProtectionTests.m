@@ -52,6 +52,10 @@ static NSTimeInterval const Hour = 60 * 60;
 @property (nonatomic, strong) NSDictionary *fetchStateJson;
 @property (nonatomic) BOOL shouldFailSave;
 @property (nonatomic) BOOL shouldFailExpiryUpdate;
+/// Every fetch state write fails, as on a full or read-only disk.
+@property (nonatomic) BOOL shouldFailFetchStateSave;
+/// Only writes that record an outcome fail; the write made before a request succeeds.
+@property (nonatomic) BOOL shouldFailFetchStateSaveAfterAttempt;
 @property (nonatomic) BOOL attemptWasPersistedBeforeRequest;
 @end
 @implementation BSGInMemoryRemoteConfigStore
@@ -64,19 +68,31 @@ static NSTimeInterval const Hour = 60 * 60;
     return configuration;
 }
 - (void)clear { self.configuration = nil; }
-- (BSGRemoteConfiguration *)updateExpiryDate:(NSDate *)expiryDate configurationTag:(NSString *)configurationTag {
+- (BSGRemoteConfigExpiryUpdateResult)updateExpiryDate:(NSDate *)expiryDate
+                                     configurationTag:(NSString *)configurationTag
+                                        configuration:(BSGRemoteConfiguration *__autoreleasing *)revalidatedConfiguration {
+    *revalidatedConfiguration = nil;
+    if (!self.configuration) { return BSGRemoteConfigExpiryUpdateResultMissing; }
+    if (![self.configuration.configurationTag isEqualToString:configurationTag]) { return BSGRemoteConfigExpiryUpdateResultTagMismatch; }
     if (self.shouldFailExpiryUpdate) {
-        return nil;
+        // Like the real store: the stored copy keeps its old expiry, the returned one has the new expiry.
+        BSGRemoteConfiguration *revalidated = [BSGRemoteConfiguration configFromJson:[self.configuration toJson]];
+        revalidated.expiryDate = expiryDate;
+        *revalidatedConfiguration = revalidated;
+        return BSGRemoteConfigExpiryUpdateResultWriteFailed;
     }
-    if (![self.configuration.configurationTag isEqualToString:configurationTag]) { return nil; }
     self.configuration.expiryDate = expiryDate;
-    return self.configuration;
+    *revalidatedConfiguration = self.configuration;
+    return BSGRemoteConfigExpiryUpdateResultUpdated;
 }
 // Stored as JSON so each handler sees a fresh copy, as it would after a restart.
 - (BSGRemoteConfigFetchState *)loadFetchState { return [BSGRemoteConfigFetchState stateFromJson:self.fetchStateJson]; }
 - (BOOL)saveFetchState:(BSGRemoteConfigFetchState *)fetchState {
     if (fetchState.attemptInProgress) {
         self.attemptWasPersistedBeforeRequest = YES;
+    }
+    if (self.shouldFailFetchStateSave || (self.shouldFailFetchStateSaveAfterAttempt && !fetchState.attemptInProgress)) {
+        return NO;
     }
     self.fetchStateJson = [fetchState toJson];
     return YES;
@@ -543,6 +559,90 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertEqual(service.requestCount, 1);
     XCTAssertEqual(store.fetchState.fetchFailureCount, 1);
 }
+- (void)test304WithExpiryWriteFailureKeepsConfigWithoutRetrying {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [BSGRemoteConfiguration configFromJson:@{
+        @"discardRules": @[@{@"matchType": @"ALL"}],
+    } eTag:@"cached-etag" expiryDate:[NSDate dateWithTimeIntervalSinceNow:-1]];
+    store.shouldFailExpiryUpdate = YES;
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeNotModified);
+    response.configurationTag = @"cached-etag";
+    response.expiryDate = [NSDate dateWithTimeIntervalSinceNow:Hour];
+    service.response = response;
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    BSGRemoteConfiguration *configuration = [handler currentConfiguration];
+    XCTAssertEqualObjects(configuration.discardRules.firstObject.matchType, @"ALL");
+    XCTAssertEqualObjects(configuration.expiryDate, response.expiryDate);
+    XCTAssertTrue([handler hasValidConfig]);
+    // Only one request, and the cached config on disk is kept rather than cleared.
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertNotNil(store.configuration);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    XCTAssertNil(store.fetchState.nextAllowedFetchAt);
+}
+
+#pragma mark - Fetch state write failures
+
+- (void)testBackoffStillAppliesInMemoryWhenFetchStateCannotBeSaved {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.shouldFailFetchStateSave = YES;
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    XCTAssertNil([handler currentConfiguration]);
+    XCTAssertNil([handler currentConfiguration]);
+    XCTAssertNil([handler currentConfiguration]);
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertNil(store.fetchStateJson);
+}
+- (void)testInterruptedAttemptIsNotCountedAgainWhenFailureCannotBeSaved {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    [store setFetchStateWithAppVersion:@"1.0" failureCount:3 nextAllowedFetchAt:nil attemptInProgress:YES];
+    store.shouldFailFetchStateSave = YES;
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    [handler currentConfiguration];
+    // The interrupted attempt still starts a cooldown for this run...
+    XCTAssertEqual(service.requestCount, 0);
+    // ...but the stale file is removed, so the next launch does not count the same attempt again.
+    XCTAssertNil(store.fetchStateJson);
+}
+- (void)testSuccessThatCannotBeSavedIsNotCountedAsFailureOnNextLaunch {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    [store setFetchStateWithAppVersion:@"1.0" failureCount:2 nextAllowedFetchAt:[NSDate dateWithTimeIntervalSinceNow:-1] attemptInProgress:NO];
+    store.shouldFailFetchStateSaveAfterAttempt = YES;
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeSuccess);
+    response.configuration = [BSGRemoteConfiguration configFromJson:@{} eTag:@"etag" expiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour]];
+    service.response = response;
+
+    XCTAssertNotNil([[self enabledHandlerWithService:service store:store] currentConfiguration]);
+    XCTAssertTrue(store.attemptWasPersistedBeforeRequest);
+    // The file that said an attempt was in progress is removed instead of being left behind.
+    XCTAssertNil(store.fetchStateJson);
+
+    // Next launch: no failure is counted and no cooldown applies.
+    store.configuration = nil;
+    store.shouldFailFetchStateSaveAfterAttempt = NO;
+    [[self enabledHandlerWithService:service store:store] currentConfiguration];
+    XCTAssertEqual(service.requestCount, 2);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+}
+- (void)testOfflineResultThatCannotBeSavedIsNotCountedAsFailureOnNextLaunch {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.shouldFailFetchStateSaveAfterAttempt = YES;
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+    response.networkUnavailable = YES;
+    service.response = response;
+
+    [[self enabledHandlerWithService:service store:store] currentConfiguration];
+    XCTAssertNil(store.fetchStateJson);
+}
 
 #pragma mark - Network unavailable
 
@@ -799,6 +899,39 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     [self.store clearFetchState];
     XCTAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:[BSGFileLocations current].remoteConfigFetchState]);
     XCTAssertNil([self.store loadFetchState]);
+}
+- (BSGRemoteConfiguration *)cachedConfigWithTag:(NSString *)tag {
+    BSGRemoteConfiguration *configuration = [BSGRemoteConfiguration configFromJson:@{
+        @"discardRules": @[@{@"matchType": @"ALL"}],
+    } eTag:tag expiryDate:[NSDate dateWithTimeIntervalSinceNow:-60]];
+    XCTAssertNotNil([self.store saveConfiguration:configuration]);
+    return configuration;
+}
+- (void)testExpiryUpdateWithMatchingTagIsSaved {
+    [self cachedConfigWithTag:@"\"v1\""];
+    NSDate *expiry = [NSDate dateWithTimeIntervalSinceNow:Hour];
+    BSGRemoteConfiguration *revalidated = nil;
+    // A weak validator for the same tag still matches.
+    XCTAssertEqual([self.store updateExpiryDate:expiry configurationTag:@"W/\"v1\"" configuration:&revalidated],
+                   BSGRemoteConfigExpiryUpdateResultUpdated);
+    XCTAssertEqualWithAccuracy(revalidated.expiryDate.timeIntervalSince1970, expiry.timeIntervalSince1970, 0.01);
+    XCTAssertEqualWithAccuracy([self.store loadConfiguration].expiryDate.timeIntervalSince1970, expiry.timeIntervalSince1970, 0.01);
+    [self.store clear];
+}
+- (void)testExpiryUpdateWithDifferentTagIsAMismatch {
+    [self cachedConfigWithTag:@"\"v1\""];
+    BSGRemoteConfiguration *revalidated = nil;
+    XCTAssertEqual([self.store updateExpiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour] configurationTag:@"\"v2\"" configuration:&revalidated],
+                   BSGRemoteConfigExpiryUpdateResultTagMismatch);
+    XCTAssertNil(revalidated);
+    [self.store clear];
+}
+- (void)testExpiryUpdateWithoutCachedConfigIsMissing {
+    [self.store clear];
+    BSGRemoteConfiguration *revalidated = nil;
+    XCTAssertEqual([self.store updateExpiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour] configurationTag:@"\"v1\"" configuration:&revalidated],
+                   BSGRemoteConfigExpiryUpdateResultMissing);
+    XCTAssertNil(revalidated);
 }
 - (void)testCorruptFetchStateFileIsIgnored {
     [[@"not json" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:[BSGFileLocations current].remoteConfigFetchState
