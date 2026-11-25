@@ -48,6 +48,7 @@ static const size_t ActiveOffset = 16;
 @property (nonatomic) uint64_t slotCapacity;
 @property (nonatomic, strong) NSArray<NSString *> *pendingLegacyPaths;
 @property (nonatomic) NSTimeInterval compactionRetryTime;
+@property (nonatomic) NSTimeInterval compactionRetryDelay;
 @property (nonatomic) BOOL directoryAtFilePath;
 - (BOOL)hasPendingWork;
 - (void)protectedDataDidBecomeAvailable;
@@ -2313,6 +2314,41 @@ static void BSGGrowStore(BSGPersistentFeatureFlagStore *store, NSString *prefix,
     }));
     XCTAssertEqual(scheduler.delays.count, 1u);
     XCTAssertEqualWithAccuracy(scheduler.delays.firstObject.doubleValue, store.retryInterval, 1);
+}
+
+- (void)testRepeatedCompactionFailuresBackOff {
+    BSGPersistentFeatureFlagStore *store = [self newStore];
+    BSGManualRetryScheduler *scheduler = [BSGManualRetryScheduler new];
+    [scheduler attachToStore:store];
+    store.retryInterval = 100;
+    [store addFeatureFlag:@"a" withVariant:@"1"];
+    XCTAssertEqual([self activeValue] & 1, 0);
+    const uint32_t slotCapacity = [self headerFieldAtOffset:SlotCapacityOffset];
+    if (slotCapacity < 4096 + 1024) {
+        XCTSkip(@"The file's slots (%u bytes) fill up before the log would be compacted", slotCapacity);
+    }
+
+    // Slot 1 is past the limit, so every compaction fails; each failure doubles the delay before the next attempt
+    XCTAssertTrue(BSGWithFileSizeLimit(HeaderSize + slotCapacity, ^{
+        for (int i = 0; i < 1000 && store.compactionRetryDelay == 0; i++) {
+            [store addFeatureFlag:@"a" withVariant:[NSString stringWithFormat:@"%d", i]];
+        }
+        XCTAssertEqual(store.compactionRetryDelay, 100);
+        store.compactionRetryTime = 0;
+        [store addFeatureFlag:@"a" withVariant:@"x"];
+        XCTAssertEqual(store.compactionRetryDelay, 200);
+        store.compactionRetryTime = 0;
+        [store addFeatureFlag:@"a" withVariant:@"y"];
+        XCTAssertEqual(store.compactionRetryDelay, 400);
+    }));
+    XCTAssertEqualObjects(scheduler.delays, @[], @"Failed compactions schedule no retries");
+
+    // A compaction that succeeds resets the delay
+    store.compactionRetryTime = 0;
+    [store addFeatureFlag:@"a" withVariant:@"z"];
+    XCTAssertEqual([self activeValue] & 1, 1, @"The log should have been compacted into slot 1");
+    XCTAssertEqual(store.compactionRetryDelay, 0);
+    XCTAssertEqualObjects([self reopenedFlags], (@[@[@"a", @"z"]]));
 }
 
 - (void)testHeaderWriteFailureDeletesTheFile {
