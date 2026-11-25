@@ -330,7 +330,12 @@ static void BSGApplyFileBackupSupportToCrashGeneratedFiles(BSGFileLocations *fil
     [self.metadata setStorageBuffer:&bsg_g_bugsnag_data.metadataJSON file:BSGFileLocations.current.metadata];
     [self.state setStorageBuffer:&bsg_g_bugsnag_data.stateJSON file:BSGFileLocations.current.state];
     [self.breadcrumbStore removeAllBreadcrumbs];
-    [self.featureFlagStore synchronizeFlagsWithMemoryStore];
+    // Under the lock that every feature flag method takes, so that a flag added or cleared on another thread can't land
+    // between reading the memory store and replacing the crash-time and persistent stores' flags. Such a call waits
+    // until both stores have the flags.
+    @synchronized (self.featureFlagStore) {
+        [self.featureFlagStore synchronizeFlagsWithMemoryStore];
+    }
 
 #if BSG_HAVE_REACHABILITY
     [self setupConnectivityListener];

@@ -28,4 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 void BugsnagFeatureFlagsWriteCrashReport(const BSG_KSCrashReportWriter * _Nonnull writer,
                                          bool requiresAsyncSafety);
+
+#if defined(DEBUG) && DEBUG
+/// For unit tests: the number of items unlinked from the list but not yet freed, as a crash-time reader may be on them.
+size_t BSGAtomicFeatureFlagStoreRetiredItemCount(void);
+#endif
 NS_ASSUME_NONNULL_END
