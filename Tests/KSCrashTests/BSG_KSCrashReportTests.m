@@ -78,6 +78,10 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
 }
 
 - (void)checkReportRetainsImagesAfterUnmapping:(uint32_t)count {
+    // Own the image cache for this test, so lookups left running by earlier tests don't use the fake dyld info below
+    bsg_test_support_mach_headers_reset();
+    // Also on an early return: otherwise this thread would stay the only one allowed to initialize
+    [self addTeardownBlock:^{ bsg_test_support_mach_headers_end_test(); }];
     bsg_mach_headers_initialize();
     vm_address_t mapping = 0;
     vm_size_t size = (vm_size_t)count * vm_page_size;
@@ -141,8 +145,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     writer.endContainer(&writer);
     bsg_ksjsonendEncode(&json);
     if (fixture.mapping) vm_deallocate(mach_task_self(), fixture.mapping, size);
-    bsg_test_support_mach_headers_reset();
-    bsg_mach_headers_initialize();
+    // Back to the real image cache (rebuilt before any other thread may initialize it)
+    bsg_test_support_mach_headers_end_test();
 
     XCTAssertEqual(fixture.unmapResult, KERN_SUCCESS);
     NSDictionary *report = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
@@ -192,6 +196,10 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     struct dyld_all_image_infos info = {0};
     NSMutableDictionary *expectedUUIDs = [NSMutableDictionary dictionary];
     if (unavailable) {
+        // Own the image cache for this test, so lookups left running by earlier tests don't use the fake dyld info below
+        bsg_test_support_mach_headers_reset();
+        // Also on an early return: otherwise this thread would stay the only one allowed to initialize
+        [self addTeardownBlock:^{ bsg_test_support_mach_headers_end_test(); }];
         // Use startup-cached images. NSLog's image is not necessarily in the
         // dyld shared cache on Simulator, so looking it up need not retain it.
         BSG_Mach_Header_Info mainImage;
@@ -248,8 +256,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     context->crash.allThreadsCount = 0;
 #endif
     if (unavailable) {
-        bsg_test_support_mach_headers_reset();
-        bsg_mach_headers_initialize();
+        // Back to the real image cache (rebuilt before any other thread may initialize it)
+        bsg_test_support_mach_headers_end_test();
     }
     
     NSDictionary *report = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:crashReportFilePath] options:0 error:nil];
@@ -292,7 +300,7 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     
     // Make a fake stack trace with addresses from a library (Foundation) that will generate a non-trivial symbolication workload.
     
-    const int numFrames = 500;
+    enum { numFrames = 500 };
     uintptr_t stackTrace[numFrames];
     for (int i = 0; i < numFrames; i++) {
         stackTrace[i] = (uintptr_t)NSLog;
