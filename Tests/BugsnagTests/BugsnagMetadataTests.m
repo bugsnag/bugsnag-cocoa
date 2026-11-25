@@ -398,7 +398,7 @@
     
     __block BOOL isFinished = NO;
     
-    const int threadCount = 6;
+    enum { threadCount = 6 };
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     queue.name = @"com.bugsnag.testMetadataStorageBuffer";
     queue.maxConcurrentOperationCount = threadCount;

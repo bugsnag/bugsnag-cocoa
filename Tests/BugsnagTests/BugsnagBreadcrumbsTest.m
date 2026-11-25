@@ -483,7 +483,7 @@ static void * executeBlock(void *ptr) {
     
     __block BOOL isFinished = NO;
     
-    const int threadCount = 6;
+    enum { threadCount = 6 };
     pthread_t threads[threadCount] = {0};
     thread_t machThreads[threadCount] = {0};
     for (int i = 0; i < threadCount; i++) {

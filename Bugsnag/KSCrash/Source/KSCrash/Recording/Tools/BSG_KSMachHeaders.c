@@ -16,7 +16,10 @@
 #include <mach-o/dyld.h>
 #include <mach-o/dyld_images.h>
 #include <os/trace.h>
+#include <pthread.h>
+#include <sched.h>
 #include <stdatomic.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -59,6 +62,11 @@ static BSG_Mach_Header_Info g_shared_images[BSG_SHARED_IMAGE_CACHE_CAPACITY];
 static uint32_t g_shared_image_count;
 static atomic_flag g_shared_images_busy = ATOMIC_FLAG_INIT;
 static void (*g_initialization_hook)(void); // Test-only, set before initialization.
+// Test-only: while set, only this thread may initialize (see bsg_test_support_mach_headers_reset). Always 0 in
+// production, where the reset is never called.
+static _Atomic(uintptr_t) g_test_owner_thread;
+// Test-only: true while the owner thread itself initializes (see claim_initialization). Always false in production.
+static _Atomic(bool) g_owner_initializing;
 static void (*g_get_images_hook)(int attempt, int stage); // Test-only, see get_images().
 
 
@@ -76,7 +84,7 @@ static bool copy_cached_image(const BSG_Mach_Image_Node *node,
                               BSG_Mach_Header_Info *image);
 static bool cache_image(const BSG_Mach_Header_Info *image,
                         BSG_Mach_Image_Node **slot);
-static void clear_cached_images(void);
+static void forget_cached_images(void);
 static bool cache_image_for_header(const struct mach_header *header,
                                    const char *name,
                                    BSG_Mach_Image_Node **slot);
@@ -149,8 +157,9 @@ static const BSG_Dyld_Image_Info *get_images(uint32_t *count) {
         // attempt's reads, stage 1 after the array/count reads but before
         // the closing timestamp read, so a test can change dyld's struct at
         // exactly the points a real concurrent update could.
-        if (g_get_images_hook != NULL) {
-            g_get_images_hook(attempt, 0);
+        void (*hook)(int, int) = g_get_images_hook;
+        if (hook != NULL) {
+            hook(attempt, 0);
         }
         bool stable =
             bsg_image_read(&g_all_image_infos->infoArrayChangeTimestamp, &timestampBefore, sizeof(timestampBefore)) &&
@@ -159,8 +168,8 @@ static const BSG_Dyld_Image_Info *get_images(uint32_t *count) {
             bsg_image_read(&g_all_image_infos->infoArrayCount, &imageCount, sizeof(imageCount)) &&
             bsg_image_read(&g_all_image_infos->infoArray, &confirmedImages, sizeof(confirmedImages)) &&
             images == confirmedImages;
-        if (g_get_images_hook != NULL) {
-            g_get_images_hook(attempt, 1);
+        if (hook != NULL) {
+            hook(attempt, 1);
         }
         stable = stable &&
             bsg_image_read(&g_all_image_infos->infoArrayChangeTimestamp, &timestampAfter, sizeof(timestampAfter)) &&
@@ -192,21 +201,65 @@ bool bsg_mach_headers_ready(void) {
            BSGImagesReady;
 }
 
+// Test-only: the owner of the cache in a unit test (0 in production, where nothing owns it).
+static uintptr_t test_owner(void) {
+    return atomic_load(&g_test_owner_thread);
+}
+
+// Claims initialization for this thread, or returns false if it must not initialize now.
+static bool claim_initialization(void) {
+    // Bounded, and only in unit tests: see the owner's wait below
+    for (int i = 0; i < 1000000; i++) {
+        const int state = atomic_load_explicit(&g_initialization_state, memory_order_acquire);
+        const uintptr_t owner = test_owner();
+        const bool isOwner = owner != 0 && owner == (uintptr_t)pthread_self();
+        if (state == BSGImagesInitializing && isOwner && !atomic_load(&g_owner_initializing)) {
+            // Test-only: a leftover thread claimed initialization and is about to back out (see below). Wait for it
+            // rather than report "not ready" to the test. Never when the owner itself is initializing, where a
+            // nested lookup must fail at once.
+            sched_yield();
+            continue;
+        }
+        if (state != BSGImagesUninitialized) {
+            // A crash can interrupt initialization. Waiting here would deadlock.
+            return false;
+        }
+        if (owner != 0 && !isOwner) {
+            // A unit test owns the cache: a lookup left running by an earlier test must not initialize it with real
+            // data or run the test's hook on another thread
+            return false;
+        }
+        int expected = BSGImagesUninitialized;
+        if (!atomic_compare_exchange_strong(&g_initialization_state, &expected, BSGImagesInitializing)) {
+            continue; // Another thread got there first: check the new state
+        }
+        // Check again: a test's reset may have set the owner after the check above. The reset stores the owner before
+        // it reads the state, and this thread claims the state before it reads the owner (all sequentially
+        // consistent), so either the reset sees Initializing and waits for this thread, or this thread sees the owner
+        // and backs out. Backing out only undoes this thread's claim: the test side never overwrites a claim (see
+        // test_set_initialization_state), so nothing else can have replaced it.
+        const uintptr_t ownerNow = test_owner();
+        if (ownerNow != 0 && ownerNow != (uintptr_t)pthread_self()) {
+            int claimed = BSGImagesInitializing;
+            atomic_compare_exchange_strong(&g_initialization_state, &claimed, BSGImagesUninitialized);
+            return false;
+        }
+        atomic_store(&g_owner_initializing, ownerNow != 0);
+        return true;
+    }
+    return false;
+}
+
 void bsg_mach_headers_initialize(void) {
-    if (atomic_load_explicit(&g_initialization_state, memory_order_acquire) !=
-        BSGImagesUninitialized) {
+    if (!claim_initialization()) {
         return;
     }
-    int expected = BSGImagesUninitialized;
-    if (!atomic_compare_exchange_strong(&g_initialization_state, &expected,
-                                        BSGImagesInitializing)) {
-        // A crash can interrupt initialization. Waiting here would deadlock.
-        return;
-    }
-    if (g_initialization_hook != NULL) {
-        g_initialization_hook();
+    void (*hook)(void) = g_initialization_hook;
+    if (hook != NULL) {
+        hook();
     }
     register_dyld_images();
+    atomic_store(&g_owner_initializing, false);
     atomic_store_explicit(&g_initialization_state,
                           g_all_image_infos ? BSGImagesReady : BSGImagesUninitialized,
                           memory_order_release);
@@ -821,19 +874,83 @@ bool bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *image,
     return bsg_image_read_string((const char *)(uintptr_t)annotation.message, message, capacity);
 }
 
+// Test-only. Carrying on would race the other thread and could corrupt the cache, so stop the test run with a clear
+// message instead.
+static void test_reset_timed_out(const char *what) {
+    fprintf(stderr, "bsg_test_support_mach_headers: timed out waiting for %s on another thread\n", what);
+    abort();
+}
+
+// Test-only. A lookup holds one of these flags for a few microseconds. Wait for
+// it (bounded, so a flag left set cannot hang a test run) before freeing what it
+// reads.
+static void acquire_for_test_reset(atomic_flag *flag, const char *what) {
+    for (int i = 0; i < 1000000; i++) {
+        if (!atomic_flag_test_and_set_explicit(flag, memory_order_acquire)) {
+            return;
+        }
+        sched_yield();
+    }
+    test_reset_timed_out(what);
+}
+
+// Test-only. Sets the initialization state, but never over another thread's claim: a leftover lookup that claimed
+// Initializing gives it back itself (see claim_initialization), and overwriting it would let that back-out later undo
+// a claim this thread makes. Not for use while this thread initializes.
+static void test_set_initialization_state(int newState) {
+    for (int i = 0;; i++) {
+        int state = atomic_load(&g_initialization_state);
+        if (state != BSGImagesInitializing) {
+            if (atomic_compare_exchange_strong(&g_initialization_state, &state, newState)) {
+                return;
+            }
+            continue; // Changed meanwhile: check again
+        }
+        if (i == 1000000) {
+            test_reset_timed_out("image cache initialization");
+        }
+        sched_yield();
+    }
+}
+
 // Test hooks require quiescent readers; never reset the cache in production.
+// A test cannot always guarantee that: event uploads started by earlier tests
+// can still be symbolicating on other threads. So the reset waits for a lookup
+// that is using the snapshot or the shared-image cache, and does not free the
+// startup cache nodes, which a lookup may still be walking.
 void bsg_test_support_mach_headers_reset(void) {
-    clear_cached_images();
+    // From now on only this thread initializes, so a lookup on another thread can't initialize again after the reset
+    // (see bsg_mach_headers_initialize). bsg_test_support_mach_headers_end_test() lifts this.
+    atomic_store(&g_test_owner_thread, (uintptr_t)pthread_self());
+    for (int i = 0; atomic_load(&g_initialization_state) == BSGImagesInitializing; i++) {
+        if (i == 1000000) {
+            test_reset_timed_out("image cache initialization");
+        }
+        sched_yield();
+    }
+    acquire_for_test_reset(&g_image_snapshot_busy, "an image snapshot lookup");
+    acquire_for_test_reset(&g_shared_images_busy, "a shared image lookup");
+    forget_cached_images();
     g_all_image_infos = NULL;
     g_shared_image_count = 0;
-    atomic_flag_clear(&g_shared_images_busy);
     g_initialization_hook = NULL;
     g_get_images_hook = NULL;
     snapshot_free(g_image_snapshot);
     g_image_snapshot = NULL;
     g_image_snapshot_failed = false;
-    atomic_flag_clear(&g_image_snapshot_busy);
-    atomic_store(&g_initialization_state, BSGImagesUninitialized);
+    atomic_flag_clear_explicit(&g_shared_images_busy, memory_order_release);
+    atomic_flag_clear_explicit(&g_image_snapshot_busy, memory_order_release);
+    atomic_store(&g_owner_initializing, false);
+    test_set_initialization_state(BSGImagesUninitialized);
+}
+
+void bsg_test_support_mach_headers_end_test(void) {
+    bsg_test_support_mach_headers_reset();
+    // Rebuild the real image cache while this thread is still the owner, so a leftover lookup can't start initializing
+    // first and leave the cache not ready when the next test runs
+    bsg_mach_headers_initialize();
+    // Back to normal: any thread may initialize again, as other tests expect
+    atomic_store(&g_test_owner_thread, 0);
 }
 
 uint32_t bsg_test_support_mach_headers_cached_image_count(void) {
@@ -850,7 +967,7 @@ void bsg_test_support_mach_headers_set_get_images_hook(void (*hook)(int attempt,
 
 void bsg_test_support_mach_headers_set_dyld_info(const struct dyld_all_image_infos *info) {
     g_all_image_infos = info;
-    atomic_store(&g_initialization_state, BSGImagesReady);
+    test_set_initialization_state(BSGImagesReady);
 }
 
 static void register_dyld_images(void) {
@@ -971,9 +1088,14 @@ static bool image_contains_address(const BSG_Mach_Header_Info *image,
     return address >= imageStart && address - imageStart < image->imageSize;
 }
 
+// Pairs with the release stores in cache_image(), for lookups on threads other than the one adding images.
+static BSG_Mach_Image_Node *load_list_link(BSG_Mach_Image_Node *const *link) {
+    return __atomic_load_n(link, __ATOMIC_ACQUIRE);
+}
+
 static BSG_Mach_Image_Node *find_cached_image_at_address(uintptr_t address) {
-    for (BSG_Mach_Image_Node *node = g_cached_images_head; node != NULL;
-         node = node->next) {
+    for (BSG_Mach_Image_Node *node = load_list_link(&g_cached_images_head); node != NULL;
+         node = load_list_link(&node->next)) {
         if (image_contains_address(&node->info, address)) {
             return node;
         }
@@ -983,8 +1105,8 @@ static BSG_Mach_Image_Node *find_cached_image_at_address(uintptr_t address) {
 
 static BSG_Mach_Image_Node *find_cached_image_named(const char *imageName,
                                                     bool exactMatch) {
-    for (BSG_Mach_Image_Node *node = g_cached_images_head; node != NULL;
-         node = node->next) {
+    for (BSG_Mach_Image_Node *node = load_list_link(&g_cached_images_head); node != NULL;
+         node = load_list_link(&node->next)) {
         const char *candidate = node->info.name;
         if (candidate == NULL) {
             continue;
@@ -1032,10 +1154,11 @@ static bool cache_image(const BSG_Mach_Header_Info *image,
     }
 
     bsg_mach_headers_copy_image(&node->info, image);
+    // Release: a lookup on another thread that sees this node also sees its contents
     if (g_cached_images_tail != NULL) {
-        g_cached_images_tail->next = node;
+        __atomic_store_n(&g_cached_images_tail->next, node, __ATOMIC_RELEASE);
     } else {
-        g_cached_images_head = node;
+        __atomic_store_n(&g_cached_images_head, node, __ATOMIC_RELEASE);
     }
     g_cached_images_tail = node;
     atomic_fetch_add(&g_cached_image_count, 1);
@@ -1060,13 +1183,9 @@ static bool cache_image_for_header(const struct mach_header *header,
     return cache_image(&image, slot);
 }
 
-static void clear_cached_images(void) {
-    BSG_Mach_Image_Node *node = g_cached_images_head;
-    while (node != NULL) {
-        BSG_Mach_Image_Node *next = node->next;
-        free(node);
-        node = next;
-    }
+// Test-only (see bsg_test_support_mach_headers_reset). The nodes are left
+// allocated: a few KB per reset, and only unit tests reset the cache.
+static void forget_cached_images(void) {
     g_cached_images_head = NULL;
     g_cached_images_tail = NULL;
     g_main_image = NULL;

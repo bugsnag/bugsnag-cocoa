@@ -65,3 +65,6 @@ docker-compose.override.yml
 *.bak
 
 database/*.sqlite
+
+# macOS E2E fixture output (features/steps/app_steps.rb), uploaded by CI
+macOSTestApp.stderr.log
