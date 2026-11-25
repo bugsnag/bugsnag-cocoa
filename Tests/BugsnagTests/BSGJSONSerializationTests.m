@@ -262,9 +262,9 @@
     }
 }
 
-#if !TARGET_OS_OSX && !TARGET_OS_TV
-// From excluded to included after an atomic write. Not on macOS (see above), where the SDK can't rely on the included
-// state lasting.
+#if !TARGET_OS_OSX && !TARGET_OS_TV && !TARGET_OS_MACCATALYST
+// From excluded to included after an atomic write. Not on macOS or Mac Catalyst, which uses the macOS file system (see
+// above), where the SDK can't rely on the included state lasting.
 - (void)testWriteDataRestoresBackupSupportAfterAtomicReplacement {
     NSString *file = [self newTemporaryPath];
 

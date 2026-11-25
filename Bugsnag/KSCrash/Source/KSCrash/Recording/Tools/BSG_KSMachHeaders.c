@@ -214,6 +214,14 @@ void bsg_mach_headers_initialize(void) {
         // A crash can interrupt initialization. Waiting here would deadlock.
         return;
     }
+    // Check again: a test's reset may have set the owner after the check above. The reset stores the owner before it
+    // reads the state, and this thread claims the state before it reads the owner (all sequentially consistent), so
+    // either the reset sees Initializing and waits for this thread, or this thread sees the owner and backs out.
+    const uintptr_t ownerNow = atomic_load(&g_test_owner_thread);
+    if (ownerNow != 0 && ownerNow != (uintptr_t)pthread_self()) {
+        atomic_store(&g_initialization_state, BSGImagesUninitialized);
+        return;
+    }
     if (g_initialization_hook != NULL) {
         g_initialization_hook();
     }

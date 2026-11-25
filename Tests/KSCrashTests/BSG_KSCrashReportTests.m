@@ -141,7 +141,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     writer.endContainer(&writer);
     bsg_ksjsonendEncode(&json);
     if (fixture.mapping) vm_deallocate(mach_task_self(), fixture.mapping, size);
-    bsg_test_support_mach_headers_reset();
+    // Back to the real image cache, and let any thread initialize it again
+    bsg_test_support_mach_headers_end_test();
     bsg_mach_headers_initialize();
 
     XCTAssertEqual(fixture.unmapResult, KERN_SUCCESS);
@@ -248,7 +249,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     context->crash.allThreadsCount = 0;
 #endif
     if (unavailable) {
-        bsg_test_support_mach_headers_reset();
+        // Back to the real image cache, and let any thread initialize it again
+        bsg_test_support_mach_headers_end_test();
         bsg_mach_headers_initialize();
     }
     
