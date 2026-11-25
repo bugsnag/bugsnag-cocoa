@@ -80,6 +80,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
 - (void)checkReportRetainsImagesAfterUnmapping:(uint32_t)count {
     // Own the image cache for this test, so lookups left running by earlier tests don't use the fake dyld info below
     bsg_test_support_mach_headers_reset();
+    // Also on an early return: otherwise this thread would stay the only one allowed to initialize
+    [self addTeardownBlock:^{ bsg_test_support_mach_headers_end_test(); }];
     bsg_mach_headers_initialize();
     vm_address_t mapping = 0;
     vm_size_t size = (vm_size_t)count * vm_page_size;
@@ -196,6 +198,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     if (unavailable) {
         // Own the image cache for this test, so lookups left running by earlier tests don't use the fake dyld info below
         bsg_test_support_mach_headers_reset();
+        // Also on an early return: otherwise this thread would stay the only one allowed to initialize
+        [self addTeardownBlock:^{ bsg_test_support_mach_headers_end_test(); }];
         // Use startup-cached images. NSLog's image is not necessarily in the
         // dyld shared cache on Simulator, so looking it up need not retain it.
         BSG_Mach_Header_Info mainImage;

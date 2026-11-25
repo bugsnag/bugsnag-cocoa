@@ -236,7 +236,8 @@ static bool claim_initialization(void) {
         // Check again: a test's reset may have set the owner after the check above. The reset stores the owner before
         // it reads the state, and this thread claims the state before it reads the owner (all sequentially
         // consistent), so either the reset sees Initializing and waits for this thread, or this thread sees the owner
-        // and backs out. Backing out only undoes this thread's claim, never a state a test has set since.
+        // and backs out. Backing out only undoes this thread's claim: the test side never overwrites a claim (see
+        // test_set_initialization_state), so nothing else can have replaced it.
         const uintptr_t ownerNow = test_owner();
         if (ownerNow != 0 && ownerNow != (uintptr_t)pthread_self()) {
             int claimed = BSGImagesInitializing;
@@ -876,7 +877,7 @@ bool bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *image,
 // Test-only. Carrying on would race the other thread and could corrupt the cache, so stop the test run with a clear
 // message instead.
 static void test_reset_timed_out(const char *what) {
-    fprintf(stderr, "bsg_test_support_mach_headers_reset: timed out waiting for %s on another thread\n", what);
+    fprintf(stderr, "bsg_test_support_mach_headers: timed out waiting for %s on another thread\n", what);
     abort();
 }
 
@@ -891,6 +892,25 @@ static void acquire_for_test_reset(atomic_flag *flag, const char *what) {
         sched_yield();
     }
     test_reset_timed_out(what);
+}
+
+// Test-only. Sets the initialization state, but never over another thread's claim: a leftover lookup that claimed
+// Initializing gives it back itself (see claim_initialization), and overwriting it would let that back-out later undo
+// a claim this thread makes. Not for use while this thread initializes.
+static void test_set_initialization_state(int newState) {
+    for (int i = 0;; i++) {
+        int state = atomic_load(&g_initialization_state);
+        if (state != BSGImagesInitializing) {
+            if (atomic_compare_exchange_strong(&g_initialization_state, &state, newState)) {
+                return;
+            }
+            continue; // Changed meanwhile: check again
+        }
+        if (i == 1000000) {
+            test_reset_timed_out("image cache initialization");
+        }
+        sched_yield();
+    }
 }
 
 // Test hooks require quiescent readers; never reset the cache in production.
@@ -921,7 +941,7 @@ void bsg_test_support_mach_headers_reset(void) {
     atomic_flag_clear_explicit(&g_shared_images_busy, memory_order_release);
     atomic_flag_clear_explicit(&g_image_snapshot_busy, memory_order_release);
     atomic_store(&g_owner_initializing, false);
-    atomic_store(&g_initialization_state, BSGImagesUninitialized);
+    test_set_initialization_state(BSGImagesUninitialized);
 }
 
 void bsg_test_support_mach_headers_end_test(void) {
@@ -947,7 +967,7 @@ void bsg_test_support_mach_headers_set_get_images_hook(void (*hook)(int attempt,
 
 void bsg_test_support_mach_headers_set_dyld_info(const struct dyld_all_image_infos *info) {
     g_all_image_infos = info;
-    atomic_store(&g_initialization_state, BSGImagesReady);
+    test_set_initialization_state(BSGImagesReady);
 }
 
 static void register_dyld_images(void) {
