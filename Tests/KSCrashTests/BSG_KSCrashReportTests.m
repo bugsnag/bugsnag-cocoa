@@ -141,9 +141,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     writer.endContainer(&writer);
     bsg_ksjsonendEncode(&json);
     if (fixture.mapping) vm_deallocate(mach_task_self(), fixture.mapping, size);
-    // Back to the real image cache, and let any thread initialize it again
+    // Back to the real image cache (rebuilt before any other thread may initialize it)
     bsg_test_support_mach_headers_end_test();
-    bsg_mach_headers_initialize();
 
     XCTAssertEqual(fixture.unmapResult, KERN_SUCCESS);
     NSDictionary *report = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
@@ -249,9 +248,8 @@ static void beginFixtureArray(const BSG_KSCrashReportWriter *writer, const char 
     context->crash.allThreadsCount = 0;
 #endif
     if (unavailable) {
-        // Back to the real image cache, and let any thread initialize it again
+        // Back to the real image cache (rebuilt before any other thread may initialize it)
         bsg_test_support_mach_headers_end_test();
-        bsg_mach_headers_initialize();
     }
     
     NSDictionary *report = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:crashReportFilePath] options:0 error:nil];

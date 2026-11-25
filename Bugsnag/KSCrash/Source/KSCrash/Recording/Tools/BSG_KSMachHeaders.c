@@ -891,7 +891,10 @@ void bsg_test_support_mach_headers_reset(void) {
 
 void bsg_test_support_mach_headers_end_test(void) {
     bsg_test_support_mach_headers_reset();
-    // Back to normal: any thread initializes again, as other tests expect
+    // Rebuild the real image cache while this thread is still the owner, so a leftover lookup can't start initializing
+    // first and leave the cache not ready when the next test runs
+    bsg_mach_headers_initialize();
+    // Back to normal: any thread may initialize again, as other tests expect
     atomic_store(&g_test_owner_thread, 0);
 }
 

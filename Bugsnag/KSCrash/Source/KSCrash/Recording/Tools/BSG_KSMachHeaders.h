@@ -141,7 +141,8 @@ bool bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *image,
  *  initializes it. */
 void bsg_test_support_mach_headers_reset(void);
 
-/** Reset Mach header data at the end of a unit test, and let any thread initialize it again. */
+/** Reset Mach header data at the end of a unit test, rebuild it from the real images on the calling thread, then let
+ *  any thread initialize it again. */
 void bsg_test_support_mach_headers_end_test(void);
 
 /** Return the number of startup images cached, excluding the shared-image cache. */
