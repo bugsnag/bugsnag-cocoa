@@ -848,13 +848,18 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
 @implementation BSGRemoteConfigServiceTests
 
 - (BSGRemoteConfigServiceResponse *)responseForSession:(BSGRemoteConfigSessionMock *)session tag:(NSString *)tag {
+    return [self responseForSession:session tag:tag device:[BugsnagDevice new]];
+}
+- (BSGRemoteConfigServiceResponse *)responseForSession:(BSGRemoteConfigSessionMock *)session
+                                                   tag:(NSString *)tag
+                                                device:(BugsnagDevice *)device {
     BSGTestRemoteConfigConfiguration *configuration =
         [[BSGTestRemoteConfigConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
     configuration.testConfigurationURL = [NSURL URLWithString:@"https://example.com/config"];
     BSGRemoteConfigService *service = [BSGRemoteConfigService serviceWithSession:(NSURLSession *)session
                                                                    configuration:configuration
                                                                         notifier:[BugsnagNotifier new]
-                                                                          device:[BugsnagDevice new]
+                                                                          device:device
                                                                              app:[BugsnagApp new]];
     __block BSGRemoteConfigServiceResponse *result = nil;
     [service loadRemoteConfigWithCurrentTag:tag completion:^(BSGRemoteConfigServiceResponse *response) {
@@ -872,6 +877,24 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertEqualObjects([session.lastRequest valueForHTTPHeaderField:@"If-None-Match"], @"\"v1-xyz\"");
     XCTAssertEqual(response.type, BSGRemoteConfigServiceResponseTypeNotModified);
     XCTAssertEqual(response.retryAfter, 0);
+}
+- (void)testRequestSendsDeviceIdHeader {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    BugsnagDevice *device = [BugsnagDevice new];
+    device.id = @"5f0c"; // same dummy device ID as EventApiValidationTest
+    [self responseForSession:session tag:nil device:device];
+    XCTAssertEqualObjects([session.lastRequest valueForHTTPHeaderField:@"Bugsnag-Device-Id"], device.id);
+}
+- (void)testRequestOmitsDeviceIdHeaderWithoutDeviceId {
+    for (NSString *deviceId in @[[NSNull null], @""]) {
+        BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+        session.statusCode = 200;
+        BugsnagDevice *device = [BugsnagDevice new];
+        device.id = [deviceId isKindOfClass:[NSString class]] ? (NSString *)deviceId : nil;
+        [self responseForSession:session tag:nil device:device];
+        XCTAssertNil([session.lastRequest valueForHTTPHeaderField:@"Bugsnag-Device-Id"]);
+    }
 }
 - (void)testRetryAfterSecondsIsReadFromFailedResponse {
     BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];

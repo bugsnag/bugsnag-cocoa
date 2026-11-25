@@ -27,6 +27,8 @@ static NSString *ETagHeader = @"ETag";
 static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
 static NSString *RetryAfterHeader = @"Retry-After";
+// Identifies the device in the config service's logs.
+static NSString *DeviceIdHeader = @"Bugsnag-Device-Id";
 
 static const NSInteger HTTPStatusCodeNotModified = 304;
 static const NSInteger HTTPStatusCodeOK = 200;
@@ -317,6 +319,9 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
     headers[BugsnagHTTPHeaderNameApiKey] = self.configuration.apiKey;
     headers[BugsnagHTTPHeaderNameNotifierName] = self.notifier.name;
     headers[BugsnagHTTPHeaderNameNotifierVersion] = self.notifier.version;
+    if (self.device.id.length > 0) {
+        headers[DeviceIdHeader] = self.device.id;
+    }
     
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
     NSURLQueryItem *versionQueryItem = [NSURLQueryItem queryItemWithName:VersionQueryParam
