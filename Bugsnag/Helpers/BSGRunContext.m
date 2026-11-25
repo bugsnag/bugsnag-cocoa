@@ -660,8 +660,9 @@ static void ResizeAndMapFile(int fd) {
     bsg_runContextFd = fd;
     bsg_runContext = ptr;
 
-    // Only when BSGRunContextInit() runs again (each client start). The old
-    // mapping stays because other threads may hold its address.
+    // Only when BSGRunContextInit() runs again, which only unit tests do:
+    // production calls it once, from -[BugsnagClient start] via Bugsnag.start.
+    // The old mapping stays because other threads may hold its address.
     if (previousFd != -1) {
         close(previousFd);
     }
