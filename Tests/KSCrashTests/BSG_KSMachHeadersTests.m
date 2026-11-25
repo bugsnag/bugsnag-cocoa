@@ -49,7 +49,7 @@ static void readDuringInitialization(void) {
 }
 
 - (void)tearDown {
-    bsg_test_support_mach_headers_reset();
+    bsg_test_support_mach_headers_end_test();
     [super tearDown];
 }
 
@@ -154,13 +154,14 @@ static BSG_Dyld_Image_Info *retryEntriesA, *retryEntriesB;
 static int retryStage0Calls;
 static void (*retryScript)(int attempt, int stage);
 
-static pthread_t retryThread;
+// Written by the test and read by every lookup's hook, so atomic
+static _Atomic(pthread_t) retryThread;
 
 static void retryHook(int attempt, int stage) {
     // Event uploads started by earlier tests can still be symbolicating on
     // other threads, and they would run this hook too: count and script only
     // the test's own lookup.
-    if (!pthread_equal(pthread_self(), retryThread)) return;
+    if (!pthread_equal(pthread_self(), atomic_load(&retryThread))) return;
     if (stage == 0) retryStage0Calls++;
     retryScript(attempt, stage);
 }
@@ -197,7 +198,7 @@ static void scriptNeverSettles(__unused int attempt, int stage) {
                   result:(const BSG_Dyld_Image_Info **)result
                    count:(uint32_t *)count {
     retryInfo = info;
-    retryThread = pthread_self();
+    atomic_store(&retryThread, pthread_self());
     retryStage0Calls = 0;
     retryScript = script;
     bsg_test_support_mach_headers_set_dyld_info(info);

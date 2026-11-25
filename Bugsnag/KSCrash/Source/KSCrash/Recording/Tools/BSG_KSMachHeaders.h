@@ -137,8 +137,12 @@ uintptr_t bsg_mach_headers_first_cmd_after_header(const struct mach_header *head
 bool bsg_mach_headers_get_crash_info_message(const BSG_Mach_Header_Info *image,
                                              char *message, size_t capacity);
 
-/** Reset Mach header data for unit tests. */
+/** Reset Mach header data for unit tests. Until bsg_test_support_mach_headers_end_test(), only the calling thread
+ *  initializes it. */
 void bsg_test_support_mach_headers_reset(void);
+
+/** Reset Mach header data at the end of a unit test, and let any thread initialize it again. */
+void bsg_test_support_mach_headers_end_test(void);
 
 /** Return the number of startup images cached, excluding the shared-image cache. */
 uint32_t bsg_test_support_mach_headers_cached_image_count(void);

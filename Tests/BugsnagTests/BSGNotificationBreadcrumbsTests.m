@@ -70,6 +70,7 @@
 @property(readwrite, strong) NSString *mockRepresentedURLString;
 @property(readwrite, strong) BSGMockScene *mockScene;
 @property(readwrite, strong) BSGMockViewController *mockViewController;
+@property(readwrite) BOOL mocksRemoved;
 - (void)removeMocks;
 @end
 
@@ -78,13 +79,15 @@
 // -[BSGMockScene traitCollection] while a later test runs the run loop), so tearDown removes them again and the window
 // then answers like a real one.
 @implementation BSGMockWindow
-- (NSString *)description {return self.mockDescription;}
+- (NSString *)description {return self.mocksRemoved ? [super description] : self.mockDescription;}
 #if TARGET_OS_OSX
 - (NSViewController *)contentViewController {
     return self.mockViewController ? (NSViewController *)self.mockViewController : [super contentViewController];
 }
-- (NSString *)title {return self.mockTitle;}
-- (NSURL *)representedURL {return [NSURL URLWithString:self.mockRepresentedURLString];}
+- (NSString *)title {return self.mocksRemoved ? [super title] : self.mockTitle;}
+- (NSURL *)representedURL {
+    return self.mocksRemoved ? [super representedURL] : [NSURL URLWithString:self.mockRepresentedURLString];
+}
 #else
 #if !TARGET_OS_TV && (defined(__IPHONE_13_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
 - (UIWindowScene *)windowScene {
@@ -98,6 +101,8 @@
 - (void)removeMocks {
     self.mockScene = nil;
     self.mockViewController = nil;
+    // The window then answers with its own description, title and URL rather than the (possibly nil) mock values
+    self.mocksRemoved = YES;
 }
 @end
 
