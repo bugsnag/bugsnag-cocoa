@@ -31,9 +31,11 @@ static BOOL BSGRemoteConfigDeviceIsOffline(void) {
         return NO;
     }
     SCNetworkReachabilityFlags flags = 0;
-    BOOL gotFlags = SCNetworkReachabilityGetFlags(reachability, &flags);
+    // Boolean (unsigned char), not BOOL: on x86_64 BOOL is a signed char, so assigning one to the other is a
+    // sign conversion error.
+    Boolean gotFlags = SCNetworkReachabilityGetFlags(reachability, &flags);
     CFRelease(reachability);
-    return gotFlags && (flags & kSCNetworkReachabilityFlagsReachable) == 0;
+    return gotFlags != 0 && (flags & kSCNetworkReachabilityFlagsReachable) == 0;
 #else
     return NO;
 #endif
