@@ -11,6 +11,33 @@
 #import "BSGRemoteConfigHandler.h"
 #import "BugsnagLogger.h"
 #import "BugsnagConfiguration+Private.h"
+#import "BSGDefines.h"
+
+#if BSG_HAVE_REACHABILITY
+#import <SystemConfiguration/SystemConfiguration.h>
+#import <netinet/in.h>
+#endif
+
+// YES only when the device definitely has no network connection (e.g. airplane mode). An unknown state
+// counts as online, as for event delivery. A network that is up but cannot reach the internet (a captive
+// portal, say) counts as online, so its failures still back off.
+static BOOL BSGRemoteConfigDeviceIsOffline(void) {
+#if BSG_HAVE_REACHABILITY
+    struct sockaddr_in zeroAddress = {0};
+    zeroAddress.sin_len = sizeof(zeroAddress);
+    zeroAddress.sin_family = AF_INET;
+    SCNetworkReachabilityRef reachability = SCNetworkReachabilityCreateWithAddress(NULL, (const struct sockaddr *)&zeroAddress);
+    if (!reachability) {
+        return NO;
+    }
+    SCNetworkReachabilityFlags flags = 0;
+    BOOL gotFlags = SCNetworkReachabilityGetFlags(reachability, &flags);
+    CFRelease(reachability);
+    return gotFlags && (flags & kSCNetworkReachabilityFlagsReachable) == 0;
+#else
+    return NO;
+#endif
+}
 
 @interface BSGRemoteConfigHandler ()
 
@@ -25,6 +52,11 @@
 @property (nonatomic) BOOL didLoadFetchState;
 @property (nonatomic) BOOL isLoadingRemoteConfig;
 @property (nonatomic) BOOL didClearLocalStore;
+/// Whether the device is offline. Replaceable in tests.
+@property (nonatomic, copy) BOOL (^isDeviceOffline)(void);
+/// How long to wait before re-checking the network after a request failed with no response. The system
+/// can report a lost network a few milliseconds after the request that it broke has already failed.
+@property (nonatomic) NSTimeInterval networkLossGracePeriod;
 
 @end
 
@@ -38,6 +70,14 @@ static NSTimeInterval const BSGRemoteConfigBackoffBase = 15 * 60;
 static double const BSGRemoteConfigBackoffMultiplier = 4.0;
 static NSTimeInterval const BSGRemoteConfigBackoffCap = 24 * 60 * 60;
 static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 * 60;
+// The backoff delay reaches its cap at failure index 4 (15 min * 4^4 = 64 h > 24 h), so higher counts
+// change nothing; the count stops growing here instead of increasing on every failure.
+static NSUInteger const BSGRemoteConfigMaxFetchFailureCount = 5;
+// A config is refreshed on an error during the last part of its lifetime, so new rules arrive before the
+// current ones expire: the last hour, or the last 10% of a lifetime shorter than 10 hours.
+static NSTimeInterval const BSGRemoteConfigRefreshWindow = 60 * 60;
+static double const BSGRemoteConfigRefreshWindowFraction = 0.1;
+static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
 
 + (instancetype)handlerWithService:(BSGRemoteConfigService *)service
                              store:(BSGRemoteConfigStore *)store
@@ -53,6 +93,8 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
         _service = service;
         _store = store;
         _configuration = configuration;
+        _isDeviceOffline = ^{ return BSGRemoteConfigDeviceIsOffline(); };
+        _networkLossGracePeriod = BSGRemoteConfigNetworkLossGracePeriod;
     }
     return self;
 }
@@ -142,7 +184,14 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
 - (void)updateRemoteConfig {
     NSTimeInterval firstFetchDelay = 0;
     @synchronized (self) {
+        // Callers normally load it first; this keeps the cooldown and attempt tracking working for any other caller.
+        [self loadFetchStateIfNeeded];
         if (self.isLoadingRemoteConfig || [self isCooldownActive]) {
+            return;
+        }
+        if (self.isDeviceOffline()) {
+            // Not a failure: the next error once the device is back online fetches straight away.
+            bsg_log_debug(@"Skipping remote config fetch because there is no network connection");
             return;
         }
         self.isLoadingRemoteConfig = YES;
@@ -167,6 +216,12 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
 - (void)sendRemoteConfigRequest {
     NSString *currentTag = nil;
     @synchronized (self) {
+        if (self.isDeviceOffline()) {
+            // The network went away during the first-fetch delay.
+            bsg_log_debug(@"Skipping remote config fetch because there is no network connection");
+            self.isLoadingRemoteConfig = NO;
+            return;
+        }
         // Persisted before the request so an attempt interrupted by process death is counted as a failure on next launch.
         self.fetchState.attemptInProgress = YES;
         [self persistFetchState];
@@ -180,7 +235,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     [self loadRemoteConfigWithCurrentTag:currentTag allowsUnconditionalRetry:YES];
 }
 
-// No config has been cached for this app version and no fetch has failed yet. Refreshes are spread by expiry
+// No config has been cached for this app version and build, and no fetch has failed yet. Refreshes are spread by expiry
 // jitter and retries by the backoff, so only this first fetch needs its own delay.
 - (BOOL)isFirstFetch {
     return self.remoteConfig == nil &&
@@ -199,6 +254,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
                         bsg_log_debug(@"Received invalid remote config");
                         break;
                     }
+                    response.configuration.fetchedAt = [NSDate date];
                     BSGRemoteConfiguration *storedConfiguration = [self.store saveConfiguration:response.configuration];
                     if (storedConfiguration) {
                         self.remoteConfig = storedConfiguration;
@@ -247,14 +303,50 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
             }
             if (didSucceed) {
                 [self recordFetchSuccess];
-            } else if (response.networkUnavailable) {
-                [self recordNetworkUnavailable];
+            } else if (response.networkUnavailable || response.failedWithoutResponse) {
+                [self recordFailureWithoutResponse:response];
+                return;
             } else {
                 [self recordFetchFailureWithRetryAfter:response.retryAfter];
             }
             self.isLoadingRemoteConfig = NO;
         }
     }];
+}
+
+// The request failed before the config service answered. If that was because the device lost its network,
+// it is not a config service failure, so no backoff is started. Must be called with the lock held; it
+// clears isLoadingRemoteConfig once the outcome is recorded.
+- (void)recordFailureWithoutResponse:(BSGRemoteConfigServiceResponse *)response {
+    if (self.isDeviceOffline()) {
+        [self recordNetworkLost];
+        self.isLoadingRemoteConfig = NO;
+        return;
+    }
+    if (response.networkUnavailable) {
+        // The system said there was no connection, but the device now looks online.
+        [self recordNetworkUnavailable];
+        self.isLoadingRemoteConfig = NO;
+        return;
+    }
+    // The device still looks online, but the system may not have reported the lost network yet.
+    // Check once more after a short wait; the request stays in progress until then.
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.networkLossGracePeriod * NSEC_PER_SEC)),
+                   dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!strongSelf) {
+            return;
+        }
+        @synchronized (strongSelf) {
+            if (strongSelf.isDeviceOffline()) {
+                [strongSelf recordNetworkLost];
+            } else {
+                [strongSelf recordFetchFailureWithRetryAfter:response.retryAfter];
+            }
+            strongSelf.isLoadingRemoteConfig = NO;
+        }
+    });
 }
 
 - (void)loadLocalConfigIfNeeded {
@@ -276,15 +368,19 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     self.didLoadFetchState = YES;
 
     NSString *appVersion = self.configuration.appVersion;
+    NSString *bundleVersion = self.configuration.bundleVersion;
     BSGRemoteConfigFetchState *state = [self.store loadFetchState];
-    if (state && ![state.appVersion ?: @"" isEqualToString:appVersion ?: @""]) {
-        // Retry state is scoped to the app version so a new binary is not locked out by a previous version's cooldown.
+    if (state && (![state.appVersion ?: @"" isEqualToString:appVersion ?: @""] ||
+                  ![state.bundleVersion ?: @"" isEqualToString:bundleVersion ?: @""])) {
+        // Retry state is scoped to the app version and build, so a new binary is not locked out by a
+        // previous one's cooldown.
         [self.store clearFetchState];
         state = nil;
     }
     if (state == nil) {
         state = [BSGRemoteConfigFetchState new];
         state.appVersion = appVersion;
+        state.bundleVersion = bundleVersion;
     }
     self.fetchState = state;
 
@@ -334,10 +430,23 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
 }
 
 - (void)updateRemoteConfigIfNeeded {
-    if (self.remoteConfig == nil &&
-        !self.isLoadingRemoteConfig) {
+    if (!self.isLoadingRemoteConfig &&
+        (self.remoteConfig == nil || [self isRefreshDue])) {
         [self updateRemoteConfig];
     }
+}
+
+// The cached config is still valid but is in the last part of its lifetime, so it is refreshed in the
+// background while its rules keep applying.
+- (BOOL)isRefreshDue {
+    BSGRemoteConfiguration *config = self.remoteConfig;
+    if (!config.expiryDate || !config.fetchedAt) {
+        return NO;
+    }
+    NSTimeInterval lifetime = [config.expiryDate timeIntervalSinceDate:config.fetchedAt];
+    NSTimeInterval remaining = [config.expiryDate timeIntervalSinceNow];
+    NSTimeInterval window = MIN(BSGRemoteConfigRefreshWindow, lifetime * BSGRemoteConfigRefreshWindowFraction);
+    return lifetime > 0 && remaining > 0 && remaining <= window;
 }
 
 - (BOOL)isCooldownActive {
@@ -363,7 +472,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     wait = MIN(BSGRemoteConfigBackoffCap, MAX(wait, retryAfter));
 
     self.fetchState.nextAllowedFetchAt = [NSDate dateWithTimeIntervalSinceNow:wait];
-    self.fetchState.fetchFailureCount = failureIndex + 1;
+    self.fetchState.fetchFailureCount = MIN(failureIndex + 1, BSGRemoteConfigMaxFetchFailureCount);
     self.fetchState.attemptInProgress = NO;
     return [self persistFetchState];
 }
@@ -374,6 +483,17 @@ static NSTimeInterval const BSGRemoteConfigNetworkUnavailableRetryInterval = 5 *
     self.fetchState.attemptInProgress = NO;
     if (![self persistFetchState]) {
         // Being offline is not a failure, so do not leave an in-progress attempt for the next launch to count.
+        [self.store clearFetchState];
+    }
+}
+
+// The device lost its network during the request. Not a failure, and no wait is needed: while the device is
+// offline no request is sent, and the next error once it is back online fetches straight away.
+- (void)recordNetworkLost {
+    bsg_log_debug(@"Remote config request failed after the network connection was lost; not starting backoff");
+    self.fetchState.attemptInProgress = NO;
+    if (![self persistFetchState]) {
+        // Do not leave an in-progress attempt for the next launch to count as a failure.
         [self.store clearFetchState];
     }
 }

@@ -31,6 +31,7 @@ static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
 }
 
 static NSString * const BSGFetchStateAppVersionKey = @"appVersion";
+static NSString * const BSGFetchStateBundleVersionKey = @"bundleVersion";
 static NSString * const BSGFetchStateFailureCountKey = @"fetchFailureCount";
 static NSString * const BSGFetchStateNextAllowedFetchAtKey = @"nextAllowedFetchAt";
 static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress";
@@ -45,6 +46,10 @@ static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress"
     id appVersion = json[BSGFetchStateAppVersionKey];
     if ([appVersion isKindOfClass:[NSString class]]) {
         state.appVersion = appVersion;
+    }
+    id bundleVersion = json[BSGFetchStateBundleVersionKey];
+    if ([bundleVersion isKindOfClass:[NSString class]]) {
+        state.bundleVersion = bundleVersion;
     }
     id failureCount = json[BSGFetchStateFailureCountKey];
     if ([failureCount isKindOfClass:[NSNumber class]] && [failureCount integerValue] > 0) {
@@ -64,6 +69,7 @@ static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress"
 - (NSDictionary *)toJson {
     NSMutableDictionary *json = [NSMutableDictionary dictionary];
     json[BSGFetchStateAppVersionKey] = self.appVersion;
+    json[BSGFetchStateBundleVersionKey] = self.bundleVersion;
     json[BSGFetchStateFailureCountKey] = @(self.fetchFailureCount);
     if (self.nextAllowedFetchAt) {
         json[BSGFetchStateNextAllowedFetchAtKey] = @([self.nextAllowedFetchAt timeIntervalSince1970]);
@@ -124,6 +130,7 @@ static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress"
         return BSGRemoteConfigExpiryUpdateResultTagMismatch;
     }
     configuration.expiryDate = expiryDate;
+    configuration.fetchedAt = [NSDate date];
     *revalidatedConfiguration = configuration;
     if (![self saveConfiguration:configuration]) {
         // The server confirmed this config, so it stays usable; only the new expiry is not persisted.
@@ -215,8 +222,17 @@ static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress"
 
 #pragma mark - Helpers
 
+// A version string used in a file name, with path separators replaced.
+static NSString *BSGFileNameComponent(NSString *_Nullable value) {
+    return [value ?: @"" stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+}
+
+// The config is cached per app version and build: the service is sent both, and its rules can differ for each.
 - (NSString *)configurationFilePath {
-    NSString *fileName = [NSString stringWithFormat:@"core-%@", self.configuration.appVersion];
+    NSString *fileName = [NSString stringWithFormat:@"core-%@", BSGFileNameComponent(self.configuration.appVersion)];
+    if (self.configuration.bundleVersion.length > 0) {
+        fileName = [fileName stringByAppendingFormat:@"-%@", BSGFileNameComponent(self.configuration.bundleVersion)];
+    }
     return [[self.fileLocations remoteConfigurations] stringByAppendingPathComponent:fileName];
 }
 

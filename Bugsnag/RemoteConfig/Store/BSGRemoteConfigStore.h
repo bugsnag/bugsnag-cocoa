@@ -13,11 +13,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- * Durable retry state for remote config fetches, scoped to the app version that wrote it.
+ * Durable retry state for remote config fetches, scoped to the app version and build that wrote it.
  */
 @interface BSGRemoteConfigFetchState: NSObject
 
 @property (nullable, nonatomic, copy) NSString *appVersion;
+@property (nullable, nonatomic, copy) NSString *bundleVersion;
 @property (nonatomic) NSUInteger fetchFailureCount;
 @property (nullable, nonatomic, strong) NSDate *nextAllowedFetchAt;
 /// Set before a request is sent and cleared once its outcome is recorded.

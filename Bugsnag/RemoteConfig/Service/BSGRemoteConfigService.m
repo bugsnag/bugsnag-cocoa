@@ -183,6 +183,7 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
         if (error && ![response isKindOfClass:[NSHTTPURLResponse class]]) {
             BSGRemoteConfigServiceResponse *errorResponse = [BSGRemoteConfigServiceResponse responseWithError:error];
             errorResponse.networkUnavailable = BSGIsNetworkUnavailableError(error);
+            errorResponse.failedWithoutResponse = YES;
             completion(errorResponse);
             return;
         }

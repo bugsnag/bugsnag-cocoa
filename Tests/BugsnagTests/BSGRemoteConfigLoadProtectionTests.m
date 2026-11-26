@@ -15,6 +15,8 @@ static NSString * const BSGLegacyRemoteConfigCooldownPreference = @"com.bugsnag.
 static NSString * const BSGLegacyRemoteConfigExpiryRefreshAttemptPreference = @"com.bugsnag.remote-config.expiry-refresh-attempt";
 
 static NSTimeInterval const Minute = 60;
+/// The build every test handler runs as, unless a test changes it.
+static NSString * const BSGTestBundleVersion = @"100";
 static NSTimeInterval const Hour = 60 * 60;
 
 @interface BSGTestRemoteConfigConfiguration : BugsnagConfiguration
@@ -82,6 +84,7 @@ static NSTimeInterval const Hour = 60 * 60;
         return BSGRemoteConfigExpiryUpdateResultWriteFailed;
     }
     self.configuration.expiryDate = expiryDate;
+    self.configuration.fetchedAt = [NSDate date];
     *revalidatedConfiguration = self.configuration;
     return BSGRemoteConfigExpiryUpdateResultUpdated;
 }
@@ -105,6 +108,7 @@ static NSTimeInterval const Hour = 60 * 60;
                   attemptInProgress:(BOOL)attemptInProgress {
     BSGRemoteConfigFetchState *state = [BSGRemoteConfigFetchState new];
     state.appVersion = appVersion;
+    state.bundleVersion = BSGTestBundleVersion;
     state.fetchFailureCount = failureCount;
     state.nextAllowedFetchAt = nextAllowedFetchAt;
     state.attemptInProgress = attemptInProgress;
@@ -117,6 +121,14 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     response.type = type;
     return response;
 }
+
+// Internal entry point, exercised directly to check it does not depend on its callers loading state first.
+@interface BSGRemoteConfigHandler (LoadProtectionTesting)
+- (void)updateRemoteConfig;
+@property (nonatomic, copy) BOOL (^isDeviceOffline)(void);
+@property (nonatomic) NSTimeInterval networkLossGracePeriod;
+@property (nonatomic) BOOL isLoadingRemoteConfig;
+@end
 
 @interface BSGRemoteConfigLoadProtectionTests : XCTestCase
 @end
@@ -150,7 +162,11 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     configuration.appVersion = appVersion;
     // Most tests check what a fetch does, so they fetch immediately; the first-fetch jitter tests opt in.
     configuration.remoteConfigFirstFetchJitter = firstFetchJitter;
-    return [BSGRemoteConfigHandler handlerWithService:service store:store configuration:configuration];
+    configuration.bundleVersion = BSGTestBundleVersion;
+    BSGRemoteConfigHandler *handler = [BSGRemoteConfigHandler handlerWithService:service store:store configuration:configuration];
+    // Tests must not depend on the network of the machine running them; the offline tests replace this.
+    handler.isDeviceOffline = ^{ return NO; };
+    return handler;
 }
 - (BSGRemoteConfigHandler *)jitteredHandlerWithService:(BSGRecordingRemoteConfigService *)service
                                                   store:(BSGInMemoryRemoteConfigStore *)store
@@ -326,7 +342,8 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
         NSDate *afterRequest = [NSDate date];
 
         XCTAssertEqual(service.requestCount, 1);
-        XCTAssertEqual(store.fetchState.fetchFailureCount, failureIndex + 1);
+        // The count stops at 5 once the delay is capped; the wait stays in the capped window.
+        XCTAssertEqual(store.fetchState.fetchFailureCount, MIN(failureIndex + 1, 5));
         [self assertCooldownOfStore:store
                           isBetween:expectedWindows[failureIndex][0]
                                 and:expectedWindows[failureIndex][1]
@@ -644,6 +661,43 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertNil(store.fetchStateJson);
 }
 
+#pragma mark - Defensive state handling
+
+- (void)testUpdateRemoteConfigLoadsFetchStateWhenCalledDirectly {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    [store setFetchStateWithAppVersion:@"1.0" failureCount:2 nextAllowedFetchAt:[NSDate dateWithTimeIntervalSinceNow:Hour] attemptInProgress:NO];
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    // Called without initialize or currentConfiguration having loaded the state.
+    [handler updateRemoteConfig];
+
+    // The saved cooldown is honoured, and the saved state is unchanged.
+    XCTAssertEqual(service.requestCount, 0);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 2);
+}
+- (void)testFailureCountStopsGrowingOnceBackoffIsCapped {
+    // The delay is already capped at failure index 4, so a sixth failure must not make the wait longer.
+    XCTAssertLessThan([BSGRemoteConfigHandler backoffDelayForFailureIndex:3], 24 * Hour);
+    XCTAssertEqual([BSGRemoteConfigHandler backoffDelayForFailureIndex:4], 24 * Hour);
+
+    for (NSNumber *storedCount in @[@4, @5, @50]) {
+        BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+        [store setFetchStateWithAppVersion:@"1.0" failureCount:storedCount.unsignedIntegerValue
+                        nextAllowedFetchAt:[NSDate dateWithTimeIntervalSinceNow:-1] attemptInProgress:NO];
+        BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+        service.response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+        NSDate *beforeRequest = [NSDate date];
+        [[self enabledHandlerWithService:service store:store] currentConfiguration];
+        NSDate *afterRequest = [NSDate date];
+
+        XCTAssertEqual(service.requestCount, 1);
+        XCTAssertEqual(store.fetchState.fetchFailureCount, 5, @"stored count %@", storedCount);
+        [self assertCooldownOfStore:store isBetween:12 * Hour and:24 * Hour since:beforeRequest until:afterRequest];
+    }
+}
+
 #pragma mark - Network unavailable
 
 - (void)testNetworkUnavailableRetriesSoonWithoutAdvancingBackoff {
@@ -843,6 +897,267 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertNil([[NSUserDefaults standardUserDefaults] objectForKey:BSGLegacyRemoteConfigExpiryRefreshAttemptPreference]);
     XCTAssertEqual(service.requestCount, 0);
 }
+
+#pragma mark - Offline
+
+- (BSGRemoteConfigServiceResponse *)failureWithoutResponse {
+    BSGRemoteConfigServiceResponse *response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+    response.failedWithoutResponse = YES;
+    return response;
+}
+- (BSGRemoteConfigServiceResponse *)successResponseWithTag:(NSString *)tag {
+    BSGRemoteConfigServiceResponse *response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeSuccess);
+    response.configuration = [BSGRemoteConfiguration configFromJson:@{} eTag:tag expiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour]];
+    return response;
+}
+
+- (void)testErrorWhileOfflineSendsNoRequestAndStartsNoBackoff {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v1"];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    handler.isDeviceOffline = ^{ return YES; };
+
+    for (int i = 0; i < 10; i++) {
+        XCTAssertNil([handler currentConfiguration]);
+    }
+    XCTAssertEqual(service.requestCount, 0);
+    XCTAssertFalse(store.attemptWasPersistedBeforeRequest);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    XCTAssertNil(store.fetchState.nextAllowedFetchAt);
+}
+- (void)testFirstErrorBackOnlineFetchesStraightAway {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v1"];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    __block BOOL offline = YES;
+    handler.isDeviceOffline = ^{ return offline; };
+
+    XCTAssertNil([handler currentConfiguration]);
+    offline = NO;
+    XCTAssertEqualObjects([handler currentConfiguration].configurationTag, @"v1");
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testNetworkGoingAwayDuringFirstFetchDelaySkipsRequest {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v1"];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self jitteredHandlerWithService:service store:store firstFetchJitter:0.3];
+    __block BOOL offline = NO;
+    handler.isDeviceOffline = ^{ return offline; };
+
+    [handler currentConfiguration];
+    offline = YES;
+    [self waitFor:0.6];
+    XCTAssertEqual(service.requestCount, 0);
+    XCTAssertFalse(store.attemptWasPersistedBeforeRequest);
+    XCTAssertFalse(handler.isLoadingRemoteConfig);
+
+    // Back online: the next error fetches.
+    offline = NO;
+    [handler currentConfiguration];
+    [self waitFor:0.6];
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testNetworkLostDuringRequestDoesNotStartBackoff {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self failureWithoutResponse];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    handler.networkLossGracePeriod = 0.2;
+    __block BOOL offline = NO;
+    handler.isDeviceOffline = ^{ return offline; };
+
+    // The request fails while the device still looks online; the system reports the lost network just after.
+    [handler currentConfiguration];
+    offline = YES;
+    [self waitFor:0.5];
+
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    XCTAssertNil(store.fetchState.nextAllowedFetchAt);
+    XCTAssertFalse(store.fetchState.attemptInProgress);
+    XCTAssertFalse(handler.isLoadingRemoteConfig);
+
+    // Back online, the next error fetches straight away.
+    offline = NO;
+    service.response = [self successResponseWithTag:@"v1"];
+    XCTAssertEqualObjects([handler currentConfiguration].configurationTag, @"v1");
+    XCTAssertEqual(service.requestCount, 2);
+}
+- (void)testFailureWithoutResponseWhileStillOnlineStartsBackoffAfterReCheck {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self failureWithoutResponse];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    handler.networkLossGracePeriod = 0.2;
+
+    NSDate *beforeRequest = [NSDate date];
+    [handler currentConfiguration];
+    // Until the re-check, the attempt is still in progress, so further errors send no request.
+    [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    [self waitFor:0.5];
+
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 1);
+    XCTAssertFalse(store.fetchState.attemptInProgress);
+    XCTAssertFalse(handler.isLoadingRemoteConfig);
+    [self assertCooldownOfStore:store isBetween:7.5 * Minute and:15 * Minute since:beforeRequest until:[NSDate date]];
+}
+- (void)testOfflineErrorCodeWhileDeviceIsOfflineStartsNoCooldown {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *response = [self failureWithoutResponse];
+    response.networkUnavailable = YES;
+    service.response = response;
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    // Online for the two checks before the request, offline once the request has failed.
+    __block NSUInteger checks = 0;
+    handler.isDeviceOffline = ^{ return (BOOL)(++checks > 2); };
+
+    [handler currentConfiguration];
+
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    // No wait is needed: no request is sent while offline, and the first error back online fetches.
+    XCTAssertNil(store.fetchState.nextAllowedFetchAt);
+    XCTAssertFalse(store.fetchState.attemptInProgress);
+    XCTAssertFalse(handler.isLoadingRemoteConfig);
+}
+
+#pragma mark - Refresh before expiry
+
+- (BSGRemoteConfiguration *)configFetchedAgo:(NSTimeInterval)age expiringIn:(NSTimeInterval)remaining {
+    BSGRemoteConfiguration *config = [BSGRemoteConfiguration configFromJson:@{@"discardRules": @[@{@"matchType": @"ALL"}]}
+                                                                       eTag:@"v1"
+                                                                 expiryDate:[NSDate dateWithTimeIntervalSinceNow:remaining]];
+    config.fetchedAt = [NSDate dateWithTimeIntervalSinceNow:-age];
+    return config;
+}
+
+- (void)testConfigIsRefreshedDuringItsLastHourWhileStillApplied {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *notModified = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeNotModified);
+    notModified.configurationTag = @"v1";
+    notModified.expiryDate = [NSDate dateWithTimeIntervalSinceNow:24 * Hour];
+    service.response = notModified;
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [self configFetchedAgo:23.5 * Hour expiringIn:30 * Minute];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    BSGRemoteConfiguration *config = [handler currentConfiguration];
+    XCTAssertEqual(config.discardRules.count, 1);
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqualObjects(service.currentTag, @"v1");
+    XCTAssertGreaterThan([config.expiryDate timeIntervalSinceNow], 23 * Hour);
+
+    // Refreshed, so later errors send no request.
+    [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testConfigWithMoreThanAnHourLeftIsNotRefreshed {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [self configFetchedAgo:21 * Hour expiringIn:3 * Hour];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    XCTAssertEqual([handler currentConfiguration].discardRules.count, 1);
+    XCTAssertEqual(service.requestCount, 0);
+}
+- (void)testShortLivedConfigIsRefreshedInItsLastTenPercent {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v2"];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    // A 100 s lifetime: refreshed in its last 10 s, not in its last hour.
+    store.configuration = [self configFetchedAgo:50 expiringIn:50];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 0);
+
+    store.configuration = [self configFetchedAgo:95 expiringIn:5];
+    handler = [self enabledHandlerWithService:service store:store];
+    [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testConfigWithoutFetchTimeIsNotRefreshedEarly {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    // Cached by an SDK that did not record the fetch time: used until it expires, as before.
+    store.configuration = [BSGRemoteConfiguration configFromJson:@{} eTag:@"v1" expiryDate:[NSDate dateWithTimeIntervalSinceNow:30 * Minute]];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    XCTAssertNotNil([handler currentConfiguration]);
+    XCTAssertEqual(service.requestCount, 0);
+}
+- (void)testFailedEarlyRefreshKeepsCurrentRulesAndBacksOff {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeError);
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [self configFetchedAgo:23.5 * Hour expiringIn:30 * Minute];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    XCTAssertEqual([handler currentConfiguration].discardRules.count, 1);
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 1);
+
+    // The rules still apply, and the cooldown stops another refresh.
+    XCTAssertEqual([handler currentConfiguration].discardRules.count, 1);
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testEarlyRefreshIsSkippedWhileOffline {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [self configFetchedAgo:23.5 * Hour expiringIn:30 * Minute];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    handler.isDeviceOffline = ^{ return YES; };
+
+    XCTAssertEqual([handler currentConfiguration].discardRules.count, 1);
+    XCTAssertEqual(service.requestCount, 0);
+    XCTAssertNil(store.fetchState.nextAllowedFetchAt);
+}
+- (void)testSuccessfulFetchRecordsFetchTime {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v1"];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    [handler currentConfiguration];
+    XCTAssertEqualWithAccuracy([store.configuration.fetchedAt timeIntervalSinceNow], 0, 5);
+}
+
+#pragma mark - Build scope
+
+- (void)testBuildChangeResetsBackoffState {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigFetchState *state = [BSGRemoteConfigFetchState new];
+    state.appVersion = @"1.0";
+    state.bundleVersion = @"99";
+    state.fetchFailureCount = 4;
+    state.nextAllowedFetchAt = [NSDate dateWithTimeIntervalSinceNow:12 * Hour];
+    store.fetchStateJson = [state toJson];
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v1"];
+    // Same app version, new build (BSGTestBundleVersion).
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    XCTAssertNotNil([handler currentConfiguration]);
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertEqualObjects(store.fetchState.bundleVersion, BSGTestBundleVersion);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+}
+- (void)testSameBuildKeepsBackoffState {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    [store setFetchStateWithAppVersion:@"1.0" failureCount:2 nextAllowedFetchAt:[NSDate dateWithTimeIntervalSinceNow:Hour] attemptInProgress:NO];
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+
+    XCTAssertNil([handler currentConfiguration]);
+    XCTAssertEqual(service.requestCount, 0);
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 2);
+}
+
 @end
 
 #pragma mark - Store persistence (real files)
@@ -932,6 +1247,51 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertEqual([self.store updateExpiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour] configurationTag:@"\"v1\"" configuration:&revalidated],
                    BSGRemoteConfigExpiryUpdateResultMissing);
     XCTAssertNil(revalidated);
+}
+- (BSGRemoteConfigStore *)storeForAppVersion:(NSString *)appVersion bundleVersion:(NSString *)bundleVersion {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.appVersion = appVersion;
+    configuration.bundleVersion = bundleVersion;
+    return [BSGRemoteConfigStore storeWithLocations:[BSGFileLocations current] configuration:configuration];
+}
+- (void)testCachedConfigIsScopedToAppVersionAndBuild {
+    BSGRemoteConfigStore *build7 = [self storeForAppVersion:@"1.0" bundleVersion:@"7"];
+    [build7 clear];
+    BSGRemoteConfiguration *config = [BSGRemoteConfiguration configFromJson:@{} eTag:@"v1" expiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour]];
+    XCTAssertNotNil([build7 saveConfiguration:config]);
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[BSGFileLocations current].remoteConfigurations error:nil];
+    XCTAssertEqualObjects(files, @[@"core-1.0-7"]);
+
+    XCTAssertNotNil([[self storeForAppVersion:@"1.0" bundleVersion:@"7"] loadConfiguration]);
+    XCTAssertNil([[self storeForAppVersion:@"1.0" bundleVersion:@"8"] loadConfiguration]);
+    XCTAssertNil([[self storeForAppVersion:@"1.1" bundleVersion:@"7"] loadConfiguration]);
+    [build7 clear];
+}
+- (void)testConfigWithoutBuildUsesAppVersionOnly {
+    BSGRemoteConfigStore *store = [self storeForAppVersion:@"1.0" bundleVersion:nil];
+    [store clear];
+    XCTAssertNotNil([store saveConfiguration:[BSGRemoteConfiguration configFromJson:@{} eTag:@"v1" expiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour]]]);
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[BSGFileLocations current].remoteConfigurations error:nil];
+    XCTAssertEqualObjects(files, @[@"core-1.0"]);
+    [store clear];
+}
+- (void)testFetchTimeIsSavedAndUpdatedBy304 {
+    BSGRemoteConfiguration *config = [BSGRemoteConfiguration configFromJson:@{} eTag:@"v1" expiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour]];
+    config.fetchedAt = [NSDate dateWithTimeIntervalSinceNow:-Hour];
+    XCTAssertNotNil([self.store saveConfiguration:config]);
+    XCTAssertEqualWithAccuracy([self.store loadConfiguration].fetchedAt.timeIntervalSinceNow, -Hour, 1);
+
+    BSGRemoteConfiguration *revalidated = nil;
+    XCTAssertEqual([self.store updateExpiryDate:[NSDate dateWithTimeIntervalSinceNow:Hour] configurationTag:@"v1" configuration:&revalidated],
+                   BSGRemoteConfigExpiryUpdateResultUpdated);
+    XCTAssertEqualWithAccuracy([self.store loadConfiguration].fetchedAt.timeIntervalSinceNow, 0, 5);
+    [self.store clear];
+}
+- (void)testFetchStateRecordsBuild {
+    BSGRemoteConfigFetchState *state = [self stateWithFailureCount:1];
+    state.bundleVersion = @"42";
+    XCTAssertTrue([self.store saveFetchState:state]);
+    XCTAssertEqualObjects([self.store loadFetchState].bundleVersion, @"42");
 }
 - (void)testCorruptFetchStateFileIsIgnored {
     [[@"not json" dataUsingEncoding:NSUTF8StringEncoding] writeToFile:[BSGFileLocations current].remoteConfigFetchState
@@ -1058,6 +1418,7 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
         BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil];
         XCTAssertEqual(response.type, BSGRemoteConfigServiceResponseTypeError, @"%@", code);
         XCTAssertTrue(response.networkUnavailable, @"%@", code);
+        XCTAssertTrue(response.failedWithoutResponse, @"%@", code);
     }
 }
 - (void)testTimeoutAndServerUnreachableAreFailures {
@@ -1067,12 +1428,17 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
         BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil];
         XCTAssertEqual(response.type, BSGRemoteConfigServiceResponseTypeError, @"%@", code);
         XCTAssertFalse(response.networkUnavailable, @"%@", code);
+        // The device may have lost its network, so the handler re-checks before counting it.
+        XCTAssertTrue(response.failedWithoutResponse, @"%@", code);
     }
 }
 - (void)testClientErrorIsReportedAsFailure {
     BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
     session.statusCode = 404;
-    XCTAssertEqual([self responseForSession:session tag:nil].type, BSGRemoteConfigServiceResponseTypeError);
+    BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil];
+    XCTAssertEqual(response.type, BSGRemoteConfigServiceResponseTypeError);
+    // The service answered, so this is a failure of the service, counted without re-checking the network.
+    XCTAssertFalse(response.failedWithoutResponse);
 }
 - (void)testJitteredLifetimeShortensByUpToTenPercent {
     XCTAssertEqualWithAccuracy([BSGRemoteConfigService jitteredLifetime:1000 randomFraction:0], 1000, 0.001);
