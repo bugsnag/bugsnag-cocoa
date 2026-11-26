@@ -159,15 +159,8 @@ static const char *bsg_ksmachguardMachPortFlavorName(const uint64_t flavor) {
     case 8: return "kGUARD_EXC_UNGUARDED";
     case 9: return "kGUARD_EXC_KOBJECT_REPLY_PORT_SEMANTICS";
     case 10: return "kGUARD_EXC_REQUIRE_REPLY_PORT_SEMANTICS";
-    case 11: return "kGUARD_EXC_RESTRICT_VOUCHER_OPERATIONS";
-    case 12: return "kGUARD_EXC_MACH_EXC_THREAD_SET_STATE";
-    case 13: return "kGUARD_EXC_MOVE_WEAK_REPLY_PORT_FATAL";
     case 16: return "kGUARD_EXC_INCORRECT_GUARD";
-    case 17: return "kGUARD_EXC_BOOTSTRAP_PORT_NOTIFICATION";
-    case 18: return "kGUARD_EXC_CV_INVALID_EXCEPTION_PORT";
     case 32: return "kGUARD_EXC_IMMOVABLE";
-    case 33: return "kGUARD_EXC_RESTRICT_VOUCHER_RECIPE_SIZE";
-    case 34: return "kGUARD_EXC_RESTRICT_INLINE_PORT_DESCRIPTORS";
     case 64: return "kGUARD_EXC_STRICT_REPLY";
     case 65: return "kGUARD_EXC_INVALID_NOTIFICATION_REQ";
     case 66: return "kGUARD_EXC_INVALID_MPO_ENTITLEMENT";
