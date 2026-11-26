@@ -22,6 +22,8 @@
 @property (nonatomic, strong) NSString *configurationTag;
 @property (nonatomic, strong) NSDate *expiryDate;
 @property (nonatomic, strong) NSArray<BSGRemoteConfigurationDiscardRule *> *discardRules;
+/// When the config service last returned or confirmed (304) this config. Nil for a config cached by an older SDK.
+@property (nonatomic, strong) NSDate *fetchedAt;
 
 + (instancetype)configFromJson:(NSDictionary *)json;
 + (instancetype)configFromJson:(NSDictionary *)json

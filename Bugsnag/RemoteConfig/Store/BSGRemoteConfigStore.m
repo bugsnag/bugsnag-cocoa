@@ -9,6 +9,7 @@
 #import "BSGRemoteConfigStore.h"
 #import "BSGJSONSerialization.h"
 #import "BugsnagLogger.h"
+#import "BSGUtils.h"
 
 @interface BSGRemoteConfigStore ()
 @property (nonatomic, strong) BSGFileLocations *fileLocations;
@@ -28,6 +29,56 @@ static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
     }
     return normalized;
 }
+
+static NSString * const BSGFetchStateAppVersionKey = @"appVersion";
+static NSString * const BSGFetchStateBundleVersionKey = @"bundleVersion";
+static NSString * const BSGFetchStateFailureCountKey = @"fetchFailureCount";
+static NSString * const BSGFetchStateNextAllowedFetchAtKey = @"nextAllowedFetchAt";
+static NSString * const BSGFetchStateAttemptInProgressKey = @"attemptInProgress";
+
+@implementation BSGRemoteConfigFetchState
+
++ (instancetype)stateFromJson:(NSDictionary *)json {
+    if (![json isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    BSGRemoteConfigFetchState *state = [self new];
+    id appVersion = json[BSGFetchStateAppVersionKey];
+    if ([appVersion isKindOfClass:[NSString class]]) {
+        state.appVersion = appVersion;
+    }
+    id bundleVersion = json[BSGFetchStateBundleVersionKey];
+    if ([bundleVersion isKindOfClass:[NSString class]]) {
+        state.bundleVersion = bundleVersion;
+    }
+    id failureCount = json[BSGFetchStateFailureCountKey];
+    if ([failureCount isKindOfClass:[NSNumber class]] && [failureCount integerValue] > 0) {
+        state.fetchFailureCount = [failureCount unsignedIntegerValue];
+    }
+    id nextAllowedFetchAt = json[BSGFetchStateNextAllowedFetchAtKey];
+    if ([nextAllowedFetchAt isKindOfClass:[NSNumber class]]) {
+        state.nextAllowedFetchAt = [NSDate dateWithTimeIntervalSince1970:[nextAllowedFetchAt doubleValue]];
+    }
+    id attemptInProgress = json[BSGFetchStateAttemptInProgressKey];
+    if ([attemptInProgress isKindOfClass:[NSNumber class]]) {
+        state.attemptInProgress = [attemptInProgress boolValue];
+    }
+    return state;
+}
+
+- (NSDictionary *)toJson {
+    NSMutableDictionary *json = [NSMutableDictionary dictionary];
+    json[BSGFetchStateAppVersionKey] = self.appVersion;
+    json[BSGFetchStateBundleVersionKey] = self.bundleVersion;
+    json[BSGFetchStateFailureCountKey] = @(self.fetchFailureCount);
+    if (self.nextAllowedFetchAt) {
+        json[BSGFetchStateNextAllowedFetchAtKey] = @([self.nextAllowedFetchAt timeIntervalSince1970]);
+    }
+    json[BSGFetchStateAttemptInProgressKey] = @(self.attemptInProgress);
+    return json;
+}
+
+@end
 
 @implementation BSGRemoteConfigStore
 
@@ -49,34 +100,43 @@ static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
 
 - (BSGRemoteConfiguration *)saveConfiguration:(BSGRemoteConfiguration *)configuration {
     NSDictionary *configurationJson = [configuration toJson];
-    if (configurationJson) {
-        NSError *error = nil;
-        if(!BSGJSONWriteToFileAtomically(configurationJson, [self configurationFilePath], &error)) {
-            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
-            return nil;
-        }
-        return configuration;
+    if (!configurationJson) {
+        return nil;
     }
-    return nil;
+    NSString *path = [self configurationFilePath];
+    __block BOOL saved = NO;
+    // Serialised with other Bugsnag file operations (see saveFetchState:).
+    dispatch_sync(BSGGetFileSystemQueue(), ^{
+        NSError *error = nil;
+        saved = BSGJSONWriteToFileAtomically(configurationJson, path, &error);
+        if (!saved) {
+            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+        }
+    });
+    return saved ? configuration : nil;
 }
 
-- (BSGRemoteConfiguration *)updateExpiryDate:(NSDate *)expiryDate
-                            configurationTag:(NSString *)configurationTag {
+- (BSGRemoteConfigExpiryUpdateResult)updateExpiryDate:(NSDate *)expiryDate
+                                     configurationTag:(NSString *)configurationTag
+                                        configuration:(BSGRemoteConfiguration *__autoreleasing *)revalidatedConfiguration {
+    *revalidatedConfiguration = nil;
     BSGRemoteConfiguration *configuration = [self loadConfiguration];
+    if (configuration == nil) {
+        return BSGRemoteConfigExpiryUpdateResultMissing;
+    }
     NSString *storedTag = BSGNormalizeETag(configuration.configurationTag);
     NSString *incomingTag = BSGNormalizeETag(configurationTag);
     if (storedTag != nil && incomingTag != nil && ![storedTag isEqualToString:incomingTag]) {
-        return nil;
+        return BSGRemoteConfigExpiryUpdateResultTagMismatch;
     }
-    if (configuration != nil) {
-        NSDate *previousExpiryDate = configuration.expiryDate;
-        configuration.expiryDate = expiryDate;
-        if ([self saveConfiguration:configuration]) {
-            return configuration;
-        }
-        configuration.expiryDate = previousExpiryDate;
+    configuration.expiryDate = expiryDate;
+    configuration.fetchedAt = [NSDate date];
+    *revalidatedConfiguration = configuration;
+    if (![self saveConfiguration:configuration]) {
+        // The server confirmed this config, so it stays usable; only the new expiry is not persisted.
+        return BSGRemoteConfigExpiryUpdateResultWriteFailed;
     }
-    return nil;
+    return BSGRemoteConfigExpiryUpdateResultUpdated;
 }
 
 - (BSGRemoteConfiguration *)loadConfiguration {
@@ -90,28 +150,89 @@ static NSString *_Nullable BSGNormalizeETag(NSString *_Nullable etag) {
 }
 
 - (void)clear {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *remoteConfigPath = [self.fileLocations remoteConfigurations];
+    // Serialised with other Bugsnag file operations (see saveFetchState:).
+    dispatch_sync(BSGGetFileSystemQueue(), ^{
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSError *error = nil;
+        NSArray<NSString *> *files = [fileManager contentsOfDirectoryAtPath:remoteConfigPath error:&error];
+        if (error) {
+            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+            return;
+        }
+        for (NSString *file in files) {
+            NSString *filePath = [remoteConfigPath stringByAppendingPathComponent:file];
+            NSError *removeError = nil;
+            [fileManager removeItemAtPath:filePath error:&removeError];
+            if (removeError) {
+                bsg_log_debug(@"%s: %@", __FUNCTION__, removeError);
+            }
+        }
+    });
+}
+
+- (BSGRemoteConfigFetchState *)loadFetchState {
+    NSString *path = self.fileLocations.remoteConfigFetchState;
+    if (!path) {
+        return nil;
+    }
     NSError *error = nil;
-    NSArray<NSString *> *files = [fileManager contentsOfDirectoryAtPath:remoteConfigPath error:&error];
-    if (error) {
-        bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+    NSData *data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+    if (!data) {
+        return nil;
+    }
+    return [BSGRemoteConfigFetchState stateFromJson:BSGJSONDictionaryFromData(data, 0, &error)];
+}
+
+// The fetch state file lives in the Bugsnag root directory, so writes are serialised on the shared
+// filesystem queue. This stops a fetch completing on a network queue from creating files while the
+// root directory is being removed (e.g. Bugsnag.purge / test teardown). Must not be called on that queue.
+- (BOOL)saveFetchState:(BSGRemoteConfigFetchState *)fetchState {
+    NSString *path = self.fileLocations.remoteConfigFetchState;
+    if (!path || !fetchState) {
+        return NO;
+    }
+    NSDictionary *json = [fetchState toJson];
+    __block BOOL saved = NO;
+    dispatch_sync(BSGGetFileSystemQueue(), ^{
+        NSError *error = nil;
+        saved = BSGJSONWriteToFileAtomically(json, path, &error);
+        if (!saved) {
+            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+        }
+    });
+    return saved;
+}
+
+- (void)clearFetchState {
+    NSString *path = self.fileLocations.remoteConfigFetchState;
+    if (!path) {
         return;
     }
-    for (NSString *file in files) {
-        NSString *filePath = [remoteConfigPath stringByAppendingPathComponent:file];
-        NSError *removeError = nil;
-        [fileManager removeItemAtPath:filePath error:&removeError];
-        if (removeError) {
-            bsg_log_debug(@"%s: %@", __FUNCTION__, removeError);
+    dispatch_sync(BSGGetFileSystemQueue(), ^{
+        if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+            return;
         }
-    }
+        NSError *error = nil;
+        if (![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
+            bsg_log_debug(@"%s: %@", __FUNCTION__, error);
+        }
+    });
 }
 
 #pragma mark - Helpers
 
+// A version string used in a file name, with path separators replaced.
+static NSString *BSGFileNameComponent(NSString *_Nullable value) {
+    return [value ?: @"" stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+}
+
+// The config is cached per app version and build: the service is sent both, and its rules can differ for each.
 - (NSString *)configurationFilePath {
-    NSString *fileName = [NSString stringWithFormat:@"core-%@", self.configuration.appVersion];
+    NSString *fileName = [NSString stringWithFormat:@"core-%@", BSGFileNameComponent(self.configuration.appVersion)];
+    if (self.configuration.bundleVersion.length > 0) {
+        fileName = [fileName stringByAppendingFormat:@"-%@", BSGFileNameComponent(self.configuration.bundleVersion)];
+    }
     return [[self.fileLocations remoteConfigurations] stringByAppendingPathComponent:fileName];
 }
 

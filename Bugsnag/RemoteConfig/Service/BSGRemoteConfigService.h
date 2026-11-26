@@ -25,6 +25,13 @@ typedef NS_ENUM(NSUInteger, BSGRemoteConfigServiceResponseType) {
 @property (nonatomic, nullable) NSError *error;
 @property (nonatomic, nullable) NSString *configurationTag;
 @property (nonatomic, nullable) NSDate *expiryDate;
+/// Server-requested minimum wait in seconds from a Retry-After header on a failed response, or 0.
+@property (nonatomic) NSTimeInterval retryAfter;
+/// The request failed because the device had no network connection, not because of the config service.
+@property (nonatomic) BOOL networkUnavailable;
+/// The request failed before the config service answered (a connection, DNS, socket or timeout error),
+/// so the cause may be the device losing its network rather than the service.
+@property (nonatomic) BOOL failedWithoutResponse;
 
 @end
 
@@ -40,7 +47,14 @@ NS_ASSUME_NONNULL_BEGIN
                             device:(BugsnagDevice *)device
                                app:(BugsnagApp *)app;
 
-- (void)loadRemoteConfigWithCurrentTag:(NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion;
+- (void)loadRemoteConfigWithCurrentTag:(nullable NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion;
+
+/**
+ * The cached lifetime for a config the server said lasts `lifetime` seconds, shortened by up to 10%:
+ * lifetime * (1 - 0.1 * randomFraction), where randomFraction is in the range [0, 1].
+ * Spreads refreshes across a fleet that fetched config at the same time.
+ */
++ (NSTimeInterval)jitteredLifetime:(NSTimeInterval)lifetime randomFraction:(double)randomFraction;
 
 @end
 

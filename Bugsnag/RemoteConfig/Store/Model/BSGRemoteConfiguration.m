@@ -11,6 +11,7 @@
 
 static NSString const *ConfigurationTagKey = @"configurationTag";
 static NSString const *ExpiryDateKey = @"expiryDate";
+static NSString const *FetchedAtKey = @"fetchedAt";
 static NSString const *DiscardRulesKey = @"discardRules";
 static NSString const *MatchTypeKey = @"matchType";
 
@@ -39,9 +40,14 @@ static NSString const *MatchTypeKey = @"matchType";
 + (instancetype)configFromJson:(NSDictionary *)json {
     NSString *configurationTag = json[ConfigurationTagKey];
     NSDate *expiryDate = [BSG_RFC3339DateTool dateFromString:json[ExpiryDateKey]];
-    return [self configFromJson:json
-                           eTag:configurationTag
-                     expiryDate:expiryDate];
+    BSGRemoteConfiguration *config = [self configFromJson:json
+                                                     eTag:configurationTag
+                                               expiryDate:expiryDate];
+    id fetchedAt = json[FetchedAtKey];
+    if ([fetchedAt isKindOfClass:[NSString class]]) {
+        config.fetchedAt = [BSG_RFC3339DateTool dateFromString:fetchedAt];
+    }
+    return config;
 }
 
 + (instancetype)configFromJson:(NSDictionary *)json
@@ -86,6 +92,10 @@ static NSString const *MatchTypeKey = @"matchType";
     NSString *expiryDateJson = [BSG_RFC3339DateTool stringFromDate:self.expiryDate];
     if (expiryDateJson) {
         result[ExpiryDateKey] = expiryDateJson;
+    }
+    NSString *fetchedAtJson = self.fetchedAt ? [BSG_RFC3339DateTool stringFromDate:self.fetchedAt] : nil;
+    if (fetchedAtJson) {
+        result[FetchedAtKey] = fetchedAtJson;
     }
     NSMutableArray *discardRulesJson = [NSMutableArray array];
     for (BSGRemoteConfigurationDiscardRule *rule in self.discardRules) {

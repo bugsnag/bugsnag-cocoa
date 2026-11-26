@@ -6,6 +6,7 @@
 //  Copyright © 2025 Bugsnag Inc. All rights reserved.
 //
 
+#import <stdlib.h>
 #import "BugsnagConfiguration+Private.h"
 #import "BSGRemoteConfigService.h"
 #import "BugsnagApiClient.h"
@@ -25,9 +26,22 @@ static NSString *IfNoneMatchHeader = @"If-None-Match";
 static NSString *ETagHeader = @"ETag";
 static NSString *CacheControlHeader = @"Cache-Control";
 static NSString *CacheControlMaxAgePrefix = @"max-age=";
+static NSString *RetryAfterHeader = @"Retry-After";
+// Identifies the device in the config service's logs.
+static NSString *DeviceIdHeader = @"Bugsnag-Device-Id";
 
 static const NSInteger HTTPStatusCodeNotModified = 304;
 static const NSInteger HTTPStatusCodeOK = 200;
+
+static const NSTimeInterval RequestTimeoutInterval = 30;
+
+// The longest a fetched config is used before it is fetched again, whatever max-age says, so a wrong or very
+// long max-age cannot keep a bad rule (such as discarding every event) on devices indefinitely.
+static const NSTimeInterval MaximumConfigLifetime = 7 * 24 * 60 * 60;
+
+// Each cached config's lifetime is shortened by a random fraction up to this value, so devices that fetched
+// together do not all expire, and refresh, at the same moment.
+static const double ExpiryJitterFraction = 0.1;
 
 static NSString *CurrentPayloadVersion = @"1";
 
@@ -40,6 +54,21 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
         }
     }
     return nil;
+}
+
+// The device has no usable connection, so the request never reached the config service.
+static BOOL BSGIsNetworkUnavailableError(NSError *error) {
+    if (![error.domain isEqualToString:NSURLErrorDomain]) {
+        return NO;
+    }
+    switch (error.code) {
+        case NSURLErrorNotConnectedToInternet:
+        case NSURLErrorInternationalRoamingOff:
+        case NSURLErrorDataNotAllowed:
+            return YES;
+        default:
+            return NO;
+    }
 }
 
 @implementation BSGRemoteConfigServiceResponse
@@ -126,7 +155,7 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
     return self;
 }
 
-- (void)loadRemoteConfigWithCurrentTag:(NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion {
+- (void)loadRemoteConfigWithCurrentTag:(nullable NSString *)tag completion:(BSGRemoteConfigServiceCompletion)completion {
     NSURL *configUrl = self.configuration.configurationURL;
     if (!configUrl) {
         completion([BSGRemoteConfigServiceResponse responseWithError:[self noUrlError]]);
@@ -155,7 +184,14 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
             completion([BSGRemoteConfigServiceResponse responseWithError:error]);
             return;
         }
-        
+        if (error && ![response isKindOfClass:[NSHTTPURLResponse class]]) {
+            BSGRemoteConfigServiceResponse *errorResponse = [BSGRemoteConfigServiceResponse responseWithError:error];
+            errorResponse.networkUnavailable = BSGIsNetworkUnavailableError(error);
+            errorResponse.failedWithoutResponse = YES;
+            completion(errorResponse);
+            return;
+        }
+
         NSString *etag = nil;
         NSDate *expiryDate = nil;
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
@@ -173,8 +209,10 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
                 return;
             }
             if (httpResponse.statusCode != HTTPStatusCodeOK) {
-                completion([BSGRemoteConfigServiceResponse responseWithError:
-                            [strongSelf unexpectedResponseErrorWithStatusCode:httpResponse.statusCode]]);
+                BSGRemoteConfigServiceResponse *errorResponse = [BSGRemoteConfigServiceResponse responseWithError:
+                                                                 [strongSelf unexpectedResponseErrorWithStatusCode:httpResponse.statusCode]];
+                errorResponse.retryAfter = [strongSelf parseRetryAfter:BSGHeaderValue(httpResponse.allHeaderFields, RetryAfterHeader)];
+                completion(errorResponse);
                 return;
             }
             if ([data length] == 0) {
@@ -229,19 +267,23 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
                            userInfo:@{NSLocalizedDescriptionKey: @"Unexpected Remote Config response"}];
 }
 
-- (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {
-    NSTimeInterval maxAge = [self parseMaxAgeFromCacheControl:cacheControl];
-    if (maxAge > 0) {
-        return [NSDate dateWithTimeIntervalSinceNow:maxAge];
-    }
-    
-    return [self defaultExpiryDate];
++ (NSTimeInterval)jitteredLifetime:(NSTimeInterval)lifetime randomFraction:(double)randomFraction {
+    double fraction = MIN(1.0, MAX(0.0, randomFraction));
+    return lifetime * (1.0 - ExpiryJitterFraction * fraction);
 }
 
-- (NSDate *)defaultExpiryDate {
-    NSTimeInterval defaultExpireTime = self.configuration.remoteConfigUpdateInterval +
-                                        self.configuration.remoteConfigUpdateTolerance;
-    return [NSDate dateWithTimeIntervalSinceNow:defaultExpireTime];
+- (NSDate *)expiryDateFromCacheControl:(NSString *)cacheControl {
+    NSTimeInterval lifetime = [self parseMaxAgeFromCacheControl:cacheControl];
+    if (lifetime <= 0) {
+        lifetime = self.configuration.remoteConfigUpdateInterval +
+                   self.configuration.remoteConfigUpdateTolerance;
+    }
+    // A successful fetch starts no cooldown, so a very short lifetime (a misconfigured max-age, or a tiny
+    // update interval) would make every error fetch the config again. Keep each config for a minimum time.
+    lifetime = MAX(lifetime, MAX(0, self.configuration.remoteConfigMinimumLifetime));
+    lifetime = MIN(lifetime, MaximumConfigLifetime);
+    double randomFraction = (double)arc4random() / (double)UINT32_MAX;
+    return [NSDate dateWithTimeIntervalSinceNow:[[self class] jitteredLifetime:lifetime randomFraction:randomFraction]];
 }
 
 - (NSTimeInterval)parseMaxAgeFromCacheControl:(NSString *)cacheControl {
@@ -256,14 +298,29 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
         if ([trimmedDirective hasPrefix:CacheControlMaxAgePrefix]) {
             NSString *maxAgeValue = [trimmedDirective substringFromIndex:[CacheControlMaxAgePrefix length]];
             NSTimeInterval maxAge = [maxAgeValue doubleValue];
-            return maxAge > 0 ? maxAge : 0;
+            // A value too large to be a number (e.g. 1e999) counts as missing.
+            return isfinite(maxAge) && maxAge > 0 ? maxAge : 0;
         }
     }
     
     return 0;
 }
 
-- (NSURLRequest *)requestWithUrl:(NSURL *)url currentTag:(NSString *)tag {
+// Only the delay-seconds form is supported; an HTTP-date value is ignored.
+- (NSTimeInterval)parseRetryAfter:(NSString *)retryAfter {
+    NSString *trimmed = [retryAfter stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if (trimmed.length == 0) {
+        return 0;
+    }
+    NSScanner *scanner = [NSScanner scannerWithString:trimmed];
+    NSInteger seconds = 0;
+    if (![scanner scanInteger:&seconds] || !scanner.isAtEnd || seconds <= 0) {
+        return 0;
+    }
+    return (NSTimeInterval)seconds;
+}
+
+- (NSURLRequest *)requestWithUrl:(NSURL *)url currentTag:(nullable NSString *)tag {
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     headers[ContentTypeHeader] = @"application/json";
     if (tag) {
@@ -272,6 +329,9 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
     headers[BugsnagHTTPHeaderNameApiKey] = self.configuration.apiKey;
     headers[BugsnagHTTPHeaderNameNotifierName] = self.notifier.name;
     headers[BugsnagHTTPHeaderNameNotifierVersion] = self.notifier.version;
+    if (self.device.id.length > 0) {
+        headers[DeviceIdHeader] = self.device.id;
+    }
     
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
     NSURLQueryItem *versionQueryItem = [NSURLQueryItem queryItemWithName:VersionQueryParam
@@ -307,6 +367,7 @@ static NSString *_Nullable BSGHeaderValue(NSDictionary<id, id> *headers, NSStrin
     request.allHTTPHeaderFields = headers;
     request.HTTPMethod = @"GET";
     request.cachePolicy = NSURLRequestReloadIgnoringCacheData;
+    request.timeoutInterval = RequestTimeoutInterval;
     
     return request;
 }
