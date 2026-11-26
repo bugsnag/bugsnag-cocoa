@@ -274,6 +274,9 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
         lifetime = self.configuration.remoteConfigUpdateInterval +
                    self.configuration.remoteConfigUpdateTolerance;
     }
+    // A successful fetch starts no cooldown, so a very short lifetime (a misconfigured max-age, or a tiny
+    // update interval) would make every error fetch the config again. Keep each config for a minimum time.
+    lifetime = MAX(lifetime, MAX(0, self.configuration.remoteConfigMinimumLifetime));
     double randomFraction = (double)arc4random() / (double)UINT32_MAX;
     return [NSDate dateWithTimeIntervalSinceNow:[[self class] jitteredLifetime:lifetime randomFraction:randomFraction]];
 }

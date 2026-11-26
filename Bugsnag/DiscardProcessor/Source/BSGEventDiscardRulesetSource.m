@@ -46,7 +46,13 @@
     if (!ruleset || !ruleset.createdAt || !lastUpdate) {
         return NO;
     }
-    return [ruleset.createdAt timeIntervalSinceDate:lastUpdate] > 0 && [self.remoteConfigHandler hasValidConfig];
+    BOOL isValid = [ruleset.createdAt timeIntervalSinceDate:lastUpdate] > 0 && [self.remoteConfigHandler hasValidConfig];
+    if (isValid) {
+        // A valid ruleset is reused without asking for the config again, so this is where a refresh
+        // before expiry has to start. The current rules keep applying until the new config arrives.
+        [self.remoteConfigHandler refreshConfigurationIfDue];
+    }
+    return isValid;
 }
 
 - (NSArray<id<BSGEventDiscardRule>> *)discardRules {

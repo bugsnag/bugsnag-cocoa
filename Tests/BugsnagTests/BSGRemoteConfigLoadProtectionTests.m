@@ -10,6 +10,9 @@
 #import "BSGRemoteConfigService.h"
 #import "BSGRemoteConfigStore.h"
 #import "BSGFileLocations.h"
+#import "BSGEventDiscardProcessor.h"
+#import "BSGEventDiscardRulesetSource.h"
+#import "BSGEventDiscardRuleFactory.h"
 
 static NSString * const BSGLegacyRemoteConfigCooldownPreference = @"com.bugsnag.remote-config.cooldown-until";
 static NSString * const BSGLegacyRemoteConfigExpiryRefreshAttemptPreference = @"com.bugsnag.remote-config.expiry-refresh-attempt";
@@ -842,6 +845,38 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     configuration.remoteConfigFirstFetchJitter = 3;
     XCTAssertEqual(((BugsnagConfiguration *)[configuration copy]).remoteConfigFirstFetchJitter, 3);
 }
+- (void)testMinimumLifetimeDefaultsToFifteenMinutesAndIsCopied {
+    BugsnagConfiguration *configuration = [[BugsnagConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    XCTAssertEqual(configuration.remoteConfigMinimumLifetime, 15 * Minute);
+    configuration.remoteConfigMinimumLifetime = 7;
+    XCTAssertEqual(((BugsnagConfiguration *)[configuration copy]).remoteConfigMinimumLifetime, 7);
+}
+- (void)testConfigReadsAreSafeWhileFetchResultsArrive {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    // The upload thread reads the config while fetch results replace it on another thread. Both run for
+    // the same period so that they overlap.
+    NSDate *end = [NSDate dateWithTimeIntervalSinceNow:0.3];
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_async(group, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        while ([end timeIntervalSinceNow] > 0) {
+            (void)[handler hasValidConfig];
+            (void)[handler lastConfigUpdateTime];
+        }
+    });
+    dispatch_group_async(group, dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        for (int i = 0; [end timeIntervalSinceNow] > 0; i++) {
+            BSGRemoteConfigServiceResponse *response = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeSuccess);
+            // Already expired, so every call clears the config and stores a new one.
+            response.configuration = [BSGRemoteConfiguration configFromJson:@{} eTag:[NSString stringWithFormat:@"v%d", i]
+                                                                 expiryDate:[NSDate dateWithTimeIntervalSinceNow:-1]];
+            service.response = response;
+            [handler currentConfiguration];
+        }
+    });
+    XCTAssertEqual(dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC)), 0);
+}
 - (void)testFirstFetchIsDelayedWithinJitterWindow {
     BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
     BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
@@ -1055,6 +1090,35 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
 
     // Refreshed, so later errors send no request.
     [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+}
+- (void)testRefreshStartsWhileRulesBuiltFromValidConfigAreReused {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *notModified = BSGResponseWithType(BSGRemoteConfigServiceResponseTypeNotModified);
+    notModified.configurationTag = @"v1";
+    notModified.expiryDate = [NSDate dateWithTimeIntervalSinceNow:24 * Hour];
+    service.response = notModified;
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    store.configuration = [self configFetchedAgo:22 * Hour expiringIn:2 * Hour];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    BSGEventDiscardProcessor *processor = [BSGEventDiscardProcessor new];
+    processor.source = [BSGEventDiscardRulesetSource sourceWithRemoteConfigHandler:handler
+                                                                discardRuleFactory:[BSGEventDiscardRuleFactory new]];
+    NSDictionary *event = @{@"exceptions": @[@{@"errorClass": @"Error"}]};
+
+    // Two hours left: the rules are built once and then reused for each event, with no request.
+    XCTAssertTrue([processor shouldDiscardEvent:event]);
+    XCTAssertTrue([processor shouldDiscardEvent:event]);
+    XCTAssertEqual(service.requestCount, 0);
+
+    // The app keeps running into the config's last hour.
+    store.configuration.expiryDate = [NSDate dateWithTimeIntervalSinceNow:30 * Minute];
+    XCTAssertTrue([processor shouldDiscardEvent:event]);
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertGreaterThan([store.configuration.expiryDate timeIntervalSinceNow], 23 * Hour);
+
+    // Refreshed: later events reuse the rules again without a request.
+    XCTAssertTrue([processor shouldDiscardEvent:event]);
     XCTAssertEqual(service.requestCount, 1);
 }
 - (void)testConfigWithMoreThanAnHourLeftIsNotRefreshed {
@@ -1481,6 +1545,74 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     NSTimeInterval defaultLifetime = 86400 + 7200;
     XCTAssertGreaterThanOrEqual(lifetime, defaultLifetime * 0.9 - 1);
     XCTAssertLessThanOrEqual(lifetime, defaultLifetime + 1);
+}
+- (BSGRemoteConfigServiceResponse *)responseForSession:(BSGRemoteConfigSessionMock *)session
+                                                   tag:(NSString *)tag
+                                             configure:(void (^)(BugsnagConfiguration *configuration))configure {
+    BSGTestRemoteConfigConfiguration *configuration =
+        [[BSGTestRemoteConfigConfiguration alloc] initWithApiKey:DUMMY_APIKEY_32CHAR_1];
+    configuration.testConfigurationURL = [NSURL URLWithString:@"https://example.com/config"];
+    configure(configuration);
+    BSGRemoteConfigService *service = [BSGRemoteConfigService serviceWithSession:(NSURLSession *)session
+                                                                   configuration:configuration
+                                                                        notifier:[BugsnagNotifier new]
+                                                                          device:[BugsnagDevice new]
+                                                                             app:[BugsnagApp new]];
+    __block BSGRemoteConfigServiceResponse *result = nil;
+    [service loadRemoteConfigWithCurrentTag:tag completion:^(BSGRemoteConfigServiceResponse *response) {
+        result = response;
+    }];
+    return result;
+}
+- (void)assertLifetimeOfExpiry:(NSDate *)expiryDate since:(NSDate *)before isAbout:(NSTimeInterval)lifetime {
+    NSTimeInterval actual = [expiryDate timeIntervalSinceDate:before];
+    XCTAssertGreaterThanOrEqual(actual, lifetime * 0.9 - 1);
+    XCTAssertLessThanOrEqual(actual, lifetime + 1);
+}
+- (void)testShortMaxAgeIsRaisedToMinimumLifetime {
+    for (NSString *maxAge in @[@"max-age=1", @"max-age=60", @"max-age=899"]) {
+        BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+        session.statusCode = 200;
+        session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": maxAge};
+        NSDate *before = [NSDate date];
+        [self assertLifetimeOfExpiry:[self responseForSession:session tag:nil].configuration.expiryDate
+                               since:before isAbout:15 * Minute];
+    }
+}
+- (void)testShortMaxAgeOn304IsRaisedToMinimumLifetime {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 304;
+    session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": @"max-age=1"};
+    NSDate *before = [NSDate date];
+    [self assertLifetimeOfExpiry:[self responseForSession:session tag:@"\"v1\""].expiryDate since:before isAbout:15 * Minute];
+}
+- (void)testTinyUpdateIntervalWithoutMaxAgeIsRaisedToMinimumLifetime {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    session.headers = @{@"ETag": @"\"v1\""};
+    NSDate *before = [NSDate date];
+    BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil configure:^(BugsnagConfiguration *configuration) {
+        configuration.remoteConfigUpdateInterval = 1;
+        configuration.remoteConfigUpdateTolerance = 0;
+    }];
+    [self assertLifetimeOfExpiry:response.configuration.expiryDate since:before isAbout:15 * Minute];
+}
+- (void)testLongerMaxAgeIsNotChangedByMinimumLifetime {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": @"max-age=3600"};
+    NSDate *before = [NSDate date];
+    [self assertLifetimeOfExpiry:[self responseForSession:session tag:nil].configuration.expiryDate since:before isAbout:Hour];
+}
+- (void)testMinimumLifetimeOfZeroKeepsShortMaxAge {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": @"max-age=4"};
+    NSDate *before = [NSDate date];
+    BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil configure:^(BugsnagConfiguration *configuration) {
+        configuration.remoteConfigMinimumLifetime = 0;
+    }];
+    [self assertLifetimeOfExpiry:response.configuration.expiryDate since:before isAbout:4];
 }
 - (void)testEmptySuccessBodyIsValidEmptyConfig {
     BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];

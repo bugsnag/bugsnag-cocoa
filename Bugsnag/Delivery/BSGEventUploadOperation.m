@@ -113,6 +113,15 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
         return;
     }
     
+    // Checked before the request is built and encoded, so an event dropped by a discard rule costs no
+    // JSON encoding. Discard rules can drop most events in a burst, so this work adds up.
+    if ([delegate shouldDiscardEvent:eventPayload]) {
+        bsg_log_info(@"Discarding event %@ because [delegate shouldDiscardEvent:] returned YES", self.name);
+        [self deleteEvent];
+        completionHandler();
+        return;
+    }
+
     NSString *apiKey = event.apiKey ?: configuration.apiKey;
     
     NSMutableDictionary *requestPayload = [NSMutableDictionary dictionary];
@@ -159,13 +168,6 @@ typedef NS_ENUM(NSUInteger, BSGEventUploadOperationState) {
             completionHandler();
             return;
         }
-    }
-
-    if ([delegate shouldDiscardEvent:eventPayload]) {
-        bsg_log_info(@"Discarding event %@ because [delegate shouldDiscardEvent:] returned YES", self.name);
-        [self deleteEvent];
-        completionHandler();
-        return;
     }
 
     BSGPostJSONData(configuration.sessionOrDefault, data, requestHeaders, notifyURL, ^(BSGDeliveryStatus status, __unused NSError *deliveryError) {

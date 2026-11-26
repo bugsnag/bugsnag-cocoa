@@ -21,6 +21,11 @@
 - (NSDate *)lastConfigUpdateTime;
 - (BOOL)hasValidConfig;
 - (BOOL)isRemoteConfigEnabled;
+/**
+ * Starts a background refresh if the current config is in the last part of its lifetime. For callers that
+ * reuse rules built from a valid config without asking for the config again.
+ */
+- (void)refreshConfigurationIfDue;
 
 /**
  * Exponential backoff delay ceiling for the given consecutive failure index (k):

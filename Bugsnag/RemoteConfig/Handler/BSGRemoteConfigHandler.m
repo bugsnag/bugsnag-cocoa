@@ -157,9 +157,18 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
     self.lastConfigUpdateTime = [NSDate date];
 }
 
+// Also read by the event upload thread while a fetch result may be changing the config on another thread.
 - (BOOL)hasValidConfig {
-    return self.remoteConfig.expiryDate &&
-        [self.remoteConfig.expiryDate timeIntervalSinceNow] > 0;
+    @synchronized (self) {
+        NSDate *expiryDate = self.remoteConfig.expiryDate;
+        return expiryDate && [expiryDate timeIntervalSinceNow] > 0;
+    }
+}
+
+- (NSDate *)lastConfigUpdateTime {
+    @synchronized (self) {
+        return _lastConfigUpdateTime;
+    }
 }
 
 #pragma mark - Backoff
@@ -427,6 +436,14 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
     [self.store clear];
     self.remoteConfig = nil;
     self.didClearLocalStore = YES;
+}
+
+- (void)refreshConfigurationIfDue {
+    @synchronized (self) {
+        if (!self.isLoadingRemoteConfig && [self isRemoteConfigEnabled] && [self isRefreshDue]) {
+            [self updateRemoteConfig];
+        }
+    }
 }
 
 - (void)updateRemoteConfigIfNeeded {
