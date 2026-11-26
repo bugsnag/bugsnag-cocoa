@@ -26,7 +26,7 @@
 @interface BSGMemoryFeatureFlagStore : NSObject <BSGFeatureFlagStore, NSCopying>
 @end
 
-@interface BSGPersistentFeatureFlagStore : NSObject <BSGFeatureFlagStore>
+@interface BSGPersistentFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore>
 @end
 
 @interface BSGAtomicFeatureFlagStore : NSObject <BSGReplaceableFeatureFlagStore>

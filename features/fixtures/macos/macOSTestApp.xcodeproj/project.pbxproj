@@ -201,6 +201,7 @@
 		1C70DEAB2EF1BFDA00F52112 /* FatalErrorOptionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C70DEA92EF1BFDA00F52112 /* FatalErrorOptionScenario.swift */; };
 		1C8CB8B72EBE3C94007BF492 /* CaptureOptionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8B62EBE3C94007BF492 /* CaptureOptionsScenario.swift */; };
 		8A096DFA27C7E6D800DB6ECC /* CxxBareThrowScenario.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */; };
+		929696E0FA92936E0BCB0845 /* FeatureFlagsPersistenceScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7946B4E8A3660836FE0FC0 /* FeatureFlagsPersistenceScenario.m */; };
 		967F6F1629B767CE0054EED8 /* InternalWorkingsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1529B767CE0054EED8 /* InternalWorkingsScenario.swift */; };
 		96A25F362D66B55E00A18116 /* ObjCExceptionFeatureFlagsScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F352D66B55E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */; };
 		96C7358C2E89E42700F3CB3C /* RemoteConfigBasicScenario.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C7358B2E89E42700F3CB3C /* RemoteConfigBasicScenario.m */; };
@@ -435,6 +436,7 @@
 		1C70DEA82EF1BFDA00F52112 /* CustomerControlledDeliveryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerControlledDeliveryScenario.swift; sourceTree = "<group>"; };
 		1C70DEA92EF1BFDA00F52112 /* FatalErrorOptionScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatalErrorOptionScenario.swift; sourceTree = "<group>"; };
 		1C8CB8B62EBE3C94007BF492 /* CaptureOptionsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureOptionsScenario.swift; sourceTree = "<group>"; };
+		7D7946B4E8A3660836FE0FC0 /* FeatureFlagsPersistenceScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FeatureFlagsPersistenceScenario.m; sourceTree = "<group>"; };
 		8A096DF927C7E6D800DB6ECC /* CxxBareThrowScenario.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CxxBareThrowScenario.mm; sourceTree = "<group>"; };
 		967F6F1529B767CE0054EED8 /* InternalWorkingsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalWorkingsScenario.swift; sourceTree = "<group>"; };
 		96A25F352D66B55E00A18116 /* ObjCExceptionFeatureFlagsScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExceptionFeatureFlagsScenario.m; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 		AA4C7F1729AEA31D009B09A9 /* BugsnagWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagWrapper.swift; sourceTree = "<group>"; };
 		AA6ACD192773E098006464C4 /* UserFromConfigScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFromConfigScenario.swift; sourceTree = "<group>"; };
 		AA6ACD1D2773E39C006464C4 /* UserInfoScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoScenario.swift; sourceTree = "<group>"; };
+		BDABBACA3BE126E1584F61EE /* FeatureFlagsPersistenceScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FeatureFlagsPersistenceScenario.h; sourceTree = "<group>"; };
 		CB0AE1F2287DBA380079B28E /* OnSendErrorCallbackFeatureFlagsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnSendErrorCallbackFeatureFlagsScenario.swift; sourceTree = "<group>"; };
 		CBB7878C2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkUnhandledHandledScenario.m; sourceTree = "<group>"; };
 		CBB7878D2578FB3F0071BDE4 /* MarkUnhandledHandledScenario.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkUnhandledHandledScenario.h; sourceTree = "<group>"; };
@@ -659,6 +662,8 @@
 				017D9CF02833C81100B0AA87 /* UserPersistencePersistUserClientScenario.m */,
 				017D9CF82833C81100B0AA87 /* UserPersistencePersistUserScenario.m */,
 				01F47CB0254B1B3000B184AD /* UserSessionOverrideScenario.swift */,
+				BDABBACA3BE126E1584F61EE /* FeatureFlagsPersistenceScenario.h */,
+				7D7946B4E8A3660836FE0FC0 /* FeatureFlagsPersistenceScenario.m */,
 			);
 			name = scenarios;
 			path = ../shared/scenarios;
@@ -1001,6 +1006,7 @@
 				010BAB732833D34A0003FF36 /* AppAndDeviceAttributesStartWithApiKeyScenario.swift in Sources */,
 				01BB5D2628A1463C00A7F322 /* OversizedBreadcrumbsScenario.swift in Sources */,
 				01F47CC9254B1B3100B184AD /* BuiltinTrapScenario.m in Sources */,
+				929696E0FA92936E0BCB0845 /* FeatureFlagsPersistenceScenario.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,40 +24,73 @@ char *_Nullable BSGCStringWithData(NSData *_Nullable data);
 /// Files with NSFileProtectionComplete cannot be read from or written to while the device is locked or booting.
 ///
 /// Files with NSFileProtectionCompleteUnlessOpen can be created while the device is locked, but once closed, cannot be opened again until the device is unlocked.
-/// So a file that must stay accessible while locked (e.g. memory mapped) must be opened after this call, and its
-/// descriptor kept open while it is used, even while a mapping remains.
+/// A file that must stay accessible while the device is locked (e.g. memory mapped) must be opened after this call,
+/// and its descriptor kept open while it is used; closing it, even with a mapping left, gives that up.
 BOOL BSGDisableNSFileProtectionComplete(NSString *path);
 
-/// As BSGDisableNSFileProtectionComplete; also sets `changed` (if not NULL) to whether the file had
-/// NSFileProtectionComplete. `changed` is NO on error.
-///
-/// An unreadable protection class is treated as not NSFileProtectionComplete; if it really is, I/O on the file can
-/// fail once the device locks, which callers handle like any other I/O failure.
+/// As BSGDisableNSFileProtectionComplete (failures are logged), also setting `changed` (if not NULL) to whether the
+/// file had NSFileProtectionComplete and was changed; NO on error. A class that cannot be read counts as not Complete,
+/// so the file is left as is; if it really is Complete, its descriptors can stop working once the device locks, which
+/// callers handle as any other read or write failure.
 BOOL BSGChangeNSFileProtectionComplete(NSString *path, BOOL *_Nullable changed);
 
-/// Opens (or, with O_CREAT, creates) a file to keep open while it is used, changing NSFileProtectionComplete to
-/// NSFileProtectionCompleteUnlessOpen and applying Bugsnag's backup policy. Uses O_CLOEXEC | O_NOFOLLOW; new files get
-/// mode 0600. If the class was changed, the file is reopened, so the descriptor returned was opened after the change.
-/// Does not log; the caller logs failures.
-///
-/// Returns the descriptor, or -1 with errno set to open()'s own error (ELOOP if a symbolic link is at the path), or:
-/// - EAGAIN: the file at the path was removed or replaced while opening (checked by device and inode); retry.
-/// - The POSIX error from changing the protection class, or EPERM if there is none.
-/// - The reopen error, if the file cannot be reopened after its protection class changed. The first descriptor was
-///   opened under NSFileProtectionComplete and could fail (or make a mapping fault) once the device locks.
+/// Opens (or, with O_CREAT, creates with mode 0600) a file with O_CLOEXEC and O_NOFOLLOW (a symbolic link fails with
+/// ELOOP), returning -1 with errno set on error. Makes no NSURL calls: the backup policy and protection class are
+/// neither read nor changed.
+int BSGOpenFileWithoutFollowingLinks(NSString *path, int flags);
+
+/// Opens (or, with O_CREAT, creates) a file whose descriptor is kept open while it is used, as
+/// BSGOpenFileWithoutFollowingLinks does (ELOOP for a symbolic link). Applies Bugsnag's backup policy and changes
+/// NSFileProtectionComplete to NSFileProtectionCompleteUnlessOpen. Returns -1 with errno set on error; nothing is
+/// logged (callers log). Files are compared by device and inode number.
+/// - Class not changed: the descriptor is returned only if it is still the file at the path, else EAGAIN.
+/// - Class changed: the file is reopened, so the descriptor was opened after the change. If the file has left the path
+///   or a different file is there by then, EAGAIN, so the caller can try again. Any other reopen error (e.g. the device
+///   locked between the opens) is returned as is: the first descriptor may stop working (or make a mapping fault) once
+///   the device locks.
+/// - Class cannot be changed: errno is the underlying POSIX error, or EPERM.
+/// A file created here with O_EXCL is deleted if it cannot be set up.
 int BSGOpenFileWithoutCompleteProtection(NSString *path, int flags);
 
+/// The class BSGCreateFileWithoutCompleteProtection requests for a new file in `directory`:
+/// NSFileProtectionCompleteUnlessOpen if the directory's class is NSFileProtectionComplete, else nil (inherited).
+NSString *_Nullable BSGProtectionClassForNewFileInDirectory(NSString *directory);
+
+/// Creates a new, empty file (mode 0600) and opens it with `flags` (e.g. O_RDWR; O_CREAT, O_EXCL and O_TRUNC are
+/// implied and ignored). Returns -1 with errno set on error; nothing is logged. Fails if anything, even a symbolic
+/// link, is at the path. The file is deleted if it cannot be opened or set up; EAGAIN if it is removed or renamed away
+/// meanwhile.
+///
+/// Only NSFileProtectionComplete is avoided, so the descriptor (kept open by callers) works while the device is locked:
+/// - iOS, tvOS, watchOS, visionOS: in a NSFileProtectionComplete directory the file is created with
+///   NSFileProtectionCompleteUnlessOpen, never Complete even briefly. Elsewhere it keeps its inherited class (e.g.
+///   NSFileProtectionCompleteUntilFirstUserAuthentication): CompleteUnlessOpen is stricter, as a closed file with it
+///   cannot be reopened while the device is locked.
+/// - macOS: created with the default class, changed (and reopened) as BSGOpenFileWithoutCompleteProtection does.
+/// The file is created, closed and reopened, so in a NSFileProtectionComplete directory this fails while the device is
+/// locked (e.g. EPERM) and the file is deleted; callers retry after the unlock. With the default class it works while
+/// locked after the first unlock.
+///
+/// The backup policy and protection class are set once, here. rename() keeps them, so a file renamed into place can
+/// later be opened with BSGOpenFileWithoutFollowingLinks.
+int BSGCreateFileWithoutCompleteProtection(NSString *path, int flags);
+
 #if defined(DEBUG) && DEBUG
-/// The functions BSGChangeNSFileProtectionComplete uses to read and set a protection class. Unit tests replace them
-/// to simulate classes the host cannot set, e.g. NSFileProtectionComplete while locked.
+/// The functions used to read and change a protection class (an NSURLFileProtectionType) and to create a file in
+/// BSGCreateFileWithoutCompleteProtection. Unit tests replace them to simulate what the host cannot, e.g.
+/// NSFileProtectionComplete while the device is locked, or a file that cannot be created while it is locked.
 typedef struct {
-    /// Returns the file's protection class, or nil if it has none or it cannot be read.
+    /// Returns the protection class of a file or directory, or nil if it has none or it cannot be read.
     NSString *_Nullable (*_Nullable getProtection)(NSString *path);
     /// Sets the file's protection class, returning NO and setting `error` on failure.
     BOOL (*_Nullable setProtection)(NSString *path, NSString *protection, NSError *_Nullable *_Nullable error);
+    /// Creates a new, empty file, failing if anything is at the path. Returns NO with errno set on failure (e.g. EPERM
+    /// while the device is locked).
+    BOOL (*_Nullable createFile)(NSString *path);
 } BSGFileProtectionFunctions;
 
-/// Unit tests only: atomically replaces the protection functions, returning the previous ones. NULL restores a default.
+/// Replaces the functions (a NULL member restores that default) and returns the previous ones. Each is replaced
+/// atomically, so other threads may call them meanwhile. For unit tests only.
 BSGFileProtectionFunctions BSGSetFileProtectionFunctions(BSGFileProtectionFunctions functions);
 #endif
 

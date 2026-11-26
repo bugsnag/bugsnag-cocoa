@@ -15,7 +15,24 @@ Or to test on tvOS:
 
     make PLATFORM=tvOS test
 
-### Tests that need an unlocked screen
+### Tests that are run by hand before a release
+
+Some feature flag tests take too long for every CI run, or need a host whose screen is unlocked, so CI does
+not run them. Run them by hand before a release.
+
+The stress tests (`BSGPersistentFeatureFlagStoreStressTests`), on macOS and in an iOS simulator:
+
+    TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-macOS \
+        -destination 'platform=macOS' -only-testing:Bugsnag-macOSTests/BSGPersistentFeatureFlagStoreStressTests
+
+    TEST_RUNNER_BSG_RUN_STRESS_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-iOS \
+        -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:Bugsnag-iOSTests/BSGPersistentFeatureFlagStoreStressTests
+
+The benchmarks comparing the binary store with the earlier JSON files, and measuring the slowest single call near the
+2 MB limit (`BSGFeatureFlagStorePerformanceTests`):
+
+    TEST_RUNNER_BSG_RUN_PERFORMANCE_TESTS=1 xcodebuild test -project Bugsnag.xcodeproj -scheme Bugsnag-macOS \
+        -destination 'platform=macOS' -only-testing:Bugsnag-macOSTests/BSGFeatureFlagStorePerformanceTests
 
 The tests that set `NSFileProtectionComplete` on real files skip when the host cannot set it, for example
 while the screen is locked, or cannot change it to `NSFileProtectionCompleteUnlessOpen` (some macOS versions refuse

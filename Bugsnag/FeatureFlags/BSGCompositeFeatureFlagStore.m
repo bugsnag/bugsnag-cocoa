@@ -12,7 +12,7 @@
 @interface BSGCompositeFeatureFlagStore ()
 
 @property(nonatomic, strong) id<BSGFeatureFlagStore, NSCopying> memoryStore;
-@property(nonatomic, strong) id<BSGFeatureFlagStore> persistentStore;
+@property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> persistentStore;
 @property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> atomicStore;
 
 @end
@@ -20,7 +20,7 @@
 @implementation BSGCompositeFeatureFlagStore
 
 + (instancetype)storeWithMemoryStore:(id<BSGFeatureFlagStore, NSCopying>)memoryStore
-                     persistentStore:(id<BSGFeatureFlagStore>)persistentStore
+                     persistentStore:(id<BSGReplaceableFeatureFlagStore>)persistentStore
                          atomicStore:(id<BSGReplaceableFeatureFlagStore>)atomicStore {
     BSGCompositeFeatureFlagStore *store = [self new];
     store.memoryStore = memoryStore;
@@ -33,6 +33,14 @@
     return [self.persistentStore allFlags];
 }
 
+- (nonnull NSArray<BugsnagFeatureFlag *> *)previousLaunchFlags {
+    id persistentStore = self.persistentStore;
+    if ([persistentStore conformsToProtocol:@protocol(BSGPreviousLaunchFeatureFlagStore)]) {
+        return [(id<BSGPreviousLaunchFeatureFlagStore>)persistentStore previousLaunchFlags];
+    }
+    return [self.persistentStore allFlags];
+}
+
 - (id<BSGFeatureFlagStore>)copyMemoryStore {
     return [self.memoryStore copyWithZone:nil];
 }
@@ -41,8 +49,7 @@
     NSArray<BugsnagFeatureFlag *> *featureFlags = [self.memoryStore allFlags];
     // Atomic, unlike clear + add (see BSGReplaceableFeatureFlagStore)
     [self.atomicStore replaceAllFlags:featureFlags];
-    [self.persistentStore clear];
-    [self.persistentStore addFeatureFlags:featureFlags];
+    [self.persistentStore replaceAllFlags:featureFlags];
 }
 
 #pragma mark - BSGFeatureFlagStore

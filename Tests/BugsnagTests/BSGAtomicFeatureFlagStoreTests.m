@@ -27,9 +27,8 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
 
 /// Stands in for the persistent store in the composite store tests: a memory store that also implements
 /// BSGReplaceableFeatureFlagStore, so the tests work whether or not the composite store calls replaceAllFlags: on its
-/// persistent store (a persistent store that implements it gets that call). It orders flags as
-/// BSGMemoryFeatureFlagStore does; the persistent store's order is covered by
-/// testCompositeStoreWithPersistentStoreMovesAFlagThatIsAddedAgainToTheEnd.
+/// persistent store. It orders flags as BSGMemoryFeatureFlagStore does; the persistent store's own order is covered by
+/// testCompositeStoreWithPersistentStoreKeepsAFlagThatIsAddedAgainInItsFirstPosition.
 @interface BSGReplaceablePersistentStoreStandIn : BSGMemoryFeatureFlagStore <BSGReplaceableFeatureFlagStore>
 @end
 
@@ -412,7 +411,7 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
     assertAgreement(@[]);
 }
 
-- (void)testCompositeStoreWithPersistentStoreMovesAFlagThatIsAddedAgainToTheEnd {
+- (void)testCompositeStoreWithPersistentStoreKeepsAFlagThatIsAddedAgainInItsFirstPosition {
     NSString *directory = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSUUID UUID].UUIDString];
     XCTAssertTrue([NSFileManager.defaultManager createDirectoryAtPath:directory withIntermediateDirectories:YES
                                                            attributes:nil error:nil]);
@@ -425,18 +424,17 @@ static NSArray<NSDictionary *> * AtomicStoreFlags(void) {
                                                                              persistentStore:persistentStore
                                                                                  atomicStore:[BSGAtomicFeatureFlagStore store]];
 
-    // Per BSGFeatureFlagStore.h: the memory store and crash reports keep A where first added; the persistent store
-    // moves it to the end
+    // Per BSGFeatureFlagStore.h: the memory store, crash reports and the persistent store all keep A where first added
     [store addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"A" variant:@"1"],
                              [BugsnagFeatureFlag flagWithName:@"B"],
                              [BugsnagFeatureFlag flagWithName:@"A" variant:@"2"]]];
     NSArray *firstPosition = @[@{@"featureFlag": @"A", @"variant": @"2"}, @{@"featureFlag": @"B"}];
     XCTAssertEqualObjects(BSGFeatureFlagStoreToJSON(memoryStore), firstPosition);
     XCTAssertEqualObjects(AtomicStoreFlags(), firstPosition);
-    XCTAssertEqualObjects([store.persistedFlags valueForKey:@"name"], (@[@"B", @"A"]));
-    XCTAssertEqualObjects([store.persistedFlags valueForKey:@"variant"], (@[NSNull.null, @"2"]));
+    XCTAssertEqualObjects([store.persistedFlags valueForKey:@"name"], (@[@"A", @"B"]));
+    XCTAssertEqualObjects([store.persistedFlags valueForKey:@"variant"], (@[@"2", NSNull.null]));
 
-    // As when Bugsnag starts: copying the memory store's flags gives the persistent store the same order
+    // As when Bugsnag starts: copying the memory store's flags keeps the same order
     [store synchronizeFlagsWithMemoryStore];
     XCTAssertEqualObjects(AtomicStoreFlags(), firstPosition);
     XCTAssertEqualObjects([store.persistedFlags valueForKey:@"name"], (@[@"A", @"B"]));
@@ -711,6 +709,7 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     }
 }
 
+#if defined(DEBUG) && DEBUG
 - (void)testTwoConcurrentReadersKeepTheirItemsAndWritersDoNotWait {
     BSGAtomicFeatureFlagStore *store = [BSGAtomicFeatureFlagStore store];
     [store addFeatureFlag:@"first" withVariant:@"1"];
@@ -822,5 +821,6 @@ static void BSGFinishReader(dispatch_semaphore_t entered, dispatch_semaphore_t p
     XCTAssertEqualObjects(AtomicStoreFlags(), (@[@{@"featureFlag": @"D", @"variant": @"999"}, @{@"featureFlag": @"E"}]));
     XCTAssertEqualObjects(results, (@[@[@{@"featureFlag": @"D"}]]));
 }
+#endif
 
 @end

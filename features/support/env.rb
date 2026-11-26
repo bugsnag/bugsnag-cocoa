@@ -118,6 +118,18 @@ Before('@skip_macos') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'macos'
 end
 
+# Out Of Memory and thermal kill events are never reported on the iOS simulator (see BSG_HAVE_OOM_DETECTION),
+# so scenarios that wait for one can only pass on a device
+Before('@skip_simulator') do |_scenario|
+  skip_this_scenario('Skipping: not supported on the iOS simulator') if ios_simulator?
+end
+
+def ios_simulator?
+  return false unless Maze.config.os == 'ios' && Maze.config.farm == :local && Maze.config.device_id
+  return $ios_simulator unless $ios_simulator.nil?
+  $ios_simulator = `xcrun simctl list devices 2>/dev/null`.include?(Maze.config.device_id)
+end
+
 # Skip stress tests unless STRESS_TEST env var is set
 Before('@stress_test') do |_scenario|
   skip_this_scenario('Skipping: Run is not configured for stress tests') if ENV['STRESS_TEST'].nil?
