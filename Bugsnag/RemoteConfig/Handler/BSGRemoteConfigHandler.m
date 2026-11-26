@@ -57,6 +57,8 @@ static BOOL BSGRemoteConfigDeviceIsOffline(void) {
 /// How long to wait before re-checking the network after a request failed with no response. The system
 /// can report a lost network a few milliseconds after the request that it broke has already failed.
 @property (nonatomic) NSTimeInterval networkLossGracePeriod;
+/// Where fetch results are handled. Nil handles them on the queue that delivered them (tests).
+@property (nonatomic, strong) dispatch_queue_t completionQueue;
 
 @end
 
@@ -95,6 +97,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
         _configuration = configuration;
         _isDeviceOffline = ^{ return BSGRemoteConfigDeviceIsOffline(); };
         _networkLossGracePeriod = BSGRemoteConfigNetworkLossGracePeriod;
+        _completionQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
     }
     return self;
 }
@@ -204,7 +207,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
             return;
         }
         self.isLoadingRemoteConfig = YES;
-        if ([self isFirstFetch]) {
+        if ([self shouldDelayFetch]) {
             double randomFraction = (double)arc4random() / (double)UINT32_MAX;
             firstFetchDelay = MAX(0, self.configuration.remoteConfigFirstFetchJitter) * randomFraction;
         }
@@ -244,83 +247,98 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
     [self loadRemoteConfigWithCurrentTag:currentTag allowsUnconditionalRetry:YES];
 }
 
-// No config has been cached for this app version and build, and no fetch has failed yet. Refreshes are spread by expiry
-// jitter and retries by the backoff, so only this first fetch needs its own delay.
-- (BOOL)isFirstFetch {
-    return self.remoteConfig == nil &&
-        self.fetchState.fetchFailureCount == 0 &&
-        [self.store loadConfiguration] == nil;
+// A fetch made with no valid config: the first one for this app version and build, or one after the cached
+// config expired. Expiry times are spread, but the errors that trigger these fetches can come at the same moment
+// across a fleet (a backend outage, say), so they get a random delay. Retries are already spread by the backoff
+// and refreshes before expiry by the expiry jitter, so neither is delayed.
+- (BOOL)shouldDelayFetch {
+    return self.remoteConfig == nil && self.fetchState.fetchFailureCount == 0;
 }
 
 - (void)loadRemoteConfigWithCurrentTag:(NSString *)currentTag allowsUnconditionalRetry:(BOOL)allowsUnconditionalRetry {
     [self.service loadRemoteConfigWithCurrentTag:currentTag
                                       completion:^(BSGRemoteConfigServiceResponse *response) {
-        @synchronized (self) {
-            BOOL didSucceed = NO;
-            switch (response.type) {
-                case BSGRemoteConfigServiceResponseTypeSuccess: {
-                    if (response.configuration == nil) {
-                        bsg_log_debug(@"Received invalid remote config");
-                        break;
-                    }
-                    response.configuration.fetchedAt = [NSDate date];
-                    BSGRemoteConfiguration *storedConfiguration = [self.store saveConfiguration:response.configuration];
-                    if (storedConfiguration) {
-                        self.remoteConfig = storedConfiguration;
-                    } else {
-                        self.remoteConfig = response.configuration;
-                        bsg_log_debug(@"Unable to persist remote config");
-                    }
-                    didSucceed = YES;
-                    break;
-                }
-                case BSGRemoteConfigServiceResponseTypeError:
-                    break;
-                case BSGRemoteConfigServiceResponseTypeNotModified: {
-                    NSString *configurationTag = response.configurationTag ?: currentTag;
-                    BSGRemoteConfiguration *revalidatedConfiguration = nil;
-                    BSGRemoteConfigExpiryUpdateResult result = [self.store updateExpiryDate:response.expiryDate
-                                                                          configurationTag:configurationTag
-                                                                             configuration:&revalidatedConfiguration];
-                    switch (result) {
-                        case BSGRemoteConfigExpiryUpdateResultUpdated:
-                            self.remoteConfig = revalidatedConfiguration;
-                            didSucceed = YES;
-                            break;
-                        case BSGRemoteConfigExpiryUpdateResultWriteFailed:
-                            // The server confirmed the cached config; only saving its new expiry failed.
-                            // Keep it for this process rather than discarding it and fetching it again.
-                            bsg_log_warn(@"Unable to persist revalidated remote config; it will be used until the app exits");
-                            self.remoteConfig = revalidatedConfiguration;
-                            didSucceed = YES;
-                            break;
-                        case BSGRemoteConfigExpiryUpdateResultMissing:
-                        case BSGRemoteConfigExpiryUpdateResultTagMismatch:
-                            // The cached config no longer matches the server's validator (or is missing),
-                            // so drop it and immediately request a full response once.
-                            bsg_log_debug(@"Unable to revalidate cached remote config");
-                            self.remoteConfig = nil;
-                            [self.store clear];
-                            if (currentTag && allowsUnconditionalRetry) {
-                                [self loadRemoteConfigWithCurrentTag:nil allowsUnconditionalRetry:NO];
-                                return;
-                            }
-                            break;
-                    }
-                    break;
-                }
-            }
-            if (didSucceed) {
-                [self recordFetchSuccess];
-            } else if (response.networkUnavailable || response.failedWithoutResponse) {
-                [self recordFailureWithoutResponse:response];
-                return;
-            } else {
-                [self recordFetchFailureWithRetryAfter:response.retryAfter];
-            }
-            self.isLoadingRemoteConfig = NO;
+        // The completion runs on the URL session's delegate queue, which the host app's own requests on the
+        // shared session also use. Handling the result takes the lock and writes files, so do it elsewhere.
+        dispatch_queue_t queue = self.completionQueue;
+        if (!queue) {
+            [self handleResponse:response currentTag:currentTag allowsUnconditionalRetry:allowsUnconditionalRetry];
+            return;
         }
+        dispatch_async(queue, ^{
+            [self handleResponse:response currentTag:currentTag allowsUnconditionalRetry:allowsUnconditionalRetry];
+        });
     }];
+}
+
+- (void)handleResponse:(BSGRemoteConfigServiceResponse *)response
+            currentTag:(NSString *)currentTag
+allowsUnconditionalRetry:(BOOL)allowsUnconditionalRetry {
+    @synchronized (self) {
+        BOOL didSucceed = NO;
+        switch (response.type) {
+            case BSGRemoteConfigServiceResponseTypeSuccess: {
+                if (response.configuration == nil) {
+                    bsg_log_debug(@"Received invalid remote config");
+                    break;
+                }
+                response.configuration.fetchedAt = [NSDate date];
+                BSGRemoteConfiguration *storedConfiguration = [self.store saveConfiguration:response.configuration];
+                if (storedConfiguration) {
+                    self.remoteConfig = storedConfiguration;
+                } else {
+                    self.remoteConfig = response.configuration;
+                    bsg_log_debug(@"Unable to persist remote config");
+                }
+                didSucceed = YES;
+                break;
+            }
+            case BSGRemoteConfigServiceResponseTypeError:
+                break;
+            case BSGRemoteConfigServiceResponseTypeNotModified: {
+                NSString *configurationTag = response.configurationTag ?: currentTag;
+                BSGRemoteConfiguration *revalidatedConfiguration = nil;
+                BSGRemoteConfigExpiryUpdateResult result = [self.store updateExpiryDate:response.expiryDate
+                                                                      configurationTag:configurationTag
+                                                                         configuration:&revalidatedConfiguration];
+                switch (result) {
+                    case BSGRemoteConfigExpiryUpdateResultUpdated:
+                        self.remoteConfig = revalidatedConfiguration;
+                        didSucceed = YES;
+                        break;
+                    case BSGRemoteConfigExpiryUpdateResultWriteFailed:
+                        // The server confirmed the cached config; only saving its new expiry failed.
+                        // Keep it for this process rather than discarding it and fetching it again.
+                        bsg_log_warn(@"Unable to persist revalidated remote config; it will be used until the app exits");
+                        self.remoteConfig = revalidatedConfiguration;
+                        didSucceed = YES;
+                        break;
+                    case BSGRemoteConfigExpiryUpdateResultMissing:
+                    case BSGRemoteConfigExpiryUpdateResultTagMismatch:
+                        // The cached config no longer matches the server's validator (or is missing),
+                        // so drop it and immediately request a full response once.
+                        bsg_log_debug(@"Unable to revalidate cached remote config");
+                        self.remoteConfig = nil;
+                        [self.store clear];
+                        if (currentTag && allowsUnconditionalRetry) {
+                            [self loadRemoteConfigWithCurrentTag:nil allowsUnconditionalRetry:NO];
+                            return;
+                        }
+                        break;
+                }
+                break;
+            }
+        }
+        if (didSucceed) {
+            [self recordFetchSuccess];
+        } else if (response.networkUnavailable || response.failedWithoutResponse) {
+            [self recordFailureWithoutResponse:response];
+            return;
+        } else {
+            [self recordFetchFailureWithRetryAfter:response.retryAfter];
+        }
+        self.isLoadingRemoteConfig = NO;
+    }
 }
 
 // The request failed before the config service answered. If that was because the device lost its network,
@@ -328,7 +346,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
 // clears isLoadingRemoteConfig once the outcome is recorded.
 - (void)recordFailureWithoutResponse:(BSGRemoteConfigServiceResponse *)response {
     if (self.isDeviceOffline()) {
-        [self recordNetworkLost];
+        [self recordNetworkLostForResponse:response];
         self.isLoadingRemoteConfig = NO;
         return;
     }
@@ -349,7 +367,7 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
         }
         @synchronized (strongSelf) {
             if (strongSelf.isDeviceOffline()) {
-                [strongSelf recordNetworkLost];
+                [strongSelf recordNetworkLostForResponse:response];
             } else {
                 [strongSelf recordFetchFailureWithRetryAfter:response.retryAfter];
             }
@@ -440,7 +458,9 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
 
 - (void)refreshConfigurationIfDue {
     @synchronized (self) {
-        if (!self.isLoadingRemoteConfig && [self isRemoteConfigEnabled] && [self isRefreshDue]) {
+        // Called for every event, so the cheap date check comes first; checking that remote config is
+        // enabled parses the configuration URL.
+        if (!self.isLoadingRemoteConfig && [self isRefreshDue] && [self isRemoteConfigEnabled]) {
             [self updateRemoteConfig];
         }
     }
@@ -501,6 +521,17 @@ static NSTimeInterval const BSGRemoteConfigNetworkLossGracePeriod = 0.5;
     if (![self persistFetchState]) {
         // Being offline is not a failure, so do not leave an in-progress attempt for the next launch to count.
         [self.store clearFetchState];
+    }
+}
+
+// A request that timed out may have reached the config service, which may be the reason it was slow, so it
+// waits as briefly as an offline error before the next attempt. Other requests that failed when the network
+// went away did not get that far and need no wait.
+- (void)recordNetworkLostForResponse:(BSGRemoteConfigServiceResponse *)response {
+    if ([response.error.domain isEqualToString:NSURLErrorDomain] && response.error.code == NSURLErrorTimedOut) {
+        [self recordNetworkUnavailable];
+    } else {
+        [self recordNetworkLost];
     }
 }
 

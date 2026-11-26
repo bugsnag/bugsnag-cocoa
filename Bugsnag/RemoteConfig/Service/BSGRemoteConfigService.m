@@ -35,6 +35,10 @@ static const NSInteger HTTPStatusCodeOK = 200;
 
 static const NSTimeInterval RequestTimeoutInterval = 30;
 
+// The longest a fetched config is used before it is fetched again, whatever max-age says, so a wrong or very
+// long max-age cannot keep a bad rule (such as discarding every event) on devices indefinitely.
+static const NSTimeInterval MaximumConfigLifetime = 7 * 24 * 60 * 60;
+
 // Each cached config's lifetime is shortened by a random fraction up to this value, so devices that fetched
 // together do not all expire, and refresh, at the same moment.
 static const double ExpiryJitterFraction = 0.1;
@@ -277,6 +281,7 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
     // A successful fetch starts no cooldown, so a very short lifetime (a misconfigured max-age, or a tiny
     // update interval) would make every error fetch the config again. Keep each config for a minimum time.
     lifetime = MAX(lifetime, MAX(0, self.configuration.remoteConfigMinimumLifetime));
+    lifetime = MIN(lifetime, MaximumConfigLifetime);
     double randomFraction = (double)arc4random() / (double)UINT32_MAX;
     return [NSDate dateWithTimeIntervalSinceNow:[[self class] jitteredLifetime:lifetime randomFraction:randomFraction]];
 }
@@ -293,7 +298,8 @@ static BOOL BSGIsNetworkUnavailableError(NSError *error) {
         if ([trimmedDirective hasPrefix:CacheControlMaxAgePrefix]) {
             NSString *maxAgeValue = [trimmedDirective substringFromIndex:[CacheControlMaxAgePrefix length]];
             NSTimeInterval maxAge = [maxAgeValue doubleValue];
-            return maxAge > 0 ? maxAge : 0;
+            // A value too large to be a number (e.g. 1e999) counts as missing.
+            return isfinite(maxAge) && maxAge > 0 ? maxAge : 0;
         }
     }
     

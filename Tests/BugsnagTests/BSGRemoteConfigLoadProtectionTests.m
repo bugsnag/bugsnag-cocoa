@@ -131,6 +131,7 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
 @property (nonatomic, copy) BOOL (^isDeviceOffline)(void);
 @property (nonatomic) NSTimeInterval networkLossGracePeriod;
 @property (nonatomic) BOOL isLoadingRemoteConfig;
+@property (nonatomic, strong) dispatch_queue_t completionQueue;
 @end
 
 @interface BSGRemoteConfigLoadProtectionTests : XCTestCase
@@ -169,6 +170,8 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     BSGRemoteConfigHandler *handler = [BSGRemoteConfigHandler handlerWithService:service store:store configuration:configuration];
     // Tests must not depend on the network of the machine running them; the offline tests replace this.
     handler.isDeviceOffline = ^{ return NO; };
+    // Results are handled as soon as the fake service returns them; the completion queue test opts in.
+    handler.completionQueue = nil;
     return handler;
 }
 - (BSGRemoteConfigHandler *)jitteredHandlerWithService:(BSGRecordingRemoteConfigService *)service
@@ -902,13 +905,26 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     [self waitFor:0.6];
     XCTAssertEqual(service.requestCount, 1);
 }
-- (void)testExpiredCachedConfigRefreshIsNotDelayed {
+- (void)testFetchAfterCachedConfigExpiredIsDelayed {
+    // Devices whose configs expired at different times can all get an error at the same moment.
     BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
     store.configuration = [BSGRemoteConfiguration configFromJson:@{} eTag:@"expired-etag" expiryDate:[NSDate dateWithTimeIntervalSinceNow:-1]];
     BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
-    [[self jitteredHandlerWithService:service store:store firstFetchJitter:60] currentConfiguration];
+    BSGRemoteConfigHandler *handler = [self jitteredHandlerWithService:service store:store firstFetchJitter:0.3];
+    [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 0);
+    [self waitFor:0.6];
     XCTAssertEqual(service.requestCount, 1);
     XCTAssertEqualObjects(service.currentTag, @"expired-etag");
+}
+- (void)testRefreshBeforeExpiryIsNotDelayed {
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfiguration *config = [BSGRemoteConfiguration configFromJson:@{} eTag:@"v1" expiryDate:[NSDate dateWithTimeIntervalSinceNow:30 * Minute]];
+    config.fetchedAt = [NSDate dateWithTimeIntervalSinceNow:-23.5 * Hour];
+    store.configuration = config;
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    [[self jitteredHandlerWithService:service store:store firstFetchJitter:60] currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
 }
 - (void)testRetryAfterFailedFetchIsNotDelayed {
     BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
@@ -1060,6 +1076,62 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
     XCTAssertNil(store.fetchState.nextAllowedFetchAt);
     XCTAssertFalse(store.fetchState.attemptInProgress);
     XCTAssertFalse(handler.isLoadingRemoteConfig);
+}
+
+- (void)testTimeoutThatEndsOfflineWaitsFiveMinutesWithoutCountingAFailure {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *response = [self failureWithoutResponse];
+    response.error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorTimedOut userInfo:nil];
+    service.response = response;
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    // Online for the two checks before the request, offline once it has timed out.
+    __block NSUInteger checks = 0;
+    handler.isDeviceOffline = ^{ return (BOOL)(++checks > 2); };
+
+    NSDate *beforeRequest = [NSDate date];
+    [handler currentConfiguration];
+    // The timed-out request may have reached a struggling service, so the next one waits.
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    [self assertCooldownOfStore:store isBetween:5 * Minute and:5 * Minute since:beforeRequest until:[NSDate date]];
+}
+- (void)testConnectionLostThatEndsOfflineNeedsNoWait {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    BSGRemoteConfigServiceResponse *response = [self failureWithoutResponse];
+    response.error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorNetworkConnectionLost userInfo:nil];
+    service.response = response;
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    __block NSUInteger checks = 0;
+    handler.isDeviceOffline = ^{ return (BOOL)(++checks > 2); };
+
+    [handler currentConfiguration];
+    XCTAssertEqual(store.fetchState.fetchFailureCount, 0);
+    XCTAssertNil(store.fetchState.nextAllowedFetchAt);
+}
+- (void)testFetchResultsAreHandledOnTheCompletionQueue {
+    BSGRecordingRemoteConfigService *service = [BSGRecordingRemoteConfigService new];
+    service.response = [self successResponseWithTag:@"v1"];
+    BSGInMemoryRemoteConfigStore *store = [BSGInMemoryRemoteConfigStore new];
+    BSGRemoteConfigHandler *handler = [self enabledHandlerWithService:service store:store];
+    dispatch_queue_t queue = dispatch_queue_create("com.bugsnag.test.remote-config-completion", DISPATCH_QUEUE_SERIAL);
+    handler.completionQueue = queue;
+    dispatch_suspend(queue);
+
+    // The request has completed, but its result is waiting for the completion queue.
+    XCTAssertNil([handler currentConfiguration]);
+    XCTAssertEqual(service.requestCount, 1);
+    XCTAssertNil(store.configuration);
+    XCTAssertTrue(handler.isLoadingRemoteConfig);
+    // Further errors meanwhile send no request.
+    [handler currentConfiguration];
+    XCTAssertEqual(service.requestCount, 1);
+
+    dispatch_resume(queue);
+    dispatch_sync(queue, ^{});
+    XCTAssertEqualObjects([handler currentConfiguration].configurationTag, @"v1");
+    XCTAssertFalse(handler.isLoadingRemoteConfig);
+    XCTAssertEqual(service.requestCount, 1);
 }
 
 #pragma mark - Refresh before expiry
@@ -1613,6 +1685,35 @@ static BSGRemoteConfigServiceResponse *BSGResponseWithType(BSGRemoteConfigServic
         configuration.remoteConfigMinimumLifetime = 0;
     }];
     [self assertLifetimeOfExpiry:response.configuration.expiryDate since:before isAbout:4];
+}
+- (void)testVeryLongMaxAgeIsCappedAtSevenDays {
+    for (NSString *maxAge in @[@"max-age=31536000", @"max-age=1e300"]) {
+        BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+        session.statusCode = 200;
+        session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": maxAge};
+        NSDate *before = [NSDate date];
+        [self assertLifetimeOfExpiry:[self responseForSession:session tag:nil].configuration.expiryDate
+                               since:before isAbout:7 * 24 * Hour];
+    }
+}
+- (void)testMaxAgeThatIsNotAFiniteNumberIsIgnored {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    session.headers = @{@"ETag": @"\"v1\"", @"Cache-Control": @"max-age=1e999"};
+    NSDate *before = [NSDate date];
+    // Treated as missing: the default lifetime (update interval + tolerance).
+    [self assertLifetimeOfExpiry:[self responseForSession:session tag:nil].configuration.expiryDate
+                           since:before isAbout:86400 + 7200];
+}
+- (void)testVeryLongUpdateIntervalIsCappedAtSevenDays {
+    BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
+    session.statusCode = 200;
+    session.headers = @{@"ETag": @"\"v1\""};
+    NSDate *before = [NSDate date];
+    BSGRemoteConfigServiceResponse *response = [self responseForSession:session tag:nil configure:^(BugsnagConfiguration *configuration) {
+        configuration.remoteConfigUpdateInterval = 365 * 24 * Hour;
+    }];
+    [self assertLifetimeOfExpiry:response.configuration.expiryDate since:before isAbout:7 * 24 * Hour];
 }
 - (void)testEmptySuccessBodyIsValidEmptyConfig {
     BSGRemoteConfigSessionMock *session = [BSGRemoteConfigSessionMock new];
