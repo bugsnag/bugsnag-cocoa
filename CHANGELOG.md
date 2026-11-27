@@ -1,14 +1,11 @@
 Changelog
 =========
 
-## TBD
+## 7.1.0 (2026-11-27)
 
 ### Enhancements
 
-* Feature flags for Out Of Memory and thermal kill events are now saved in one binary file instead of one JSON file
-  per flag, making flag changes and `Bugsnag.start()` much faster with many flags. Flags saved by earlier versions are
-  migrated automatically. If the first launch after upgrading ends in an Out Of Memory or thermal kill, its event also
-  includes the flags saved by the earlier version, listed before the flags set in that launch.
+* Feature flags for Out Of Memory and thermal kill events are now saved in one binary file instead of one JSON file per flag, making flag changes and `Bugsnag.start()` much faster; flags from earlier versions are migrated automatically.
   [#1974](https://github.com/bugsnag/bugsnag-cocoa/pull/1974)
 
 ### Bug Fixes
