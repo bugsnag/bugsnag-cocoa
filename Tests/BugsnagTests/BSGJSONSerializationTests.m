@@ -207,27 +207,31 @@
 }
 
 
+// An atomic write replaces the file, and the new file does not have the old one's exclusion from backup, so the SDK
+// must apply it again. These two tests go from included to excluded; the tests after them go the other way, but not on
+// macOS, which can copy the exclusion of the replaced file to the new one a few milliseconds after the write has
+// returned (also after a plain rename(), outside the SDK), which made them fail now and then on a busy machine.
 - (void)testWriteDataAppliesBackupSupportAfterAtomicReplacement {
     NSString *file = [self newTemporaryPath];
 
     @try {
-        [BSGFilesystem setFileBackupSupport:NO];
+        [BSGFilesystem setFileBackupSupport:YES];
         NSData *first = [@"{\"a\":1}" dataUsingEncoding:NSUTF8StringEncoding];
         NSError *error = nil;
         XCTAssertTrue([BSGFilesystem writeData:first toFile:file options:NSDataWritingAtomic error:&error]);
         XCTAssertNil(error);
 
 #if !TARGET_OS_TV
-        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @YES);
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
 #endif
 
-        [BSGFilesystem setFileBackupSupport:YES];
+        [BSGFilesystem setFileBackupSupport:NO];
         NSData *second = [@"{\"a\":2}" dataUsingEncoding:NSUTF8StringEncoding];
         XCTAssertTrue([BSGFilesystem writeData:second toFile:file options:NSDataWritingAtomic error:&error]);
         XCTAssertNil(error);
 
 #if !TARGET_OS_TV
-        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @YES);
 #endif
     } @finally {
         [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
@@ -239,23 +243,66 @@
     NSString *file = [self newTemporaryPath];
 
     @try {
-        [BSGFilesystem setFileBackupSupport:NO];
+        [BSGFilesystem setFileBackupSupport:YES];
         XCTAssertTrue(BSGJSONWriteToFileAtomically(@{@"foo": @"bar"}, file, nil));
 
 #if !TARGET_OS_TV
-        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @YES);
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
 #endif
 
-        [BSGFilesystem setFileBackupSupport:YES];
+        [BSGFilesystem setFileBackupSupport:NO];
         XCTAssertTrue(BSGJSONWriteToFileAtomically(@{@"foo": @"baz"}, file, nil));
 
 #if !TARGET_OS_TV
-        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @YES);
 #endif
     } @finally {
         [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
         [BSGFilesystem setFileBackupSupport:NO];
     }
 }
+
+#if !TARGET_OS_OSX && !TARGET_OS_TV && !TARGET_OS_MACCATALYST
+// From excluded to included after an atomic write. Not on macOS or Mac Catalyst, which uses the macOS file system (see
+// above), where the SDK can't rely on the included state lasting.
+- (void)testWriteDataRestoresBackupSupportAfterAtomicReplacement {
+    NSString *file = [self newTemporaryPath];
+
+    @try {
+        [BSGFilesystem setFileBackupSupport:NO];
+        NSData *first = [@"{\"a\":1}" dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *error = nil;
+        XCTAssertTrue([BSGFilesystem writeData:first toFile:file options:NSDataWritingAtomic error:&error]);
+        XCTAssertNil(error);
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @YES);
+
+        [BSGFilesystem setFileBackupSupport:YES];
+        NSData *second = [@"{\"a\":2}" dataUsingEncoding:NSUTF8StringEncoding];
+        XCTAssertTrue([BSGFilesystem writeData:second toFile:file options:NSDataWritingAtomic error:&error]);
+        XCTAssertNil(error);
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
+    } @finally {
+        [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+        [BSGFilesystem setFileBackupSupport:NO];
+    }
+}
+
+- (void)testJSONWriteToFileAtomicallyRestoresBackupSupport {
+    NSString *file = [self newTemporaryPath];
+
+    @try {
+        [BSGFilesystem setFileBackupSupport:NO];
+        XCTAssertTrue(BSGJSONWriteToFileAtomically(@{@"foo": @"bar"}, file, nil));
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @YES);
+
+        [BSGFilesystem setFileBackupSupport:YES];
+        XCTAssertTrue(BSGJSONWriteToFileAtomically(@{@"foo": @"baz"}, file, nil));
+        XCTAssertEqualObjects([self excludedFromBackupAtPath:file], @NO);
+    } @finally {
+        [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+        [BSGFilesystem setFileBackupSupport:NO];
+    }
+}
+#endif
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "BSGTestCase.h"
+#import "BSG_KSCrashState.h"
 #import "Swizzle.h"
 #import <stdatomic.h>
 
@@ -68,12 +69,28 @@ using namespace bugsnag;
 @end
 
 
+/// Code such as +[BSG_KSSystemInfo systemInfo] updates the crash state, which is NULL until a client starts. Gives
+/// tests that run before any client (e.g. reordered, or after an XCTest relaunch) a state so they do not crash.
+static void BSGEnsureCrashStateExists(void) {
+    if (bsg_kscrashstate_currentState()) {
+        return;
+    }
+    static BSG_KSCrash_State state;
+    static char *path;
+    if (!path) {
+        path = strdup([NSTemporaryDirectory() stringByAppendingPathComponent:
+                       [NSString stringWithFormat:@"BSGTestCase-crash-state-%d.json", getpid()]].fileSystemRepresentation);
+    }
+    bsg_kscrashstate_init(path, &state);
+}
+
 @implementation BSGTestCase
 
 - (void)setUp {
     if ([super respondsToSelector:@selector(setUp)]) {
         [super setUp];
     }
+    BSGEnsureCrashStateExists();
 
 #if TARGET_OS_WATCH
     static _Atomic(bool) hasSwizzled = false;

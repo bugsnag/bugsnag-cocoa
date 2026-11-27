@@ -1,0 +1,548 @@
+//
+//  FeatureFlagsPersistenceScenario.m
+//  Shared scenarios
+//
+//  End-to-end feature flag persistence scenarios: featureflag.bin, and migration from / downgrade to legacy JSON
+//  files. OOM scenarios (iOS only) are in FeatureFlagsPersistenceOOMScenarios.m.
+//
+
+#import "FeatureFlagsPersistenceScenario.h"
+#import "Logging.h"
+
+#import <signal.h>
+#import <unistd.h>
+
+// Must match BSGFeatureFlagFileFormat.h
+static const uint32_t FeatureFlagFileMagic = 0x46465342; // "BSFF"
+static const uint32_t FeatureFlagFileVersion = 1;
+
+struct feature_flag_file_header {
+    uint32_t magic;
+    uint32_t version;
+    uint32_t slotCapacity;
+    uint32_t reserved;
+    uint64_t active; // (length << 1) | slot
+    uint64_t reserved2;
+};
+
+#pragma mark - Helpers
+
+NSString * FeatureFlagsDirectoryPath(void) {
+    // Mirrors cachesDirectory() and bugsnagPath() in BSGFileLocations.m
+#if TARGET_OS_TV
+    NSSearchPathDirectory directory = NSCachesDirectory;
+#else
+    NSSearchPathDirectory directory = NSApplicationSupportDirectory;
+#endif
+    NSURL *url = [NSFileManager.defaultManager URLForDirectory:directory inDomain:NSUserDomainMask
+                                             appropriateForURL:nil create:NO error:nil];
+    NSString *path = [NSString stringWithFormat:@"%@/com.bugsnag.Bugsnag/%@/v1/featureFlags", url.path,
+                      NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName];
+    NSError *error = nil;
+    if (![NSFileManager.defaultManager createDirectoryAtPath:path withIntermediateDirectories:YES
+                                                  attributes:nil error:&error]) {
+        logError(@"Could not create %@: %@", path, error);
+    }
+    return path;
+}
+
+NSString * FeatureFlagsFilePath(void) {
+    return [FeatureFlagsDirectoryPath() stringByAppendingPathComponent:@"featureflag.bin"];
+}
+
+void FeatureFlagsWriteLegacyFile(NSString *name, NSString *variant, uint64_t index) {
+    // The legacy store's format and file naming.
+    NSMutableDictionary *json = [NSMutableDictionary dictionary];
+    json[@"featureFlag"] = name;
+    json[@"index"] = @(index);
+    if (variant) {
+        json[@"variant"] = variant;
+    }
+    NSString *fileName = [name stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.alphanumericCharacterSet];
+    NSString *path = [FeatureFlagsDirectoryPath() stringByAppendingPathComponent:
+                      [NSString stringWithFormat:@"%@.json", fileName]];
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:0 error:nil];
+    if (![data writeToFile:path atomically:YES]) {
+        logError(@"Could not write legacy feature flag file %@", path);
+    }
+    logInfo(@"Wrote legacy feature flag file %@", path);
+}
+
+void FeatureFlagsWriteCorruptFile(NSString *mode) {
+    NSString *path = FeatureFlagsFilePath();
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+
+    NSMutableData *data = nil;
+    const size_t fileSize = 4096;
+    struct feature_flag_file_header header = {
+        .magic = FeatureFlagFileMagic,
+        .version = FeatureFlagFileVersion,
+        .slotCapacity = (uint32_t)(fileSize - sizeof(header)) / 2,
+        .active = (64 << 1) | 0,
+    };
+
+    if ([mode isEqualToString:@"empty"]) {
+        data = [NSMutableData data];
+    } else if ([mode isEqualToString:@"badSnapshot"]) {
+        // A valid header whose active snapshot contains garbage (entry lengths of 0xFFFFFFFF)
+        data = [NSMutableData dataWithLength:fileSize];
+        memset(data.mutableBytes, 0xFF, fileSize);
+        memcpy(data.mutableBytes, &header, sizeof(header));
+    } else if ([mode isEqualToString:@"truncated"]) {
+        // A valid header describing a much larger file than on disk
+        header.slotCapacity = 1000000;
+        data = [NSMutableData dataWithLength:fileSize];
+        memcpy(data.mutableBytes, &header, sizeof(header));
+    } else if ([mode isEqualToString:@"futureVersion"]) {
+        // As if written by a newer SDK with an incompatible format
+        header.version = 99;
+        data = [NSMutableData dataWithLength:fileSize];
+        memset(data.mutableBytes, 'x', fileSize);
+        memcpy(data.mutableBytes, &header, sizeof(header));
+    } else {
+        // random
+        data = [NSMutableData dataWithLength:fileSize];
+        arc4random_buf(data.mutableBytes, fileSize);
+        ((uint8_t *)data.mutableBytes)[0] = 0; // Guarantee the magic number is wrong
+    }
+
+    if (![data writeToFile:path atomically:NO]) {
+        logError(@"Could not write %@", path);
+    }
+    logInfo(@"Wrote corrupt (%@) %@", mode, path);
+}
+
+NSDictionary<NSString *, id> * FeatureFlagsDirectorySummary(void) {
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSString *directory = FeatureFlagsDirectoryPath();
+    NSArray<NSString *> *entries = [[fileManager contentsOfDirectoryAtPath:directory error:nil]
+                                    sortedArrayUsingSelector:@selector(compare:)] ?: @[];
+    NSMutableArray<NSString *> *jsonFiles = [NSMutableArray array];
+    for (NSString *entry in entries) {
+        if ([entry.pathExtension isEqualToString:@"json"]) {
+            [jsonFiles addObject:entry];
+        }
+    }
+
+    NSString *filePath = FeatureFlagsFilePath();
+    BOOL isDirectory = NO;
+    BOOL exists = [fileManager fileExistsAtPath:filePath isDirectory:&isDirectory];
+    BOOL validHeader = NO;
+    if (exists && !isDirectory) {
+        NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:filePath];
+        NSData *data = [handle readDataOfLength:sizeof(struct feature_flag_file_header)];
+        [handle closeFile];
+        if (data.length == sizeof(struct feature_flag_file_header)) {
+            struct feature_flag_file_header header;
+            memcpy(&header, data.bytes, sizeof(header));
+            validHeader = header.magic == FeatureFlagFileMagic && header.version == FeatureFlagFileVersion;
+        }
+    }
+
+    return @{
+        @"entries": entries,
+        @"jsonFiles": jsonFiles,
+        @"jsonFileCount": @(jsonFiles.count),
+        @"featureFlagFileExists": exists ? @YES : @NO,
+        @"featureFlagFileIsDirectory": (exists && isDirectory) ? @YES : @NO,
+        @"featureFlagFileHasValidHeader": validHeader ? @YES : @NO,
+        @"lockFileExists": [entries containsObject:@"featureflag.lock"] ? @YES : @NO,
+    };
+}
+
+NSString * FeatureFlagsLongName(void) {
+    return [NSString stringWithFormat:@"long-name-%@-end",
+            [@"" stringByPaddingToLength:300 withString:@"n" startingAtIndex:0]];
+}
+
+NSString * FeatureFlagsLongVariant(void) {
+    return [NSString stringWithFormat:@"long-variant-%@-end",
+            [@"" stringByPaddingToLength:300 withString:@"v" startingAtIndex:0]];
+}
+
+NSString * const FeatureFlagsUnicodeName = @"🚩 機能フラグ/功能标志/флаг";
+NSString * const FeatureFlagsUnicodeVariant = @"变体-🎉-ヴァリアント";
+
+NSArray<BugsnagFeatureFlag *> * FeatureFlagsBulk(NSUInteger count) {
+    NSMutableArray *flags = [NSMutableArray arrayWithCapacity:count];
+    for (NSUInteger i = 0; i < count; i++) {
+        NSString *name = [NSString stringWithFormat:@"bulk-%03lu", (unsigned long)i];
+        [flags addObject:[BugsnagFeatureFlag flagWithName:name variant:[name stringByAppendingString:@":v1"]]];
+    }
+    return flags;
+}
+
+#pragma mark - Base class
+
+@implementation FeatureFlagsPersistenceScenario
+
+- (void)configure {
+    [super configure];
+    self.config.autoTrackSessions = NO;
+    __weak typeof(self) weakSelf = self;
+    [self.config addOnSendErrorBlock:^BOOL(BugsnagEvent *event) {
+        [event addMetadata:FeatureFlagsDirectorySummary() toSection:@"flagsDir"];
+        NSDictionary *summaryBeforeStart = weakSelf.summaryBeforeStart;
+        if (summaryBeforeStart) {
+            [event addMetadata:summaryBeforeStart toSection:@"flagsDirBeforeStart"];
+        }
+        return YES;
+    }];
+}
+
+- (void)prepareFilesBeforeStart {
+}
+
+- (void)startBugsnag {
+    [self prepareFilesBeforeStart];
+    self.summaryBeforeStart = FeatureFlagsDirectorySummary();
+    logInfo(@"Feature flags directory before start: %@", self.summaryBeforeStart);
+    [super startBugsnag];
+}
+
+- (void)run {
+    [self doesNotRecognizeSelector:_cmd];
+}
+
+- (void)notifyHandledError {
+    NSString *message = NSStringFromClass([self class]);
+    [Bugsnag notifyError:[NSError errorWithDomain:@"FeatureFlagsPersistence" code:1
+                                         userInfo:@{NSLocalizedDescriptionKey: message}]];
+}
+
+- (void)fakeOutOfMemoryAfterDelay {
+    // Allow time for state metadata to be flushed to disk (see OOMSessionlessScenario)
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        logInfo(@"Faking an OOM with SIGKILL");
+        kill(getpid(), SIGKILL);
+    });
+}
+
+@end
+
+#pragma mark - 1. API behaviour
+
+/// Adds, overwrites and clears flags, then sends a handled error.
+@interface FeatureFlagsAPIBehaviourScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsAPIBehaviourScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+    [self.config addFeatureFlagWithName:@"config-cleared"];
+}
+
+- (void)run {
+    [Bugsnag addFeatureFlagWithName:@"flag-a" variant:@"a1"];
+    [Bugsnag addFeatureFlagWithName:@"flag-b"];
+    [Bugsnag addFeatureFlagWithName:@"flag-c" variant:@"c1"];
+    // Overwrite: variant changed, nil -> variant, variant -> nil
+    [Bugsnag addFeatureFlagWithName:@"flag-a" variant:@"a2"];
+    [Bugsnag addFeatureFlagWithName:@"flag-b" variant:@"b1"];
+    [Bugsnag addFeatureFlagWithName:@"flag-c"];
+    [Bugsnag addFeatureFlags:@[[BugsnagFeatureFlag flagWithName:@"flag-d" variant:@"d1"],
+                               [BugsnagFeatureFlag flagWithName:@"flag-e"]]];
+    [Bugsnag clearFeatureFlagWithName:@"flag-e"];
+    [Bugsnag clearFeatureFlagWithName:@"config-cleared"];
+    [Bugsnag clearFeatureFlagWithName:@"does-not-exist"];
+    [self notifyHandledError];
+}
+
+@end
+
+#pragma mark - 2. Bulk flags then a crash
+
+/// Adds 500 flags in one call, updates one, clears one, then calls abort().
+@interface FeatureFlagsBulkCrashScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsBulkCrashScenario
+
+- (void)run {
+    [Bugsnag addFeatureFlags:FeatureFlagsBulk(500)];
+    [Bugsnag addFeatureFlagWithName:@"bulk-123" variant:@"bulk-123:updated"];
+    [Bugsnag clearFeatureFlagWithName:@"bulk-456"];
+    abort();
+}
+
+@end
+
+#pragma mark - 3. Clear all flags then a crash
+
+@interface FeatureFlagsClearAllCrashScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsClearAllCrashScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+}
+
+- (void)run __attribute__((noreturn)) {
+    [Bugsnag addFeatureFlagWithName:@"flag-a" variant:@"a1"];
+    [Bugsnag addFeatureFlags:FeatureFlagsBulk(10)];
+    [Bugsnag clearFeatureFlags];
+    @throw [NSException exceptionWithName:NSGenericException reason:@"FeatureFlagsClearAllCrashScenario"
+                                 userInfo:nil];
+}
+
+@end
+
+#pragma mark - 4. Unusual names and variants
+
+/// Long, Unicode, empty-variant and nil-variant flags, reported in a handled error and then a crash.
+@interface FeatureFlagsUnusualValuesScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsUnusualValuesScenario
+
+- (void)run {
+    [Bugsnag addFeatureFlagWithName:FeatureFlagsLongName() variant:FeatureFlagsLongVariant()];
+    [Bugsnag addFeatureFlagWithName:FeatureFlagsUnicodeName variant:FeatureFlagsUnicodeVariant];
+    [Bugsnag addFeatureFlagWithName:@"empty-variant" variant:@""];
+    [Bugsnag addFeatureFlagWithName:@"nil-variant" variant:nil];
+    [self waitForEventDelivery:^{
+        [self notifyHandledError];
+    } andThen:^{
+        @throw [NSException exceptionWithName:NSGenericException reason:@"FeatureFlagsUnusualValuesScenario"
+                                     userInfo:nil];
+    }];
+}
+
+@end
+
+#pragma mark - 5. Concurrent changes while crashing
+
+/// Four threads add and clear flags while the main thread crashes. Variants are "<name>:<counter>" so each entry can be
+/// checked.
+@interface FeatureFlagsConcurrentCrashScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsConcurrentCrashScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-flag:config"];
+}
+
+- (void)run {
+    [Bugsnag addFeatureFlagWithName:@"main-flag" variant:@"main-flag:0"];
+    for (int t = 0; t < 4; t++) {
+        NSThread *thread = [[NSThread alloc] initWithBlock:^{
+            for (unsigned long i = 1; ; i++) {
+                @autoreleasepool {
+                    NSString *name = [NSString stringWithFormat:@"t%d-f%02lu", t, i % 16];
+                    if (i % 5 == 0) {
+                        [Bugsnag clearFeatureFlagWithName:name];
+                    } else {
+                        [Bugsnag addFeatureFlagWithName:name
+                                                variant:[NSString stringWithFormat:@"%@:%lu", name, i]];
+                    }
+                }
+            }
+        }];
+        thread.name = [NSString stringWithFormat:@"FeatureFlagsThread%d", t];
+        [thread start];
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300 * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
+        abort();
+    });
+}
+
+@end
+
+#pragma mark - 6. Flags do not leak between launches
+
+/// Launch 1 adds "old"; after being killed and relaunched, launch 2 adds "new". Both send a handled error.
+@interface FeatureFlagsRelaunchScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsRelaunchScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+}
+
+- (void)run {
+    if (self.launchCount <= 1) {
+        [Bugsnag addFeatureFlagWithName:@"old" variant:@"launch1"];
+        // Lets the test wait for launch 1 before killing the app
+        [self notifyHandledError];
+    } else {
+        [Bugsnag addFeatureFlagWithName:@"new" variant:@"launch2"];
+        [self notifyHandledError];
+    }
+}
+
+@end
+
+#pragma mark - 8. Migration from legacy JSON files
+
+/// Plants legacy JSON files (no featureflag.bin) before start, as an older SDK leaves them.
+@interface FeatureFlagsLegacyMigrationScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsLegacyMigrationScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+}
+
+- (void)prepareFilesBeforeStart {
+    [NSFileManager.defaultManager removeItemAtPath:FeatureFlagsFilePath() error:nil];
+    FeatureFlagsWriteLegacyFile(@"legacy-a", @"variant-a", 0);
+    FeatureFlagsWriteLegacyFile(@"legacy-b", nil, 1);
+    FeatureFlagsWriteLegacyFile(@"legacy flag/ü 🚩", @"", 2);
+}
+
+- (void)run {
+    [Bugsnag addFeatureFlagWithName:@"current" variant:@"current-variant"];
+    [self notifyHandledError];
+}
+
+@end
+
+#pragma mark - 9. Stale legacy JSON files alongside featureflag.bin
+
+/// Launch 1 creates featureflag.bin when saving config-flag. Later launches plant legacy JSON files beside it before
+/// start, as after a downgrade that failed to delete a file; both are discarded and the JSON files deleted.
+@interface FeatureFlagsStaleJSONScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsStaleJSONScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+}
+
+- (void)prepareFilesBeforeStart {
+    BOOL isDirectory = NO;
+    if ([NSFileManager.defaultManager fileExistsAtPath:FeatureFlagsFilePath() isDirectory:&isDirectory] && !isDirectory) {
+        FeatureFlagsWriteLegacyFile(@"stale-flag", @"stale", 0);
+        FeatureFlagsWriteLegacyFile(@"stale-flag-2", nil, 1);
+    }
+}
+
+- (void)run {
+    if (self.launchCount <= 1) {
+        [Bugsnag addFeatureFlagWithName:@"launch1-flag" variant:@"launch1"];
+        // Lets the test wait for launch 1 before killing the app
+        [self notifyHandledError];
+    } else {
+        [Bugsnag addFeatureFlagWithName:@"launch2-flag" variant:@"launch2"];
+        [self notifyHandledError];
+    }
+}
+
+@end
+
+#pragma mark - 10. Corrupt featureflag.bin
+
+/// Corrupts featureflag.bin before Bugsnag starts at launch 1; the mode selects how (see
+/// FeatureFlagsWriteCorruptFile()).
+@interface FeatureFlagsCorruptFileScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsCorruptFileScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+}
+
+- (void)prepareFilesBeforeStart {
+    if (self.launchCount <= 1) {
+        NSString *mode = self.args.firstObject.length ? self.args.firstObject : @"random";
+        FeatureFlagsWriteCorruptFile(mode);
+    }
+}
+
+- (void)run {
+    [Bugsnag addFeatureFlagWithName:@"after-start" variant:@"current"];
+    [Bugsnag addFeatureFlags:FeatureFlagsBulk(3)];
+    [Bugsnag clearFeatureFlagWithName:@"bulk-001"];
+    [self notifyHandledError];
+}
+
+@end
+
+#pragma mark - 11. A directory where featureflag.bin should be
+
+/// Creates a (non-empty) directory at the featureflag.bin path before Bugsnag starts.
+@interface FeatureFlagsDirectoryAtFilePathScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsDirectoryAtFilePathScenario
+
+- (void)configure {
+    [super configure];
+    [self.config addFeatureFlagWithName:@"config-flag" variant:@"config-variant"];
+}
+
+- (void)prepareFilesBeforeStart {
+    NSString *path = FeatureFlagsFilePath();
+    BOOL isDirectory = NO;
+    if ([NSFileManager.defaultManager fileExistsAtPath:path isDirectory:&isDirectory] && isDirectory) {
+        return;
+    }
+    [NSFileManager.defaultManager removeItemAtPath:path error:nil];
+    NSError *error = nil;
+    if (![NSFileManager.defaultManager createDirectoryAtPath:path withIntermediateDirectories:YES
+                                                  attributes:nil error:&error]) {
+        logError(@"Could not create directory %@: %@", path, error);
+    }
+    [[@"occupied" dataUsingEncoding:NSUTF8StringEncoding]
+     writeToFile:[path stringByAppendingPathComponent:@"occupant.txt"] atomically:NO];
+}
+
+- (void)addFlags {
+    [Bugsnag addFeatureFlagWithName:@"after-start" variant:@"current"];
+    [Bugsnag addFeatureFlags:FeatureFlagsBulk(3)];
+    [Bugsnag addFeatureFlagWithName:@"bulk-000" variant:@"bulk-000:updated"];
+    [Bugsnag clearFeatureFlagWithName:@"bulk-001"];
+}
+
+- (void)run {
+    [self addFlags];
+    [self notifyHandledError];
+}
+
+@end
+
+@interface FeatureFlagsDirectoryAtFilePathCrashScenario : FeatureFlagsDirectoryAtFilePathScenario
+@end
+
+@implementation FeatureFlagsDirectoryAtFilePathCrashScenario
+
+- (void)run __attribute__((noreturn)) {
+    [self addFlags];
+    @throw [NSException exceptionWithName:NSGenericException reason:@"FeatureFlagsDirectoryAtFilePathCrashScenario"
+                                 userInfo:nil];
+}
+
+@end
+
+#pragma mark - 12. No files without flags
+
+/// Starts Bugsnag with no flags and sends a handled error; nothing is created in featureFlags. In "add-clear" mode a
+/// flag is added then cleared first, so featureflag.bin exists but is empty.
+@interface FeatureFlagsNoFlagsScenario : FeatureFlagsPersistenceScenario
+@end
+
+@implementation FeatureFlagsNoFlagsScenario
+
+- (void)run {
+    if ([self.args.firstObject isEqualToString:@"add-clear"]) {
+        [Bugsnag addFeatureFlagWithName:@"temporary" variant:@"1"];
+        [Bugsnag clearFeatureFlags];
+    }
+    [self notifyHandledError];
+}
+
+@end

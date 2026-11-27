@@ -12,16 +12,16 @@
 @interface BSGCompositeFeatureFlagStore ()
 
 @property(nonatomic, strong) id<BSGFeatureFlagStore, NSCopying> memoryStore;
-@property(nonatomic, strong) id<BSGFeatureFlagStore> persistentStore;
-@property(nonatomic, strong) id<BSGFeatureFlagStore> atomicStore;
+@property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> persistentStore;
+@property(nonatomic, strong) id<BSGReplaceableFeatureFlagStore> atomicStore;
 
 @end
 
 @implementation BSGCompositeFeatureFlagStore
 
 + (instancetype)storeWithMemoryStore:(id<BSGFeatureFlagStore, NSCopying>)memoryStore
-                     persistentStore:(id<BSGFeatureFlagStore>)persistentStore
-                         atomicStore:(id<BSGFeatureFlagStore>)atomicStore {
+                     persistentStore:(id<BSGReplaceableFeatureFlagStore>)persistentStore
+                         atomicStore:(id<BSGReplaceableFeatureFlagStore>)atomicStore {
     BSGCompositeFeatureFlagStore *store = [self new];
     store.memoryStore = memoryStore;
     store.persistentStore = persistentStore;
@@ -33,16 +33,23 @@
     return [self.persistentStore allFlags];
 }
 
+- (nonnull NSArray<BugsnagFeatureFlag *> *)previousLaunchFlags {
+    id persistentStore = self.persistentStore;
+    if ([persistentStore conformsToProtocol:@protocol(BSGPreviousLaunchFeatureFlagStore)]) {
+        return [(id<BSGPreviousLaunchFeatureFlagStore>)persistentStore previousLaunchFlags];
+    }
+    return [self.persistentStore allFlags];
+}
+
 - (id<BSGFeatureFlagStore>)copyMemoryStore {
     return [self.memoryStore copyWithZone:nil];
 }
 
 - (void)synchronizeFlagsWithMemoryStore {
-    [self.atomicStore clear];
-    [self.persistentStore clear];
     NSArray<BugsnagFeatureFlag *> *featureFlags = [self.memoryStore allFlags];
-    [self.atomicStore addFeatureFlags:featureFlags];
-    [self.persistentStore addFeatureFlags:featureFlags];
+    // Atomic, unlike clear + add (see BSGReplaceableFeatureFlagStore)
+    [self.atomicStore replaceAllFlags:featureFlags];
+    [self.persistentStore replaceAllFlags:featureFlags];
 }
 
 #pragma mark - BSGFeatureFlagStore

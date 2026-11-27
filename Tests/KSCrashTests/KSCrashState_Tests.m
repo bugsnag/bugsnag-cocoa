@@ -38,6 +38,20 @@
 
 @implementation bsg_kscrashstate_Tests
 
+- (void)tearDown
+{
+    // Tests give bsg_kscrashstate_init a stack state and a freed path, which later tests would write through.
+    // Repoint the crash state at static storage.
+    static BSG_KSCrash_State state;
+    static char *path;
+    if (!path) {
+        path = strdup([NSTemporaryDirectory() stringByAppendingPathComponent:
+                       [NSString stringWithFormat:@"bsg_kscrashstate_Tests-%d.json", getpid()]].fileSystemRepresentation);
+    }
+    bsg_kscrashstate_init(path, &state);
+    [super tearDown];
+}
+
 #if TARGET_OS_OSX || TARGET_OS_TV || TARGET_OS_WATCH // Not needed on iOS because there the tests are injected into a host app
 
 - (void)setUp
